@@ -13,7 +13,7 @@ const Admin: React.FC = () => {
     }
     
      return (
-        <Container twClasses={[]} animationObject={containerAnimations}>
+        <Container twClasses={['h-screen bg-gray-50']} animationObject={containerAnimations}>
             <Text text='Client' />
         </Container>
      );

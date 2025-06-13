@@ -7,11 +7,13 @@ import Init from './init/Init';
 const App: React.FC = () => {
 
    return (
-    <Routes>
-      <Route path="/*" element={<Client />} />
-      <Route path="admin/*" element={<Admin />} />
-      <Route path="init/*" element={<Init />} />
-    </Routes>
+    <div className='h-screen bg-gray-900'>
+      <Routes>
+        <Route path="/*" element={<Client />} />
+        <Route path="admin/*" element={<Admin />} />
+        <Route path="init/*" element={<Init />} />
+      </Routes>
+    </div>
    );
 };
 export default App;
