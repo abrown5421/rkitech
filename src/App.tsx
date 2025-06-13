@@ -10,8 +10,8 @@ const App: React.FC = () => {
     <div className='h-screen bg-gray-900'>
       <Routes>
         <Route path="/*" element={<Client />} />
-        <Route path="admin/*" element={<Admin />} />
-        <Route path="init/*" element={<Init />} />
+        <Route path="Admin/*" element={<Admin />} />
+        <Route path="Init/*" element={<Init />} />
       </Routes>
     </div>
    );

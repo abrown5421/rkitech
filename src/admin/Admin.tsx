@@ -14,7 +14,7 @@ const Admin: React.FC = () => {
     
      return (
         <Container twClasses={['h-screen bg-gray-50']} animationObject={containerAnimations}>
-            <Text text='Client' />
+            <Text text='Admin' />
         </Container>
      );
 };
