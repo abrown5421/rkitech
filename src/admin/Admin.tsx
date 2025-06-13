@@ -2,12 +2,14 @@ import React from 'react';
 import Text from '../components/text/Text';
 import Container from '../components/container/Container';
 import type { AnimationObject } from '../components/container/containerTypes';
+import { useAppSelector } from '../store/hooks';
 
 const Admin: React.FC = () => {
+    const activeModule = useAppSelector((state) => state.activeModule)
     const containerAnimations: AnimationObject = {
         entranceAnimation: 'animate__fadeIn',
         exitAnimation: 'animate__fadeOut',
-        isEntering: true
+        isEntering: activeModule.activeModuleIn
     }
     
      return (
