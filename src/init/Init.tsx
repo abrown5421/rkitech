@@ -1,10 +1,11 @@
 import React from 'react';
+import Text from '../components/text/Text';
 
 const Init: React.FC = () => {
 
      return (
          <div className=''>
-            Init
+            <Text text="Init" />
          </div>
      );
 };
