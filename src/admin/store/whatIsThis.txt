@@ -1,1 +1,0 @@
-Admin specific store that only needed on the admin side

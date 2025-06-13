@@ -1,8 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
+// import adminReducer from '../admin/store/adminStore';
+// import clientReducer from '../client/store/clientStore';
+// import initReducer from '../init/store/initStore';
 
 export const store = configureStore({
   reducer: {
-    //global reducers
+    // admin: adminReducer, 
+    // client: clientReducer,
+    // init: initReducer,
   },
 });
 
