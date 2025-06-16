@@ -29,8 +29,22 @@ const Client: React.FC = () => {
       if (homePage?.pageID) {
         dispatch(setActiveClientPage({ key: 'activeClientPageId', value: homePage.pageID }));
       }
+      let path = location.pathname.replace('/', '');
+      path = String(path).charAt(0).toUpperCase() + String(path).slice(1)
+      const pageRef = app.pages.find((page) => page.pageName === path);
+      const pageNotFound = app.pages.find((page) => page.pageName === "Page Not Found");
+      
+      if (location.pathname !== '/' && pageRef) {
+        dispatch(setActiveClientPage({ key: "activeClientPageName", value: path }));
+        dispatch(setActiveClientPage({ key: "activeClientPageIn", value: true }));
+        dispatch(setActiveClientPage({ key: "activeClientPageId", value: pageRef.pageID }));
+      } else if (location.pathname === '/Page-Not-Found' && pageNotFound) {
+        dispatch(setActiveClientPage({ key: "activeClientPageName", value: "Page Not Found" }));
+        dispatch(setActiveClientPage({ key: "activeClientPageIn", value: true }));
+        dispatch(setActiveClientPage({ key: "activeClientPageId", value: pageNotFound.pageID }));
+      }
     }, [app]);
-
+    
      return (
         <Container twClasses={['h-screen']} animationObject={containerAnimations}>
           <Navbar twClasses={navbarClasses} />
