@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { NavbarProps } from './navbarTypes';
 import Text from '../../../components/text/Text';
 import { useAppSelector } from '../../../store/hooks';
 
 const Navbar: React.FC<NavbarProps> = ({ twClasses = [] }) => {
     const app = useAppSelector((state) => state.initialApp);
+    const activePage = useAppSelector((state) => state.client.activeClientPage)
+
+    useEffect(()=>{console.log(activePage)}, [activePage])
 
     const primaryMenuPages = app.pages
     .filter((page) => page.menuConfigs?.primaryMenu?.show)
@@ -25,10 +28,14 @@ const Navbar: React.FC<NavbarProps> = ({ twClasses = [] }) => {
             <a
                 key={page.pageID}
                 href={page.menuConfigs.pageSlug}
-                className="text-gray-700 hover:text-amber-500 font-mono"
-            >
+                className={`font-mono hover:text-amber-500 ${
+                    page.pageName === activePage.activeClientPageName
+                    ? 'text-amber-500 font-bold'
+                    : 'text-gray-700'
+                }`}
+                >
                 {page.pageName}
-            </a>
+                </a>
             ))}
         </div>
         </div>

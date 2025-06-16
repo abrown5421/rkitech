@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Text from '../components/text/Text';
 import type { AnimationObject } from '../components/container/containerTypes';
 import Container from '../components/container/Container';
-import { useAppSelector } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Navbar from './features/navbar/Navbar';
+import { setActiveClientPage } from './features/pages/activeClientPageSlice';
 
 const Client: React.FC = () => {
+    const dispatch = useAppDispatch();
     const app = useAppSelector((state) => state.initialApp);
     const activeModule = useAppSelector((state) => state.activeModule)
     
@@ -21,6 +23,13 @@ const Client: React.FC = () => {
         isEntering: activeModule.activeModuleIn
     }
     
+    useEffect(() => {
+      const homePage = app.pages.find((page) => page.pageName === 'Home');
+      if (homePage?.pageID) {
+        dispatch(setActiveClientPage({ key: 'activeClientPageId', value: homePage.pageID }));
+      }
+    }, [app]);
+
      return (
         <Container twClasses={['h-screen bg-gray-50']} animationObject={containerAnimations}>
           <Navbar twClasses={navbarClasses} />

@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import activeClientPageReducer from '../features/pages/activeClientPageSlice';
 
 const clientReducer = combineReducers({
-  //client reducers here
+  activeClientPage: activeClientPageReducer
 });
 
 export default clientReducer;

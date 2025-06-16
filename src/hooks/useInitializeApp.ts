@@ -9,7 +9,7 @@ export const useInitializeApp = () => {
 
   useEffect(() => {
     const unsubscribers: (() => void)[] = [];
-
+    
     unsubscribers.push(
       listenToCollection("Pages", (data) => {
         const pagesWithDocId = data.map(({ id, ...rest }) => ({
