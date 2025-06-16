@@ -6,16 +6,16 @@ export const useClientNavigationHook = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const useClientNavigation = (path: string, pageName: string) => () => {
+  const useClientNavigation = (path: string, pageName: string, pageID: string) => () => {
     dispatch(setActiveClientPage({ key: "activeClientPageIn", value: false }));
 
     setTimeout(() => {
       dispatch(setActiveClientPage({ key: "activeClientPageName", value: pageName }));
+      dispatch(setActiveClientPage({ key: "activeClientPageId", value: pageID }));
       dispatch(setActiveClientPage({ key: "activeClientPageIn", value: true }));
-      dispatch(setActiveClientPage({ key: "activeClientPageId", value: true }));
-      
+
       const cleanPath = path.startsWith('/') ? path : `/${path}`;
-      navigate(cleanPath)
+      navigate(cleanPath);
     }, 500);
   };
 

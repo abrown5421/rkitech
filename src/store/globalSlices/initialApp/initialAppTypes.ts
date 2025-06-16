@@ -1,18 +1,26 @@
 export type MenuConfig = {
-  [key: string]: any; 
+  show: boolean;
+  order: number;
 };
 
 export type Page = {
   pageID: string;
   pageName: string;
   pageSlug: string;
-  show: boolean;
-  order: number;
   pageContent: string;
-  primaryMenu: MenuConfig;
-  auxilaryMenu: MenuConfig;
-  menuConfigs: MenuConfig;
+  menuConfigs: {
+    pageSlug: string;
+    primaryMenu: MenuConfig;
+    auxilaryMenu: MenuConfig;
+  };
+  animationConfig: AnimationConfig;
 };
+
+export type AnimationConfig = {
+  entranceAnimation: string;
+  exitAnimation: string;
+  isEntering: boolean;
+}
 
 export type ComponentClass = {
   classProperty: string;

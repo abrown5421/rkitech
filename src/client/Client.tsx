@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import Text from '../components/text/Text';
 import type { AnimationObject } from '../components/container/containerTypes';
 import Container from '../components/container/Container';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Navbar from './features/navbar/Navbar';
 import { setActiveClientPage } from './features/pages/activeClientPageSlice';
+import { Navigate, Route, Routes } from 'react-router';
+import PageShell from './features/pages/PageShell';
 
 const Client: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -31,9 +32,15 @@ const Client: React.FC = () => {
     }, [app]);
 
      return (
-        <Container twClasses={['h-screen bg-gray-50']} animationObject={containerAnimations}>
+        <Container twClasses={['h-screen']} animationObject={containerAnimations}>
           <Navbar twClasses={navbarClasses} />
-          <Text text='Client' />
+          <Routes>
+            {app.pages.map((page) => (
+              <Route key={page.pageName} path={page.menuConfigs.pageSlug} element={<PageShell />} />
+            ))}
+            <Route path="/Page-Not-Found" element={<PageShell />} />
+            <Route path="*" element={<Navigate to="/Page-Not-Found" />} />
+          </Routes>
         </Container>
      );
 };
