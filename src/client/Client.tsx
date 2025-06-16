@@ -6,7 +6,15 @@ import { useAppSelector } from '../store/hooks';
 import Navbar from './features/navbar/Navbar';
 
 const Client: React.FC = () => {
+    const app = useAppSelector((state) => state.initialApp);
     const activeModule = useAppSelector((state) => state.activeModule)
+    
+    const navbarConfig = app.components.find((component) => component.componentName === 'Navbar');
+
+    const navbarClasses = navbarConfig?.componentClasses?.map(
+      (item) => item.classDefinition
+    ) ?? [];
+
     const containerAnimations: AnimationObject = {
         entranceAnimation: 'animate__fadeIn',
         exitAnimation: 'animate__fadeOut',
@@ -15,7 +23,7 @@ const Client: React.FC = () => {
     
      return (
         <Container twClasses={['h-screen bg-gray-50']} animationObject={containerAnimations}>
-          <Navbar />
+          <Navbar twClasses={navbarClasses} />
           <Text text='Client' />
         </Container>
      );
