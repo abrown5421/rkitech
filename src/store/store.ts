@@ -3,13 +3,15 @@ import { configureStore } from '@reduxjs/toolkit';
 // import clientReducer from '../client/store/clientStore';
 // import initReducer from '../init/store/initStore';
 import activeModuleReducer from './globalSlices/activeModules/activeModuleSlice';
+import initialAppReducer from './globalSlices/initialApp/initialAppSlice';
 
 export const store = configureStore({
   reducer: {
     // admin: adminReducer, 
     // client: clientReducer,
     // init: initReducer,
-    activeModule: activeModuleReducer
+    activeModule: activeModuleReducer,
+    initialApp: initialAppReducer,
   },
 });
 

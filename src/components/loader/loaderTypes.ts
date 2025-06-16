@@ -11,6 +11,7 @@ export type LoaderVariant =
   | 'moon'
   | 'pacman'
   | 'puff'
+  | 'ring'
   | 'rotate'
   | 'scale'
   | 'sync';

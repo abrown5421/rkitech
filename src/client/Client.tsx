@@ -14,8 +14,8 @@ const Client: React.FC = () => {
     }
     
      return (
-        <Container twClasses={['h-screen', 'bg-gray-50']} animationObject={containerAnimations}>
-          <Navbar twClasses={['bg-gray-50', 'pt-4 pr-2 pb-4 pl-2']} />
+        <Container twClasses={['h-screen bg-gray-50']} animationObject={containerAnimations}>
+          <Navbar />
           <Text text='Client' />
         </Container>
      );
