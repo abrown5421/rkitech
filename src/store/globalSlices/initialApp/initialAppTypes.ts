@@ -36,8 +36,9 @@ export type ComponentClass = {
 export type Component = {
   componentID: string;
   componentName: string;
-  componentClasses: ComponentClass[];
+  componentContent: JSONNode;
 };
+
 
 export interface AppState {
   pages: Page[];
