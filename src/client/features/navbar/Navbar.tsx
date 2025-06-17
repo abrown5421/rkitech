@@ -5,18 +5,7 @@ import ComponentRenderer from '../../../components/componentRenderer/ComponentRe
 const Navbar: React.FC = () => {
     const app = useAppSelector((state) => state.initialApp);
     const navbar = app.components.find((components) => components.componentName === 'Navbar')
-
     useEffect(()=>{console.log(app)}, [app])
-    
-    const primaryMenuPages = app.pages
-        .filter((page) => page.menuConfigs?.primaryMenu?.show)
-        .sort((a, b) => {
-            return (
-                (a.menuConfigs.primaryMenu.order ?? 0) -
-                (b.menuConfigs.primaryMenu.order ?? 0)
-            );
-        });
-
     return (
         <>
             {navbar && <ComponentRenderer node={navbar.componentContent} />}
