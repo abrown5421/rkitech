@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { AppState, Page, Component } from './initialAppTypes';
+import type { AppState, Page, Component, ImageGroup } from './initialAppTypes';
 
 const initialState: AppState = {
   pages: [],
   components: [],
+  images: [],
 };
 
 const appSlice = createSlice({
@@ -17,8 +18,11 @@ const appSlice = createSlice({
     setComponents: (state, action: PayloadAction<Component[]>) => {
       state.components = action.payload;
     },
+    setImages: (state, action: PayloadAction<ImageGroup[]>) => {
+      state.images = action.payload;
+    },
   },
 });
 
-export const { setPages, setComponents } = appSlice.actions;
+export const { setPages, setComponents, setImages } = appSlice.actions;
 export default appSlice.reducer;

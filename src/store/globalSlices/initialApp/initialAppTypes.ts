@@ -43,3 +43,19 @@ export interface AppState {
   pages: Page[];
   components: Component[];
 }
+
+export type Image = {
+  imageName: string;
+  imageURL: string;
+};
+
+export type ImageGroup = {
+  imageGroupName: string;
+  images: Image[];
+};
+
+export interface AppState {
+  pages: Page[];
+  components: Component[];
+  images: ImageGroup[]; 
+}

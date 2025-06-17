@@ -10,8 +10,6 @@ const PageShell: React.FC = () => {
     const pages = useAppSelector((state) => state.initialApp.pages);
     const activePageObject = pages.find((page) => page.pageID === activePage.activeClientPageId);
 
-    useEffect(()=>{console.log(activePageObject)}, [activePageObject])
-
     const [containerAnimations, setContainerAnimations] = useState<AnimationObject>({
         entranceAnimation: '',
         exitAnimation: '',

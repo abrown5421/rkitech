@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { listenToCollection } from "../services/database/listenForData";
-import { setComponents, setPages } from "../store/globalSlices/initialApp/initialAppSlice";
+import { setComponents, setImages, setPages } from "../store/globalSlices/initialApp/initialAppSlice";
 
 export const useInitializeApp = () => {
   const [loading, setLoading] = useState(true);
@@ -28,6 +28,16 @@ export const useInitializeApp = () => {
           ...rest,
         }));
         dispatch(setComponents(componentsWithDocId));
+        setLoading(false);
+      })
+    );
+
+    unsubscribers.push(
+      listenToCollection("Images", (data) => {
+        const imageGroups = data.map(({ id, ...rest }) => ({
+          ...rest, 
+        }));
+        dispatch(setImages(imageGroups));
         setLoading(false);
       })
     );

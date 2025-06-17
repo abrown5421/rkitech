@@ -8,7 +8,9 @@ import Image from '../../../components/image/Image';
 const Navbar: React.FC<NavbarProps> = ({ twClasses = [] }) => {
     const useClientNavigation = useClientNavigationHook();
     const app = useAppSelector((state) => state.initialApp);
-    const activePage = useAppSelector((state) => state.client.activeClientPage)
+    const activePage = useAppSelector((state) => state.client.activeClientPage);
+    const logoObj = app.images.find((imageGroup) => imageGroup.imageGroupName === 'Logo')
+    const logo = logoObj?.images.find((imgs) => imgs.imageName === 'Logo');
 
     const primaryMenuPages = app.pages
     .filter((page) => page.menuConfigs?.primaryMenu?.show)
@@ -22,13 +24,15 @@ const Navbar: React.FC<NavbarProps> = ({ twClasses = [] }) => {
     return (
         <div className={`flex flex-row justify-between shadow-md relative z-50 ${twClasses.join(' ')}`}>
         <div className='flex flex-row items-center'>
-             <Image
-                props={{
-                    src: '../../../../public/images/logo.png',
-                    alt: 'Logo',
-                    height: 50,
-                }}
-            />
+            {logo && (
+                <Image
+                    props={{
+                        src: logo?.imageURL,
+                        alt: 'Logo',
+                        height: 50,
+                    }}
+                />
+            )}
             <Text twClasses={['text-amber-500', 'font-mono', 'font-bold', 'text-xl']} text="Rkitech" />
         </div>
         <div className="flex space-x-4 items-center p-4">
