@@ -3,11 +3,14 @@ import './page-shell.css';
 import { useAppSelector } from '../../../store/hooks';
 import Container from '../../../components/container/Container';
 import type { AnimationObject } from '../../../components/container/containerTypes';
+import PageRenderer from './PageRenderer';
 
 const PageShell: React.FC = () => {
     const activePage = useAppSelector((state) => state.client.activeClientPage);
     const pages = useAppSelector((state) => state.initialApp.pages);
     const activePageObject = pages.find((page) => page.pageID === activePage.activeClientPageId);
+
+    useEffect(()=>{console.log(activePageObject)}, [activePageObject])
 
     const [containerAnimations, setContainerAnimations] = useState<AnimationObject>({
         entranceAnimation: '',
@@ -26,8 +29,10 @@ const PageShell: React.FC = () => {
      return (
          <div className="page-shell">
             <Container twClasses={['h-full', 'overflow-scroll']} animationObject={containerAnimations}>
-                <div className='bg-gray-50 h-full relative z-0'>
-                    {activePage.activeClientPageName}
+                <div className='h-full'>
+                    {activePageObject?.pageContent && (
+                        <PageRenderer node={activePageObject.pageContent} />
+                    )}
                 </div>
             </Container>
          </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { NavbarProps } from './navbarTypes';
 import Text from '../../../components/text/Text';
 import { useAppSelector } from '../../../store/hooks';
@@ -8,8 +8,6 @@ const Navbar: React.FC<NavbarProps> = ({ twClasses = [] }) => {
     const useClientNavigation = useClientNavigationHook();
     const app = useAppSelector((state) => state.initialApp);
     const activePage = useAppSelector((state) => state.client.activeClientPage)
-
-    useEffect(()=>{console.log(activePage)}, [activePage])
 
     const primaryMenuPages = app.pages
     .filter((page) => page.menuConfigs?.primaryMenu?.show)

@@ -3,11 +3,17 @@ export type MenuConfig = {
   order: number;
 };
 
+export type JSONNode = {
+  type: string;
+  props?: Record<string, any>;
+  children?: JSONNode[];
+};
+
 export type Page = {
   pageID: string;
   pageName: string;
   pageSlug: string;
-  pageContent: string;
+  pageContent: JSONNode; 
   menuConfigs: {
     pageSlug: string;
     primaryMenu: MenuConfig;
