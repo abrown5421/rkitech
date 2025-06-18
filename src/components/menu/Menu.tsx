@@ -6,12 +6,15 @@ import { useAppSelector } from '../../store/hooks';
 const Menu: React.FC<MenuProps> = ({
   menuID,
   routingID,
+  activeClasses =[],
+  secondaryClasses =[],
   twClasses = []
 }) => {
   const clientNavigation = useClientNavigationHook();
   const pages = useAppSelector((state) => state.initialApp.pages);
+  const activePage = useAppSelector((state) => state.client.activeClientPage)
   const menus = useAppSelector((state) => state.initialApp.menus);
-  useEffect(()=>{console.log(pages)}, [pages])
+  useEffect(()=>{console.log(activeClasses)}, [activeClasses])
   const matchedMenu = menus.find(menu => menu.menuName === menuID);
 
   let navigate;
@@ -32,7 +35,11 @@ const Menu: React.FC<MenuProps> = ({
           return (
             <button
               key={index}
-              className="menu-item"
+              className={`menu-item ${secondaryClasses.join(' ')} ${
+                item.itemName === activePage.activeClientPageName
+                  ? activeClasses.map(cls => cls.classDefinition).join(' ')
+                  : ''
+              }`}
               onClick={() =>
                 matchedPage
                   ? navigate(item.itemSlug, item.itemName, matchedPage.pageID)()

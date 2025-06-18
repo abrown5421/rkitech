@@ -14,4 +14,6 @@ export interface MenuProps {
   menuID: string;
   routingID: string;
   twClasses?: string[];
+  activeClasses?: { classProperty: string; classDefinition: string }[];
+  secondaryClasses?: string[];
 }

@@ -24,6 +24,10 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({ node }) => {
     clonedProps.twClasses = classReducer(clonedProps.twClasses);
   }
 
+  if (clonedProps.secondaryClasses && Array.isArray(clonedProps.secondaryClasses)) {
+    clonedProps.secondaryClasses = classReducer(clonedProps.secondaryClasses);
+  }
+
   const componentMap: Record<string, React.ElementType> = {
     Button,
     Container,
