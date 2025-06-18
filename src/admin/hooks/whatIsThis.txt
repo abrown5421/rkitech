@@ -1,1 +1,0 @@
-Admin specific hooks that only needed on the admin side

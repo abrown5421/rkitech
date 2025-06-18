@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import activeAdminPageReducer from './adminSlices/activeAdminPageSlice';
 
 const adminReducer = combineReducers({
-  //admin reducers here
+  activeAdminPage: activeAdminPageReducer
 });
 
 export default adminReducer;
