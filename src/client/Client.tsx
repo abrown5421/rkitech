@@ -11,12 +11,6 @@ const Client: React.FC = () => {
     const dispatch = useAppDispatch();
     const app = useAppSelector((state) => state.initialApp);
     const activeModule = useAppSelector((state) => state.activeModule)
-    
-    const navbarConfig = app.components.find((component) => component.componentName === 'Navbar');
-
-    const navbarClasses = navbarConfig?.componentClasses?.map(
-      (item) => item.classDefinition
-    ) ?? [];
 
     const containerAnimations: AnimationObject = {
         entranceAnimation: 'animate__fadeIn',
@@ -47,11 +41,17 @@ const Client: React.FC = () => {
     
      return (
         <Container twClasses={['h-screen']} animationObject={containerAnimations}>
-          <Navbar twClasses={navbarClasses} />
+          <Navbar />
           <Routes>
-            {app.pages.map((page) => (
-              <Route key={page.pageName} path={page.menuConfigs.pageSlug} element={<PageShell />} />
-            ))}
+          {app.pages.map((page) => {
+            const matchedItem = app.menus
+              .flatMap(menu => menu.menuItems)
+              .find(item => item.itemName === page.pageName);
+
+              return (
+                <Route key={page.pageName} path={matchedItem?.itemSlug} element={<PageShell />} />
+              )
+            })}
             <Route path="/Page-Not-Found" element={<PageShell />} />
             <Route path="*" element={<Navigate to="/Page-Not-Found" />} />
           </Routes>

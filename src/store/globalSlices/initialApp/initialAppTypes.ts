@@ -13,12 +13,7 @@ export type Page = {
   pageID: string;
   pageName: string;
   pageSlug: string;
-  pageContent: JSONNode; 
-  menuConfigs: {
-    pageSlug: string;
-    primaryMenu: MenuConfig;
-    auxilaryMenu: MenuConfig;
-  };
+  pageContent: JSONNode;
   animationConfig: AnimationConfig;
 };
 
@@ -39,7 +34,6 @@ export type Component = {
   componentContent: JSONNode;
 };
 
-
 export interface AppState {
   pages: Page[];
   components: Component[];
@@ -55,8 +49,21 @@ export type ImageGroup = {
   images: Image[];
 };
 
+export type Menu = {
+  itemName: string;
+  itemOrder: number;
+  itemSlug: string;
+  itemType: string; 
+};
+
+export type MenuGroup = {
+  menuName: string;
+  menuItems: Menu[];
+};
+
 export interface AppState {
   pages: Page[];
   components: Component[];
   images: ImageGroup[]; 
+  menus: MenuGroup[];
 }
