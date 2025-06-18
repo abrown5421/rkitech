@@ -14,8 +14,8 @@ const App: React.FC = () => {
       {!loadingSite ? (
         <Routes>
           <Route path="/*" element={<Client />} />
-          <Route path="Admin/*" element={<Admin />} />
-          <Route path="Init/*" element={<Init />} />
+          <Route path="admin/*" element={<Admin />} />
+          <Route path="init/*" element={<Init />} />
         </Routes>
       ) : (
         <div className='h-screen w-screen flex justify-center items-center'>

@@ -1,8 +1,9 @@
 import React from 'react';
-import Text from '../components/text/Text';
 import Container from '../components/container/Container';
 import type { AnimationObject } from '../components/container/containerTypes';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector } from '../store/hooks'; 
+import { Route, Routes } from 'react-router';
+import Dashboard from './features/dashboard/Dashboard';
 
 const Admin: React.FC = () => {
     const activeModule = useAppSelector((state) => state.activeModule)
@@ -14,7 +15,9 @@ const Admin: React.FC = () => {
     
      return (
         <Container twClasses={['h-screen bg-gray-50']} animationObject={containerAnimations}>
-            <Text text='Admin' />
+            <Routes>
+                <Route path="/" element={<Dashboard />} />
+            </Routes>
         </Container>
      );
 };
