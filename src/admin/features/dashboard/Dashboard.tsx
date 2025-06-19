@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Container from '../../../components/container/Container';
 import Image from '../../../components/image/Image';
-import Icon from '../../../components/Icon/Icon';
 import Text from '../../../components/text/Text';
 import { getTimeOfDay } from '../../../utils/getTimeOfDay';
 import { useAppSelector } from '../../../store/hooks';
 import Drawer from '../../../components/drawer/Drawer';
 import Button from '../../../components/button/Button';
+import Avatar from '../../../components/avatar/Avatar';
 
 
 const Dashboard: React.FC = () => {
@@ -36,7 +36,13 @@ const Dashboard: React.FC = () => {
                     </Container>
                     <Container twClasses={['flex flex-row items-center']}>
                         <Button
-                            label={<Icon name="Home" />}
+                            label={
+                                <Avatar
+                                    avatarImage={user.authenticatedUser?.userImage ?? ''}
+                                    avatarFirstName={user.authenticatedUser?.userFirstName ?? ''}
+                                    avatarLastName={user.authenticatedUser?.userLastName ?? ''}
+                                />
+                            }
                             twClasses={[]}
                             action={() => setDrawerOpen(true)}
                         />

@@ -6,4 +6,5 @@ export type DrawerProps = {
   open: boolean;
   onClose?: () => void;
   children: React.ReactNode;
+  twClasses?: string[]; 
 };

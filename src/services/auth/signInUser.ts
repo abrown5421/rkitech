@@ -20,6 +20,7 @@ export async function signInUser(email: string, password: string, env: string): 
 
     const authenticatedUser: AuthenticatedUser = {
       userFirstName: userData.userFirstName,
+      userImage: userData. userImage,
       userLastName: userData.userLastName,
       userEmail: userData.userEmail,
       userRole: userData.userRole,

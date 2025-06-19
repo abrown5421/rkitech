@@ -9,6 +9,7 @@ const Drawer: React.FC<DrawerProps> = ({
   open,
   onClose,
   children,
+  twClasses =[]
 }) => {
   const isHorizontal = orientation === 'left' || orientation === 'right';
 
@@ -46,7 +47,7 @@ const Drawer: React.FC<DrawerProps> = ({
       )}
 
       <div
-        className={`fixed z-50 bg-white shadow-lg transition-transform duration-300 p-2 ease-in-out ${positionClasses} ${getDrawerPosition()}`}
+        className={`fixed z-50 bg-white shadow-lg transition-transform duration-300 p-2 ease-in-out ${twClasses.join(' ')} ${positionClasses} ${getDrawerPosition()}`}
         style={{
           width: isHorizontal ? width : '100%',
           height: isHorizontal ? '100%' : height,
