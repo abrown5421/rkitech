@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store/hooks";
 import { setActiveAdminPage } from "../store/adminSlices/activeAdminPageSlice";
+import { closeDrawer } from "../../components/drawer/drawerSlice";
 
 
 export const useAdminNavigationHook = () => {
@@ -8,6 +9,7 @@ export const useAdminNavigationHook = () => {
   const navigate = useNavigate();
 
   const useAdminNavigation = (path: string, pageName: string) => () => {
+    dispatch(closeDrawer('adminDrawer'))
     dispatch(setActiveAdminPage({ key: "activeAdminPageIn", value: false }));
 
     setTimeout(() => {

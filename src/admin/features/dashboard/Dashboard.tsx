@@ -45,17 +45,17 @@ const Dashboard: React.FC = () => {
                                 />
                             }
                             twClasses={[]}
-                            action={() => dispatch(toggleDrawer('dashboardDrawer'))}
+                            action={() => dispatch(toggleDrawer('adminDrawer'))}
                         />
                     </Container>
                 </Container>
             </Container>
 
             <Drawer
-                open={!!drawer['dashboardDrawer']}
+                open={!!drawer['adminDrawer']}
                 orientation="right"
                 width="400px"
-                onClose={() => dispatch(toggleDrawer('dashboardDrawer'))}
+                onClose={() => dispatch(toggleDrawer('adminDrawer'))}
             >
                 example nav here
             </Drawer>
