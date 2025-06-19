@@ -8,6 +8,7 @@ import { useAppSelector } from '../../../store/hooks';
 
 const Dashboard: React.FC = () => {
     const app = useAppSelector((state) => state.initialApp)
+    const user = useAppSelector((state) => state.admin.adminAuth)
     const imageObj = app.images.find((images) => images.imageGroupName === 'Logo')
     const logo = imageObj?.images.find((img) => img.imageName === 'Logo')
 
@@ -22,7 +23,7 @@ const Dashboard: React.FC = () => {
                             src={logo.imageURL}
                         />
                     )}
-                    <Text text={getTimeOfDay()} twClasses={['text-amber-500 font-mono font-bold text-xl']} />
+                    <Text text={getTimeOfDay() + ', ' + user.authenticatedUser?.userFirstName} twClasses={['text-amber-500 font-mono font-bold text-xl']} />
                 </Container>
                 <Container twClasses={['flex flex-row items-center']}>
                     <Icon name="Home" />

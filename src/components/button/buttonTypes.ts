@@ -1,4 +1,5 @@
 export type ButtonProps = {
-    label: string;
+    label: React.ReactNode;
     twClasses: string[];
+    action?: () => void;
 };

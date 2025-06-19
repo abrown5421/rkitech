@@ -1,9 +1,13 @@
 import React from 'react';
 import type { ButtonProps } from './buttonTypes';
 
-const Button: React.FC<ButtonProps> = ({ label, twClasses = [] }) => {
+const Button: React.FC<ButtonProps> = ({ label, twClasses = [], action }) => {
   const handleClick = () => {
-    console.log('TODO: create a way to manage actions')
+    if (action) {
+      action();
+    } else {
+      console.log('No action provided');
+    }
   };
 
   return (

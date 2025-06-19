@@ -19,7 +19,7 @@ const App: React.FC = () => {
         </Routes>
       ) : (
         <div className='h-screen w-screen flex justify-center items-center'>
-          <Loader variant='hash' />
+          <Loader variant='hash' colorName='amber' colorIntensity={500} />
         </div>
       )}
     </div>
