@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { InputField } from '../../../components/InputField/InputField';
 import { setAuthenticatedUser } from './authSlice';
 import { signInUser } from '../../../services/auth/signInUser';
@@ -8,9 +7,12 @@ import Text from '../../../components/text/Text';
 import Button from '../../../components/button/Button';
 import { validateEmail } from '../../../utils/validateEmail';
 import Loader from '../../../components/loader/Loader';
+import type { AnimationObject } from '../../../components/container/containerTypes';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 
 const Auth: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.admin.adminAuth);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -54,9 +56,15 @@ const Auth: React.FC = () => {
     }
   };
 
+  const containerAnimations: AnimationObject = {
+      entranceAnimation: 'animate__backInUp',
+      exitAnimation: 'animate__backOutDown',
+      isEntering: user.authenticatedUser ? false : true
+  };
+  
   return (
     <Container twClasses={['w-full h-full flex flex-col justify-center items-center']}>
-      <Container twClasses={['w-[95%] md:w-[60%] lg:w-[30%] p-6 border rounded-lg shadow-lg space-y-4 bg-gray-50']}>
+      <Container animationObject={containerAnimations} twClasses={['w-[95%] md:w-[60%] lg:w-[30%] p-6 border rounded-lg shadow-lg space-y-4 bg-gray-50']}>
         <Text text="Login" twClasses={['text-xl font-bold text-center']} />
         <InputField
           label="Email"
