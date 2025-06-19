@@ -43,7 +43,7 @@ const Auth: React.FC = () => {
 
     if (!valid) return;
 
-    const result = await signInUser(email, password);
+    const result = await signInUser(email, password, 'admin');
 
     if (result) {
       dispatch(setAuthenticatedUser(result));
