@@ -1,4 +1,5 @@
 import React from 'react';
+import Cookies from 'js-cookie';
 import Container from '../../../components/container/Container';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Drawer from '../../../components/drawer/Drawer';
@@ -16,12 +17,13 @@ const Dashboard: React.FC = () => {
     const handleLogout = async () => {
         const success = await signOutUser();
         if (success) {
+            Cookies.remove('adminUserId'); 
             dispatch(toggleDrawer('adminDrawer'));
-            dispatch(clearAuthenticatedUser())
+            dispatch(clearAuthenticatedUser());
         } else {
             console.error('Failed to sign out.');
         }
-    };
+        };
 
     return (
         <>

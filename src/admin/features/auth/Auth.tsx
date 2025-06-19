@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Cookies from 'js-cookie';
 import { InputField } from '../../../components/InputField/InputField';
 import { setAuthenticatedUser } from './authSlice';
 import { signInUser } from '../../../services/auth/signInUser';
@@ -49,6 +50,7 @@ const Auth: React.FC = () => {
 
     if (result) {
       dispatch(setAuthenticatedUser(result));
+      Cookies.set('adminUserId', result.userId, { expires: 2 }); 
       setLoading(false);
     } else {
       setFormError('Login failed. Please check your credentials.');
