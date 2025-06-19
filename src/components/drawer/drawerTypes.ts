@@ -8,3 +8,7 @@ export type DrawerProps = {
   children: React.ReactNode;
   twClasses?: string[]; 
 };
+
+export interface DrawerState {
+  [key: string]: boolean; 
+}

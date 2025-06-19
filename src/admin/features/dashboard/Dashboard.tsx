@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Container from '../../../components/container/Container';
 import Image from '../../../components/image/Image';
 import Text from '../../../components/text/Text';
 import { getTimeOfDay } from '../../../utils/getTimeOfDay';
-import { useAppSelector } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import Drawer from '../../../components/drawer/Drawer';
 import Button from '../../../components/button/Button';
 import Avatar from '../../../components/avatar/Avatar';
+import { toggleDrawer } from '../../../components/drawer/drawerSlice';
 
 
 const Dashboard: React.FC = () => {
-    const [drawerOpen, setDrawerOpen] = useState(false);
-
+    const dispatch = useAppDispatch();
+    const drawer = useAppSelector((state) => state.drawer);
     const app = useAppSelector((state) => state.initialApp);
     const user = useAppSelector((state) => state.admin.adminAuth);
     const imageObj = app.images.find((images) => images.imageGroupName === 'Logo');
@@ -38,23 +39,23 @@ const Dashboard: React.FC = () => {
                         <Button
                             label={
                                 <Avatar
-                                    avatarImage={user.authenticatedUser?.userImage ?? ''}
-                                    avatarFirstName={user.authenticatedUser?.userFirstName ?? ''}
-                                    avatarLastName={user.authenticatedUser?.userLastName ?? ''}
+                                avatarImage={user.authenticatedUser?.userImage ?? ''}
+                                avatarFirstName={user.authenticatedUser?.userFirstName ?? ''}
+                                avatarLastName={user.authenticatedUser?.userLastName ?? ''}
                                 />
                             }
                             twClasses={[]}
-                            action={() => setDrawerOpen(true)}
+                            action={() => dispatch(toggleDrawer('dashboardDrawer'))}
                         />
                     </Container>
                 </Container>
             </Container>
 
             <Drawer
-                open={drawerOpen}
+                open={!!drawer['dashboardDrawer']}
                 orientation="right"
                 width="400px"
-                onClose={() => setDrawerOpen(false)}
+                onClose={() => dispatch(toggleDrawer('dashboardDrawer'))}
             >
                 example nav here
             </Drawer>

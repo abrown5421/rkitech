@@ -51,6 +51,8 @@ const Drawer: React.FC<DrawerProps> = ({
         style={{
           width: isHorizontal ? width : '100%',
           height: isHorizontal ? '100%' : height,
+          maxWidth: isHorizontal ? '100vw' : undefined,
+          maxHeight: isHorizontal ? undefined : '100vh',
         }}
       >
         <Button

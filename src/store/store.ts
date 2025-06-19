@@ -4,6 +4,7 @@ import clientReducer from '../client/store/clientStore';
 // import initReducer from '../init/store/initStore';
 import activeModuleReducer from './globalSlices/activeModules/activeModuleSlice';
 import initialAppReducer from './globalSlices/initialApp/initialAppSlice';
+import drawerReducer from '../components/drawer/drawerSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     // init: initReducer,
     activeModule: activeModuleReducer,
     initialApp: initialAppReducer,
+    drawer: drawerReducer,
   },
 });
 
