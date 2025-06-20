@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { AppState, Page, Component, ImageGroup, MenuGroup } from './initialAppTypes';
+import type { AppState, Page, Component, ImageGroup, MenuGroup, FormGroup } from './initialAppTypes';
 
 const initialState: AppState = {
   pages: [],
   components: [],
   images: [],
   menus: [],
+  forms: [],
 };
 
 const appSlice = createSlice({
@@ -25,8 +26,11 @@ const appSlice = createSlice({
     setMenus: (state, action: PayloadAction<MenuGroup[]>) => {
       state.menus = action.payload;
     },
+    setForms: (state, action: PayloadAction<FormGroup[]>) => {
+      state.forms = action.payload;
+    },
   },
 });
 
-export const { setPages, setComponents, setImages, setMenus } = appSlice.actions;
+export const { setPages, setComponents, setImages, setMenus, setForms } = appSlice.actions;
 export default appSlice.reducer;

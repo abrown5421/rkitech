@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { listenToCollection } from "../services/database/listenForData";
-import { setComponents, setImages, setMenus, setPages } from "../store/globalSlices/initialApp/initialAppSlice";
+import { setComponents, setForms, setImages, setMenus, setPages } from "../store/globalSlices/initialApp/initialAppSlice";
 
 export const useInitializeApp = () => {
   const [loading, setLoading] = useState(true);
@@ -48,6 +48,16 @@ export const useInitializeApp = () => {
           ...rest, 
         }));
         dispatch(setMenus(menuGroups));
+        setLoading(false);
+      })
+    );
+
+    unsubscribers.push(
+      listenToCollection("Forms", (data) => {
+        const formGroups = data.map(({ id, ...rest }) => ({
+          ...rest, 
+        }));
+        dispatch(setForms(formGroups));
         setLoading(false);
       })
     );

@@ -61,9 +61,24 @@ export type MenuGroup = {
   menuItems: Menu[];
 };
 
+export type FormField = {
+  formFieldLabel: string;
+  formFieldName: string;
+  formFieldPlaceholder: string;
+  formFieldRequired: boolean; 
+  formFieldType: string;
+};
+
+export type FormGroup = {
+  formName: string;
+  formFields: FormField[];
+  requireCaptcha: boolean;
+};
+
 export interface AppState {
   pages: Page[];
   components: Component[];
   images: ImageGroup[]; 
   menus: MenuGroup[];
+  forms: FormGroup[];
 }
