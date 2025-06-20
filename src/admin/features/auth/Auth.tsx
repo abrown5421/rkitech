@@ -10,6 +10,7 @@ import { validateEmail } from '../../../utils/validateEmail';
 import Loader from '../../../components/loader/Loader';
 import type { AnimationObject } from '../../../components/container/containerTypes';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { setAlert } from '../../../components/alert/alertSlice';
 
 const Auth: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +21,6 @@ const Auth: React.FC = () => {
 
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [formError, setFormError] = useState(''); 
 
 
   const handleLogin = async () => {
@@ -29,17 +29,19 @@ const Auth: React.FC = () => {
 
     setEmailError('');
     setPasswordError('');
-    setFormError('');
 
     if (!email) {
+      setLoading(false);
       setEmailError('Email is required.');
       valid = false;
     } else if (!validateEmail(email)) {
+      setLoading(false);
       setEmailError('Please enter a valid email address.');
       valid = false;
     }
 
     if (!password) {
+      setLoading(false);
       setPasswordError('Password is required.');
       valid = false;
     }
@@ -53,7 +55,11 @@ const Auth: React.FC = () => {
       Cookies.set('adminUserId', result.userId, { expires: 2 }); 
       setLoading(false);
     } else {
-      setFormError('Login failed. Please check your credentials.');
+      dispatch(setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Login failed. Please check your credentials.',
+      }));
       setLoading(false);
     }
   };
@@ -90,9 +96,6 @@ const Auth: React.FC = () => {
           errorText={passwordError}
         />
 
-        {formError && (
-          <Text text={formError} twClasses={['text-sm text-red-600 text-center']} />
-        )}
 
         <Button
           label={loading ? <Loader variant='pulse' colorName='gray' colorIntensity={50} size={7}/> : "Log In"}

@@ -17,7 +17,6 @@ const Topbar: React.FC = () => {
     const logo = imageObj?.images.find((img) => img.imageName === 'Logo');
 
     return (
-        
         <Container twClasses={['flex flex-row justify-between items-center relative z-50 shadow-md bg-gray-50 pt-0 pr-2 pb-0 pl-2']}>
             <Container twClasses={['flex flex-row items-center']}>
                 {logo && (
