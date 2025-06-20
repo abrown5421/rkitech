@@ -7,10 +7,12 @@ import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './components/loader/Loader';
 import Alert from './components/alert/Alert';
 import { useAppSelector } from './store/hooks';
+import GlobalModal from './components/modal/GlobalModal';
 
 const App: React.FC = () => {
   const loadingSite = useInitializeApp();
   const alert = useAppSelector((state) => state.alert)
+
    return (
     <div className='h-screen bg-gray-900'>
       {!loadingSite ? (
@@ -24,12 +26,15 @@ const App: React.FC = () => {
           <Loader variant='hash' colorName='amber' colorIntensity={500} />
         </div>
       )}
-                 
+                       
       <Alert
         open={alert.open}
         severity={alert.severity}
         message={alert.message}
       />
+
+      <GlobalModal />
+
     </div>
    );
 };
