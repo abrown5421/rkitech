@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Cookies from 'js-cookie';
 import Container from '../../../components/container/Container';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -10,7 +10,7 @@ import { signOutUser } from '../../../services/auth/signOutUser';
 import { clearAuthenticatedUser } from '../auth/authSlice';
 import Menu from '../../../components/menu/Menu';
 import { Route, Routes } from 'react-router';
-import MarginPicker from '../../components/marginPicker.tsx/MarginPicker';
+import PaddingPicker from '../../components/paddingPicker/PaddingPicker';
 
 
 const AdminLayout: React.FC = () => {
@@ -27,8 +27,6 @@ const AdminLayout: React.FC = () => {
             console.error('Failed to sign out.');
         }
         };
-        //this use effect never fires so we are not getting this far
-        useEffect(()=>{console.log('test')}, [])
     return (
         <Container twClasses={["flex", "flex-col", "h-screen"]}>
             <Topbar />
@@ -66,7 +64,7 @@ const AdminLayout: React.FC = () => {
                 <Container twClasses={['flex flex-col flex-1/4 flex-grow bg-gray-50 pt-2 pr-4 pb-2 pl-4']}>
                     <Routes>
                         <Route path="/" element={
-                            <MarginPicker />
+                            <PaddingPicker />
                         } />
                         <Route path="profile" element={<div>profile</div>} />
                     </Routes>
