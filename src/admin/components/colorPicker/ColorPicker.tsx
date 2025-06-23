@@ -68,7 +68,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
         name="color-picker"
         value={`${color}-${intensity}${opacity < 100 ? `/${opacity}` : ''}`}
         iconStart={
-            <div className={`w-4 h-4 rounded-full ${tailwindClass}${opacity < 100 ? `/${opacity}` : ''}`} />
+            <div className={`w-4 h-4 rounded-full bg-${color}-${intensity}${opacity < 100 ? `/${opacity}` : ''}`} />
         }
         inputClasses={['cursor-pointer']}
         onClick={() => setShowPicker(true)} 
@@ -87,7 +87,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
               {COLORS.map((c) => (
                 <div
                   key={c}
-                  className={`w-6 h-6 rounded-full cursor-pointer ${base}-${c}-500 ${color === c ? 'ring-2 ring-black' : ''}`}
+                  className={`w-6 h-6 rounded-full cursor-pointer bg-${c}-500 ${color === c ? 'ring-2 ring-black' : ''}`}
                   onClick={() => setColor(c)}
                 />
               ))}

@@ -18,6 +18,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   name,
   type = 'text',
   value,
+  min,
+  max,
   defaultValue,
   onChange,
   onClick,
@@ -71,6 +73,8 @@ export const InputField: React.FC<InputFieldProps> = ({
           type={type}
           rows={multiline ? rows : undefined}
           value={value}
+          min={min}
+          max={max}
           defaultValue={defaultValue}
           onChange={onChange}
           onClick={onClick as React.MouseEventHandler<any>}

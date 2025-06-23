@@ -3,6 +3,8 @@ export interface InputFieldProps {
   name?: string;
   type?: string;
   value?: string | number;
+  min?: number;
+  max?: number;
   defaultValue?: string | number;
   onClick?: React.MouseEventHandler<HTMLInputElement> | React.MouseEventHandler<HTMLTextAreaElement>;
   onFocus?: React.FocusEventHandler<HTMLInputElement> | React.FocusEventHandler<HTMLTextAreaElement>;

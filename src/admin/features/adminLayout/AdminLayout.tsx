@@ -10,7 +10,7 @@ import { signOutUser } from '../../../services/auth/signOutUser';
 import { clearAuthenticatedUser } from '../auth/authSlice';
 import Menu from '../../../components/menu/Menu';
 import { Route, Routes } from 'react-router';
-import PaddingPicker from '../../components/paddingPicker/PaddingPicker';
+import BorderPicker from '../../components/borderPicker/BorderPicker';
 
 
 const AdminLayout: React.FC = () => {
@@ -64,7 +64,7 @@ const AdminLayout: React.FC = () => {
                 <Container twClasses={['flex flex-col flex-1/4 flex-grow bg-gray-50 pt-2 pr-4 pb-2 pl-4']}>
                     <Routes>
                         <Route path="/" element={
-                            <PaddingPicker />
+                            <BorderPicker />
                         } />
                         <Route path="profile" element={<div>profile</div>} />
                     </Routes>
