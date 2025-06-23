@@ -16,7 +16,7 @@ export const useAdminNavigationHook = () => {
       dispatch(setActiveAdminPage({ key: "activeAdminPageName", value: pageName }));
       dispatch(setActiveAdminPage({ key: "activeAdminPageIn", value: true }));
 
-      const cleanPath = path.startsWith('/') ? path : `/${path}`;
+      const cleanPath = path.startsWith('/') ? `/admin${path}` : `/admin/${path}`;
       navigate(cleanPath);
     }, 500);
   };

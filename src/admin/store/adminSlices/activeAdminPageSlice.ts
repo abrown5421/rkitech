@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { ActiveAdminPageState } from "./activeAdminPageTypes";
 
 const initialState: ActiveAdminPageState = {
-  activeAdminPageName: "Home",
+  activeAdminPageName: "admin",
   activeAdminPageIn: true,
 };
 

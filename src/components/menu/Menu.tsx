@@ -10,7 +10,8 @@ const Menu: React.FC<MenuProps> = ({
   routingID,
   activeClasses =[],
   secondaryClasses =[],
-  twClasses = []
+  twClasses = [],
+  requirePageMatch = true,
 }) => {
   const clientNavigation = useClientNavigationHook();
   const adminNavigation = useAdminNavigationHook();
@@ -37,7 +38,9 @@ const Menu: React.FC<MenuProps> = ({
         .sort((a, b) => a.itemOrder - b.itemOrder)
         .map((item, index) => {
           const matchedPage = pages.find(page => page.pageName === item.itemName);
-          
+
+          const shouldNavigate = !requirePageMatch || matchedPage;
+
           return (
             <button
               key={index}
@@ -47,8 +50,8 @@ const Menu: React.FC<MenuProps> = ({
                   : ''
               }`}
               onClick={() =>
-                matchedPage
-                  ? navigate(item.itemSlug, item.itemName, matchedPage.pageID)()
+                shouldNavigate
+                  ? navigate(item.itemSlug, item.itemName, matchedPage?.pageID ?? '')()
                   : console.warn(`No matching page found for slug: ${item.itemSlug}`)
               }
             >
@@ -58,6 +61,7 @@ const Menu: React.FC<MenuProps> = ({
         }) || <p>No menu found.</p>}
     </div>
   );
+
 };
 
 export default Menu;

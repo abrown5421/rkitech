@@ -17,4 +17,5 @@ export interface MenuProps {
   twClasses?: string[];
   activeClasses?: { classProperty: string; classDefinition: string }[];
   secondaryClasses?: string[];
+  requirePageMatch?: boolean; 
 }
