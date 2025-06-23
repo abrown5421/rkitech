@@ -9,6 +9,7 @@ import Topbar from '../topbar/Topbar';
 import { signOutUser } from '../../../services/auth/signOutUser';
 import { clearAuthenticatedUser } from '../auth/authSlice';
 import Menu from '../../../components/menu/Menu';
+import ColorPicker from '../../components/colorPicker/ColorPicker';
 
 
 const Dashboard: React.FC = () => {
@@ -58,6 +59,13 @@ const Dashboard: React.FC = () => {
                     />
                 </Container>
             </Drawer>
+            <ColorPicker
+                base="bg"
+                defaultColor="rose"
+                defaultIntensity={400}
+                defaultOpacity={80}
+                onChange={(className) => console.log("New class:", className)}
+            />
         </>
     );
 };
