@@ -8,6 +8,7 @@ import Loader from '../../../components/loader/Loader';
 import Menu from '../../../components/menu/Menu';
 import type { PageRendererProps } from './PageRendererTypes';
 import Form from '../../../components/form/Form';
+import CollectionLooper from '../collectionLooper/CollectionLooper';
 
 const classReducer = (classes: { classDefinition: string }[] = []): string[] =>
   classes.map((c) => c.classDefinition);
@@ -31,7 +32,8 @@ const PageRenderer: React.FC<PageRendererProps> = ({ node }) => {
     Loader,
     Menu,
     Text,
-    Form
+    Form,
+    CollectionLooper
   };
 
   const Component = componentMap[type];
