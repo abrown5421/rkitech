@@ -1,24 +1,30 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { MenuProps } from './menuTypes';
 import { useClientNavigationHook } from '../../client/hooks/useClientNavigationHook';
 import { useAppSelector } from '../../store/hooks';
+import { useAdminNavigationHook } from '../../admin/hooks/useAdminNavigationHook';
 
 const Menu: React.FC<MenuProps> = ({
   menuID,
+  menuObject,
   routingID,
   activeClasses =[],
   secondaryClasses =[],
   twClasses = []
 }) => {
   const clientNavigation = useClientNavigationHook();
+  const adminNavigation = useAdminNavigationHook();
   const pages = useAppSelector((state) => state.initialApp.pages);
   const activePage = useAppSelector((state) => state.client.activeClientPage)
   const menus = useAppSelector((state) => state.initialApp.menus);
-  useEffect(()=>{console.log(activeClasses)}, [activeClasses])
-  const matchedMenu = menus.find(menu => menu.menuName === menuID);
+
+  const matchedMenu = menuObject || menus.find(menu => menu.menuName === menuID);
 
   let navigate;
   switch (routingID) {
+    case 'admin':
+      navigate = adminNavigation;
+      break;
     case 'client':
     default:
       navigate = clientNavigation;
