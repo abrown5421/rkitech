@@ -61,9 +61,9 @@ const Dashboard: React.FC = () => {
             </Drawer>
             <ColorPicker
                 base="bg"
-                defaultColor="rose"
-                defaultIntensity={400}
-                defaultOpacity={80}
+                defaultColor="gray"
+                defaultIntensity={500}
+                defaultOpacity={100}
                 onChange={(className) => console.log("New class:", className)}
             />
         </>

@@ -4,6 +4,8 @@ export interface InputFieldProps {
   type?: string;
   value?: string | number;
   defaultValue?: string | number;
+  onClick?: React.MouseEventHandler<HTMLInputElement> | React.MouseEventHandler<HTMLTextAreaElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement> | React.FocusEventHandler<HTMLTextAreaElement>;
   onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   placeholder?: string;
   required?: boolean;
@@ -14,6 +16,7 @@ export interface InputFieldProps {
   iconStart?: React.ReactNode;
   iconEnd?: React.ReactNode;
   multiline?: boolean;
+  readOnly?: boolean;
   rows?: number;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'outline' | 'filled' | 'unstyled';

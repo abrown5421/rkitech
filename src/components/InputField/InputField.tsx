@@ -20,6 +20,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   value,
   defaultValue,
   onChange,
+  onClick,
+  onFocus,
   placeholder,
   required,
   error,
@@ -71,6 +73,8 @@ export const InputField: React.FC<InputFieldProps> = ({
           value={value}
           defaultValue={defaultValue}
           onChange={onChange}
+          onClick={onClick as React.MouseEventHandler<any>}
+          onFocus={onFocus as React.FocusEventHandler<any>}
           placeholder={placeholder}
           disabled={disabled}
           className={dynamicInputClasses}
