@@ -1,16 +1,16 @@
 import React from 'react';
 import type { JSX } from 'react';
-import Button from '../button/Button';
-import Container from '../container/Container';
-import Icon from '../Icon/Icon';
-import { InputField } from '../InputField/InputField';
-import Loader from '../loader/Loader';
-import Menu from '../menu/Menu';
-import Text from '../text/Text';
-import Image from '../image/Image';
-import Drawer from '../drawer/Drawer'; 
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { toggleDrawer } from '../drawer/drawerSlice';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { toggleDrawer } from '../../../components/drawer/drawerSlice';
+import Button from '../../../components/button/Button';
+import Container from '../../../components/container/Container';
+import Image from '../../../components/image/Image';
+import Icon from '../../../components/Icon/Icon';
+import { InputField } from '../../../components/InputField/InputField';
+import Loader from '../../../components/loader/Loader';
+import Menu from '../../../components/menu/Menu';
+import Text from '../../../components/text/Text';
+import Drawer from '../../../components/drawer/Drawer';
 
 const classReducer = (classes: { classDefinition: string }[] = []): string[] =>
   classes.map((c) => c.classDefinition);

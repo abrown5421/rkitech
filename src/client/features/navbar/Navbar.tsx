@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAppSelector } from '../../../store/hooks';
-import ComponentRenderer from '../../../components/componentRenderer/ComponentRenderer';
+import ComponentRenderer from '../componentRenderer/ComponentRenderer';
 
 const Navbar: React.FC = () => {
     const app = useAppSelector((state) => state.initialApp);
