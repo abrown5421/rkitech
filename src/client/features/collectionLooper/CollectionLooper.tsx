@@ -20,7 +20,13 @@ const CollectionLooper: React.FC<CollectionLooperProps> = ({
         ? await getDocumentByCondition(collectionName, filter.field, filter.value)
         : await getEntireCollection(collectionName);
 
-      setItems(data ?? []);
+      const sorted = [...(data ?? [])].sort((a, b) => {
+        const orderA = typeof a.order === 'number' ? a.order : Infinity;
+        const orderB = typeof b.order === 'number' ? b.order : Infinity;
+        return orderA - orderB;
+      });
+
+      setItems(sorted);
       setLoading(false);
     };
 
