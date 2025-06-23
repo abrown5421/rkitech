@@ -64,7 +64,7 @@ const AdminLayout: React.FC = () => {
                 </Container>
             </Drawer>
             <Container twClasses={['flex flex-row flex-grow']}>
-                <Container twClasses={['flex flex-col flex-1/4 flex-grow bg-gray-50 pt-2 pr-4 pb-2 pl-4']}>
+                <Container twClasses={['flex flex-col flex-1/4 flex-grow bg-gray-50 p-4']}>
                     <Routes>
                         <Route path="/" element={<DashboardMenu />} />
                         <Route path="profile" element={<ProfileMenu />} />
