@@ -1,11 +1,11 @@
 import React from 'react';
+import Container from '../../../components/container/Container';
 import { useAppSelector } from '../../../store/hooks';
 import type { AnimationObject } from '../../../components/container/containerTypes';
-import Container from '../../../components/container/Container';
 
-const DashboardMenu: React.FC = () => {
+const ProfileMenu: React.FC = () => {
     const activeAdminPage = useAppSelector((state) => state.admin.activeAdminPage);
-    
+
     const containerAnimations: AnimationObject = {
         entranceAnimation: 'animate__fadeIn',
         exitAnimation: 'animate__fadeOut',
@@ -14,8 +14,8 @@ const DashboardMenu: React.FC = () => {
 
      return (
          <Container animationObject={containerAnimations} twClasses={["flex flex-row bg-gray-50 flex-grow"]}>
-            Dashboard visuals
+            Profile visuals
          </Container>
      );
 };
-export default DashboardMenu;
+export default ProfileMenu;
