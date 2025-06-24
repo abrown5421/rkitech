@@ -10,6 +10,8 @@ import Button from '../../../components/button/Button';
 import Loader from '../../../components/loader/Loader';
 import { setAlert } from '../../../components/alert/alertSlice';
 import { openModal } from '../../../components/modal/modalSlice';
+import { CheckboxField } from '../../../components/checkboxField/CheckboxField';
+import type { EditablePageFields } from './pagesEditorTypes';
 
 const PagesEditor: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -29,21 +31,25 @@ const PagesEditor: React.FC = () => {
     return { ...pageObj, ...menuMatch };
   };
 
-  const [localPageData, setLocalPageData] = useState<Record<string, Record<string, string>>>(
-    () =>
-      Object.fromEntries(
-        pages.map(page => {
-          const full = getPageAndMenuInfo(page);
-          return [page.pageID, {
+  const [localPageData, setLocalPageData] = useState<Record<string, EditablePageFields>>(
+  () =>
+    Object.fromEntries(
+      pages.map(page => {
+        const full = getPageAndMenuInfo(page);
+        return [
+          page.pageID,
+          {
             pageName: full.pageName || '',
             itemSlug: full.itemSlug || '',
             itemOrder: full.itemOrder?.toString() || '',
-          }];
-        })
-      )
-  );
+            pageActive: full.pageActive ?? false, 
+          },
+        ];
+      })
+    )
+);
 
-  const handleFieldChange = (pageID: string, field: string) => (
+  const handleFieldChange = (pageID: string, field: keyof EditablePageFields) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setLocalPageData(prev => ({
@@ -51,6 +57,18 @@ const PagesEditor: React.FC = () => {
       [pageID]: {
         ...prev[pageID],
         [field]: e.target.value,
+      },
+    }));
+  };
+
+  const handleCheckboxChange = (pageID: string, field: keyof EditablePageFields) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocalPageData(prev => ({
+      ...prev,
+      [pageID]: {
+        ...prev[pageID],
+        [field]: e.target.checked,
       },
     }));
   };
@@ -129,6 +147,15 @@ const PagesEditor: React.FC = () => {
                         variant="outline"
                         twClasses={["flex flex-1"]}
                     />
+
+                    <CheckboxField
+                      name="pageActive"
+                      label="Active:"
+                      checked={localPageData[pageWithMenu.pageID]?.pageActive ?? false}
+                      onChange={handleCheckboxChange(pageWithMenu.pageID, 'pageActive')}
+                      twClasses={['border', 'border-amber-500','checked:bg-amber-500','checked:border-amber-500']}
+                    />
+
                     <Button
                         label={
                             deleteLoad.loading && deleteLoad.object === pageWithMenu.pageName
@@ -181,15 +208,25 @@ const PagesEditor: React.FC = () => {
                     disabled
                     twClasses={["flex flex-1"]}
                 />
-                <Button
-                label={
-                    deleteLoad.loading && deleteLoad.object === pageWithMenu.pageName
-                    ? <Loader variant="clip" colorName="amber" colorIntensity={500} size={25} />
-                    : <Icon name="Trash2" colorName="amber" colorIntensity={500} />
-                }
-                action={() => requestDelete(pageWithMenu.pageName)}
-                twClasses={['']}
+                
+                <CheckboxField
+                  name="pageActive"
+                  label="Active:"
+                  checked={localPageData[pageWithMenu.pageID]?.pageActive ?? false}
+                  onChange={handleCheckboxChange(pageWithMenu.pageID, 'pageActive')}
+                  twClasses={['border','border-amber-500','checked:bg-amber-500','checked:border-amber-500']}
                 />
+
+                <Button
+                  label={
+                      deleteLoad.loading && deleteLoad.object === pageWithMenu.pageName
+                      ? <Loader variant="clip" colorName="amber" colorIntensity={500} size={25} />
+                      : <Icon name="Trash2" colorName="amber" colorIntensity={500} />
+                  }
+                  action={() => requestDelete(pageWithMenu.pageName)}
+                  twClasses={['']}
+                />
+                
             </Container>
             ))}
         </Container>
