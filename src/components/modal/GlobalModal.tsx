@@ -18,9 +18,9 @@ const getModalAction = (id: string, requestClose: () => void) => {
           />
           <Button
             label="Confirm"
-            action={() => {
+            action={async () => {
               requestClose();
-              (window as any).confirmCallback?.();
+              await (window as any).confirmCallback?.();
             }}
             twClasses={["pt-2 pr-4 pb-2 pl-4 bg-amber-500 text-gray-50 rounded"]}
           />

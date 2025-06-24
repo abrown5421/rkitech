@@ -10,15 +10,15 @@ import Button from '../../../components/button/Button';
 import Loader from '../../../components/loader/Loader';
 import { setAlert } from '../../../components/alert/alertSlice';
 import { openModal } from '../../../components/modal/modalSlice';
-import { CheckboxField } from '../../../components/checkboxField/CheckboxField';
 import type { EditablePageFields } from './pagesEditorTypes';
+import CheckboxField from '../../../components/checkboxField/CheckboxField';
+import { deleteDocument } from '../../../services/database/deleteData';
 
 const PagesEditor: React.FC = () => {
   const dispatch = useAppDispatch()
   const containerAnimations = useAdminPageTransitionHook();
   const pages = useAppSelector((state) => state.initialApp.pages);
   const menus = useAppSelector((state) => state.initialApp.menus);
-  const [pendingDeletePage, setPendingDeletePage] = useState<string | null>(null);
   const [deleteLoad, setDeleteLoad] = useState<{ loading: boolean; object: string }>({
     loading: false,
     object: '',
@@ -73,13 +73,11 @@ const PagesEditor: React.FC = () => {
     }));
   };
 
-  const requestDelete = (pageName: string) => {
+  const requestDelete = (pageName: string, pageID: string) => {
     setDeleteLoad({ loading: true, object: pageName });
-    setPendingDeletePage(pageName);
-    (window as any).confirmCallback = () => confirmDelete();
+    (window as any).confirmCallback = () => confirmDelete(pageID, pageName);
     (window as any).cancelCallback = () => {
         setDeleteLoad({ loading: false, object: '' });
-        setPendingDeletePage(null);
     };
     dispatch(openModal({
         modalID: 'confirmOrDeny',
@@ -88,18 +86,24 @@ const PagesEditor: React.FC = () => {
     }));
   };
 
-  const confirmDelete = () => {
-    if (!pendingDeletePage) return;
+  const confirmDelete = async (pageID: string, pageName: string) => {
+    try {
+      await deleteDocument('Pages', pageID);
 
-    setTimeout(() => {
-        dispatch(setAlert({
+      dispatch(setAlert({
         open: true,
         severity: 'success',
-        message: `${pendingDeletePage} page deleted successfully`,
-        }));
-        setDeleteLoad({ loading: false, object: '' });
-        setPendingDeletePage(null);
-    }, 1000);
+        message: `${pageName} page deleted successfully`,
+      }));
+    } catch (error) {
+      dispatch(setAlert({
+        open: true,
+        severity: 'error',
+        message: `Failed to delete page: ${pageName}`,
+      }));
+    } finally {
+      setDeleteLoad({ loading: false, object: '' });
+    }
   };
   
   return (
@@ -162,7 +166,7 @@ const PagesEditor: React.FC = () => {
                             ? <Loader variant="clip" colorName="amber" colorIntensity={500} size={25} />
                             : <Icon name="Trash2" colorName="amber" colorIntensity={500} />
                         }
-                        action={() => requestDelete(pageWithMenu.pageName)}
+                        action={() => requestDelete(pageWithMenu.pageName, pageWithMenu.pageID)}
                         twClasses={['']}
                     />
                 </Container>
@@ -223,7 +227,7 @@ const PagesEditor: React.FC = () => {
                       ? <Loader variant="clip" colorName="amber" colorIntensity={500} size={25} />
                       : <Icon name="Trash2" colorName="amber" colorIntensity={500} />
                   }
-                  action={() => requestDelete(pageWithMenu.pageName)}
+                  action={() => requestDelete(pageWithMenu.pageName, pageWithMenu.pageID)}
                   twClasses={['']}
                 />
                 
