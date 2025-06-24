@@ -14,6 +14,8 @@ import DashboardMenu from '../dashboard/DashboardMenu';
 import Dashboard from '../dashboard/Dashboard';
 import Profile from '../profile/Profile';
 import ProfileMenu from '../profile/ProfileMenu';
+import PagesMenu from '../pages/PagesMenu';
+import PagesEditor from '../pages/PagesEditor';
 
 
 const AdminLayout: React.FC = () => {
@@ -67,13 +69,15 @@ const AdminLayout: React.FC = () => {
                 <Container twClasses={['flex flex-col flex-1/4 flex-grow bg-gray-50 p-4']}>
                     <Routes>
                         <Route path="/" element={<DashboardMenu />} />
-                        <Route path="profile" element={<ProfileMenu />} />
+                        <Route path="/profile" element={<ProfileMenu />} />
+                        <Route path="/pages" element={<PagesMenu />} />
                     </Routes>
                 </Container>    
                 <Container twClasses={['flex flex-col flex-3/4 flex-grow p-4']}>
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
-                        <Route path="profile" element={<Profile />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/pages" element={<PagesEditor />} />
                     </Routes>
                 </Container>    
             </Container>
