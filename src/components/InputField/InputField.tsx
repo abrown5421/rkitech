@@ -8,7 +8,7 @@ const sizeMap = {
 };
 
 const variantMap = {
-  outline: 'border border-gray-300 focus:border-blue-500 focus:ring-blue-500',
+  outline: 'border border-gray-300 focus:border-amber-500 focus:ring-amber-500',
   filled: 'bg-gray-100 border border-gray-300 focus:bg-white',
   unstyled: 'border-none bg-transparent focus:ring-0',
 };

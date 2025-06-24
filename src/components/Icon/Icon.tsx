@@ -1,27 +1,24 @@
 import React from 'react';
 import * as Icons from 'lucide-react';
-import type { LucideProps } from 'lucide-react';
+import type { IconComponent, IconProps } from './iconTypes';
+import { tailwindToHex } from '../../utils/tailwindToHex/tailwindToHex';
 
-type IconComponent = React.FC<LucideProps>;
+const Icon: React.FC<IconProps> = ({
+  name,
+  size = 24,
+  colorName,
+  colorIntensity = 400,
+}) => {
 
-type IconName = {
-  [K in keyof typeof Icons]: typeof Icons[K] extends IconComponent ? K : never;
-}[keyof typeof Icons];
-
-export interface IconProps {
-  name: IconName;
-  size?: number;
-  color?: string;
-}
-
-const Icon: React.FC<IconProps> = ({ name, size = 24, color = 'currentColor' }) => {
-  const LucideIcon = Icons[name] as IconComponent;
+  const LucideIcon = Icons[name] as IconComponent; 
 
   if (!LucideIcon) {
     return <span style={{ color: 'red' }}>Icon "{name}" not found</span>;
   }
 
-  return <LucideIcon size={size} color={color} />;
+  const resolvedColor = (colorName ? tailwindToHex(colorName, colorIntensity) : 'currentColor');
+
+  return <LucideIcon size={size} color={resolvedColor} />;
 };
 
 export default Icon;

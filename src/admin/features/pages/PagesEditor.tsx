@@ -133,7 +133,7 @@ const PagesEditor: React.FC = () => {
                         label={
                             deleteLoad.loading && deleteLoad.object === pageWithMenu.pageName
                             ? <Loader variant="clip" colorName="amber" colorIntensity={500} size={25} />
-                            : <Icon name="Trash2" color="#FE9A00" />
+                            : <Icon name="Trash2" colorName="amber" colorIntensity={500} />
                         }
                         action={() => requestDelete(pageWithMenu.pageName)}
                         twClasses={['']}
@@ -167,7 +167,7 @@ const PagesEditor: React.FC = () => {
                     value={localPageData[pageWithMenu.pageID]?.itemSlug ?? ''}
                     onChange={handleFieldChange(pageWithMenu.pageID, 'itemSlug')}
                     size="md"
-                    variant="outline"
+                    variant="filled"
                     disabled
                     twClasses={["flex flex-1"]}
                 />
@@ -177,7 +177,7 @@ const PagesEditor: React.FC = () => {
                     value={localPageData[pageWithMenu.pageID]?.itemOrder ?? ''}
                     onChange={handleFieldChange(pageWithMenu.pageID, 'itemOrder')}
                     size="md"
-                    variant="outline"
+                    variant="filled"
                     disabled
                     twClasses={["flex flex-1"]}
                 />
@@ -185,7 +185,7 @@ const PagesEditor: React.FC = () => {
                 label={
                     deleteLoad.loading && deleteLoad.object === pageWithMenu.pageName
                     ? <Loader variant="clip" colorName="amber" colorIntensity={500} size={25} />
-                    : <Icon name="Trash2" color="#FE9A00" />
+                    : <Icon name="Trash2" colorName="amber" colorIntensity={500} />
                 }
                 action={() => requestDelete(pageWithMenu.pageName)}
                 twClasses={['']}
