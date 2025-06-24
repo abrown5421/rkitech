@@ -31,7 +31,8 @@ const AdminLayout: React.FC = () => {
         } else {
             console.error('Failed to sign out.');
         }
-        };
+    };
+    
     return (
         <Container twClasses={["flex", "flex-col", "h-screen"]}>
             <Topbar />
@@ -65,7 +66,7 @@ const AdminLayout: React.FC = () => {
                     />
                 </Container>
             </Drawer>
-            <Container twClasses={['flex flex-row flex-grow']}>
+            <Container twClasses={['flex flex-row body-no-nav']}>
                 <Container twClasses={['flex flex-col flex-1/4 flex-grow bg-gray-50 p-4']}>
                     <Routes>
                         <Route path="/" element={<DashboardMenu />} />

@@ -32,7 +32,7 @@ const Client: React.FC = () => {
         dispatch(setActiveClientPage({ key: "activeClientPageName", value: path }));
         dispatch(setActiveClientPage({ key: "activeClientPageIn", value: true }));
         dispatch(setActiveClientPage({ key: "activeClientPageId", value: pageRef.pageID }));
-      } else if (location.pathname === '/Page-Not-Found' && pageNotFound) {
+      } else if (location.pathname === '/page-not-found' && pageNotFound) {
         dispatch(setActiveClientPage({ key: "activeClientPageName", value: "Page Not Found" }));
         dispatch(setActiveClientPage({ key: "activeClientPageIn", value: true }));
         dispatch(setActiveClientPage({ key: "activeClientPageId", value: pageNotFound.pageID }));
@@ -52,8 +52,8 @@ const Client: React.FC = () => {
                 <Route key={page.pageName} path={matchedItem?.itemSlug} element={<PageShell />} />
               )
             })}
-            <Route path="/Page-Not-Found" element={<PageShell />} />
-            <Route path="*" element={<Navigate to="/Page-Not-Found" />} />
+            <Route path="/page-not-found" element={<PageShell />} />
+            <Route path="*" element={<Navigate to="/page-not-found" />} />
           </Routes>
         </Container>
      );

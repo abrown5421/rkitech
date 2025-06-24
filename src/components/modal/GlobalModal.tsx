@@ -10,13 +10,17 @@ const getModalAction = (id: string, requestClose: () => void) => {
         <>
           <Button
             label="Cancel"
-            action={requestClose}
+            action={() => {
+              requestClose();
+              (window as any).cancelCallback?.();
+            }}
             twClasses={["pt-2 pr-4 pb-2 pl-4 bg-gray-300 rounded"]}
           />
           <Button
             label="Confirm"
             action={() => {
               requestClose();
+              (window as any).confirmCallback?.();
             }}
             twClasses={["pt-2 pr-4 pb-2 pl-4 bg-amber-500 text-gray-50 rounded"]}
           />

@@ -13,6 +13,7 @@ export type Page = {
   pageID: string;
   pageName: string;
   pageSlug: string;
+  pageActive: boolean;
   pageContent: JSONNode;
   animationConfig: AnimationConfig;
 };

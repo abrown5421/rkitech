@@ -24,6 +24,7 @@ const Modal: React.FC<ModalProps> = ({
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
+      (window as any).cancelCallback?.();
       requestClose();
     }
   };
@@ -32,15 +33,15 @@ const Modal: React.FC<ModalProps> = ({
     <div
       id={modalID}
       onClick={handleBackdropClick}
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-900 transition-opacity duration-300 ${
-        fadeState === 'in' ? 'opacity-75' : 'opacity-0'
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${
+        fadeState === 'in' ? 'bg-gray-900/75' : ''
       } ${twClasses.join(' ')}`}
       role="dialog"
       aria-modal="true"
       aria-labelledby={`${modalID}-title`}
     >
       <div
-        className={`bg-white rounded-lg shadow-lg max-w-lg w-full p-6 transform transition-all duration-300 ${
+        className={`bg-gray-50 rounded-lg shadow-lg max-w-lg w-full p-6 transform transition-all duration-300 ${
           fadeState === 'in' ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         } ${secondaryClasses.join(' ')}`}
         onClick={(e) => e.stopPropagation()}
