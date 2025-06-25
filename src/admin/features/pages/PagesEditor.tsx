@@ -10,7 +10,7 @@ import Button from '../../../components/button/Button';
 import Loader from '../../../components/loader/Loader';
 import { setAlert } from '../../../components/alert/alertSlice';
 import { openModal } from '../../../components/modal/modalSlice';
-import type { EditablePageFields } from './pagesEditorTypes';
+import type { EditablePageFields } from './pagesTypes';
 import CheckboxField from '../../../components/checkboxField/CheckboxField';
 import { deleteDocument } from '../../../services/database/deleteData';
 

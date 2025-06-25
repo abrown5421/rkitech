@@ -1,8 +1,3 @@
-export type MenuConfig = {
-  show: boolean;
-  order: number;
-};
-
 export type JSONNode = {
   type: string;
   props?: Record<string, any>;

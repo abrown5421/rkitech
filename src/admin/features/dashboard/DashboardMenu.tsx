@@ -5,6 +5,7 @@ import Container from '../../../components/container/Container';
 import { useAdminNavigationHook } from '../../hooks/useAdminNavigationHook';
 import Icon from '../../../components/Icon/Icon';
 import type { DashboardItem } from './dashboardTypes';
+import Button from '../../../components/button/Button';
 
 
 const DashboardMenu: React.FC = () => {
@@ -25,14 +26,11 @@ const DashboardMenu: React.FC = () => {
   return (
     <Container animationObject={containerAnimations} twClasses={["flex flex-col gap-4 bg-gray-50"]}>
       {DashboardItems.map((item) => (
-        <button
-          key={item.itemSlug}
-          onClick={adminNavigation(item.itemSlug, item.itemName)}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded shadow hover:bg-gray-100 transition"
-        >
-          <Icon name={item.icon} size={20} />
-          <span className="text-lg font-medium">{item.itemName}:</span>
-        </button>
+        <Button
+          label={<><Icon name={item.icon} size={20} /><span className="text-lg font-medium">{item.itemName}:</span></>}
+          twClasses={['flex items-center gap-2 px-4 py-2 bg-white rounded shadow hover:bg-gray-100']}
+          action={adminNavigation(item.itemSlug, item.itemName)}
+        />
       ))}
     </Container>
   );

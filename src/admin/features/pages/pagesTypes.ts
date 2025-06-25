@@ -4,3 +4,9 @@ export type EditablePageFields = {
   itemOrder: string;
   pageActive: boolean;
 };
+
+export type PageFormState = {
+  pageName: string;
+  pageSlug: string;
+  pageOrder: string; 
+};
