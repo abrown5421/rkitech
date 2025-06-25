@@ -3,7 +3,7 @@ import Container from '../../../components/container/Container';
 import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 import Text from '../../../components/text/Text';
 import { InputField } from '../../../components/InputField/InputField';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import type { PageFormErrorState, PageFormField, PageFormFullState } from './pagesTypes';
 import { setAlert } from '../../../components/alert/alertSlice';
 import Button from '../../../components/button/Button';
@@ -14,6 +14,7 @@ import newPageTemplate from './pageTemplate.json';
 const PagesMenu: React.FC = () => {
     const dispatch = useAppDispatch();
     const containerAnimations = useAdminPageTransitionHook();
+    const pages = useAppSelector((state) => state.initialApp.pages)
     const [newPageLoadState, setNewPageLoadState] = useState<boolean>(false);
     const [formState, setFormState] = useState<PageFormFullState>({
       values: {
@@ -28,8 +29,12 @@ const PagesMenu: React.FC = () => {
     const validateForm = (): boolean => {
       const newErrors: PageFormErrorState = {};
 
-      if (!formState.values.pageName.trim()) {
+      const trimmedName = formState.values.pageName.trim().toLowerCase();
+
+      if (!trimmedName) {
         newErrors.pageName = 'Page name is required.';
+      } else if (pages.some(page => page.pageName.trim().toLowerCase() === trimmedName)) {
+        newErrors.pageName = 'A page with this name already exists. Please enter a unique page name.';
       }
 
       setFormState((prev) => ({
