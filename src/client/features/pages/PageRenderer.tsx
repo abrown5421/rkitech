@@ -9,11 +9,14 @@ import Menu from '../../../components/menu/Menu';
 import type { PageRendererProps } from './PageRendererTypes';
 import Form from '../../../components/form/Form';
 import CollectionLooper from '../collectionLooper/CollectionLooper';
+import { useClientNavigationHook } from '../../hooks/useClientNavigationHook'; 
 
 const classReducer = (classes: { classDefinition: string }[] = []): string[] =>
   classes.map((c) => c.classDefinition);
 
 const PageRenderer: React.FC<PageRendererProps> = ({ node }) => {
+  const useClientNavigation = useClientNavigationHook(); 
+
   if (!node || typeof node !== 'object') return null;
 
   const { type, props = {}, children = [] } = node;
@@ -22,6 +25,19 @@ const PageRenderer: React.FC<PageRendererProps> = ({ node }) => {
 
   if (clonedProps.twClasses && Array.isArray(clonedProps.twClasses)) {
     clonedProps.twClasses = classReducer(clonedProps.twClasses);
+  }
+
+  if (
+    type === 'Button' &&
+    clonedProps.navigateTo &&
+    clonedProps.pageName &&
+    clonedProps.pageID
+  ) {
+    clonedProps.onClick = useClientNavigation(
+      clonedProps.navigateTo,
+      clonedProps.pageName,
+      clonedProps.pageID
+    );
   }
 
   const componentMap: Record<string, React.ElementType> = {

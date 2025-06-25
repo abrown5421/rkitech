@@ -1,9 +1,11 @@
 import React from 'react';
 import type { ButtonProps } from './buttonTypes';
 
-const Button: React.FC<ButtonProps> = ({ label, twClasses = [], action }) => {
+const Button: React.FC<ButtonProps> = ({ label, twClasses = [], onClick, action }) => {
   const handleClick = () => {
-    if (action) {
+    if (onClick) {
+      onClick();
+    } else if (action) {
       action();
     } else {
       console.log('No action provided');

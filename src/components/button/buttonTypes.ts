@@ -1,5 +1,6 @@
-export type ButtonProps = {
-    label: React.ReactNode;
-    twClasses: string[];
-    action?: () => void;
-};
+export interface ButtonProps {
+  label: React.ReactNode;
+  twClasses?: string[];
+  onClick?: () => void;
+  action?: () => void;
+}
