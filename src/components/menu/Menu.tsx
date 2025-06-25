@@ -39,6 +39,10 @@ const Menu: React.FC<MenuProps> = ({
         .map((item, index) => {
           const matchedPage = pages.find(page => page.pageName === item.itemName);
 
+          if (requirePageMatch && matchedPage && matchedPage.pageActive === false) {
+            return null;
+          }
+
           const shouldNavigate = !requirePageMatch || matchedPage;
 
           return (
@@ -58,7 +62,7 @@ const Menu: React.FC<MenuProps> = ({
               {item.itemName}
             </button>
           );
-        }) || <p>No menu found.</p>}
+        })}
     </div>
   );
 

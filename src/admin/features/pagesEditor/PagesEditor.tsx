@@ -2,40 +2,36 @@ import React, { useEffect, useState } from 'react';
 import Container from '../../../components/container/Container';
 import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import type { Page } from '../../../store/globalSlices/initialApp/initialAppTypes';
 import { InputField } from '../../../components/InputField/InputField';
-import Text from '../../../components/text/Text';
-import Icon from '../../../components/Icon/Icon';
 import Button from '../../../components/button/Button';
 import Loader from '../../../components/loader/Loader';
 import { setAlert } from '../../../components/alert/alertSlice';
 import { openModal } from '../../../components/modal/modalSlice';
 import CheckboxField from '../../../components/checkboxField/CheckboxField';
 import { deleteDocument } from '../../../services/database/deleteData';
-import type { PageWithMenu } from './pagesTypes';
-
-export type EditablePageFields = {
-  pageID: string;
-  pageName: string;
-  itemSlug: string;
-  itemOrder: string;
-  pageActive: boolean;
-};
+import type { EditablePageFields } from './pagesTypes';
+import type { Page } from '../../../store/globalSlices/initialApp/initialAppTypes';
+import Text from '../../../components/text/Text';
+import { useAdminNavigationHook } from '../../hooks/useAdminNavigationHook';
+import { useNavigate } from 'react-router';
+import { updateDataInCollection } from '../../../services/database/updateData';
 
 const PagesEditor: React.FC = () => {
   const dispatch = useAppDispatch();
+  const pages = useAppSelector((state) => state.initialApp.pages);
+  const menus = useAppSelector((state) => state.initialApp.menus);
   const containerAnimations = useAdminPageTransitionHook();
-  const pages = useAppSelector(state => state.initialApp.pages);
-  const menus = useAppSelector(state => state.initialApp.menus);
-
-  const [localPageData, setLocalPageData] = useState<EditablePageFields[]>([
-    { pageID: '', pageName: '', itemSlug: '', itemOrder: '', pageActive: false },
-  ]);
+  const adminNavigation = useAdminNavigationHook();
+  const navigate = useNavigate();
 
   const [deleteLoad, setDeleteLoad] = useState<{ loading: boolean; object: string }>({
     loading: false,
     object: '',
   });
+  
+  const [localPageData, setLocalPageData] = useState<EditablePageFields[]>([
+    { pageID: '', pageName: '', itemSlug: '', itemOrder: '', pageActive: false },
+  ]);
 
   const getPageAndMenuInfo = (pageObj: Page) => {
     const allMenuItems = menus.flatMap(menu =>
@@ -56,26 +52,11 @@ const PagesEditor: React.FC = () => {
         pageActive: full.pageActive ?? false,
       };
     });
+
+    combined.sort((a, b) => a.pageName.localeCompare(b.pageName, undefined, { sensitivity: 'base' }));
+
     setLocalPageData(combined);
   }, [pages, menus]);
-
-  const updateLocalPageData = (pageID: string, updates: Partial<EditablePageFields>) => {
-    setLocalPageData(prev =>
-      prev.map(page => (page.pageID === pageID ? { ...page, ...updates } : page))
-    );
-  };
-
-  const handleFieldChange =
-    (pageID: string, field: keyof EditablePageFields) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      updateLocalPageData(pageID, { [field]: e.target.value });
-    };
-
-  const handleCheckboxChange =
-    (pageID: string, field: keyof EditablePageFields) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      updateLocalPageData(pageID, { [field]: e.target.checked });
-    };
 
   const requestDelete = (pageName: string, pageID: string) => {
     setDeleteLoad({ loading: true, object: pageName });
@@ -115,110 +96,90 @@ const PagesEditor: React.FC = () => {
     }
   };
 
-  const renderPageRow = (
-    pageWithMenu: EditablePageFields & { menuName?: string },
-    disableSlugAndOrder = false
-  ) => {
-    const localData = localPageData.find(p => p.pageID === pageWithMenu.pageID) ?? {
-      pageName: '',
-      itemSlug: '',
-      itemOrder: '',
-      pageActive: false,
-      pageID: '',
-    };
+  const handleActiveToggle = async (pageID: string, isActive: boolean) => {
+    try {
+      await updateDataInCollection('Pages', pageID, { pageActive: isActive });
+      
+      setLocalPageData(prev =>
+        prev.map(page =>
+          page.pageID === pageID ? { ...page, pageActive: isActive } : page
+        )
+      );
 
-    return (
-      <Container
-        key={pageWithMenu.pageID}
-        twClasses={['flex flex-row w-full justify-between items-center p-2 gap-4 items-center']}
-      >
-        <InputField
-          label="Page Name"
-          value={localData.pageName}
-          onChange={handleFieldChange(pageWithMenu.pageID, 'pageName')}
-          size="md"
-          variant="outline"
-          twClasses={['flex flex-1']}
-        />
-
-        <InputField
-          label={disableSlugAndOrder ? 'No Slug' : 'Page Slug'}
-          value={localData.itemSlug}
-          onChange={handleFieldChange(pageWithMenu.pageID, 'itemSlug')}
-          size="md"
-          variant={disableSlugAndOrder ? 'filled' : 'outline'}
-          disabled={disableSlugAndOrder}
-          twClasses={['flex flex-1']}
-        />
-
-        <InputField
-          label={disableSlugAndOrder ? 'No Order' : 'Page Order'}
-          value={localData.itemOrder}
-          onChange={handleFieldChange(pageWithMenu.pageID, 'itemOrder')}
-          size="md"
-          variant={disableSlugAndOrder ? 'filled' : 'outline'}
-          disabled={disableSlugAndOrder}
-          twClasses={['flex flex-1']}
-        />
-
-        <CheckboxField
-          name="pageActive"
-          label="Active:"
-          checked={localData.pageActive}
-          onChange={handleCheckboxChange(pageWithMenu.pageID, 'pageActive')}
-          twClasses={['border', 'border-amber-500', 'checked:bg-amber-500', 'checked:border-amber-500']}
-        />
-
-        <Button
-          label={
-            deleteLoad.loading && deleteLoad.object === pageWithMenu.pageName ? (
-              <Loader variant="clip" colorName="amber" colorIntensity={500} size={25} />
-            ) : (
-              <Icon name="Trash2" colorName="amber" colorIntensity={500} />
-            )
-          }
-          action={() => requestDelete(pageWithMenu.pageName, pageWithMenu.pageID)}
-          twClasses={['']}
-        />
-      </Container>
-    );
+      dispatch(
+        setAlert({
+          open: true,
+          severity: 'success',
+          message: `Page status updated successfully.`,
+        })
+      );
+    } catch (error) {
+      dispatch(
+        setAlert({
+          open: true,
+          severity: 'error',
+          message: `Failed to update page status.`,
+        })
+      );
+    }
   };
+   return (
+     <Container animationObject={containerAnimations} twClasses={['flex flex-col bg-gray-50 flex-grow overflow-scroll p-4']}>
+      {localPageData.map((page) => (
+        <Container
+          key={page.pageID}
+          twClasses={['flex flex-col w-full rounded shadow bg-gray-200 mb-4 p-3']}
+        >
+          <Container
+            twClasses={['flex flex-row w-full justify-between']}
+          >
+            <Text text="Page Name:" twClasses={['text-sm font-medium text-gray-900 mb-2']} />
+            <CheckboxField
+              name="pageActive"
+              label="Active:"
+              checked={page.pageActive}
+              twClasses={['border', 'border-amber-500', 'checked:bg-amber-500', 'checked:border-amber-500']}
+              onChange={(e) => handleActiveToggle(page.pageID, e.target.checked)}
+            />
+          </Container>
+          <InputField
+            value={page.pageName}
+            size="md"
+            variant="filled"
+            twClasses={['flex flex-1 w-full mb-3']}
+          />
 
-  
-
-  const normalizePageWithMenu = (page: any): PageWithMenu => ({
-    pageID: page.pageID,
-    pageName: page.pageName || '',
-    itemSlug: page.itemSlug || '',
-    itemOrder: (page.itemOrder !== undefined && page.itemOrder !== null ? String(page.itemOrder) : ''),
-    pageActive: page.pageActive ?? false,
-    menuName: page.menuName,
-  });
-  
-  const enrichedPages = pages.map(page => normalizePageWithMenu(getPageAndMenuInfo(page)));
-
-  return (
-    <Container animationObject={containerAnimations} twClasses={['flex flex-col bg-gray-50 flex-grow overflow-scroll']}>
-      {menus.map(menu => (
-        <Container key={menu.menuName} twClasses={['mb-4']}>
-          <Text text={menu.menuName} twClasses={['p-2 font-bold text-lg text-amber-500']} />
-
-          {enrichedPages
-            .filter(page => page.menuName === menu.menuName)
-            .sort((a, b) => (Number(a.itemOrder) || 0) - (Number(b.itemOrder) || 0))
-            .map(pageWithMenu => renderPageRow(pageWithMenu))}
+          <Container
+            key={page.pageID}
+            twClasses={['flex flex-row w-full gap-4']}
+          >
+            
+            <Button
+              label="Edit"
+              twClasses={['bg-amber-500 text-white pl-2 pr-2 rounded']}
+              action={adminNavigation('/admin/page-editor', 'Page Editor')}
+            />
+            <Button
+              label="View"
+              twClasses={['bg-gray-50 text-gray-900 pl-2 pr-2 rounded']}
+              action={() => navigate(page.itemSlug)}
+            />
+            <Button
+              label={
+                deleteLoad.loading && deleteLoad.object === page.pageName ? (
+                  <Loader variant="clip" colorName="gray" colorIntensity={500} size={25} />
+                ) : (
+                  "Delete"
+                )
+              }
+              action={() => requestDelete(page.pageName, page.pageID)}
+              twClasses={['bg-red-700 text-white pl-2 pr-2 rounded']}
+            />
+          </Container>
+          
         </Container>
       ))}
-
-      <Container twClasses={['mb-4']}>
-        <Text text="Pages Not In A Menu" twClasses={['p-2 font-bold text-lg text-amber-500']} />
-
-        {enrichedPages
-          .filter(page => !page.menuName)
-          .map(pageWithMenu => renderPageRow(pageWithMenu, true))}
-      </Container>
-    </Container>
-  );
+     </Container>
+   );
 };
-
 export default PagesEditor;

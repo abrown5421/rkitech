@@ -9,7 +9,7 @@ const sizeMap = {
 
 const variantMap = {
   outline: 'border border-gray-300 focus:border-amber-500 focus:ring-amber-500',
-  filled: 'bg-gray-100 border border-gray-300 focus:bg-white',
+  filled: 'bg-gray-50 focus:bg-white',
   unstyled: 'border-none bg-transparent focus:ring-0',
 };
 
