@@ -1,0 +1,20 @@
+{
+  "children": [
+    {
+      "type": "Text",
+      "props": {
+        "text": "{{pageName}}"
+      }
+    }
+  ],
+  "type": "Container",
+  "props": {
+    "twClasses": [
+      { "classProperty": "padding", "classDefinition": "pt-4 pr-2 pb-4 pl-2" },
+      { "classProperty": "backgroundColor", "classDefinition": "bg-gray-50" },
+      { "classProperty": "height", "classDefinition": "h-full" },
+      { "classProperty": "position", "classDefinition": "relative" },
+      { "classProperty": "zIndex", "classDefinition": "z-0" }
+    ]
+  }
+}

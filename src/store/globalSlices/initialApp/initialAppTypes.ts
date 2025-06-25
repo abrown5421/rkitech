@@ -53,6 +53,7 @@ export type Menu = {
 };
 
 export type MenuGroup = {
+  menuID: string;
   menuName: string;
   menuItems: Menu[];
 };

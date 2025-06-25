@@ -35,6 +35,7 @@ export const useInitializeApp = () => {
     unsubscribers.push(
       listenToCollection("Images", (data) => {
         const imageGroups = data.map(({ id, ...rest }) => ({
+          imageID: id,
           ...rest, 
         }));
         dispatch(setImages(imageGroups));
@@ -45,6 +46,7 @@ export const useInitializeApp = () => {
     unsubscribers.push(
       listenToCollection("Menus", (data) => {
         const menuGroups = data.map(({ id, ...rest }) => ({
+          menuID: id,
           ...rest, 
         }));
         dispatch(setMenus(menuGroups));
@@ -55,6 +57,7 @@ export const useInitializeApp = () => {
     unsubscribers.push(
       listenToCollection("Forms", (data) => {
         const formGroups = data.map(({ id, ...rest }) => ({
+          formID: id,
           ...rest, 
         }));
         dispatch(setForms(formGroups));

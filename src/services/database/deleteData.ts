@@ -1,4 +1,4 @@
-import { doc, deleteDoc, updateDoc, deleteField, getDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc, deleteField, getDoc, arrayRemove } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export async function deleteDocument(collectionName: string, documentId: string): Promise<void> {
@@ -35,6 +35,29 @@ export async function deleteFieldFromDocument(
     }
   } catch (error) {
     console.error(`Failed to delete field "${fieldName}" from document "${documentId}" in collection "${collectionName}":`, error);
+    throw error;
+  }
+}
+
+export async function removeObjectFromArray(
+  collectionName: string,
+  documentId: string,
+  arrayFieldName: string,
+  objectToRemove: any
+): Promise<void> {
+  try {
+    const docRef = doc(db, collectionName, documentId);
+    await updateDoc(docRef, {
+      [arrayFieldName]: arrayRemove(objectToRemove),
+    });
+    console.log(
+      `Object successfully removed from array field "${arrayFieldName}" in document "${documentId}".`
+    );
+  } catch (error) {
+    console.error(
+      `Failed to remove object from array field "${arrayFieldName}" in document "${documentId}":`,
+      error
+    );
     throw error;
   }
 }
