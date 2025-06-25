@@ -125,60 +125,63 @@ const PagesEditor: React.FC = () => {
   };
    return (
      <Container animationObject={containerAnimations} twClasses={['flex flex-col bg-gray-50 flex-grow overflow-scroll p-4']}>
-      {localPageData.map((page) => (
-        <Container
-          key={page.pageID}
-          twClasses={['flex flex-col w-full rounded shadow bg-gray-200 mb-4 p-3']}
-        >
-          <Container
-            twClasses={['flex flex-row w-full justify-between']}
-          >
-            <Text text="Page Name:" twClasses={['text-sm font-medium text-gray-900 mb-2']} />
-            <CheckboxField
-              name="pageActive"
-              label="Active:"
-              checked={page.pageActive}
-              twClasses={['border', 'border-amber-500', 'checked:bg-amber-500', 'checked:border-amber-500']}
-              onChange={(e) => handleActiveToggle(page.pageID, e.target.checked)}
-            />
-          </Container>
-          <InputField
-            value={page.pageName}
-            size="md"
-            variant="filled"
-            twClasses={['flex flex-1 w-full mb-3']}
-          />
+      {localPageData.map((page) => {
+        const isSpecialPage = page.pageName === "Home" || page.pageName === "Page Not Found";
 
+        return (
           <Container
             key={page.pageID}
-            twClasses={['flex flex-row w-full gap-4']}
+            twClasses={['flex flex-col w-full rounded shadow bg-gray-200 mb-4 p-3']}
           >
-            
-            <Button
-              label="Edit"
-              twClasses={['bg-amber-500 text-white pl-2 pr-2 rounded']}
-              action={adminNavigation('/admin/page-editor', 'Page Editor')}
+            <Container twClasses={['flex flex-row w-full justify-between']}>
+              <Text text="Page Name:" twClasses={['text-sm font-medium text-gray-900 mb-2']} />
+              <CheckboxField
+                name="pageActive"
+                label="Active:"
+                checked={page.pageActive}
+                twClasses={isSpecialPage ? ['border', 'border-gray-900', 'checked:bg-gray-500', 'checked:border-gray-900'] : ['border', 'border-amber-500', 'checked:bg-amber-500', 'checked:border-amber-500']}
+                onChange={(e) => handleActiveToggle(page.pageID, e.target.checked)}
+                disabled={isSpecialPage} 
+              />
+            </Container>
+
+            <InputField
+              value={page.pageName}
+              size="md"
+              variant="filled"
+              twClasses={['flex flex-1 w-full mb-3']}
+              disabled={isSpecialPage} 
             />
-            <Button
-              label="View"
-              twClasses={['bg-gray-50 text-gray-900 pl-2 pr-2 rounded']}
-              action={() => navigate(page.itemSlug)}
-            />
-            <Button
-              label={
-                deleteLoad.loading && deleteLoad.object === page.pageName ? (
-                  <Loader variant="clip" colorName="gray" colorIntensity={500} size={25} />
-                ) : (
-                  "Delete"
-                )
-              }
-              action={() => requestDelete(page.pageName, page.pageID)}
-              twClasses={['bg-red-700 text-white pl-2 pr-2 rounded']}
-            />
+
+            <Container twClasses={['flex flex-row w-full gap-4']}>
+              <Button
+                label="Edit"
+                twClasses={['bg-amber-500 text-white pl-2 pr-2 rounded']}
+                action={adminNavigation('/admin/page-editor', 'Page Editor')}
+              />
+              <Button
+                label="View"
+                twClasses={['bg-gray-50 text-gray-900 pl-2 pr-2 rounded']}
+                action={() => navigate(page.itemSlug)}
+              />
+              {/* Only show delete button if NOT a special page */}
+              {!isSpecialPage && (
+                <Button
+                  label={
+                    deleteLoad.loading && deleteLoad.object === page.pageName ? (
+                      <Loader variant="clip" colorName="gray" colorIntensity={500} size={25} />
+                    ) : (
+                      "Delete"
+                    )
+                  }
+                  action={() => requestDelete(page.pageName, page.pageID)}
+                  twClasses={['bg-red-700 text-white pl-2 pr-2 rounded']}
+                />
+              )}
+            </Container>
           </Container>
-          
-        </Container>
-      ))}
+        );
+      })}
      </Container>
    );
 };
