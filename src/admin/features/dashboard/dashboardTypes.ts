@@ -1,4 +1,4 @@
-import type { IconProps } from "../../../components/Icon/Icon";
+import type { IconProps } from "../../../components/Icon/iconTypes";
 
 export interface DashboardItem {
   itemName: string;
@@ -6,5 +6,4 @@ export interface DashboardItem {
   itemType: string;
   itemSlug: string;
   itemOrder: number;
-  itemDescription: string;
 }

@@ -18,8 +18,8 @@ const DashboardMenu: React.FC = () => {
   };
 
   const DashboardItems: DashboardItem[] = [
-    { itemName: 'Pages', icon: 'FileText', itemType: 'Page', itemSlug: '/pages', itemOrder: 1, itemDescription: 'Manage your applications pages' },
-    { itemName: 'Page Editor', icon: 'Edit3', itemType: 'Page', itemSlug: '/page-editor', itemOrder: 2, itemDescription: 'Edit page content and visual layout' },
+    { itemName: 'Pages', icon: 'FileText', itemType: 'Page', itemSlug: '/pages', itemOrder: 1 },
+    { itemName: 'Page Editor', icon: 'Edit3', itemType: 'Page', itemSlug: '/page-editor', itemOrder: 2 },
   ];
 
   return (
@@ -32,7 +32,6 @@ const DashboardMenu: React.FC = () => {
         >
           <Icon name={item.icon} size={20} />
           <span className="text-lg font-medium">{item.itemName}:</span>
-          <span className="text-sm">{item.itemDescription}</span>
         </button>
       ))}
     </Container>
