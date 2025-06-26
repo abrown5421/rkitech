@@ -14,8 +14,8 @@ import DashboardMenu from '../dashboard/DashboardMenu';
 import Dashboard from '../dashboard/Dashboard';
 import Profile from '../profile/Profile';
 import ProfileMenu from '../profile/ProfileMenu';
-import PagesMenu from '../pagesEditor/PagesMenu';
-import PagesEditor from '../pagesEditor/PagesEditor';
+import PagesMenu from '../pagesEditor/PagesLeftPane';
+import PagesEditor from '../pagesEditor/PagesRightPane';
 
 
 const AdminLayout: React.FC = () => {

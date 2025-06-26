@@ -16,7 +16,7 @@ import { useAdminNavigationHook } from '../../hooks/useAdminNavigationHook';
 import { useNavigate } from 'react-router';
 import { updateDataInCollection } from '../../../services/database/updateData';
 
-const PagesEditor: React.FC = () => {
+const PagesRightPane: React.FC = () => {
   const dispatch = useAppDispatch();
   const pages = useAppSelector((state) => state.initialApp.pages);
   const menus = useAppSelector((state) => state.initialApp.menus);
@@ -164,7 +164,7 @@ const PagesEditor: React.FC = () => {
                 twClasses={['bg-gray-50 text-gray-900 pl-2 pr-2 rounded']}
                 action={() => navigate(page.itemSlug)}
               />
-              {/* Only show delete button if NOT a special page */}
+              
               {!isSpecialPage && (
                 <Button
                   label={
@@ -185,4 +185,4 @@ const PagesEditor: React.FC = () => {
      </Container>
    );
 };
-export default PagesEditor;
+export default PagesRightPane;

@@ -2,7 +2,7 @@ import React from 'react';
 import Container from '../../../components/container/Container';
 import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 
-const PageEditor: React.FC = () => {
+const PageRightPane: React.FC = () => {
     const containerAnimations = useAdminPageTransitionHook();
 
      return (
@@ -11,4 +11,4 @@ const PageEditor: React.FC = () => {
          </Container>
      );
 };
-export default PageEditor;
+export default PageRightPane;

@@ -11,7 +11,7 @@ import Loader from '../../../components/loader/Loader';
 import { insertDataIntoCollection } from '../../../services/database/createData';
 import newPageTemplate from './pageTemplate.json';
 
-const PagesMenu: React.FC = () => {
+const PagesLeftPane: React.FC = () => {
     const dispatch = useAppDispatch();
     const containerAnimations = useAdminPageTransitionHook();
     const pages = useAppSelector((state) => state.initialApp.pages)
@@ -132,4 +132,4 @@ const PagesMenu: React.FC = () => {
          </Container>
      );
 };
-export default PagesMenu;
+export default PagesLeftPane;
