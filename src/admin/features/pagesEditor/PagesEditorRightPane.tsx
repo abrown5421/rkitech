@@ -9,14 +9,14 @@ import { setAlert } from '../../../components/alert/alertSlice';
 import { openModal } from '../../../components/modal/modalSlice';
 import CheckboxField from '../../../components/checkboxField/CheckboxField';
 import { deleteDocument } from '../../../services/database/deleteData';
-import type { EditablePageFields } from './pagesTypes';
+import type { EditablePageFields } from './pagesEditorTypes';
 import type { Page } from '../../../store/globalSlices/initialApp/initialAppTypes';
 import Text from '../../../components/text/Text';
 import { useAdminNavigationHook } from '../../hooks/useAdminNavigationHook';
 import { useNavigate } from 'react-router';
 import { updateDataInCollection } from '../../../services/database/updateData';
 
-const PagesRightPane: React.FC = () => {
+const PagesEditorRightPane: React.FC = () => {
   const dispatch = useAppDispatch();
   const pages = useAppSelector((state) => state.initialApp.pages);
   const menus = useAppSelector((state) => state.initialApp.menus);
@@ -228,4 +228,4 @@ const PagesRightPane: React.FC = () => {
      </Container>
    );
 };
-export default PagesRightPane;
+export default PagesEditorRightPane;

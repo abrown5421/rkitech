@@ -4,14 +4,14 @@ import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 import Text from '../../../components/text/Text';
 import { InputField } from '../../../components/InputField/InputField';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import type { PageFormErrorState, PageFormField, PageFormFullState } from './pagesTypes';
+import type { PageFormErrorState, PageFormField, PageFormFullState } from './pagesEditorTypes';
 import { setAlert } from '../../../components/alert/alertSlice';
 import Button from '../../../components/button/Button';
 import Loader from '../../../components/loader/Loader';
 import { insertDataIntoCollection } from '../../../services/database/createData';
 import newPageTemplate from './pageTemplate.json';
 
-const PagesLeftPane: React.FC = () => {
+const PagesEditorLeftPane: React.FC = () => {
     const dispatch = useAppDispatch();
     const containerAnimations = useAdminPageTransitionHook();
     const pages = useAppSelector((state) => state.initialApp.pages)
@@ -132,4 +132,4 @@ const PagesLeftPane: React.FC = () => {
          </Container>
      );
 };
-export default PagesLeftPane;
+export default PagesEditorLeftPane;
