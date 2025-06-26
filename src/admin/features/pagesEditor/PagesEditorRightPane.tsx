@@ -15,23 +15,18 @@ import Text from '../../../components/text/Text';
 import { useAdminNavigationHook } from '../../hooks/useAdminNavigationHook';
 import { useNavigate } from 'react-router';
 import { updateDataInCollection } from '../../../services/database/updateData';
+import { setLoadingObject } from '../../../store/globalSlices/loadingObject/loadingObjectSlice';
 
 const PagesEditorRightPane: React.FC = () => {
   const dispatch = useAppDispatch();
   const pages = useAppSelector((state) => state.initialApp.pages);
   const menus = useAppSelector((state) => state.initialApp.menus);
+  const loadingObj = useAppSelector((state) => state.loading);
   const containerAnimations = useAdminPageTransitionHook();
   const adminNavigation = useAdminNavigationHook();
   const navigate = useNavigate();
 
-  const [deleteLoad, setDeleteLoad] = useState<{ loading: boolean; object: string }>({
-    loading: false,
-    object: '',
-  });
-  
-  const [localPageData, setLocalPageData] = useState<EditablePageFields[]>([
-    { pageID: '', originalPageName: '', pageName: '', itemSlug: '', itemOrder: '', pageActive: false },
-  ]);
+  const [localPageData, setLocalPageData] = useState<EditablePageFields[]>([]);
 
   const getPageAndMenuInfo = (pageObj: Page) => {
     const allMenuItems = menus.flatMap(menu =>
@@ -60,11 +55,12 @@ const PagesEditorRightPane: React.FC = () => {
   }, [pages, menus]);
 
   const requestDelete = (pageName: string, pageID: string) => {
-    setDeleteLoad({ loading: true, object: pageName });
+    dispatch(setLoadingObject({ loading: true, id: pageName }));
+
     (window as any).confirmCallback = () => confirmDelete(pageID, pageName);
-    (window as any).cancelCallback = () => {
-      setDeleteLoad({ loading: false, object: '' });
-    };
+    (window as any).cancelCallback = () =>
+      dispatch(setLoadingObject({ loading: false, id: '' }));
+
     dispatch(
       openModal({
         modalID: 'confirmOrDeny',
@@ -77,51 +73,47 @@ const PagesEditorRightPane: React.FC = () => {
   const confirmDelete = async (pageID: string, pageName: string) => {
     try {
       await deleteDocument('Pages', pageID);
-      dispatch(
-        setAlert({
-          open: true,
-          severity: 'success',
-          message: `${pageName} page deleted successfully`,
-        })
-      );
+      dispatch(setAlert({
+        open: true,
+        severity: 'success',
+        message: `${pageName} page deleted successfully`,
+      }));
     } catch {
-      dispatch(
-        setAlert({
-          open: true,
-          severity: 'error',
-          message: `Failed to delete page: ${pageName}`,
-        })
-      );
+      dispatch(setAlert({
+        open: true,
+        severity: 'error',
+        message: `Failed to delete page: ${pageName}`,
+      }));
     } finally {
-      setDeleteLoad({ loading: false, object: '' });
+      dispatch(setLoadingObject({ loading: false, id: '' }));
     }
   };
 
   const handleActiveToggle = async (pageID: string, isActive: boolean) => {
+    dispatch(setLoadingObject({ loading: true, id: pageID }));
+
     try {
       await updateDataInCollection('Pages', pageID, { pageActive: isActive });
-      
+
       setLocalPageData(prev =>
         prev.map(page =>
           page.pageID === pageID ? { ...page, pageActive: isActive } : page
         )
       );
 
-      dispatch(
-        setAlert({
-          open: true,
-          severity: 'success',
-          message: `Page status updated successfully.`,
-        })
-      );
-    } catch (error) {
-      dispatch(
-        setAlert({
-          open: true,
-          severity: 'error',
-          message: `Failed to update page status.`,
-        })
-      );
+      dispatch(setAlert({
+        open: true,
+        severity: 'success',
+        message: `Page status updated successfully.`,
+      }));
+    } catch {
+      dispatch(setAlert({
+        open: true,
+        severity: 'error',
+        message: `Failed to update page status.`,
+      }));
+    } finally {
+      dispatch(setLoadingObject({ loading: false, id: '' }));
     }
   };
 
@@ -134,46 +126,49 @@ const PagesEditorRightPane: React.FC = () => {
   };
 
   const updatePageName = async (pageID: string, newPageName: string) => {
+    dispatch(setLoadingObject({ loading: true, id: pageID }));
+
     try {
       await updateDataInCollection('Pages', pageID, { pageName: newPageName });
-      dispatch(
-        setAlert({
-          open: true,
-          severity: 'success',
-          message: `Page status updated successfully.`,
-        })
-      );
+
+      dispatch(setAlert({
+        open: true,
+        severity: 'success',
+        message: `Page name updated successfully.`,
+      }));
     } catch (error) {
       console.error('Failed to update page name:', error);
-      dispatch(
-        setAlert({
-          open: true,
-          severity: 'error',
-          message: 'Failed to update page name.',
-        })
-      );
+      dispatch(setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Failed to update page name.',
+      }));
+    } finally {
+      dispatch(setLoadingObject({ loading: false, id: '' }));
     }
-  }
+  };
 
-   return (
-     <Container animationObject={containerAnimations} twClasses={['flex flex-col bg-gray-50 flex-grow overflow-scroll p-4']}>
+  return (
+    <Container animationObject={containerAnimations} twClasses={['flex flex-col bg-gray-50 flex-grow overflow-scroll p-4']}>
       {localPageData.map((page) => {
         const isSpecialPage = page.pageName === "Home" || page.pageName === "Page Not Found";
+        const isLoading = loadingObj.loading && loadingObj.id === page.pageName;
 
         return (
-          <Container
-            key={page.pageID}
-            twClasses={['flex flex-col w-full rounded shadow bg-gray-200 mb-4 p-3']}
-          >
+          <Container key={page.pageID} twClasses={['flex flex-col w-full rounded shadow bg-gray-200 mb-4 p-3']}>
             <Container twClasses={['flex flex-row w-full justify-between']}>
               <Text text="Page Name:" twClasses={['text-sm font-medium text-gray-900 mb-2']} />
               <CheckboxField
                 name="pageActive"
                 label="Active:"
                 checked={page.pageActive}
-                twClasses={isSpecialPage ? ['border', 'border-gray-900', 'checked:bg-gray-500', 'checked:border-gray-900'] : ['border', 'border-amber-500', 'checked:bg-amber-500', 'checked:border-amber-500']}
+                twClasses={
+                  isSpecialPage
+                    ? ['border', 'border-gray-900', 'checked:bg-gray-500', 'checked:border-gray-900']
+                    : ['border', 'border-amber-500', 'checked:bg-amber-500', 'checked:border-amber-500']
+                }
                 onChange={(e) => handleActiveToggle(page.pageID, e.target.checked)}
-                disabled={isSpecialPage} 
+                disabled={isSpecialPage}
               />
             </Container>
 
@@ -207,12 +202,11 @@ const PagesEditorRightPane: React.FC = () => {
                 twClasses={['bg-gray-50 text-gray-900 pl-2 pr-2 rounded']}
                 action={() => navigate(page.itemSlug)}
               />
-              
               {!isSpecialPage && (
                 <Button
                   label={
-                    deleteLoad.loading && deleteLoad.object === page.pageName ? (
-                      <Loader variant="clip" colorName="gray" colorIntensity={500} size={25} />
+                    isLoading ? (
+                      <Loader variant='pulse' colorName="gray" colorIntensity={50} size={7} />
                     ) : (
                       "Delete"
                     )
@@ -225,7 +219,8 @@ const PagesEditorRightPane: React.FC = () => {
           </Container>
         );
       })}
-     </Container>
-   );
+    </Container>
+  );
 };
+
 export default PagesEditorRightPane;

@@ -11,37 +11,37 @@ import Loader from '../../../components/loader/Loader';
 import type { AnimationObject } from '../../../components/container/containerTypes';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { setAlert } from '../../../components/alert/alertSlice';
+import { setLoadingObject } from '../../../store/globalSlices/loadingObject/loadingObjectSlice';
 
 const Auth: React.FC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.admin.adminAuth);
-  const [loading, setLoading] = useState(false);
+  const loadingObj = useAppSelector((state) => state.loading);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-
   const handleLogin = async () => {
     let valid = true;
-    setLoading(true);
+    dispatch(setLoadingObject({ loading: true, id: 'authLogin' }));
 
     setEmailError('');
     setPasswordError('');
 
     if (!email) {
-      setLoading(false);
+      dispatch(setLoadingObject({ loading: false, id: '' }));
       setEmailError('Email is required.');
       valid = false;
     } else if (!validateEmail(email)) {
-      setLoading(false);
+      dispatch(setLoadingObject({ loading: false, id: '' }));
       setEmailError('Please enter a valid email address.');
       valid = false;
     }
 
     if (!password) {
-      setLoading(false);
+      dispatch(setLoadingObject({ loading: false, id: '' }));
       setPasswordError('Password is required.');
       valid = false;
     }
@@ -52,24 +52,26 @@ const Auth: React.FC = () => {
 
     if (result) {
       dispatch(setAuthenticatedUser(result));
-      Cookies.set('adminUserId', result.userId, { expires: 2 }); 
-      setLoading(false);
+      Cookies.set('adminUserId', result.userId, { expires: 2 });
     } else {
       dispatch(setAlert({
         open: true,
         severity: 'error',
         message: 'Login failed. Please check your credentials.',
       }));
-      setLoading(false);
     }
+
+    dispatch(setLoadingObject({ loading: false, id: '' }));
   };
 
   const containerAnimations: AnimationObject = {
-      entranceAnimation: 'animate__backInUp',
-      exitAnimation: 'animate__backOutDown',
-      isEntering: user.authenticatedUser ? false : true
+    entranceAnimation: 'animate__backInUp',
+    exitAnimation: 'animate__backOutDown',
+    isEntering: user.authenticatedUser ? false : true
   };
-  
+
+  const isLoading = loadingObj.loading && loadingObj.id === 'authLogin';
+
   return (
     <Container twClasses={['w-full h-full flex flex-col justify-center items-center']}>
       <Container animationObject={containerAnimations} twClasses={['w-[95%] md:w-[60%] lg:w-[30%] p-6 border rounded-lg shadow-lg space-y-4 bg-gray-50']}>
@@ -84,7 +86,6 @@ const Auth: React.FC = () => {
           error={!!emailError}
           errorText={emailError}
         />
-
         <InputField
           label="Password"
           name="password"
@@ -95,10 +96,14 @@ const Auth: React.FC = () => {
           error={!!passwordError}
           errorText={passwordError}
         />
-
-
         <Button
-          label={loading ? <Loader variant='pulse' colorName='gray' colorIntensity={50} size={7}/> : "Log In"}
+          label={
+            isLoading ? (
+              <Loader variant="pulse" colorName="gray" colorIntensity={50} size={7} />
+            ) : (
+              "Log In"
+            )
+          }
           twClasses={['bg-amber-500 w-full text-white p-2']}
           action={handleLogin}
         />

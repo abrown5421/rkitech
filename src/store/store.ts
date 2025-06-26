@@ -7,6 +7,7 @@ import initialAppReducer from './globalSlices/initialApp/initialAppSlice';
 import drawerReducer from '../components/drawer/drawerSlice';
 import alertReducer from '../components/alert/alertSlice';
 import modalReducer from '../components/modal/modalSlice';
+import loadingReducer from './globalSlices/loadingObject/loadingObjectSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     drawer: drawerReducer,
     alert: alertReducer,
     modal: modalReducer,
+    loading: loadingReducer,
   },
 });
 
