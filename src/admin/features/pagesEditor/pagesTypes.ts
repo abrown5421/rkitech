@@ -2,6 +2,7 @@ export type PageWithMenu = EditablePageFields & { menuName?: string };
 
 export type EditablePageFields = {
   pageID: string;
+  originalPageName: string,
   pageName: string;
   itemSlug: string;
   itemOrder: string;

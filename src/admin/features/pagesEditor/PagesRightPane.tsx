@@ -30,7 +30,7 @@ const PagesRightPane: React.FC = () => {
   });
   
   const [localPageData, setLocalPageData] = useState<EditablePageFields[]>([
-    { pageID: '', pageName: '', itemSlug: '', itemOrder: '', pageActive: false },
+    { pageID: '', originalPageName: '', pageName: '', itemSlug: '', itemOrder: '', pageActive: false },
   ]);
 
   const getPageAndMenuInfo = (pageObj: Page) => {
@@ -44,9 +44,11 @@ const PagesRightPane: React.FC = () => {
   useEffect(() => {
     const combined = pages.map(page => {
       const full = getPageAndMenuInfo(page);
+      const name = full.pageName || '';
       return {
         pageID: page.pageID,
-        pageName: full.pageName || '',
+        originalPageName: name,
+        pageName: name,
         itemSlug: full.itemSlug || '',
         itemOrder: full.itemOrder?.toString() || '',
         pageActive: full.pageActive ?? false,
@@ -54,7 +56,6 @@ const PagesRightPane: React.FC = () => {
     });
 
     combined.sort((a, b) => a.pageName.localeCompare(b.pageName, undefined, { sensitivity: 'base' }));
-
     setLocalPageData(combined);
   }, [pages, menus]);
 
@@ -123,6 +124,37 @@ const PagesRightPane: React.FC = () => {
       );
     }
   };
+
+  const handlePageNameChange = (id: string, newName: string) => {
+    setLocalPageData(prev =>
+      prev.map(page =>
+        page.pageID === id ? { ...page, pageName: newName } : page
+      )
+    );
+  };
+
+  const updatePageName = async (pageID: string, newPageName: string) => {
+    try {
+      await updateDataInCollection('Pages', pageID, { pageName: newPageName });
+      dispatch(
+        setAlert({
+          open: true,
+          severity: 'success',
+          message: `Page status updated successfully.`,
+        })
+      );
+    } catch (error) {
+      console.error('Failed to update page name:', error);
+      dispatch(
+        setAlert({
+          open: true,
+          severity: 'error',
+          message: 'Failed to update page name.',
+        })
+      );
+    }
+  }
+
    return (
      <Container animationObject={containerAnimations} twClasses={['flex flex-col bg-gray-50 flex-grow overflow-scroll p-4']}>
       {localPageData.map((page) => {
@@ -150,7 +182,18 @@ const PagesRightPane: React.FC = () => {
               size="md"
               variant="filled"
               twClasses={['flex flex-1 w-full mb-3']}
-              disabled={isSpecialPage} 
+              disabled={isSpecialPage}
+              onChange={(e) => handlePageNameChange(page.pageID, e.target.value)}
+              iconEnd={
+                page.pageName !== page.originalPageName && (
+                  <button
+                    onClick={() => updatePageName(page.pageID, page.pageName)}
+                    className="text-xs text-amber-600 font-semibold hover:underline"
+                  >
+                    Save
+                  </button>
+                )
+              }
             />
 
             <Container twClasses={['flex flex-row w-full gap-4']}>
