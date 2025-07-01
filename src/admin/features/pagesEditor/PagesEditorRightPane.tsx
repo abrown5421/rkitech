@@ -10,7 +10,6 @@ import { openModal } from '../../../components/modal/modalSlice';
 import CheckboxField from '../../../components/checkboxField/CheckboxField';
 import { deleteDocument } from '../../../services/database/deleteData';
 import type { EditablePageFields } from './pagesEditorTypes';
-import type { Page } from '../../../store/globalSlices/initialApp/initialAppTypes';
 import Text from '../../../components/text/Text';
 import { useAdminNavigationHook } from '../../hooks/useAdminNavigationHook';
 import { useNavigate } from 'react-router';
@@ -28,25 +27,21 @@ const PagesEditorRightPane: React.FC = () => {
 
   const [localPageData, setLocalPageData] = useState<EditablePageFields[]>([]);
 
-  const getPageAndMenuInfo = (pageObj: Page) => {
-    const allMenuItems = menus.flatMap(menu =>
-      menu.menuItems.map(item => ({ ...item, menuName: menu.menuName }))
-    );
-    const matchedMenuItem = allMenuItems.find(item => item.itemName === pageObj.pageName);
-    return { ...pageObj, ...matchedMenuItem };
-  };
-
   useEffect(() => {
+    console.log(menus)
     const combined = pages.map(page => {
-      const full = getPageAndMenuInfo(page);
-      const name = full.pageName || '';
+    const matchingItem = menus
+      .flatMap(menu => menu.menuItems || []) 
+      .find(item => item.itemPageId === page.pageID);
+
       return {
         pageID: page.pageID,
-        originalPageName: name,
-        pageName: name,
-        itemSlug: full.itemSlug || '',
-        itemOrder: full.itemOrder?.toString() || '',
-        pageActive: full.pageActive ?? false,
+        originalPageName: page.pageName,
+        pageName: page.pageName,
+        pageSlug: page.pageSlug,
+        originalPageSlug: page.pageSlug,
+        pageOrder: matchingItem?.itemOrder?.toString() ?? '9999',
+        pageActive: page.pageActive ?? false,
       };
     });
 
@@ -117,36 +112,44 @@ const PagesEditorRightPane: React.FC = () => {
     }
   };
 
-  const handlePageNameChange = (id: string, newName: string) => {
+  const handleInputChange = (id: string, key: keyof EditablePageFields, value: string) => {
     setLocalPageData(prev =>
       prev.map(page =>
-        page.pageID === id ? { ...page, pageName: newName } : page
+        page.pageID === id ? { ...page, [key]: value } : page
       )
     );
   };
 
-  const updatePageName = async (pageID: string, newPageName: string) => {
+  const savePageField = async (pageID: string, key: keyof EditablePageFields, value: string) => {
     dispatch(setLoadingObject({ loading: true, id: pageID }));
 
     try {
-      await updateDataInCollection('Pages', pageID, { pageName: newPageName });
+      await updateDataInCollection('Pages', pageID, { [key]: value });
 
       dispatch(setAlert({
         open: true,
         severity: 'success',
-        message: `Page name updated successfully.`,
+        message: `Page ${key === 'pageName' ? 'name' : 'slug'} updated successfully.`,
       }));
+
+      setLocalPageData(prev =>
+        prev.map(page =>
+          page.pageID === pageID ? { ...page, [`original${capitalizeFirstLetter(key)}`]: value } : page
+        )
+      );
     } catch (error) {
-      console.error('Failed to update page name:', error);
+      console.error(`Failed to update page ${key}:`, error);
       dispatch(setAlert({
         open: true,
         severity: 'error',
-        message: 'Failed to update page name.',
+        message: `Failed to update page ${key}.`,
       }));
     } finally {
       dispatch(setLoadingObject({ loading: false, id: '' }));
     }
   };
+
+  const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
     <Container animationObject={containerAnimations} twClasses={['flex flex-col bg-gray-50 flex-grow overflow-scroll p-4']}>
@@ -171,26 +174,46 @@ const PagesEditorRightPane: React.FC = () => {
                 disabled={isSpecialPage}
               />
             </Container>
+            
+            <Container twClasses={['flex flex-row w-full justify-between gap-3']}>
+              <InputField
+                value={page.pageName}
+                size="md"
+                variant="filled"
+                twClasses={['flex flex-1 w-full mb-3']}
+                disabled={isSpecialPage}
+                onChange={(e) => handleInputChange(page.pageID, 'pageName', e.target.value)}
+                iconEnd={
+                  page.pageName !== page.originalPageName && (
+                    <button
+                      onClick={() => savePageField(page.pageID, 'pageName', page.pageName)}
+                      className="text-xs text-amber-600 font-semibold hover:underline"
+                    >
+                      Save
+                    </button>
+                  )
+                }
+              />
 
-            <InputField
-              value={page.pageName}
-              size="md"
-              variant="filled"
-              twClasses={['flex flex-1 w-full mb-3']}
-              disabled={isSpecialPage}
-              onChange={(e) => handlePageNameChange(page.pageID, e.target.value)}
-              iconEnd={
-                page.pageName !== page.originalPageName && (
-                  <button
-                    onClick={() => updatePageName(page.pageID, page.pageName)}
-                    className="text-xs text-amber-600 font-semibold hover:underline"
-                  >
-                    Save
-                  </button>
-                )
-              }
-            />
-
+              <InputField
+                value={page.pageSlug}
+                size="md"
+                variant="filled"
+                twClasses={['flex flex-1 w-full mb-3']}
+                disabled={isSpecialPage}
+                onChange={(e) => handleInputChange(page.pageID, 'pageSlug', e.target.value)}
+                iconEnd={
+                  page.pageSlug !== page.originalPageSlug && (
+                    <button
+                      onClick={() => savePageField(page.pageID, 'pageSlug', page.pageSlug)}
+                      className="text-xs text-amber-600 font-semibold hover:underline"
+                    >
+                      Save
+                    </button>
+                  )
+                }
+              />
+            </Container>
             <Container twClasses={['flex flex-row w-full gap-4']}>
               <Button
                 label="Edit"
@@ -200,7 +223,7 @@ const PagesEditorRightPane: React.FC = () => {
               <Button
                 label="View"
                 twClasses={['bg-gray-50 text-gray-900 pl-2 pr-2 rounded']}
-                action={() => navigate(page.itemSlug)}
+                action={() => navigate(page.pageSlug)}
               />
               {!isSpecialPage && (
                 <Button
