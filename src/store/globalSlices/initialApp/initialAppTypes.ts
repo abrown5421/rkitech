@@ -45,17 +45,18 @@ export type ImageGroup = {
   images: Image[];
 };
 
-export type Menu = {
-  itemName: string;
+export interface MenuItem {
   itemOrder: number;
-  itemSlug: string;
-  itemType: string; 
-};
+  itemPageId: string;
+  itemType: string;
+  itemName?: string;
+  itemSlug?: string;
+}
 
 export type MenuGroup = {
   menuID: string;
   menuName: string;
-  menuItems: Menu[];
+  menuItems: MenuItem[];
 };
 
 export type FormField = {

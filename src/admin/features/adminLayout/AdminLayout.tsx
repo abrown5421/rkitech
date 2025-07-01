@@ -49,8 +49,8 @@ const AdminLayout: React.FC = () => {
                         menuObject={{
                             menuName: 'Admin',
                             menuItems: [
-                                { itemName: 'Dashboard', itemType: 'Page', itemSlug: '/', itemOrder: 1},
-                                { itemName: 'Profile', itemType: 'Page', itemSlug: 'profile', itemOrder: 2 }
+                                { itemName: 'Dashboard', itemType: 'Page', itemSlug: '/', itemOrder: 1, itemPageId: '1'},
+                                { itemName: 'Profile', itemType: 'Page', itemSlug: 'profile', itemOrder: 2, itemPageId: '2' }
                             ]
                         }}
                         twClasses={["flex", "flex-col"]}

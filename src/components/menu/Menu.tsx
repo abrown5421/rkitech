@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { MenuProps } from './menuTypes';
 import { useClientNavigationHook } from '../../client/hooks/useClientNavigationHook';
 import { useAppSelector } from '../../store/hooks';
 import { useAdminNavigationHook } from '../../admin/hooks/useAdminNavigationHook';
+import { getDocumentById } from '../../services/database/readData';
 
 const Menu: React.FC<MenuProps> = ({
   menuID,
-  menuObject,
   routingID,
-  activeClasses =[],
-  secondaryClasses =[],
+  menuObject,
+  activeClasses = [],
+  secondaryClasses = [],
   twClasses = [],
   requirePageMatch = true,
 }) => {
   const clientNavigation = useClientNavigationHook();
   const adminNavigation = useAdminNavigationHook();
-  const pages = useAppSelector((state) => state.initialApp.pages);
-  const activePage = useAppSelector((state) => state.client.activeClientPage)
   const menus = useAppSelector((state) => state.initialApp.menus);
+  const activePage = useAppSelector((state) => state.client.activeClientPage);
 
-  const matchedMenu = menuObject || menus.find(menu => menu.menuName === menuID);
+  const [menuData, setMenuData] = useState<Record<string, any>>({});
 
   let navigate;
   switch (routingID) {
@@ -32,40 +32,66 @@ const Menu: React.FC<MenuProps> = ({
       break;
   }
 
+  const isManualMenu = !!menuObject?.menuItems?.length;
+  const rawMenuItems = isManualMenu
+    ? menuObject.menuItems
+    : menus.find((menu) => menu.menuName === menuID)?.menuItems ?? [];
+
+  const menuItems = [...rawMenuItems].sort((a, b) => a.itemOrder - b.itemOrder);
+
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      if (isManualMenu) {
+        return;
+      }
+
+      const entries = await Promise.all(
+        menuItems.map(async (item) => {
+          const data = await getDocumentById('Pages', item.itemPageId);
+          return [item.itemPageId, data];
+        })
+      );
+
+      setMenuData(Object.fromEntries(entries));
+    };
+
+    fetchMenuData();
+  }, [isManualMenu, menuItems]);
+
   return (
     <div className={`component-root ${twClasses.join(' ')}`}>
-      {[...(matchedMenu?.menuItems || [])]
-        .sort((a, b) => a.itemOrder - b.itemOrder)
-        .map((item, index) => {
-          const matchedPage = pages.find(page => page.pageName === item.itemName);
+      {menuItems.map((item) => {
+        const pageData = isManualMenu
+          ? { pageSlug: item.itemSlug, pageName: item.itemName }
+          : menuData[item.itemPageId];
 
-          if (requirePageMatch && matchedPage && matchedPage.pageActive === false) {
-            return null;
-          }
-
-          const shouldNavigate = !requirePageMatch || matchedPage;
-
-          return (
-            <button
-              key={index}
-              className={`menu-item ${secondaryClasses.join(' ')} ${
-                item.itemName === activePage.activeClientPageName
-                  ? activeClasses.map(cls => cls.classDefinition).join(' ')
-                  : ''
-              }`}
-              onClick={() =>
-                shouldNavigate
-                  ? navigate(item.itemSlug, item.itemName, matchedPage?.pageID ?? '')()
-                  : console.warn(`No matching page found for slug: ${item.itemSlug}`)
-              }
-            >
-              {item.itemName}
-            </button>
-          );
-        })}
+        const isActive =
+          !requirePageMatch ||
+          pageData?.pageName === activePage?.activeClientPageName;
+      
+        
+        return (
+          <div
+            key={item.itemPageId ?? item.itemSlug}
+            className={`menu-item ${secondaryClasses.join(' ')} ${
+              isActive
+                ? activeClasses.map((cls) => cls.classDefinition).join(' ')
+                : ''
+            }`}
+            onClick={() =>
+              navigate(
+                pageData?.pageSlug ?? '',
+                pageData?.pageName ?? '',
+                item.itemPageId ?? ''
+              )()
+            }
+          >
+            {pageData?.pageName ?? item.itemName}
+          </div>
+        );
+      })}
     </div>
   );
-
 };
 
 export default Menu;

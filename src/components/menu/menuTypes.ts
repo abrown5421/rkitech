@@ -1,9 +1,4 @@
-export interface MenuItem {
-  itemName: string;
-  itemOrder: number;
-  itemSlug: string;
-  itemType: string;
-}
+import type { MenuItem } from "../../store/globalSlices/initialApp/initialAppTypes";
 
 export interface MenuDocument {
   menuName: string;
