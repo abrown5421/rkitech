@@ -31,11 +31,18 @@ const PagesEditorLeftPane: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: PageFormErrorState = {};
     const trimmedName = formState.values.pageName.trim().toLowerCase();
+    const trimmedSlug = formState.values.pageSlug.trim();
 
     if (!trimmedName) {
       newErrors.pageName = 'Page name is required.';
     } else if (pages.some(page => page.pageName.trim().toLowerCase() === trimmedName)) {
       newErrors.pageName = 'A page with this name already exists. Please enter a unique page name.';
+    }
+
+    if (!trimmedSlug) {
+      newErrors.pageSlug = 'Page slug is required.';
+    } else if (!trimmedSlug.startsWith('/')) {
+      newErrors.pageSlug = 'Page slug must start with a forward slash (/).';
     }
 
     setFormState((prev) => ({
@@ -80,6 +87,7 @@ const PagesEditorLeftPane: React.FC = () => {
 
       const pageObj = {
         pageName: formState.values.pageName,
+        pageSlug: formState.values.pageSlug,
         pageActive: true,
         pageContent: parsedContent,
         animationConfig: containerAnimations,
@@ -120,7 +128,16 @@ const PagesEditorLeftPane: React.FC = () => {
           variant="outline"
           twClasses={["flex flex-1 mb-4"]}
         />
-
+        <InputField
+          label="Page Slug"
+          onChange={(e) => handleInputChange('pageSlug', e.target.value)}
+          error={!!formState.errors.pageSlug}
+          errorText={formState.errors.pageSlug}
+          helperText={formState.helpers.pageSlug}
+          size="md"
+          variant="outline"
+          twClasses={["flex flex-1 mb-4"]}
+        />
         <Button
           label={
             isLoading ? (
