@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Container from '../../../components/container/Container';
 import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 import { useAppSelector } from '../../../store/hooks';
 import PageRenderer from '../../../client/features/pages/PageRenderer';
+import Text from '../../../components/text/Text';
 
 const PageRightPane: React.FC = () => {
     const containerAnimations = useAdminPageTransitionHook();
@@ -10,13 +11,12 @@ const PageRightPane: React.FC = () => {
     const activePage = useAppSelector((state) => state.admin.activeEditingPage);
     const activePageObject = pages.find((page) => page.pageID === activePage.activeEditingPageId);
 
-    useEffect(()=>{console.log(activePage)}, [activePage])
-
      return (
-         <Container animationObject={containerAnimations} twClasses={['h-full', 'overflow-scroll']}>
-            {activePageObject?.pageContent && (
+         <Container animationObject={containerAnimations} twClasses={['h-full', 'overflow-scroll', 'bg-gray-50']}>
+            {/* {activePageObject?.pageContent && (
                 <PageRenderer node={activePageObject.pageContent} />
-            )}
+            )} */}
+            <Text text="test" />
          </Container>
      );
 };
