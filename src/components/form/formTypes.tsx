@@ -4,6 +4,7 @@ export type FormField = {
   formFieldPlaceholder?: string;
   formFieldName: string;
   formFieldRequired?: boolean;
+  formFieldRows?:number;
 };
 
 export type CMSForm = {

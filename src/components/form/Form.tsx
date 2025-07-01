@@ -44,6 +44,8 @@ const Form: React.FC<FormProps> = ({ formName, twClasses = [] }) => {
           name={field.formFieldName}
           label={field.formFieldLabel}
           type={field.formFieldType}
+          rows={field.formFieldRows}
+          multiline={field.formFieldType === "textarea"}
           placeholder={field.formFieldPlaceholder}
           required={field.formFieldRequired}
           value={formValues[field.formFieldName] || ''}
