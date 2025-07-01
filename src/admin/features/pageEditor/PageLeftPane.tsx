@@ -11,6 +11,9 @@ const PageLeftPane: React.FC = () => {
   const containerAnimations = useAdminPageTransitionHook();
   const pages = useAppSelector((state) => state.initialApp.pages);
   const activeEditingPageId = useAppSelector((state) => state.admin.activeEditingPage.activeEditingPageId);
+  const activeEditingNode = useAppSelector((state) => state.admin.activeEditingNode);
+
+  useEffect(()=>{console.log(activeEditingNode)}, [activeEditingNode])
 
   useEffect(() => {
     const findHomePageID = pages.find((page) => page.pageName === 'Home');

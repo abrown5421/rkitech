@@ -12,7 +12,8 @@ const Menu: React.FC<MenuProps> = ({
   activeClasses = [],
   secondaryClasses = [],
   twClasses = [],
-  requirePageMatch = true,
+  requirePageMatch = true, 
+  ...rest
 }) => {
   const clientNavigation = useClientNavigationHook();
   const adminNavigation = useAdminNavigationHook();
@@ -59,7 +60,7 @@ const Menu: React.FC<MenuProps> = ({
   }, [isManualMenu, menuItems]);
 
   return (
-    <div className={`component-root ${twClasses.join(' ')}`}>
+    <div className={`component-root ${twClasses.join(' ')}`} {...rest}>
       {menuItems.map((item) => {
         const pageData = isManualMenu
           ? { pageSlug: item.itemSlug, pageName: item.itemName, pageActive: true }

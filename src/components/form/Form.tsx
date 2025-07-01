@@ -3,7 +3,7 @@ import { useAppSelector } from '../../store/hooks';
 import { InputField } from '../InputField/InputField';
 import type { CMSForm, FormProps } from './formTypes';
 
-const Form: React.FC<FormProps> = ({ formName, twClasses = [] }) => {
+const Form: React.FC<FormProps> = ({ formName, twClasses = [], ...rest }) => {
   const allForms = useAppSelector((state) => state.initialApp.forms) as CMSForm[];
   const form = allForms.find((f) => f.formName === formName);
 
@@ -37,7 +37,7 @@ const Form: React.FC<FormProps> = ({ formName, twClasses = [] }) => {
   if (!form) return <p className="text-red-600">Form not found.</p>;
 
   return (
-    <form className={`space-y-4 ${twClasses.join(' ')}`} onSubmit={handleSubmit}>
+    <form className={`space-y-4 ${twClasses.join(' ')}`} onSubmit={handleSubmit} {...rest}>
       {form.formFields.map((field) => (
         <InputField
           key={field.formFieldName}

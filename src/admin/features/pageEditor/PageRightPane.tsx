@@ -11,11 +11,13 @@ const PageRightPane: React.FC = () => {
     const activePageObject = pages.find((page) => page.pageID === activePage.activeEditingPageId);
 
      return (
-         <Container animationObject={containerAnimations} twClasses={['h-full', 'overflow-scroll', 'bg-gray-50']}>
-            {activePageObject?.pageContent && (
-                <PageRenderer node={activePageObject.pageContent} />
-            )}
-         </Container>
+         <div className='h-full'>
+            <Container animationObject={containerAnimations} twClasses={['h-full', 'overflow-scroll']}>                
+                {activePageObject?.pageContent && (
+                    <PageRenderer node={activePageObject.pageContent} editing={true} />
+                )}
+            </Container>
+         </div>
      );
 };
 export default PageRightPane;

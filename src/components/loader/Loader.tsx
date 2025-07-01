@@ -46,12 +46,13 @@ const Loader: React.FC<LoaderProps> = ({
   colorName = 'amber',
   colorIntensity = 400,
   size = 40,
+  ...rest
 }) => {
   const Spinner = loaderMap[variant] || ClipLoader;
   const color = tailwindToHex(colorName, colorIntensity);
 
   return (
-    <div className={twClasses.join(' ')}>
+    <div className={twClasses.join(' ')} {...rest}>
       <Spinner color={color} size={size} />
     </div>
   );

@@ -9,6 +9,7 @@ const Modal: React.FC<ModalProps> = ({
   onClose,
   twClasses = [],
   secondaryClasses = [],
+  ...rest
 }) => {
   const [fadeState, setFadeState] = useState<'in' | 'out'>('out');
 
@@ -39,6 +40,7 @@ const Modal: React.FC<ModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby={`${modalID}-title`}
+      {...rest}
     >
       <div
         className={`bg-gray-50 rounded-lg shadow-lg max-w-lg w-full p-6 transform transition-all duration-300 ${

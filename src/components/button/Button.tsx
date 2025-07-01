@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ButtonProps } from './buttonTypes';
 
-const Button: React.FC<ButtonProps> = ({ label, twClasses = [], onClick, action }) => {
+const Button: React.FC<ButtonProps> = ({ label, twClasses = [], onClick, action, ...rest }) => {
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -16,6 +16,7 @@ const Button: React.FC<ButtonProps> = ({ label, twClasses = [], onClick, action 
     <button
       onClick={handleClick}
       className={`component-root ${twClasses.join(' ')}`}
+      {...rest}
     >
       {label}
     </button>

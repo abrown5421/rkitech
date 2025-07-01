@@ -12,6 +12,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   errorText,
   helperText,
   twClasses = [],
+  ...rest
 }) => {
   return (
     <div className="flex flex-col gap-1">
@@ -30,6 +31,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
               focus:outline-none transition duration-150 ease-in-out
               ${error ? 'border-red-500 ring-red-500 focus:ring-red-500' : ''}
               ${twClasses.join(' ')}`}
+              {...rest}
           />
           
           <svg

@@ -2,6 +2,7 @@ export type JSONNode = {
   type: string;
   props?: Record<string, any>;
   children?: JSONNode[];
+  UUID: string;
 };
 
 export type Page = {

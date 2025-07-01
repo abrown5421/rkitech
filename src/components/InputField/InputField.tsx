@@ -38,6 +38,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   variant = 'outline',
   twClasses = [],
   inputClasses = [],
+  ...rest
 }) => {
   const Wrapper = multiline ? 'textarea' : 'input';
 
@@ -59,7 +60,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     .join(' ');
 
   return (
-    <div className={`flex flex-col gap-1 ${twClasses.join(' ')}`}>
+    <div className={`flex flex-col gap-1 ${twClasses.join(' ')}`} {...rest}>
       {label && (
         <label htmlFor={name} className="text-sm font-medium text-gray-700">
           {label} {required && '*'}

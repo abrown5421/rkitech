@@ -10,7 +10,7 @@ const severityColors: Record<Severity, { bg: string; border: string }> = {
     info: { bg: '#d1ecf1', border: '#17a2b8' },
 };
 
-const Alert: React.FC<AlertProps> = ({ open, severity, message }) => {
+const Alert: React.FC<AlertProps> = ({ open, severity, message, ...rest }) => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -42,6 +42,7 @@ const Alert: React.FC<AlertProps> = ({ open, severity, message }) => {
                 zIndex: 9999,
                 transition: 'opacity 0.3s ease',
             }}
+            {...rest}
         >
             {message}
         </div>
