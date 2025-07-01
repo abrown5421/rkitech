@@ -14,9 +14,10 @@ import DashboardMenu from '../dashboard/DashboardMenu';
 import Dashboard from '../dashboard/Dashboard';
 import Profile from '../profile/Profile';
 import ProfileMenu from '../profile/ProfileMenu';
-import PagesMenu from '../pagesEditor/PagesEditorLeftPane';
-import PagesEditor from '../pagesEditor/PagesEditorRightPane';
-
+import PagesEditorLeftPane from '../pagesEditor/PagesEditorLeftPane';
+import PagesEditorRightPane from '../pagesEditor/PagesEditorRightPane';
+import PageLeftPane from '../pageEditor/PageLeftPane';
+import PageRightPane from '../pageEditor/PageRightPane';
 
 const AdminLayout: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -71,14 +72,16 @@ const AdminLayout: React.FC = () => {
                     <Routes>
                         <Route path="/" element={<DashboardMenu />} />
                         <Route path="/profile" element={<ProfileMenu />} />
-                        <Route path="/pages" element={<PagesMenu />} />
+                        <Route path="/pages" element={<PagesEditorLeftPane />} />
+                        <Route path="/page-editor" element={<PageLeftPane />} />
                     </Routes>
                 </Container>    
                 <Container twClasses={['flex flex-col flex-3/4 flex-grow p-4']}>
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/profile" element={<Profile />} />
-                        <Route path="/pages" element={<PagesEditor />} />
+                        <Route path="/pages" element={<PagesEditorRightPane />} />
+                        <Route path="/page-editor" element={<PageRightPane />} />
                     </Routes>
                 </Container>    
             </Container>
