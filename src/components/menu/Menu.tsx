@@ -62,14 +62,17 @@ const Menu: React.FC<MenuProps> = ({
     <div className={`component-root ${twClasses.join(' ')}`}>
       {menuItems.map((item) => {
         const pageData = isManualMenu
-          ? { pageSlug: item.itemSlug, pageName: item.itemName }
+          ? { pageSlug: item.itemSlug, pageName: item.itemName, pageActive: true }
           : menuData[item.itemPageId];
+
+        if (pageData?.pageActive === false) {
+          return null;
+        }
 
         const isActive =
           !requirePageMatch ||
           pageData?.pageName === activePage?.activeClientPageName;
-      
-        
+
         return (
           <div
             key={item.itemPageId ?? item.itemSlug}
