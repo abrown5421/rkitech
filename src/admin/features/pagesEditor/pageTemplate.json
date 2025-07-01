@@ -2,12 +2,14 @@
   "children": [
     {
       "type": "Text",
+      "UUID": "{{uuidOne}}",
       "props": {
         "text": "{{pageName}}"
       }
     }
   ],
   "type": "Container",
+  "UUID": "{{uuidTwo}}",
   "props": {
     "twClasses": [
       { "classProperty": "padding", "classDefinition": "pt-4 pr-2 pb-4 pl-2" },

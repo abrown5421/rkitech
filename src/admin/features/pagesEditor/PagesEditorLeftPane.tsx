@@ -11,6 +11,7 @@ import Loader from '../../../components/loader/Loader';
 import { insertDataIntoCollection } from '../../../services/database/createData';
 import newPageTemplate from './pageTemplate.json';
 import { setLoadingObject } from '../../../store/globalSlices/loadingObject/loadingObjectSlice';
+import { generateUUIDv4 } from '../../../utils/generateUUIDv4';
 
 const PagesEditorLeftPane: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -83,7 +84,13 @@ const PagesEditorLeftPane: React.FC = () => {
 
     try {
       const parsedContent = JSON.parse(JSON.stringify(newPageTemplate));
-      parsedContent.children[0].props.text = formState.values.pageName;
+      const uuidOne = generateUUIDv4();
+      const uuidTwo = generateUUIDv4();
+      const pageName = formState.values.pageName;
+
+      parsedContent.children[0].UUID = uuidOne;
+      parsedContent.children[0].props.text = pageName;
+      parsedContent.UUID = uuidTwo;
 
       const pageObj = {
         pageName: formState.values.pageName,
