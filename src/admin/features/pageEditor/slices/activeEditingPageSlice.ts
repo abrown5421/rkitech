@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { ActiveEditingPageState } from "./activeEditingPageTypes";
+import type { ActiveEditingPageState } from "../types/activeEditingPageTypes";
 
 const initialState: ActiveEditingPageState = {
   activeEditingPageName: "Home",

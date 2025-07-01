@@ -3,7 +3,6 @@ import Container from '../../../components/container/Container';
 import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 import { useAppSelector } from '../../../store/hooks';
 import PageRenderer from '../../../client/features/pages/PageRenderer';
-import Text from '../../../components/text/Text';
 
 const PageRightPane: React.FC = () => {
     const containerAnimations = useAdminPageTransitionHook();
@@ -13,10 +12,9 @@ const PageRightPane: React.FC = () => {
 
      return (
          <Container animationObject={containerAnimations} twClasses={['h-full', 'overflow-scroll', 'bg-gray-50']}>
-            {/* {activePageObject?.pageContent && (
+            {activePageObject?.pageContent && (
                 <PageRenderer node={activePageObject.pageContent} />
-            )} */}
-            <Text text="test" />
+            )}
          </Container>
      );
 };

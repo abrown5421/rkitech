@@ -3,8 +3,8 @@ import Container from '../../../components/container/Container';
 import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { SelectField } from '../../../components/selectField/SelectField';
-import { setActiveEditingPage } from './activeEditingPageSlice';
-import TextEditor from '../textEditor/TextEditor';
+import { setActiveEditingPage } from './slices/activeEditingPageSlice';
+
 
 const PageLeftPane: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +33,7 @@ const PageLeftPane: React.FC = () => {
 
   return (
     <Container animationObject={containerAnimations} twClasses={["flex flex-col bg-gray-50 flex-grow"]}>
-      {/* <SelectField
+      <SelectField
         label="Select Page to Edit"
         name="activeEditingPage"
         value={activeEditingPageId}
@@ -42,8 +42,7 @@ const PageLeftPane: React.FC = () => {
         placeholder="Choose a page"
         size="md"
         variant="outline"
-      /> */}
-      <TextEditor />
+      />
     </Container>
   );
 };
