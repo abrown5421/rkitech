@@ -3,4 +3,5 @@ import type { JSONNode } from "../../../store/globalSlices/initialApp/initialApp
 export interface PageRendererProps {
   node: JSONNode;
   editing?: boolean;
+  onComponentClick?: (uuid: string, type: string, props: Record<string, any>) => void; 
 }

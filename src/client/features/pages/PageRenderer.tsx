@@ -31,7 +31,7 @@ const PageRendererInternal: React.FC<
     hoveredUUID: string | null;
     setHoveredUUID: (uuid: string | null) => void;
   }
-> = ({ node, editing, hoveredUUID, setHoveredUUID }) => {
+> = ({ node, editing, hoveredUUID, setHoveredUUID, onComponentClick }) => {
   const useClientNavigation = useClientNavigationHook();
 
   if (!node || typeof node !== 'object') return null;
@@ -62,7 +62,8 @@ const PageRendererInternal: React.FC<
       'border-2',
       'border-dashed',
       hoveredUUID === uuid ? 'border-amber-500' : 'border-gray-300',
-      hoveredUUID === uuid ? 'border-solid' : ''
+      hoveredUUID === uuid ? 'border-solid' : '',
+      hoveredUUID === uuid ? 'cursor-pointer' : ''
     ];
 
     clonedProps.twClasses = [...(clonedProps.twClasses || []), ...editClasses];
@@ -71,11 +72,14 @@ const PageRendererInternal: React.FC<
         setHoveredUUID(uuid);
       }
     };
-
     clonedProps.onMouseOut = (e: React.MouseEvent) => {
       if (e.currentTarget === e.target) {
         setHoveredUUID(null);
       }
+    };
+    clonedProps.onClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onComponentClick?.(uuid, type, props); 
     };
   }
 
@@ -94,13 +98,14 @@ const PageRendererInternal: React.FC<
           editing={editing}
           hoveredUUID={hoveredUUID}
           setHoveredUUID={setHoveredUUID}
+          onComponentClick={onComponentClick}
         />
       ))}
     </Component>
   );
 };
 
-const PageRenderer: React.FC<PageRendererProps> = ({ node, editing }) => {
+const PageRenderer: React.FC<PageRendererProps> = ({ node, editing, onComponentClick }) => {
   const [hoveredUUID, setHoveredUUID] = useState<string | null>(null);
 
   return (
@@ -109,6 +114,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({ node, editing }) => {
       editing={editing}
       hoveredUUID={hoveredUUID}
       setHoveredUUID={setHoveredUUID}
+      onComponentClick={onComponentClick}
     />
   );
 };

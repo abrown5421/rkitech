@@ -5,7 +5,7 @@ import type { ActiveEditingNodeState } from '../types/activeEditingNodeTypes';
 const initialState: ActiveEditingNodeState = {
   nodeUUID: null,
   nodeType: null,
-  nodePath: [],
+  nodeProps: null,
 };
 
 const activeEditingNodeSlice = createSlice({
@@ -14,16 +14,20 @@ const activeEditingNodeSlice = createSlice({
   reducers: {
     setActiveNode: (
       state,
-      action: PayloadAction<{ uuid: string; type: string; path?: string[] }>
+      action: PayloadAction<{
+        uuid: string;
+        type: string;
+        props: Record<string, any>;
+      }>
     ) => {
       state.nodeUUID = action.payload.uuid;
       state.nodeType = action.payload.type;
-      state.nodePath = action.payload.path || [];
+      state.nodeProps = action.payload.props;
     },
     clearActiveNode: (state) => {
       state.nodeUUID = null;
       state.nodeType = null;
-      state.nodePath = [];
+      state.nodeProps = null;
     },
   },
 });
