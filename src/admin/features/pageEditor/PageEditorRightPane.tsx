@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import PageRenderer from '../../../client/features/pages/PageRenderer';
 import { setActiveNode } from './slices/activeEditingNodeSlice';
 
-const PageRightPane: React.FC = () => {
+const PageEditorRightPane: React.FC = () => {
     const dispatch = useAppDispatch();
     const containerAnimations = useAdminPageTransitionHook();
     const pages = useAppSelector((state) => state.initialApp.pages);
@@ -26,4 +26,4 @@ const PageRightPane: React.FC = () => {
          </div>
      );
 };
-export default PageRightPane;
+export default PageEditorRightPane;

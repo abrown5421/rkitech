@@ -4,7 +4,8 @@ import { useAdminPageTransitionHook } from '../../hooks/useAdminPageTransition';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { SelectField } from '../../../components/selectField/SelectField';
 import { setActiveEditingPage } from './slices/activeEditingPageSlice';
-
+import Icon from '../../../components/Icon/Icon';
+import type { Editor } from './types/pageEditorLeftPaneTypes';
 
 const PageLeftPane: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -13,15 +14,26 @@ const PageLeftPane: React.FC = () => {
   const activeEditingPageId = useAppSelector((state) => state.admin.activeEditingPage.activeEditingPageId);
   const activeEditingNode = useAppSelector((state) => state.admin.activeEditingNode);
 
-  useEffect(()=>{console.log(activeEditingNode)}, [activeEditingNode])
+  const editors: Editor[] = [
+    { editorName: 'Default', editorIcon: '', editor: 'default' },
+    { editorName: 'Text', editorIcon: <Icon name="TextCursor" />, editor: 'text' },
+    { editorName: 'Container', editorIcon: <Icon name="Box" />, editor: 'container' },
+    { editorName: 'Image', editorIcon: <Icon name="Image" />, editor: 'image' },
+    { editorName: 'Button', editorIcon: <Icon name="Power" />, editor: 'button' },
+    { editorName: 'Icon', editorIcon: <Icon name="Star" />, editor: 'icon' }
+  ];
+
+  const activeEditor = editors.find(
+    (editor) => editor.editor === activeEditingNode.nodeType
+  );
 
   useEffect(() => {
     const findHomePageID = pages.find((page) => page.pageName === 'Home');
     if (findHomePageID?.pageID) {
-        dispatch(setActiveEditingPage({ key: 'activeEditingPageName', value: findHomePageID.pageName }));
-        dispatch(setActiveEditingPage({ key: 'activeEditingPageId', value: findHomePageID.pageID }));
+      dispatch(setActiveEditingPage({ key: 'activeEditingPageName', value: findHomePageID.pageName }));
+      dispatch(setActiveEditingPage({ key: 'activeEditingPageId', value: findHomePageID.pageID }));
     }
-  }, []);
+  }, [dispatch, pages]);
 
   const pageOptions = pages.map((page) => ({
     label: page.pageName,
@@ -30,7 +42,7 @@ const PageLeftPane: React.FC = () => {
 
   const handlePageChange = (value: string | string[]) => {
     if (typeof value === 'string') {
-        dispatch(setActiveEditingPage({ key: 'activeEditingPageId', value }));
+      dispatch(setActiveEditingPage({ key: 'activeEditingPageId', value }));
     }
   };
 
@@ -45,7 +57,14 @@ const PageLeftPane: React.FC = () => {
         placeholder="Choose a page"
         size="md"
         variant="outline"
+        twClasses={['mb-4']}
       />
+      {activeEditor && (
+        <div className="flex items-center gap-2 px-2">
+          {activeEditor.editorIcon}
+          <span>{activeEditor.editorName} Editor</span>
+        </div>
+      )}
     </Container>
   );
 };

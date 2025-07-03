@@ -16,8 +16,8 @@ import Profile from '../profile/Profile';
 import ProfileMenu from '../profile/ProfileMenu';
 import PagesEditorLeftPane from '../pagesEditor/PagesEditorLeftPane';
 import PagesEditorRightPane from '../pagesEditor/PagesEditorRightPane';
-import PageLeftPane from '../pageEditor/PageLeftPane';
-import PageRightPane from '../pageEditor/PageRightPane';
+import PageLeftPane from '../pageEditor/PageEditorLeftPane';
+import PageRightPane from '../pageEditor/PageEditorRightPane';
 
 const AdminLayout: React.FC = () => {
     const dispatch = useAppDispatch();
