@@ -1,39 +1,25 @@
 import React from 'react';
 import clsx from 'clsx';
 import type { ContainerProps } from './containerTypes';
-
-const paddingMap = {
-  none: '',
-  sm: 'p-2',
-  md: 'p-4',
-  lg: 'p-6',
-  xl: 'p-8',
-};
-
-const marginMap = {
-  none: '',
-  sm: 'm-2',
-  md: 'm-4',
-  lg: 'm-6',
-  xl: 'm-8',
-};
-
-const borderMap = {
-  none: '',
-  default: 'border border-primary',
-  thick: 'border-2 border-primary',
-  dashed: 'border-2 border-dashed border-primary',
-};
+import { alignItemsMap, flexDirectionMap, justifyContentMap } from '../../constants/flexConstants';
+import { marginMap, paddingMap } from '../../constants/spacingConstants';
+import { borderMap } from '../../constants/borderConstants';
+import { resolveDimension } from '../../constants/sizeConstants';
 
 const Container: React.FC<ContainerProps> = ({
   children,
-  padding = 'md',
+  padding = 'none',
   margin = 'none',
   border = 'none',
   rounded = false,
   shadow = false,
   animationObject,
   className,
+  flexDirection = 'row',
+  justifyContent = 'start',
+  alignItems = 'stretch',
+  width,
+  height,
 }) => {
   const animationClasses = animationObject
     ? clsx(
@@ -44,18 +30,38 @@ const Container: React.FC<ContainerProps> = ({
       )
     : '';
 
+  const resolvedWidth = resolveDimension(width, 'width');
+  const resolvedHeight = resolveDimension(height, 'height');
+
+  const tailwindWidthClass = typeof resolvedWidth === 'string' ? resolvedWidth : '';
+  const tailwindHeightClass = typeof resolvedHeight === 'string' ? resolvedHeight : '';
+
+  const inlineStyle = {
+    ...(typeof resolvedWidth === 'object' ? resolvedWidth : {}),
+    ...(typeof resolvedHeight === 'object' ? resolvedHeight : {}),
+  };
+
   const classes = clsx(
+    'flex',
+    flexDirectionMap[flexDirection],
+    justifyContentMap[justifyContent],
+    alignItemsMap[alignItems],
     paddingMap[padding],
     marginMap[margin],
     borderMap[border],
     rounded && 'rounded-xl',
     shadow && 'shadow-lg',
+    tailwindWidthClass,
+    tailwindHeightClass,
     animationClasses,
     className
   );
 
-  return <div className={classes}>{children}</div>;
+  return (
+    <div className={classes} style={inlineStyle}>
+      {children}
+    </div>
+  );
 };
-
 
 export default Container;
