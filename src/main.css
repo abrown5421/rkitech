@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Primary";
+  src: url("../public/assers/Primary.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Secondary";
+  src: local("Arial");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --color-primary: #FE9A00;
   --color-primary-hover: #e48a00;
@@ -14,6 +28,6 @@
   --color-success: #016630;
   --color-success-hover: #01a24c;
 
-  --font-primary: "Primary", "sans-serif"; 
-  --font-secondary: "Secondary", "sans-serif"; 
+  --font-primary: "Primary", sans-serif;
+  --font-secondary: "Secondary", sans-serif;
 }
