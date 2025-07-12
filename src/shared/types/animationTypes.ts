@@ -4,9 +4,21 @@ export type EntranceExitAnimation = {
   isEntering: boolean;
 };
 
-export type HoverAnimation = {
+export type HoverAnimationBase = {
   hoverAnimation: string;
 };
+
+export type HoverAnimationInfinite = HoverAnimationBase & {
+  infinite: true;
+  repeat?: never;
+};
+
+export type HoverAnimationRepeat = HoverAnimationBase & {
+  repeat: number;
+  infinite?: never;
+};
+
+export type HoverAnimation = HoverAnimationInfinite | HoverAnimationRepeat;
 
 export type AnimationProps =
   | { entranceExit: EntranceExitAnimation; hover?: never }
