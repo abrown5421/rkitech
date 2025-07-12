@@ -1,26 +1,15 @@
 import React, { useState } from 'react';
 import * as LucideIcons from 'lucide-react';
-import clsx from 'clsx';
 import type { LucideProps } from 'lucide-react';
-import type { AnimationProps } from '../../types/animationTypes';
+import clsx from 'clsx';
 import { getAnimationClasses } from '../../utils/useAnimation';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
-
-export type IconProps = {
-  name: keyof typeof LucideIcons;
-  color?: string;
-  padding?: keyof typeof paddingMap;
-  margin?: keyof typeof marginMap;
-  width?: string | number;
-  height?: string | number;
-  animation?: AnimationProps;
-  className?: string;
-  onClick?: () => void;
-};
+import type { IconProps } from './iconTypes';
 
 const Icon: React.FC<IconProps> = ({
   name,
+  cursor,
   color = 'text-gray-900',
   padding = 'none',
   margin = 'none',
@@ -58,6 +47,7 @@ const Icon: React.FC<IconProps> = ({
     tailwindWidthClass,
     tailwindHeightClass,
     animationClasses,
+    `cursor-${cursor || 'pointer'}`,
     className
   );
 
