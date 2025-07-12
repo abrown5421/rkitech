@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import type { TextProps } from './textTypes';
 import { fontMap, sizeMap } from './textConstants';
 import { marginMap, paddingMap } from '../../constants/spacingConstants';
+import { getAnimationClasses } from '../../utils/useAnimation';
 
 const Text: React.FC<TextProps> = ({
   text,
@@ -14,8 +15,12 @@ const Text: React.FC<TextProps> = ({
   color = 'text-gray-900',
   padding = 'none',
   margin = 'none',
+  animation,
   className = '',
 }) => {
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const animationClasses = getAnimationClasses(animation, isHovered);
+  
   const classes = clsx(
     sizeMap[size],
     bold && 'font-bold',
@@ -23,12 +28,21 @@ const Text: React.FC<TextProps> = ({
     underline && 'underline',
     fontMap[font],
     color,
+    animationClasses,
     paddingMap[padding],
     marginMap[margin],
     className
   );
 
-  return <div className={classes}>{text}</div>;
+  return (
+    <div 
+      className={classes}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {text}
+    </div>
+  );
 };
 
 export default Text;
