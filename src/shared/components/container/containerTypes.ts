@@ -1,5 +1,13 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
+
+export type AnimationObject = {
+  entranceAnimation: string;
+  exitAnimation: string;
+  isEntering: boolean;
+};
 
 export type ContainerProps = {
-    children: ReactNode
-}
+  children: ReactNode;
+  className?: string;
+  animationObject?: AnimationObject;
+};
