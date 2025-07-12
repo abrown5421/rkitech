@@ -13,5 +13,5 @@ export function getEntranceExitClasses(animationObject?: EntranceExitAnimation) 
 
 export function getHoverClasses(animationObject?: HoverAnimation) {
   if (!animationObject) return '';
-  return `hover:animate__animated hover:${animationObject.hoverAnimation}`;
+  return `animate__animated ${animationObject.hoverAnimation}`;
 }

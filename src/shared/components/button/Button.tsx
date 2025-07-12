@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import type { ButtonProps } from './buttonTypes';
 import { colorStyles, variantBaseMap } from './buttonConstants';
@@ -23,8 +23,9 @@ const Button: React.FC<ButtonProps> = ({
   width,
   height,
 }) => {
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const entranceExitClasses = getEntranceExitClasses(animation?.entranceExit);
-  const hoverClasses = getHoverClasses(animation?.hover);
+  const hoverClasses = isHovered ? getHoverClasses(animation?.hover) : '';
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
@@ -71,6 +72,8 @@ const Button: React.FC<ButtonProps> = ({
       className={classes}
       style={inlineStyle}
       disabled={disabled}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {children}
     </button>
