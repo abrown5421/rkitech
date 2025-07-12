@@ -1,5 +1,6 @@
 import React from 'react';
 import Container from './shared/components/container/Container';
+import Text from './shared/components/text/Text';
 
 const App: React.FC = () => {
 
@@ -8,7 +9,7 @@ const App: React.FC = () => {
       width="50%" height="100rem" 
       border='default'
     >
-      <p>This container is half width and full screen height</p>
+      <Text text='hello world' size='md' margin="lg" />
     </Container>
   );
 };

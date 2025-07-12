@@ -5,7 +5,7 @@ export type TextFont = 'primary' | 'secondary' | 'sans' | 'serif' | 'mono';
 
 export interface TextProps {
   text: string;
-  size: TextSize;
+  size?: TextSize;
   bold?: boolean;    
   italic?: boolean;
   underline?: boolean;
