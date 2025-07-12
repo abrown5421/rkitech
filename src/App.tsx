@@ -1,23 +1,26 @@
 import React from 'react';
 import Button from './shared/components/button/Button';
+import Icon from './shared/components/icon/Icon';
 
 const App: React.FC = () => {
 
   return (
     <div>
-    <Button
-      color="success"
-      variant="solid"
+    <Icon
+      name="Heart"
+      color="text-red-500"
+      padding="sm"
+      margin="md"
+      width="w-6"
+      height="h-6"
       animation={{
         hover: {
-          hoverAnimation: 'animate__pulse',
-          infinite: true
-        }
+          hoverAnimation: 'animate__bounce',
+          repeat: 2,
+        },
       }}
-
-    >
-      Hover me & fade in/out!
-    </Button>
+      onClick={() => console.log('Heart icon clicked')}
+    />
     </div>
   );
 };
