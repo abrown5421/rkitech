@@ -5,7 +5,7 @@ const App: React.FC = () => {
 
   return (
     <Container
-      padding="6x"
+      width="50%" height="100rem" 
       border='default'
     >
       <p>This container is half width and full screen height</p>

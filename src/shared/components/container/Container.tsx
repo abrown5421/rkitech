@@ -4,6 +4,7 @@ import type { ContainerProps } from './containerTypes';
 import { alignItemsMap, flexDirectionMap, justifyContentMap } from '../../constants/flexConstants';
 import { marginMap, paddingMap } from '../../constants/spacingConstants';
 import { borderMap } from '../../constants/borderConstants';
+import { resolveDimension } from '../../constants/sizeConstants';
 
 const Container: React.FC<ContainerProps> = ({
   children,
@@ -17,8 +18,8 @@ const Container: React.FC<ContainerProps> = ({
   flexDirection = 'row',
   justifyContent = 'start',
   alignItems = 'stretch',
-  width = 'auto',
-  height = 'auto',
+  width,
+  height,
 }) => {
   const animationClasses = animationObject
     ? clsx(
@@ -28,6 +29,17 @@ const Container: React.FC<ContainerProps> = ({
           : animationObject.exitAnimation
       )
     : '';
+
+  const resolvedWidth = resolveDimension(width, 'width');
+  const resolvedHeight = resolveDimension(height, 'height');
+
+  const tailwindWidthClass = typeof resolvedWidth === 'string' ? resolvedWidth : '';
+  const tailwindHeightClass = typeof resolvedHeight === 'string' ? resolvedHeight : '';
+
+  const inlineStyle = {
+    ...(typeof resolvedWidth === 'object' ? resolvedWidth : {}),
+    ...(typeof resolvedHeight === 'object' ? resolvedHeight : {}),
+  };
 
   const classes = clsx(
     'flex',
@@ -39,14 +51,17 @@ const Container: React.FC<ContainerProps> = ({
     borderMap[border],
     rounded && 'rounded-xl',
     shadow && 'shadow-lg',
-    width,
-    height,
+    tailwindWidthClass,
+    tailwindHeightClass,
     animationClasses,
     className
   );
 
-  return <div className={classes}>{children}</div>;
+  return (
+    <div className={classes} style={inlineStyle}>
+      {children}
+    </div>
+  );
 };
-
 
 export default Container;
