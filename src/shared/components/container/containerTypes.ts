@@ -6,8 +6,17 @@ export type AnimationObject = {
   isEntering: boolean;
 };
 
-export type ContainerProps = {
+export type ContainerPadding = 'none' | 'sm' | 'md' | 'lg' | 'xl';
+export type ContainerMargin = 'none' | 'sm' | 'md' | 'lg' | 'xl';
+export type ContainerBorder = 'none' | 'default' | 'thick' | 'dashed';
+
+export interface ContainerProps {
   children: ReactNode;
-  className?: string;
+  padding?: ContainerPadding;
+  margin?: ContainerMargin;
+  border?: ContainerBorder;
+  rounded?: boolean;
+  shadow?: boolean;
   animationObject?: AnimationObject;
-};
+  className?: string;
+}
