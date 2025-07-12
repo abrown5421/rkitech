@@ -1,11 +1,12 @@
 import React from 'react';
+import Container from './shared/components/container/Container';
 
 const App: React.FC = () => {
 
   return (
-    <div className=''>
+    <Container border="dashed">
       hello
-    </div>
+    </Container>
   );
 };
 
