@@ -14,7 +14,7 @@ export type HoverAnimationInfinite = HoverAnimationBase & {
 };
 
 export type HoverAnimationRepeat = HoverAnimationBase & {
-  repeat: number;
+  repeat: 1 | 2 | 3;
   infinite?: never;
 };
 
