@@ -5,6 +5,7 @@ import { alignItemsMap, flexDirectionMap, justifyContentMap } from '../../consta
 import { marginMap, paddingMap } from '../../constants/spacingConstants';
 import { borderMap } from '../../constants/borderConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
+import { getAnimationClasses } from '../../utils/useAnimation';
 
 const Container: React.FC<ContainerProps> = ({
   children,
@@ -21,14 +22,7 @@ const Container: React.FC<ContainerProps> = ({
   width,
   height,
 }) => {
-  const animationClasses = animationObject
-    ? clsx(
-        'animate__animated',
-        animationObject.isEntering
-          ? animationObject.entranceAnimation
-          : animationObject.exitAnimation
-      )
-    : '';
+  const animationClasses = getAnimationClasses(animationObject);
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');

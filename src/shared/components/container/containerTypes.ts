@@ -1,12 +1,7 @@
 import type { ReactNode } from "react";
 import type { Margin, Padding } from "../../types/spacingTypes";
 import type { SizeValue } from "../../types/sizeTypes";
-
-export type AnimationObject = {
-  entranceAnimation: string;
-  exitAnimation: string;
-  isEntering: boolean;
-};
+import type { AnimationObject } from "../../types/animationTypes";
 
 export type ContainerBorder = 'none' | 'default' | 'thick' | 'dashed';
 export type FlexDirection = 'row' | 'row-reverse' | 'col' | 'col-reverse';

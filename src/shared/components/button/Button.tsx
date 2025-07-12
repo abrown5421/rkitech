@@ -4,6 +4,7 @@ import type { ButtonProps } from './buttonTypes';
 import { colorStyles, variantBaseMap } from './buttonConstants';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
+import { getAnimationClasses } from '../../utils/useAnimation';
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -22,14 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   width,
   height,
 }) => {
-  const animationClasses = animationObject
-    ? clsx(
-        'animate__animated',
-        animationObject.isEntering
-          ? animationObject.entranceAnimation
-          : animationObject.exitAnimation
-      )
-    : '';
+  const animationClasses = getAnimationClasses(animationObject);
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
