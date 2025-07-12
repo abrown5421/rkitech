@@ -1,8 +1,7 @@
-
 import clsx from 'clsx';
-import type { AnimationObject } from '../types/animationTypes';
+import type { EntranceExitAnimation, HoverAnimation } from '../types/animationTypes';
 
-export function getAnimationClasses(animationObject?: AnimationObject) {
+export function getEntranceExitClasses(animationObject?: EntranceExitAnimation) {
   if (!animationObject) return '';
   return clsx(
     'animate__animated',
@@ -10,4 +9,9 @@ export function getAnimationClasses(animationObject?: AnimationObject) {
       ? animationObject.entranceAnimation
       : animationObject.exitAnimation
   );
+}
+
+export function getHoverClasses(animationObject?: HoverAnimation) {
+  if (!animationObject) return '';
+  return `hover:animate__animated hover:${animationObject.hoverAnimation}`;
 }

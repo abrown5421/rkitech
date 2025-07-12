@@ -3,23 +3,23 @@ import Button from './shared/components/button/Button';
 
 const App: React.FC = () => {
 
-  const animationObj = {
-    entranceAnimation: 'animate__fadeIn',
-    exitAnimation: 'animate__fadeOut',
-    isEntering: true,
-  };
-
   return (
     <div>
     <Button
-      variant="solid"
       color="success"
-      padding="lg"
-      shadow
-      onClick={() => console.log("Clicked!")}
-      animationObject={animationObj}
+      variant="solid"
+      animation={{
+        entranceExit: {
+          entranceAnimation: 'animate__fadeIn',
+          exitAnimation: 'animate__fadeOut',
+          isEntering: true,
+        },
+        hover: {
+          hoverAnimation: 'animate__pulse',
+        },
+      }}
     >
-      Submit
+      Hover me & fade in/out!
     </Button>
     </div>
   );
