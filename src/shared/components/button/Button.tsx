@@ -1,13 +1,14 @@
 import React from 'react';
 import clsx from 'clsx';
 import type { ButtonProps } from './buttonTypes';
-import { variantMap, colorMap } from './buttonConstants';
+import { colorStyles, variantBaseMap } from './buttonConstants';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
 
 const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
+  cursor,
   variant = 'solid',
   color = 'primary',
   padding = 'md',
@@ -40,11 +41,20 @@ const Button: React.FC<ButtonProps> = ({
     ...(typeof resolvedWidth === 'object' ? resolvedWidth : {}),
     ...(typeof resolvedHeight === 'object' ? resolvedHeight : {}),
   };
+  
+  const variantBase = variantBaseMap[variant];
+
+  const colorStyle = colorStyles[variant][color];
 
   const classes = clsx(
     'inline-flex items-center justify-center font-medium transition-all duration-200',
-    variantMap[variant],
-    colorMap[color],
+    variantBase,
+    colorStyle.bg,
+    colorStyle.border,
+    colorStyle.text,
+    colorStyle.hoverBg,
+    colorStyle.hoverText,
+    colorStyle.hoverBorder,
     paddingMap[padding],
     marginMap[margin],
     rounded && 'rounded-xl',
@@ -53,8 +63,9 @@ const Button: React.FC<ButtonProps> = ({
     tailwindWidthClass,
     tailwindHeightClass,
     animationClasses,
-    className,
-    disabled && 'opacity-50 pointer-events-none cursor-not-allowed'
+    !disabled && `cursor-${cursor || 'pointer'}`, 
+    disabled && 'opacity-50 pointer-events-none cursor-not-allowed',
+    className
   );
 
   return (

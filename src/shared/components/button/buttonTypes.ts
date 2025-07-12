@@ -21,4 +21,5 @@ export interface ButtonProps {
   className?: string;
   width?: SizeValue;
   height?: SizeValue;
+  cursor?: string; 
 }
