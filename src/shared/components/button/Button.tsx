@@ -4,7 +4,7 @@ import type { ButtonProps } from './buttonTypes';
 import { colorStyles, variantBaseMap } from './buttonConstants';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
-import { getAnimationClasses } from '../../utils/useAnimation';
+import { getEntranceExitClasses, getHoverClasses } from '../../utils/useAnimation';
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -18,12 +18,13 @@ const Button: React.FC<ButtonProps> = ({
   shadow = false,
   disabled = false,
   fullWidth = false,
-  animationObject,
+  animation,
   className,
   width,
   height,
 }) => {
-  const animationClasses = getAnimationClasses(animationObject);
+  const entranceExitClasses = getEntranceExitClasses(animation?.entranceExit);
+  const hoverClasses = getHoverClasses(animation?.hover);
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
@@ -56,7 +57,8 @@ const Button: React.FC<ButtonProps> = ({
     fullWidth && 'w-full',
     tailwindWidthClass,
     tailwindHeightClass,
-    animationClasses,
+    entranceExitClasses,
+    hoverClasses,
     !disabled && `cursor-${cursor || 'pointer'}`, 
     disabled && 'opacity-50 pointer-events-none cursor-not-allowed',
     className

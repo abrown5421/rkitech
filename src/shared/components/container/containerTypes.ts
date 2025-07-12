@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Margin, Padding } from "../../types/spacingTypes";
 import type { SizeValue } from "../../types/sizeTypes";
-import type { AnimationObject } from "../../types/animationTypes";
+import type { AnimationProps } from "../../types/animationTypes";
 
 export type ContainerBorder = 'none' | 'default' | 'thick' | 'dashed';
 export type FlexDirection = 'row' | 'row-reverse' | 'col' | 'col-reverse';
@@ -15,7 +15,7 @@ export interface ContainerProps {
   border?: ContainerBorder;
   rounded?: boolean;
   shadow?: boolean;
-  animationObject?: AnimationObject;
+  animation?: AnimationProps;
   className?: string;
   flexDirection?: FlexDirection;
   justifyContent?: JustifyContent;
