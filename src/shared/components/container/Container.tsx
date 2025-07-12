@@ -8,6 +8,11 @@ const paddingMap = {
   md: 'p-4',
   lg: 'p-6',
   xl: 'p-8',
+  '2x': 'p-10',
+  '3x': 'p-12',
+  '4x': 'p-14',
+  '5x': 'p-16',
+  '6x': 'p-18'
 };
 
 const marginMap = {
@@ -16,6 +21,11 @@ const marginMap = {
   md: 'm-4',
   lg: 'm-6',
   xl: 'm-8',
+  '2x': 'm-10',
+  '3x': 'm-12',
+  '4x': 'm-14',
+  '5x': 'm-16',
+  '6x': 'm-18'
 };
 
 const borderMap = {
@@ -25,15 +35,44 @@ const borderMap = {
   dashed: 'border-2 border-dashed border-primary',
 };
 
+const flexDirectionMap = {
+  row: 'flex-row',
+  'row-reverse': 'flex-row-reverse',
+  col: 'flex-col',
+  'col-reverse': 'flex-col-reverse',
+};
+
+const justifyContentMap = {
+  start: 'justify-start',
+  center: 'justify-center',
+  end: 'justify-end',
+  between: 'justify-between',
+  around: 'justify-around',
+  evenly: 'justify-evenly',
+};
+
+const alignItemsMap = {
+  start: 'items-start',
+  center: 'items-center',
+  end: 'items-end',
+  stretch: 'items-stretch',
+  baseline: 'items-baseline',
+};
+
 const Container: React.FC<ContainerProps> = ({
   children,
-  padding = 'md',
+  padding = 'none',
   margin = 'none',
   border = 'none',
   rounded = false,
   shadow = false,
   animationObject,
   className,
+  flexDirection = 'row',
+  justifyContent = 'start',
+  alignItems = 'stretch',
+  width = 'auto',
+  height = 'auto',
 }) => {
   const animationClasses = animationObject
     ? clsx(
@@ -45,11 +84,17 @@ const Container: React.FC<ContainerProps> = ({
     : '';
 
   const classes = clsx(
+    'flex',
+    flexDirectionMap[flexDirection],
+    justifyContentMap[justifyContent],
+    alignItemsMap[alignItems],
     paddingMap[padding],
     marginMap[margin],
     borderMap[border],
     rounded && 'rounded-xl',
     shadow && 'shadow-lg',
+    width,
+    height,
     animationClasses,
     className
   );
