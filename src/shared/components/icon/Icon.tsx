@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as LucideIcons from 'lucide-react';
 import type { LucideProps } from 'lucide-react';
 import clsx from 'clsx';
@@ -32,6 +32,8 @@ const Icon: React.FC<IconProps> = ({
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
 
+  useEffect(()=>{console.log(resolvedWidth, resolvedHeight)}, [resolvedWidth, resolvedHeight])
+  
   const tailwindWidthClass = typeof resolvedWidth === 'string' ? resolvedWidth : '';
   const tailwindHeightClass = typeof resolvedHeight === 'string' ? resolvedHeight : '';
 
@@ -55,11 +57,10 @@ const Icon: React.FC<IconProps> = ({
     <div
       onClick={onClick}
       className={classes}
-      style={inlineStyle}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <ImportedIcon />
+      <ImportedIcon style={inlineStyle}/>
     </div>
   );
 };
