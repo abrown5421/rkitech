@@ -5,7 +5,7 @@ import { alignItemsMap, flexDirectionMap, justifyContentMap } from '../../consta
 import { marginMap, paddingMap } from '../../constants/spacingConstants';
 import { borderMap } from '../../constants/borderConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
-import { getEntranceExitClasses, getHoverClasses, isEntranceExitAnimation, isHoverAnimation } from '../../utils/useAnimation';
+import { getAnimationClasses } from '../../utils/useAnimation';
 
 const Container: React.FC<ContainerProps> = ({
   children,
@@ -23,14 +23,7 @@ const Container: React.FC<ContainerProps> = ({
   height,
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const entranceExitClasses = isEntranceExitAnimation(animation)
-    ? getEntranceExitClasses(animation.entranceExit)
-    : '';
-
-  const hoverClasses =
-    !entranceExitClasses && isHovered && isHoverAnimation(animation)
-      ? getHoverClasses(animation.hover)
-      : '';
+  const animationClasses = getAnimationClasses(animation, isHovered);
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
@@ -55,8 +48,7 @@ const Container: React.FC<ContainerProps> = ({
     shadow && 'shadow-lg',
     tailwindWidthClass,
     tailwindHeightClass,
-    entranceExitClasses,
-    hoverClasses,
+    animationClasses,
     className
   );
 
