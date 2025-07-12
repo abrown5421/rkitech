@@ -1,26 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as LucideIcons from 'lucide-react';
-import clsx from 'clsx';
 import type { LucideProps } from 'lucide-react';
-import type { AnimationProps } from '../../types/animationTypes';
+import clsx from 'clsx';
 import { getAnimationClasses } from '../../utils/useAnimation';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
-
-export type IconProps = {
-  name: keyof typeof LucideIcons;
-  color?: string;
-  padding?: keyof typeof paddingMap;
-  margin?: keyof typeof marginMap;
-  width?: string | number;
-  height?: string | number;
-  animation?: AnimationProps;
-  className?: string;
-  onClick?: () => void;
-};
+import type { IconProps } from './iconTypes';
 
 const Icon: React.FC<IconProps> = ({
   name,
+  cursor,
   color = 'text-gray-900',
   padding = 'none',
   margin = 'none',
@@ -43,6 +32,8 @@ const Icon: React.FC<IconProps> = ({
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
 
+  useEffect(()=>{console.log(resolvedWidth, resolvedHeight)}, [resolvedWidth, resolvedHeight])
+  
   const tailwindWidthClass = typeof resolvedWidth === 'string' ? resolvedWidth : '';
   const tailwindHeightClass = typeof resolvedHeight === 'string' ? resolvedHeight : '';
 
@@ -58,6 +49,7 @@ const Icon: React.FC<IconProps> = ({
     tailwindWidthClass,
     tailwindHeightClass,
     animationClasses,
+    `cursor-${cursor || 'pointer'}`,
     className
   );
 
@@ -65,11 +57,10 @@ const Icon: React.FC<IconProps> = ({
     <div
       onClick={onClick}
       className={classes}
-      style={inlineStyle}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <ImportedIcon />
+      <ImportedIcon style={inlineStyle}/>
     </div>
   );
 };
