@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { EntranceExitAnimation, HoverAnimation } from '../types/animationTypes';
+import type { AnimationProps, EntranceExitAnimation, HoverAnimation } from '../types/animationTypes';
 
 export function getEntranceExitClasses(animationObject?: EntranceExitAnimation) {
   if (!animationObject) return '';
@@ -14,4 +14,12 @@ export function getEntranceExitClasses(animationObject?: EntranceExitAnimation) 
 export function getHoverClasses(animationObject?: HoverAnimation) {
   if (!animationObject) return '';
   return `animate__animated ${animationObject.hoverAnimation}`;
+}
+
+export function isEntranceExitAnimation(anim: AnimationProps | undefined): anim is { entranceExit: EntranceExitAnimation } {
+  return !!(anim && (anim as any).entranceExit);
+}
+
+export function isHoverAnimation(anim: AnimationProps | undefined): anim is { hover: HoverAnimation } {
+  return !!(anim && (anim as any).hover);
 }

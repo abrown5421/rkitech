@@ -4,7 +4,7 @@ import type { ButtonProps } from './buttonTypes';
 import { colorStyles, variantBaseMap } from './buttonConstants';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
-import { getEntranceExitClasses, getHoverClasses } from '../../utils/useAnimation';
+import { getEntranceExitClasses, getHoverClasses, isEntranceExitAnimation, isHoverAnimation } from '../../utils/useAnimation';
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -24,8 +24,14 @@ const Button: React.FC<ButtonProps> = ({
   height,
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const entranceExitClasses = getEntranceExitClasses(animation?.entranceExit);
-  const hoverClasses = isHovered ? getHoverClasses(animation?.hover) : '';
+  const entranceExitClasses = isEntranceExitAnimation(animation)
+    ? getEntranceExitClasses(animation.entranceExit)
+    : '';
+
+  const hoverClasses =
+    !entranceExitClasses && isHovered && isHoverAnimation(animation)
+      ? getHoverClasses(animation.hover)
+      : '';
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
