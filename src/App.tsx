@@ -4,7 +4,7 @@ import Button from './shared/components/button/Button';
 const App: React.FC = () => {
 
   return (
-    <div className='bg-primary'>
+    <div>
     <Button
       variant="solid"
       color="success"
