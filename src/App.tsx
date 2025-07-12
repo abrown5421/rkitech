@@ -11,6 +11,7 @@ const App: React.FC = () => {
       animation={{
         hover: {
           hoverAnimation: 'animate__pulse',
+          infinite: true
         }
       }}
 
