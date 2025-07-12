@@ -43,6 +43,8 @@ const underlineMap: Record<TextUnderline, string> = {
 };
 
 const fontMap: Record<TextFont, string> = {
+  primary: 'font-primary',
+  secondary: 'font-secondary',
   sans: 'font-sans',
   serif: 'font-serif',
   mono: 'font-mono',

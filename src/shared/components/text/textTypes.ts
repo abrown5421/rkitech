@@ -2,7 +2,7 @@ export type TextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x' | '4x' | '
 export type TextWeight = 'normal' | 'medium' | 'semibold' | 'bold';
 export type TextItalic = 'italic' | 'notitalic';
 export type TextUnderline = 'underlined' | 'notunderlined';
-export type TextFont = 'sans' | 'serif' | 'mono';
+export type TextFont = 'primary' | 'secondary' | 'sans' | 'serif' | 'mono';
 
 export interface TextProps {
   text: string;
