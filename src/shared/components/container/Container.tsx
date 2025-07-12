@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import type { ContainerProps } from './containerTypes';
 import { alignItemsMap, flexDirectionMap, justifyContentMap } from '../../constants/flexConstants';
@@ -22,8 +22,9 @@ const Container: React.FC<ContainerProps> = ({
   width,
   height,
 }) => {
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const entranceExitClasses = getEntranceExitClasses(animation?.entranceExit);
-  const hoverClasses = getHoverClasses(animation?.hover);
+  const hoverClasses = isHovered ? getHoverClasses(animation?.hover) : '';
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
@@ -54,7 +55,12 @@ const Container: React.FC<ContainerProps> = ({
   );
 
   return (
-    <div className={classes} style={inlineStyle}>
+    <div 
+      className={classes} 
+      style={inlineStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {children}
     </div>
   );
