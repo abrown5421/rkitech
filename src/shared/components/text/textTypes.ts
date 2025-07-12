@@ -1,3 +1,4 @@
+import type { AnimationProps } from "../../types/animationTypes";
 import type { Margin, Padding } from "../../types/spacingTypes";
 
 export type TextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x' | '4x' | '5x' | '6x' | '7x' | '8x' | '9x';
@@ -11,6 +12,7 @@ export interface TextProps {
   underline?: boolean;
   font?: TextFont;
   color?: string;
+  animation?: AnimationProps;
   className?: string;
   padding?: Padding;
   margin?: Margin;
