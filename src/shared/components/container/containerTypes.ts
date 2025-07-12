@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Margin, Padding } from "../../types/spacingTypes";
 
 export type AnimationObject = {
   entranceAnimation: string;
@@ -6,8 +7,6 @@ export type AnimationObject = {
   isEntering: boolean;
 };
 
-export type ContainerPadding = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x' | '4x' | '5x' | '6x' ;
-export type ContainerMargin = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x' | '4x' | '5x' | '6x' ;
 export type ContainerBorder = 'none' | 'default' | 'thick' | 'dashed';
 export type FlexDirection = 'row' | 'row-reverse' | 'col' | 'col-reverse';
 export type JustifyContent = 'start'| 'center'| 'end'| 'between'| 'around'| 'evenly';
@@ -17,8 +16,8 @@ export type ContainerHeight = 'h-auto'| 'h-full'| 'h-screen'| 'h-min'| 'h-max'| 
 
 export interface ContainerProps {
   children: ReactNode;
-  padding?: ContainerPadding;
-  margin?: ContainerMargin;
+  padding?: Padding;
+  margin?: Margin;
   border?: ContainerBorder;
   rounded?: boolean;
   shadow?: boolean;
