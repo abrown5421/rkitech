@@ -1,16 +1,20 @@
 import React from 'react';
-import Container from './shared/components/container/Container';
-import Text from './shared/components/text/Text';
+import Button from './shared/components/button/Button';
 
 const App: React.FC = () => {
 
   return (
-    <Container
-      width="50%" height="100rem" 
-      border='default'
+    <div className='bg-primary'>
+    <Button
+      variant="solid"
+      color="success"
+      padding="lg"
+      shadow
+      onClick={() => console.log("Clicked!")}
     >
-      <Text text='hello world' size='md' margin="lg" />
-    </Container>
+      Submit
+    </Button>
+    </div>
   );
 };
 
