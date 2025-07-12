@@ -8,7 +8,7 @@ export type HoverAnimation = {
   hoverAnimation: string;
 };
 
-export type AnimationProps = {
-  entranceExit?: EntranceExitAnimation;
-  hover?: HoverAnimation;
-};
+export type AnimationProps =
+  | { entranceExit: EntranceExitAnimation; hover?: never }
+  | { hover: HoverAnimation; entranceExit?: never }
+  | {}; 

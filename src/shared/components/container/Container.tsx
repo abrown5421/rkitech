@@ -5,7 +5,7 @@ import { alignItemsMap, flexDirectionMap, justifyContentMap } from '../../consta
 import { marginMap, paddingMap } from '../../constants/spacingConstants';
 import { borderMap } from '../../constants/borderConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
-import { getEntranceExitClasses, getHoverClasses } from '../../utils/useAnimation';
+import { getEntranceExitClasses, getHoverClasses, isEntranceExitAnimation, isHoverAnimation } from '../../utils/useAnimation';
 
 const Container: React.FC<ContainerProps> = ({
   children,
@@ -23,8 +23,14 @@ const Container: React.FC<ContainerProps> = ({
   height,
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const entranceExitClasses = getEntranceExitClasses(animation?.entranceExit);
-  const hoverClasses = isHovered ? getHoverClasses(animation?.hover) : '';
+  const entranceExitClasses = isEntranceExitAnimation(animation)
+    ? getEntranceExitClasses(animation.entranceExit)
+    : '';
+
+  const hoverClasses =
+    !entranceExitClasses && isHovered && isHoverAnimation(animation)
+      ? getHoverClasses(animation.hover)
+      : '';
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
