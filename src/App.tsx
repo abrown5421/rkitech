@@ -9,15 +9,11 @@ const App: React.FC = () => {
       color="success"
       variant="solid"
       animation={{
-        entranceExit: {
-          entranceAnimation: 'animate__fadeIn',
-          exitAnimation: 'animate__fadeOut',
-          isEntering: true,
-        },
         hover: {
           hoverAnimation: 'animate__pulse',
-        },
+        }
       }}
+
     >
       Hover me & fade in/out!
     </Button>

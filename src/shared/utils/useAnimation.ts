@@ -2,11 +2,11 @@ import clsx from 'clsx';
 import type { AnimationProps, EntranceExitAnimation, HoverAnimation } from '../types/animationTypes';
 
 export function isEntranceExitAnimation(anim: AnimationProps | undefined): anim is { entranceExit: EntranceExitAnimation } {
-  return !!(anim && (anim as any).entranceExit);
+  return !!(anim && 'entranceExit' in anim && anim.entranceExit);
 }
 
 export function isHoverAnimation(anim: AnimationProps | undefined): anim is { hover: HoverAnimation } {
-  return !!(anim && (anim as any).hover);
+  return !!(anim && 'hover' in anim && anim.hover);
 }
 
 export function getAnimationClasses(animation: AnimationProps | undefined, isHovered: boolean): string {
@@ -22,7 +22,15 @@ export function getAnimationClasses(animation: AnimationProps | undefined, isHov
   }
 
   if (isHoverAnimation(animation) && isHovered) {
-    return clsx('animate__animated', animation.hover.hoverAnimation);
+    const { hoverAnimation, infinite, repeat } = animation.hover;
+
+    const repeatClass = infinite
+      ? 'animate__infinite'
+      : typeof repeat === 'number'
+        ? `animate__repeat-${repeat}`
+        : undefined;
+
+    return clsx('animate__animated', hoverAnimation, repeatClass);
   }
 
   return 'animate__animated';
