@@ -1,13 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import type {
-  TextProps,
-  TextSize,
-  TextWeight,
-  TextItalic,
-  TextUnderline,
-  TextFont,
-} from './textTypes';
+import type { TextProps, TextSize, TextFont } from './textTypes';
 
 const sizeMap: Record<TextSize, string> = {
   xs: 'text-xs',
@@ -25,23 +18,6 @@ const sizeMap: Record<TextSize, string> = {
   '9x': 'text-9xl',
 };
 
-const weightMap: Record<TextWeight, string> = {
-  normal: 'font-normal',
-  medium: 'font-medium',
-  semibold: 'font-semibold',
-  bold: 'font-bold',
-};
-
-const italicMap: Record<TextItalic, string> = {
-  italic: 'italic',
-  notitalic: 'not-italic',
-};
-
-const underlineMap: Record<TextUnderline, string> = {
-  underlined: 'underline',
-  notunderlined: 'no-underline',
-};
-
 const fontMap: Record<TextFont, string> = {
   primary: 'font-primary',
   secondary: 'font-secondary',
@@ -53,18 +29,18 @@ const fontMap: Record<TextFont, string> = {
 const Text: React.FC<TextProps> = ({
   text,
   size,
-  weight = 'normal',
-  italic = 'notitalic',
-  underline = 'notunderlined',
+  bold = false,
+  italic = false,
+  underline = false,
   font = 'sans',
   color = 'text-gray-900',
   className = '',
 }) => {
   const classes = clsx(
     sizeMap[size],
-    weightMap[weight],
-    italicMap[italic],
-    underlineMap[underline],
+    bold && 'font-bold',
+    italic && 'italic',
+    underline && 'underline',
     fontMap[font],
     color,
     className
