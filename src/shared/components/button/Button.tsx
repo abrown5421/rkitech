@@ -4,7 +4,7 @@ import type { ButtonProps } from './buttonTypes';
 import { colorStyles, variantBaseMap } from './buttonConstants';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
-import { getEntranceExitClasses, getHoverClasses, isEntranceExitAnimation, isHoverAnimation } from '../../utils/useAnimation';
+import { getAnimationClasses } from '../../utils/useAnimation';
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -24,14 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   height,
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const entranceExitClasses = isEntranceExitAnimation(animation)
-    ? getEntranceExitClasses(animation.entranceExit)
-    : '';
-
-  const hoverClasses =
-    !entranceExitClasses && isHovered && isHoverAnimation(animation)
-      ? getHoverClasses(animation.hover)
-      : '';
+  const animationClasses = getAnimationClasses(animation, isHovered);
 
   const resolvedWidth = resolveDimension(width, 'width');
   const resolvedHeight = resolveDimension(height, 'height');
@@ -64,8 +57,7 @@ const Button: React.FC<ButtonProps> = ({
     fullWidth && 'w-full',
     tailwindWidthClass,
     tailwindHeightClass,
-    entranceExitClasses,
-    hoverClasses,
+    animationClasses,
     !disabled && `cursor-${cursor || 'pointer'}`, 
     disabled && 'opacity-50 pointer-events-none cursor-not-allowed',
     className
