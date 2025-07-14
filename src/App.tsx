@@ -1,24 +1,13 @@
-import React, { useState } from 'react';
-import Select from './shared/components/select/Select';
+import React from 'react';
+import Loader from './shared/components/loader/Loader';
 
 const App: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState('');
 
   return (
     <div className='w-screen'>
-      <Select
-        label="Country"
-        margin='xl'
-        value={selectedCountry}
-        onChange={(e) => setSelectedCountry(e.target.value)}
-        error={!selectedCountry}
-        helperText={!selectedCountry ? "Country is required" : ""}
-      >
-        <option value="" disabled>Select your country</option>
-        <option value="us">United States</option>
-        <option value="ca">Canada</option>
-        <option value="uk">United Kingdom</option>
-      </Select>
+      <Loader variant="flash" color="bg-blue-500" size={12} />
+      <Loader variant="bounce" color="bg-red-400" size={20} />
+      <Loader variant="spinner" color="border-green-500" size={30} />
     </div>
   );
 };
