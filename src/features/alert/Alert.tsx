@@ -6,10 +6,12 @@ import type { Severity } from './alertTypes';
 import Icon from '../../shared/components/icon/Icon';
 
 const severityClasses: Record<Severity, { bg: string; text: string; border: string }> = {
-  success: { bg: 'bg-success-hover', text: 'text-success', border: 'border-success' },
-  error: { bg: 'bg-error-hover', text: 'text-error', border: 'border-error' },
-  warning: { bg: 'bg-warning-hover', text: 'text-warning', border: 'border-warning' },
-  info: { bg: 'bg-info-hover', text: 'text-info', border: 'border-info' },
+  success: { bg: 'bg-success-faded', text: 'text-success', border: 'border-success' },
+  error: { bg: 'bg-error-faded', text: 'text-error', border: 'border-error' },
+  warning: { bg: 'bg-warning-faded', text: 'text-warning', border: 'border-warning' },
+  info: { bg: 'bg-info-faded', text: 'text-info', border: 'border-info' },
+  primary: { bg: 'bg-primary-faded', text: 'text-primary', border: 'border-primary' },
+  secondary: { bg: 'bg-secondary-faded', text: 'text-secondary', border: 'border-secondary' },
 };
 
 const Alert: React.FC = () => {
