@@ -4,4 +4,6 @@ export interface ModalState {
   isOpen: boolean;
   title: string;
   content: ReactNode | null;
+  entranceAnimation?: string;
+  exitAnimation?: string;
 }
