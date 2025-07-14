@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Container from '../../shared/components/container/Container';
 import clsx from 'clsx';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { closeModal } from './modalSlice';
+import { closeModal, preCloseModal } from './modalSlice';
 import Icon from '../../shared/components/icon/Icon';
+import Text from '../../shared/components/text/Text';
+import Button from '../../shared/components/button/Button';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -11,17 +13,44 @@ const Modal: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (modal.isOpen) setIsVisible(true);
-  }, [modal.isOpen]);
+    let timeout: NodeJS.Timeout;
+
+    if (modal.isOpen && modal.animation.isEntering) {
+        setIsVisible(true);
+    } else if (!modal.animation.isEntering) {
+        timeout = setTimeout(() => {
+        setIsVisible(false);
+        dispatch(closeModal());
+        }, 500);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [modal.isOpen, modal.animation.isEntering, dispatch]);
 
   const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(() => {
-      dispatch(closeModal());
-    }, 500); 
+    dispatch(preCloseModal());
   };
 
-  if (!modal.isOpen && !isVisible) return null;
+  if (!isVisible && !modal.isOpen) return null;
+
+  const renderModalContent = () => {
+    switch (modal.modalType) {
+        case 'confirm':
+        return (
+            <Container flexDirection='col' height='h-full' justifyContent='between'>
+                <Text size='md' text={modal.modalProps?.message || 'Are you sure?'} />
+                <Container flexDirection='row' width='w-full' justifyContent='end' className='gap-2'>
+                    <Button padding="sm" color="error" onClick={modal.modalProps?.onDeny}>Deny</Button>
+                    <Button padding="sm" color="primary" onClick={modal.modalProps?.onConfirm}>Confirm</Button>
+                </Container>
+            </Container>
+        );
+        case 'custom':
+        return modal.modalProps?.customComponent || null;
+        default:
+        return null;
+    }
+  };
 
   return (
     <Container
@@ -29,34 +58,39 @@ const Modal: React.FC = () => {
       height="h-full"
       justifyContent="center"
       alignItems="center"
-      className={clsx('bg-gray-950/60 absolute top-0', 'z-40')}
+      className={clsx('bg-gray-950/60 absolute top-0', isVisible ? 'z-40' : 'z-0')}
       animation={{
         entranceExit: {
           entranceAnimation: 'animate__fadeIn',
           exitAnimation: 'animate__fadeOut',
-          isEntering: modal.isOpen,
+          isEntering: modal.animation.isEntering,
         },
       }}
       onClick={handleClose}
     >
       <Container
         width="w-1/3"
-        height="h-1/2"
-        className={clsx('bg-gray-50 rounded-2xl z-50')}
+        height="h-1/3"
+        padding='md'
+        flexDirection='col'
+        className={clsx('bg-gray-50 rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
-            entranceAnimation: modal.entranceAnimation,
-            exitAnimation: modal.exitAnimation,
-            isEntering: modal.isOpen,
+            entranceAnimation: modal.animation.entranceAnimation,
+            exitAnimation: modal.animation.exitAnimation,
+            isEntering: modal.animation.isEntering,
           },
         }}
-        onClick={(e) => e.stopPropagation()} 
+        onClick={(e) => e.stopPropagation()}
       >
-        <button  >
-            <Icon name="X" cursor='pointer' className="absolute top-4 right-4" onClick={handleClose} />
-        </button>
-        <div className="p-4 text-lg font-semibold">{modal.title}</div>
-        <div className="px-4">{modal.content}</div>
+        <Icon
+            name="X"
+            cursor="pointer"
+            className="absolute top-4 right-4"
+            onClick={handleClose}
+        />
+        <Text text={modal.title} size='2x'/>
+        {renderModalContent()}
       </Container>
     </Container>
   );

@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react';
+import type { EntranceExitAnimation } from '../../shared/types/animationTypes';
 
 export interface ModalState {
   isOpen: boolean;
   title: string;
-  content: ReactNode | null;
-  entranceAnimation?: string;
-  exitAnimation?: string;
+  modalType: 'confirm' | 'custom' | null;
+  modalProps: Record<string, any> | null;
+  animation: EntranceExitAnimation;
 }

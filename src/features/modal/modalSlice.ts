@@ -5,9 +5,13 @@ import type { ModalState } from './modalTypes';
 const initialState: ModalState = {
   isOpen: false,
   title: '',
-  content: null,
-  entranceAnimation: 'animate__backInUp',
-  exitAnimation: 'animate__backOutDown'
+  modalType: null,
+  modalProps: null,
+  animation: {
+    entranceAnimation: 'animate__backInUp',
+    exitAnimation: 'animate__backOutDown',
+    isEntering: false,
+  },
 };
 
 const modalSlice = createSlice({
@@ -15,24 +19,42 @@ const modalSlice = createSlice({
   initialState,
   reducers: {
     openModal: (
-      state,
-      action: PayloadAction<{ title: string; content: ModalState['content']; entranceAnimation: string; exitAnimation: string }>
-    ) => {
-      state.isOpen = true;
-      state.title = action.payload.title;
-      state.content = action.payload.content;
-      state.entranceAnimation = action.payload.entranceAnimation;
-      state.exitAnimation = action.payload.exitAnimation;
+        state,
+        action: PayloadAction<{
+            title: string;
+            modalType: ModalState['modalType'];
+            modalProps?: Record<string, any>;
+            entranceAnimation?: string;
+            exitAnimation?: string;
+        }>
+        ) => {
+        state.isOpen = true;
+        state.title = action.payload.title;
+        state.modalType = action.payload.modalType;
+        state.modalProps = action.payload.modalProps || null;
+        state.animation = {
+            entranceAnimation: action.payload.entranceAnimation || 'animate__backInUp',
+            exitAnimation: action.payload.exitAnimation || 'animate__backOutDown',
+            isEntering: true,
+        };
+    },
+    preCloseModal: (state) => {
+      state.animation.isEntering = false;
     },
     closeModal: (state) => {
-      state.isOpen = false;
-      state.title = '';
-      state.content = null;
-      state.entranceAnimation = 'animate__backInUp';
-      state.exitAnimation = 'animate__backOutDown';
-    },
+        state.isOpen = false;
+        state.title = '';
+        state.modalType = null;
+        state.modalProps = null;
+        state.animation = {
+            entranceAnimation: 'animate__backInUp',
+            exitAnimation: 'animate__backOutDown',
+            isEntering: false,
+        };
+    }
+
   },
 });
 
-export const { openModal, closeModal } = modalSlice.actions;
+export const { openModal, preCloseModal, closeModal } = modalSlice.actions;
 export default modalSlice.reducer;
