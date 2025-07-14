@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-import Input from './shared/components/input/Input';
-import Icon from './shared/components/icon/Icon';
+import Select from './shared/components/select/Select';
 
 const App: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
 
   return (
     <div className='w-screen'>
-      <Input
-        label="Email"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        startAdornment={<Icon name='Mail' height={20} width={20} />}
-        animation={{
-          hover: {
-            hoverAnimation: "animate__pulse",
-            repeat: 2,
-          }
-        }}
-      />
+      <Select
+        label="Country"
+        margin='xl'
+        value={selectedCountry}
+        onChange={(e) => setSelectedCountry(e.target.value)}
+        error={!selectedCountry}
+        helperText={!selectedCountry ? "Country is required" : ""}
+      >
+        <option value="" disabled>Select your country</option>
+        <option value="us">United States</option>
+        <option value="ca">Canada</option>
+        <option value="uk">United Kingdom</option>
+      </Select>
     </div>
   );
 };
