@@ -10,7 +10,7 @@ export type AlignItems = 'start'| 'center'| 'end'| 'stretch'| 'baseline';
 
 export interface ContainerProps {
   children: ReactNode;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   padding?: Padding;
   margin?: Margin;
   border?: ContainerBorder;
