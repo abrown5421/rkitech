@@ -49,7 +49,7 @@ const Alert: React.FC = () => {
   return (
     <Container
       padding="md"
-      className={`border-l-4 w-1/4 absolute bottom-3 right-3 ${bg} ${text} ${border}`}
+      className={`border-l-4 md:w-1/4 w-3/4  absolute bottom-3 right-3 ${bg} ${text} ${border}`}
       animation={{
         entranceExit: {
           entranceAnimation: alert.animation.entranceAnimation,
