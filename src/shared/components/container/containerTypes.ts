@@ -10,6 +10,7 @@ export type AlignItems = 'start'| 'center'| 'end'| 'stretch'| 'baseline';
 
 export interface ContainerProps {
   children: ReactNode;
+  onClick?: () => void;
   padding?: Padding;
   margin?: Margin;
   border?: ContainerBorder;
