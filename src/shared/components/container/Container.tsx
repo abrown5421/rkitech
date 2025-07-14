@@ -9,6 +9,7 @@ import { getAnimationClasses } from '../../utils/useAnimation';
 
 const Container: React.FC<ContainerProps> = ({
   children,
+  onClick,
   padding = 'none',
   margin = 'none',
   border = 'none',
@@ -56,6 +57,7 @@ const Container: React.FC<ContainerProps> = ({
     <div 
       className={classes} 
       style={inlineStyle}
+      onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
