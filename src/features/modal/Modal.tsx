@@ -69,7 +69,7 @@ const Modal: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        width="w-1/3"
+        width="w-4/5 md:w-1/3"
         height="h-1/3"
         padding='md'
         flexDirection='col'
