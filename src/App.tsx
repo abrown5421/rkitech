@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const handleClick = () => {
     dispatch(openAlert({
       open: true,
-      severity: 'error',
+      severity: 'info',
       message: 'testing the alert',
     }));
   }
