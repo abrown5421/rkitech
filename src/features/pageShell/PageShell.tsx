@@ -18,7 +18,8 @@ const PageShell: React.FC<PageShellState> = ({
     return (
         <Container 
             padding='md' 
-            className={`${activePageShellBgColor} relative z-20 h-[calc(100vh-50px)]`}
+            bgColor={activePageShellBgColor}
+            className={`relative z-20 h-[calc(100vh-50px)]`}
             animation={{
                 entranceExit: activePageShellAnimation,
             }}
