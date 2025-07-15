@@ -17,20 +17,20 @@ const severityClasses: Record<Severity, { bg: string; text: string; border: stri
 const Alert: React.FC = () => {
   const dispatch = useAppDispatch();
   const alert = useAppSelector((state) => state.alert);
-  const { bg, text, border } = severityClasses[alert.severity];
+  const { bg, text, border } = severityClasses[alert.alertSeverity];
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    if (alert.open && alert.animation.isEntering) {
+    if (alert.alertOpen && alert.alertAnimation.isEntering) {
       setIsVisible(true);
       timer = setTimeout(() => {
         dispatch(preCloseAlert());
       }, 3000);
     }
 
-    if (!alert.animation.isEntering && alert.open) {
+    if (!alert.alertAnimation.isEntering && alert.alertOpen) {
       timer = setTimeout(() => {
         setIsVisible(false);
         dispatch(closeAlert());
@@ -38,13 +38,13 @@ const Alert: React.FC = () => {
     }
 
     return () => clearTimeout(timer);
-  }, [alert.open, alert.animation.isEntering, dispatch]);
+  }, [alert.alertOpen, alert.alertAnimation.isEntering, dispatch]);
 
   const handleClose = () => {
     dispatch(preCloseAlert());
   };
 
-  if (!isVisible && !alert.open) return null;
+  if (!isVisible && !alert.alertOpen) return null;
 
   return (
     <Container
@@ -52,9 +52,9 @@ const Alert: React.FC = () => {
       className={`border-l-4 md:w-1/4 w-3/4  absolute bottom-3 right-3 ${bg} ${text} ${border}`}
       animation={{
         entranceExit: {
-          entranceAnimation: alert.animation.entranceAnimation,
-          exitAnimation: alert.animation.exitAnimation,
-          isEntering: alert.animation.isEntering,
+          entranceAnimation: alert.alertAnimation.entranceAnimation,
+          exitAnimation: alert.alertAnimation.exitAnimation,
+          isEntering: alert.alertAnimation.isEntering,
         },
       }}
     >
@@ -64,7 +64,7 @@ const Alert: React.FC = () => {
         className="absolute top-4 right-4"
         onClick={handleClose}
       />
-      {alert.message}
+      {alert.alertMessage}
     </Container>
   );
 };
