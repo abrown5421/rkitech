@@ -7,7 +7,7 @@ import Image from '../../shared/components/image/Image';
 const Navbar: React.FC = () => {
 
      return (
-         <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='shadow-[0_2px_4px_rgba(0,0,0,0.05)] bg-white'>
+         <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)] bg-white'>
             <Container 
                 alignItems='center' 
                 animation={{
