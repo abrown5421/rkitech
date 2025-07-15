@@ -58,7 +58,8 @@ const Modal: React.FC = () => {
       height="h-full"
       justifyContent="center"
       alignItems="center"
-      className={clsx('bg-gray-950/60 absolute top-0', isVisible ? 'z-40' : 'z-0')}
+      bgColor="bg-gray-950/60"
+      className={clsx('absolute top-0', isVisible ? 'z-40' : 'z-0')}
       animation={{
         entranceExit: {
           entranceAnimation: 'animate__fadeIn',
@@ -73,7 +74,8 @@ const Modal: React.FC = () => {
         height="h-1/3"
         padding='md'
         flexDirection='col'
-        className={clsx('bg-gray-50 rounded-2xl', isVisible ? 'z-50' : 'z-0')}
+        bgColor='bg-white'
+        className={clsx('rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
             entranceAnimation: modal.modalAnimation.entranceAnimation,
