@@ -25,6 +25,7 @@ const Navbar: React.FC = () => {
             </Container>
             <Container 
                 alignItems='center' 
+                className='gap-5'
                 animation={{
                     entranceExit: {
                         entranceAnimation: 'animate__fadeInRight',
@@ -33,6 +34,26 @@ const Navbar: React.FC = () => {
                     },
                 }}
             >
+                <Button 
+                    padding='sm' 
+                    variant='ghost'
+                    cursor='pointer'
+                    onClick={() =>
+                        clientNavigation('/', 'Home', 'homePage')()
+                    }
+                > 
+                    <Text text='Home' color='text-black' />
+                </Button>
+                <Button 
+                    padding='sm' 
+                    variant='ghost'
+                    cursor='pointer'
+                    onClick={() =>
+                        clientNavigation('/test-page', 'Test', 'testPage')()
+                    }
+                > 
+                    <Text text='Test Page' color='text-black' />
+                </Button>
                 <Button 
                     padding='sm' 
                     color='primary' 
