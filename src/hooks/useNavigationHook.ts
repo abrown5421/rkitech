@@ -3,11 +3,11 @@ import { useAppDispatch } from "../app/hooks";
 import { closeDrawer } from "../features/drawer/drawerSlice";
 import { setPartOfActivePageShell } from "../features/pageShell/pageShellSlice";
 
-export const useClientNavigationHook = () => {
+export const useNavigationHook = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const useClientNavigation = (path: string, pageName: string, pageID: string) => () => {
+  const useNavigation = (path: string, pageName: string, pageID: string) => () => {
     dispatch(closeDrawer());
     dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: false }));
 
@@ -20,5 +20,5 @@ export const useClientNavigationHook = () => {
     }, 500);
   };
 
-  return useClientNavigation;
+  return useNavigation;
 };
