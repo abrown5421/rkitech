@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
                     onClick={() =>
                         clientNavigation('/login', 'Login')()
                     }
-                >
+                > 
                     <Text text='Login' color='white' />
                 </Button>
             </Container>
