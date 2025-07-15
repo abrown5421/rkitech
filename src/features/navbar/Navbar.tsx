@@ -3,8 +3,10 @@ import Container from '../../shared/components/container/Container';
 import Text from '../../shared/components/text/Text';
 import Button from '../../shared/components/button/Button';
 import Image from '../../shared/components/image/Image';
+import { useNavigationHook } from '../../hooks/useNavigationHook';
 
 const Navbar: React.FC = () => {
+    const clientNavigation = useNavigationHook();
 
      return (
          <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)] bg-white'>
@@ -31,7 +33,14 @@ const Navbar: React.FC = () => {
                     },
                 }}
             >
-                <Button padding='sm' color='primary' cursor='pointer'>
+                <Button 
+                    padding='sm' 
+                    color='primary' 
+                    cursor='pointer'
+                    onClick={() =>
+                        clientNavigation('/login', 'Login')()
+                    }
+                >
                     <Text text='Login' color='white' />
                 </Button>
             </Container>
