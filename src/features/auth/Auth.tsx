@@ -5,7 +5,7 @@ const Auth: React.FC = () => {
 
     return (
         <Container width='w-full' height='h-full' justifyContent='center' alignItems='center'>
-            <Container width='w-11/12 md:w-1/3' height='h-1/2' padding='md' className='bg-white rounded-xl'>
+            <Container width='w-11/12 md:w-1/3' height='h-1/2' padding='md' bgColor='bg-white' className='rounded-xl'>
                 auth page
             </Container>
         </Container>
