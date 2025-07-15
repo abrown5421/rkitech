@@ -1,13 +1,16 @@
 import React from 'react';
-import Loader from './shared/components/loader/Loader';
+import Image from './shared/components/image/Image';
 
 const App: React.FC = () => {
 
   return (
     <div className='w-screen'>
-      <Loader variant="flash" color="bg-blue-500" size={12} />
-      <Loader variant="bounce" color="bg-red-400" size={20} />
-      <Loader variant="spinner" color="border-green-500" size={30} />
+      <Image
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeJQeJyzgAzTEVqXiGe90RGBFhfp_4RcJJMQ&s"
+        alt="Sample Image"
+        
+        height={50}
+      />
     </div>
   );
 };
