@@ -8,13 +8,33 @@ const Navbar: React.FC = () => {
 
      return (
          <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='shadow-[0_2px_4px_rgba(0,0,0,0.05)]'>
-            <Container alignItems='center'>
+            <Container 
+                alignItems='center' 
+                animation={{
+                    entranceExit: {
+                        entranceAnimation: 'animate__fadeInLeft',
+                        exitAnimation: 'animate__fadeOutLeft',
+                        isEntering: true,
+                    },
+                }}
+            >
                 <Image src="../../../public/assets/images/logo.png" height={50} alt='Rkitech' />
                 <Text text='Rkitech' bold={true} size='xl' font='primary' />
             </Container>
-            <Button padding='sm' color='primary' cursor='pointer'>
-                <Text text='Login' color='white' />
-            </Button>
+            <Container 
+                alignItems='center' 
+                animation={{
+                    entranceExit: {
+                        entranceAnimation: 'animate__fadeInRight',
+                        exitAnimation: 'animate__fadeOutRight',
+                        isEntering: true,
+                    },
+                }}
+            >
+                <Button padding='sm' color='primary' cursor='pointer'>
+                    <Text text='Login' color='white' />
+                </Button>
+            </Container>
          </Container>
      );
 };
