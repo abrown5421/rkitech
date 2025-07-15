@@ -7,7 +7,7 @@ import Navbar from './features/navbar/Navbar';
 const App: React.FC = () => {
 
   return (
-    <div className='w-screen h-screen z-30 relative'>
+    <div className='w-screen h-screen z-30 relative bg-black'>
       <Navbar />
       <Modal />
       <Alert />
