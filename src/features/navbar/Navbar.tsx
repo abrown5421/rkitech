@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
     const clientNavigation = useNavigationHook();
 
      return (
-         <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)] bg-white'>
+         <Container height={50} padding='sm' justifyContent='between' alignItems='center' bgColor='bg-white' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)]'>
             <Container 
                 alignItems='center' 
                 animation={{
