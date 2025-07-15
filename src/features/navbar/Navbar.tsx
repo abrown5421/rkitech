@@ -7,7 +7,7 @@ import Image from '../../shared/components/image/Image';
 const Navbar: React.FC = () => {
 
      return (
-         <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='shadow-[0_2px_4px_rgba(0,0,0,0.05)]'>
+         <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='shadow-[0_2px_4px_rgba(0,0,0,0.05)] bg-white'>
             <Container 
                 alignItems='center' 
                 animation={{
@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
                 }}
             >
                 <Image src="../../../public/assets/images/logo.png" height={50} alt='Rkitech' />
-                <Text text='Rkitech' bold={true} size='xl' font='primary' />
+                <Text text='Rkitech' bold={true} size='xl' font='primary' color='text-black' />
             </Container>
             <Container 
                 alignItems='center' 
