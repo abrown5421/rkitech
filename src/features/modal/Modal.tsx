@@ -15,9 +15,9 @@ const Modal: React.FC = () => {
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
-    if (modal.isOpen && modal.animation.isEntering) {
+    if (modal.modalOpen && modal.modalAnimation.isEntering) {
         setIsVisible(true);
-    } else if (!modal.animation.isEntering) {
+    } else if (!modal.modalAnimation.isEntering) {
         timeout = setTimeout(() => {
         setIsVisible(false);
         dispatch(closeModal());
@@ -25,13 +25,13 @@ const Modal: React.FC = () => {
     }
 
     return () => clearTimeout(timeout);
-  }, [modal.isOpen, modal.animation.isEntering, dispatch]);
+  }, [modal.modalOpen, modal.modalAnimation.isEntering, dispatch]);
 
   const handleClose = () => {
     dispatch(preCloseModal());
   };
 
-  if (!isVisible && !modal.isOpen) return null;
+  if (!isVisible && !modal.modalOpen) return null;
 
   const renderModalContent = () => {
     switch (modal.modalType) {

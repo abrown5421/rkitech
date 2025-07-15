@@ -3,11 +3,11 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ModalState } from './modalTypes';
 
 const initialState: ModalState = {
-  isOpen: false,
-  title: '',
+  modalOpen: false,
+  modalTitle: '',
   modalType: null,
   modalProps: null,
-  animation: {
+  modalAnimation: {
     entranceAnimation: 'animate__backInUp',
     exitAnimation: 'animate__backOutDown',
     isEntering: false,
@@ -28,25 +28,25 @@ const modalSlice = createSlice({
             exitAnimation?: string;
         }>
         ) => {
-        state.isOpen = true;
-        state.title = action.payload.title;
+        state.modalOpen = true;
+        state.modalTitle = action.payload.title;
         state.modalType = action.payload.modalType;
         state.modalProps = action.payload.modalProps || null;
-        state.animation = {
+        state.modalAnimation = {
             entranceAnimation: action.payload.entranceAnimation || 'animate__backInUp',
             exitAnimation: action.payload.exitAnimation || 'animate__backOutDown',
             isEntering: true,
         };
     },
     preCloseModal: (state) => {
-      state.animation.isEntering = false;
+      state.modalAnimation.isEntering = false;
     },
     closeModal: (state) => {
-        state.isOpen = false;
-        state.title = '';
+        state.modalOpen = false;
+        state.modalTitle = '';
         state.modalType = null;
         state.modalProps = null;
-        state.animation = {
+        state.modalAnimation = {
             entranceAnimation: 'animate__backInUp',
             exitAnimation: 'animate__backOutDown',
             isEntering: false,
