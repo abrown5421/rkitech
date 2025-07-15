@@ -63,7 +63,7 @@ const Modal: React.FC = () => {
         entranceExit: {
           entranceAnimation: 'animate__fadeIn',
           exitAnimation: 'animate__fadeOut',
-          isEntering: modal.animation.isEntering,
+          isEntering: modal.modalAnimation.isEntering,
         },
       }}
       onClick={handleClose}
@@ -76,9 +76,9 @@ const Modal: React.FC = () => {
         className={clsx('bg-gray-50 rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
-            entranceAnimation: modal.animation.entranceAnimation,
-            exitAnimation: modal.animation.exitAnimation,
-            isEntering: modal.animation.isEntering,
+            entranceAnimation: modal.modalAnimation.entranceAnimation,
+            exitAnimation: modal.modalAnimation.exitAnimation,
+            isEntering: modal.modalAnimation.isEntering,
           },
         }}
         onClick={(e) => e.stopPropagation()}
@@ -89,7 +89,7 @@ const Modal: React.FC = () => {
             className="absolute top-4 right-4"
             onClick={handleClose}
         />
-        <Text text={modal.title} size='2x'/>
+        <Text text={modal.modalTitle} size='2x'/>
         {renderModalContent()}
       </Container>
     </Container>
