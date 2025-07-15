@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
                     color='primary' 
                     cursor='pointer'
                     onClick={() =>
-                        clientNavigation('/login', 'Login')()
+                        clientNavigation('/login', 'Login', 'authenticationPage')()
                     }
                 > 
                     <Text text='Login' color='white' />
