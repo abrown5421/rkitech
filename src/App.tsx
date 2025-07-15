@@ -5,6 +5,7 @@ import { useAppDispatch } from './app/hooks';
 import Alert from './features/alert/Alert';
 import { openDrawer } from './features/drawer/drawerSlice';
 import Drawer from './features/drawer/Drawer';
+import Navbar from './features/navbar/Navbar';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +30,7 @@ const App: React.FC = () => {
 
   return (
     <div className='w-screen h-screen z-30 relative'>
-      <Button onClick={handleClick} color="success">open alert</Button>
+      <Navbar />
       <Modal />
       <Alert />
       <Drawer />
