@@ -12,7 +12,8 @@ const App: React.FC = () => {
     <div className='w-screen h-screen z-30 relative bg-black'>
       <Navbar />
       <Routes>
-        <Route path='/' element={<PageShell />} />
+        <Route path='/' element={<PageShell activePageShellBgColor='bg-white' />} />
+        <Route path='/Login' element={<PageShell activePageShellBgColor='bg-transparent' />} />
       </Routes>
       <Modal />
       <Alert />
