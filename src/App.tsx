@@ -10,7 +10,15 @@ const App: React.FC = () => {
   return (
     <div className='w-screen h-screen z-30 relative bg-black'>
       <Navbar />
-      <PageShell />
+      <PageShell 
+        pageShellRenderMethod = 'dynamic'
+        pageShellBackgroundColor = 'bg-white'
+        pageShellAnimation={{
+            entranceAnimation: 'animate__fadeIn',
+            exitAnimation: 'animate__fadeOut',
+            isEntering: true,
+        }}
+      />
       <Modal />
       <Alert />
       <Drawer />
