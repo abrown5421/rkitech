@@ -37,8 +37,9 @@ const Drawer: React.FC = () => {
     <Container
       width="w-full"
       height="h-full"
+      bgColor='bg-gray-950/60'
       className={clsx(
-        'bg-gray-950/60 fixed top-0 left-0 flex',
+        'fixed top-0 left-0 flex',
         drawer.draweranchor === 'right' || drawer.draweranchor === 'left'
           ? 'justify-start'
           : 'items-start',
@@ -55,8 +56,9 @@ const Drawer: React.FC = () => {
     >
       <Container
         padding="md"
+        bgColor='bg-white'
         className={clsx(
-          'bg-white shadow-xl absolute',
+          'shadow-xl absolute',
           positionClasses[drawer.draweranchor ?? 'right']
         )}
         animation={{
