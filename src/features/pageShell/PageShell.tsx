@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Container from '../../shared/components/container/Container';
+import Auth from '../../features/auth/auth';
 import type { PageShellState } from './pageShellTypes';
+import { useAppSelector } from '../../app/hooks';
 
 const PageShell: React.FC<PageShellState> = ({
     pageShellRenderMethod = 'dynamic',
@@ -11,8 +13,7 @@ const PageShell: React.FC<PageShellState> = ({
         isEntering: true,
     }
 }) => {
-
-    useEffect(()=>{console.log(pageShellRenderMethod)}, [])
+    const activePage = useAppSelector((state) => state.pageShell);
 
     return (
         <Container 
@@ -26,7 +27,7 @@ const PageShell: React.FC<PageShellState> = ({
                 },
             }}
         >
-            page
+            {pageShellRenderMethod === 'static' && activePage.activePageName === 'Auth' && <Auth />}
         </Container>
     );
 };
