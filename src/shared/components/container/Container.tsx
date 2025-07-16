@@ -9,6 +9,7 @@ import { getAnimationClasses } from '../../utils/useAnimation';
 
 const Container: React.FC<ContainerProps> = ({
   children,
+  bgColor,
   onClick,
   padding = 'none',
   margin = 'none',
@@ -45,6 +46,7 @@ const Container: React.FC<ContainerProps> = ({
     paddingMap[padding],
     marginMap[margin],
     borderMap[border],
+    bgColor,
     rounded && 'rounded-xl',
     shadow && 'shadow-lg',
     tailwindWidthClass,

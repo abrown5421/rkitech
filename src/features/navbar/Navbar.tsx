@@ -3,11 +3,13 @@ import Container from '../../shared/components/container/Container';
 import Text from '../../shared/components/text/Text';
 import Button from '../../shared/components/button/Button';
 import Image from '../../shared/components/image/Image';
+import { useNavigationHook } from '../../hooks/useNavigationHook';
 
 const Navbar: React.FC = () => {
+    const clientNavigation = useNavigationHook();
 
      return (
-         <Container height={50} padding='sm' justifyContent='between' alignItems='center' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)] bg-white'>
+         <Container height={50} padding='sm' justifyContent='between' alignItems='center' bgColor='bg-white' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)]'>
             <Container 
                 alignItems='center' 
                 animation={{
@@ -23,6 +25,7 @@ const Navbar: React.FC = () => {
             </Container>
             <Container 
                 alignItems='center' 
+                className='gap-5'
                 animation={{
                     entranceExit: {
                         entranceAnimation: 'animate__fadeInRight',
@@ -31,7 +34,34 @@ const Navbar: React.FC = () => {
                     },
                 }}
             >
-                <Button padding='sm' color='primary' cursor='pointer'>
+                <Button 
+                    padding='sm' 
+                    variant='ghost'
+                    cursor='pointer'
+                    onClick={() =>
+                        clientNavigation('/', 'Home', 'homePage')()
+                    }
+                > 
+                    <Text text='Home' color='text-black' />
+                </Button>
+                <Button 
+                    padding='sm' 
+                    variant='ghost'
+                    cursor='pointer'
+                    onClick={() =>
+                        clientNavigation('/test-page', 'Test', 'testPage')()
+                    }
+                > 
+                    <Text text='Test Page' color='text-black' />
+                </Button>
+                <Button 
+                    padding='sm' 
+                    color='primary' 
+                    cursor='pointer'
+                    onClick={() =>
+                        clientNavigation('/login', 'Auth', 'authenticationPage')()
+                    }
+                > 
                     <Text text='Login' color='white' />
                 </Button>
             </Container>

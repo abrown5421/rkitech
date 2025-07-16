@@ -15,7 +15,6 @@ const App: React.FC = () => {
   const pages = [
     {pageName: 'Home', pageId:'homePage', pagePath: '/', pageBg: 'bg-white', pageEntranceAnimation: 'animate__fadeIn', pageExitAnimation: 'animate__fadeOut'},
     {pageName: 'Auth', pageId:'authenticationPage', pagePath: '/login', pageBg: 'bg-transparent', pageEntranceAnimation: 'animate__fadeInUpBig', pageExitAnimation: 'animate__fadeOutDownBig'},
-    {pageName: 'Auth', pageId:'authenticationPage', pagePath: '/sign-up', pageBg: 'bg-transparent', pageEntranceAnimation: 'animate__fadeInUpBig', pageExitAnimation: 'animate__fadeOutDownBig'},
   ];
 
   useEffect(()=>{

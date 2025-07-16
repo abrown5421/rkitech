@@ -1,34 +1,34 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Container from '../../shared/components/container/Container';
 import type { PageShellState } from './pageShellTypes';
+import { useAppSelector } from '../../app/hooks';
+import Auth from '../auth/Auth';
+import Home from '../home/Home';
 
 const PageShell: React.FC<PageShellState> = ({
-    pageShellRenderMethod = 'dynamic',
-    pageShellBackgroundColor = 'bg-white',
-    pageShellAnimation = {
+    activePageShellBgColor = 'bg-white', 
+    activePageShellAnimation = {
         entranceAnimation: 'animate__fadeIn',
         exitAnimation: 'animate__fadeOut',
         isEntering: true,
     }
 }) => {
-
-    useEffect(()=>{console.log(pageShellRenderMethod)}, [])
+    const activePage = useAppSelector((state) => state.pageShell);
 
     return (
         <Container 
             padding='md' 
-            className={`${pageShellBackgroundColor} z-20 h-[calc(100vh-50px)]`}
+            bgColor={activePageShellBgColor}
+            className={`relative z-20 h-[calc(100vh-50px)]`}
             animation={{
-                entranceExit: {
-                    entranceAnimation: pageShellAnimation.entranceAnimation,
-                    exitAnimation: pageShellAnimation.exitAnimation,
-                    isEntering: pageShellAnimation.isEntering,
-                },
+                entranceExit: activePageShellAnimation,
             }}
         >
-            page
+            {activePage.activePageShellName === 'Home' && <Home />}
+            {activePage.activePageShellName === 'Auth' && <Auth />}
         </Container>
     );
 };
 
 export default PageShell;
+ 
