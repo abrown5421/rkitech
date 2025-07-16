@@ -51,7 +51,7 @@ const Input: React.FC<InputProps> = ({
         )}
       >
         {startAdornment && (
-          <div className="absolute left-2 flex items-center pointer-events-none text-gray-500">
+          <div className="absolute left-2 flex items-center text-gray-500">
             {startAdornment}
           </div>
         )}
@@ -86,7 +86,7 @@ const Input: React.FC<InputProps> = ({
         )}
 
         {endAdornment && (
-          <div className="absolute right-2 flex items-center pointer-events-none text-gray-500">
+          <div className="absolute right-2 flex items-center text-gray-500">
             {endAdornment}
           </div>
         )}
