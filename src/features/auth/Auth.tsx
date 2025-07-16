@@ -1,34 +1,101 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../../shared/components/container/Container';
 import Text from '../../shared/components/text/Text';
 import Icon from '../../shared/components/icon/Icon';
 import Input from '../../shared/components/input/Input';
 import Button from '../../shared/components/button/Button';
+import { useNavigationHook } from '../../hooks/useNavigationHook';
 
 const Auth: React.FC = () => {
+    const clientNavigation = useNavigationHook();
     const [isSignup, setIsSignup] = useState(false);
     const [formValues, setFormValues] = useState({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
     });
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues((prev) => ({ ...prev, [field]: e.target.value }));
+        setErrors((prev) => ({ ...prev, [field]: '' }));
     };
-      
+
+    const validateForm = () => {
+        const newErrors: Record<string, string> = {};
+
+        if (isSignup) {
+            if (!formValues.firstName.trim()) newErrors.firstName = 'First name is required';
+            if (!formValues.lastName.trim()) newErrors.lastName = 'Last name is required';
+        }
+
+        if (!formValues.email.trim()) {
+            newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formValues.email)) {
+            newErrors.email = 'Email is invalid';
+        }
+
+        if (!formValues.password) {
+            newErrors.password = 'Password is required';
+        } else if (formValues.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+        }
+
+        if (isSignup && formValues.confirmPassword !== formValues.password) {
+            newErrors.confirmPassword = 'Passwords do not match';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = () => {
-        console.log('sub')
-    }
+        if (!validateForm()) return;
+        console.log('Submitted:', formValues);
+    };
+
+    useEffect(()=>{
+        if (location.pathname === '/sign-up') {
+            setIsSignup(true)
+        } else {
+            setIsSignup(false)
+        }
+    }, [])
 
     return (
-        <Container width='w-full' height='h-full' justifyContent='center' alignItems='center'>
-            <Container width='w-11/12 md:w-1/3' height='h-1/2' padding='md' bgColor='bg-white' className='rounded-xl' flexDirection='col' justifyContent='between'>
-                <Text text='Login' size='xl' />
+        <Container
+            width="w-full"
+            height="h-full"
+            justifyContent="center"
+            alignItems="center"
+        >
+            <Container width='w-11/12 md:w-1/3' height='min-h-1/2' padding='md' bgColor='bg-white' className='rounded-xl' flexDirection='col' justifyContent='between'>
+                <Text text={isSignup ? 'Create Account' : 'Login'} size="xl" />
+
+                {isSignup && (
+                    <>
+                        <Input
+                            label="First Name"
+                            value={formValues.firstName}
+                            onChange={handleChange('firstName')}
+                            error={!!errors.firstName}
+                            helperText={errors.firstName}
+                            className='mt-3'
+                        />
+                        <Input
+                            label="Last Name"
+                            value={formValues.lastName}
+                            onChange={handleChange('lastName')}
+                            error={!!errors.lastName}
+                            helperText={errors.lastName}
+                            className='mt-3'
+                        />
+                    </>
+                )}
+
                 <Input
                     label="Email"
                     type="email"
@@ -36,6 +103,7 @@ const Auth: React.FC = () => {
                     onChange={handleChange('email')}
                     error={!!errors.email}
                     helperText={errors.email}
+                    className='mt-3'
                 />
 
                 <Input
@@ -45,16 +113,56 @@ const Auth: React.FC = () => {
                     onChange={handleChange('password')}
                     error={!!errors.password}
                     helperText={errors.password}
+                    className='mt-3'
                     endAdornment={
                         <Icon
-                            className='relative z-50'
+                            className="relative z-50 cursor-pointer"
                             name={showPassword ? 'EyeOff' : 'Eye'}
                             onClick={() => setShowPassword((prev) => !prev)}
                         />
                     }
                 />
-                <Button padding='sm' onClick={handleSubmit}>
+
+                {isSignup && (
+                    <Input
+                        label="Confirm Password"
+                        type="password"
+                        value={formValues.confirmPassword}
+                        onChange={handleChange('confirmPassword')}
+                        error={!!errors.confirmPassword}
+                        helperText={errors.confirmPassword}
+                        className='mt-3'
+                    />
+                )}
+
+                <Button className='mt-3' padding="sm" onClick={handleSubmit}>
                     {isSignup ? 'Create Account' : 'Login'}
+                </Button>
+
+                <Button
+                    padding="none"
+                    variant="ghost"
+                    className="text-sm text-blue-600 hover:underline"
+                    onClick={() => {
+                        isSignup
+                            ? clientNavigation('/login', 'Auth', 'authenticationPage')()
+                            : clientNavigation('/sign-up', 'Auth', 'authenticationPage')()
+                        setErrors({});
+                        setTimeout(() => {
+                            setFormValues({
+                                firstName: '',
+                                lastName: '',
+                                email: '',
+                                password: '',
+                                confirmPassword: '',
+                            });
+                            setIsSignup((prev) => !prev);
+                        }, 150)
+                    }}
+                >
+                    {isSignup
+                        ? 'Already have an account? Login'
+                        : "Don't have an account? Sign up"}
                 </Button>
             </Container>
         </Container>
