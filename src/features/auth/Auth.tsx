@@ -5,8 +5,13 @@ import Icon from '../../shared/components/icon/Icon';
 import Input from '../../shared/components/input/Input';
 import Button from '../../shared/components/button/Button';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
+import { useAppDispatch } from '../../app/hooks';
+import { openAlert } from '../alert/alertSlice';
+import { signInUser } from '../../services/auth/signInUser';
+import { signUpUser } from '../../services/auth/signUpUser';
 
 const Auth: React.FC = () => {
+    const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
     const [isSignup, setIsSignup] = useState(false);
     const [formValues, setFormValues] = useState({
@@ -52,9 +57,75 @@ const Auth: React.FC = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
-        if (!validateForm()) return;
-        console.log('Submitted:', formValues);
+    const handleSubmit = async () => {
+        if (!validateForm()) {
+            dispatch(openAlert({
+                alertOpen: true,
+                alertSeverity: 'error',
+                alertMessage: `Please fix the errors in the ${isSignup ? 'sign up' : 'login'} form.`,
+                alertAnimation: {
+                    entranceAnimation: 'animate__fadeInRight animate__faster',
+                    exitAnimation: 'animate__fadeOutRight animate__faster',
+                    isEntering: true,
+                }
+            }));
+            return;
+        }
+    
+        try {
+            if (isSignup) {
+                const result = await signUpUser(
+                    formValues.email,
+                    formValues.password,
+                    formValues.firstName,
+                    formValues.lastName
+                );
+    
+                if (!result) throw new Error('Failed to sign up');
+    
+                dispatch(openAlert({
+                    alertOpen: true,
+                    alertSeverity: 'success',
+                    alertMessage: 'Account created successfully!',
+                    alertAnimation: {
+                        entranceAnimation: 'animate__fadeInRight animate__faster',
+                        exitAnimation: 'animate__fadeOutRight animate__faster',
+                        isEntering: true,
+                    }
+                }));
+    
+                clientNavigation('/', 'Home', 'homePage')(); 
+    
+            } else {
+                const result = await signInUser(formValues.email, formValues.password);
+    
+                if (!result) throw new Error('Login failed');
+    
+                dispatch(openAlert({
+                    alertOpen: true,
+                    alertSeverity: 'success',
+                    alertMessage: 'Login successful!',
+                    alertAnimation: {
+                        entranceAnimation: 'animate__fadeInRight animate__faster',
+                        exitAnimation: 'animate__fadeOutRight animate__faster',
+                        isEntering: true,
+                    }
+                }));
+    
+                clientNavigation('/', 'Home', 'homePage')(); 
+            }
+        } catch (err: any) {
+            dispatch(openAlert({
+                alertOpen: true,
+                alertSeverity: 'error',
+                alertMessage: err.message || 'An error occurred. Please try again.',
+                alertAnimation: {
+                    entranceAnimation: 'animate__fadeInRight animate__faster',
+                    exitAnimation: 'animate__fadeOutRight animate__faster',
+                    isEntering: true,
+                }
+            }));
+        }
     };
 
     useEffect(()=>{
