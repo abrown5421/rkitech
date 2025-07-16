@@ -108,18 +108,16 @@ const Auth: React.FC = () => {
     
             } else {
                 const result = await signInUser(formValues.email, formValues.password);
-    
+
                 if (!result) throw new Error('Login failed');
-    
-                const userData = result.userData; 
-    
+
                 dispatch(setAuthUser({
                     userId: result.userId,
-                    email: userData.email,
-                    firstName: userData.firstName,
-                    lastName: userData.lastName,
-                    userRole: userData.userRole,
-                    createdAt: userData.createdAt,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    userRole: result.userRole,
+                    createdAt: result.createdAt,
                 }));
     
                 dispatch(openAlert({
