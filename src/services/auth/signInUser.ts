@@ -1,10 +1,9 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { getDocumentById } from '../database/readData';
+import type { AuthUser } from '../../features/auth/authUserTypes';
 
-export async function signInUser(email: string, password: string): Promise<{
-  userId: string;
-} | null> {
+export async function signInUser(email: string, password: string): Promise<AuthUser | null> {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const userId = userCredential.user.uid;
@@ -18,6 +17,11 @@ export async function signInUser(email: string, password: string): Promise<{
 
     return {
       userId,
+      email: userData.email,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      userRole: userData.userRole,
+      createdAt: userData.createdAt,
     };
   } catch (error) {
     console.error('Login failed:', error);
