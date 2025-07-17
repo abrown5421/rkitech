@@ -11,6 +11,9 @@ import { useNavigationHook } from './hooks/useNavigationHook';
 const App: React.FC = () => {
   const clientNavigation = useNavigationHook();
   const activePage = useAppSelector((state) => state.pageShell);
+  const authUser = useAppSelector((state) => state.authUser);
+
+  useEffect(()=>{console.log(authUser)}, [authUser])
 
   const pages = [
     {pageName: 'Home', pageId:'homePage', pagePath: '/', pageBg: 'bg-white', pageEntranceAnimation: 'animate__fadeIn', pageExitAnimation: 'animate__fadeOut'},
