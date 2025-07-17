@@ -79,7 +79,8 @@ const Auth: React.FC = () => {
                     formValues.email,
                     formValues.password,
                     formValues.firstName,
-                    formValues.lastName
+                    formValues.lastName,
+                    ''
                 );
     
                 if (!result) throw new Error('Failed to sign up');
@@ -89,6 +90,7 @@ const Auth: React.FC = () => {
                     email: formValues.email,
                     firstName: formValues.firstName,
                     lastName: formValues.lastName,
+                    profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
                 }));
@@ -116,6 +118,7 @@ const Auth: React.FC = () => {
                     email: result.email,
                     firstName: result.firstName,
                     lastName: result.lastName,
+                    profileImage: '',
                     userRole: result.userRole,
                     createdAt: result.createdAt,
                 }));
