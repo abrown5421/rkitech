@@ -11,15 +11,12 @@ export async function signInUser(email: string, password: string): Promise<AuthU
     const userData = await getDocumentById('Users', userId);
     if (!userData) throw new Error('User document not found. Please contact administrator');
 
-    if (userData.userRole === 'User') {
-      throw new Error('Login failed. Please check your credentials.');
-    }
-
     return {
       userId,
       email: userData.email,
       firstName: userData.firstName,
       lastName: userData.lastName,
+      profileImage: userData.profileImage,
       userRole: userData.userRole,
       createdAt: userData.createdAt,
     };

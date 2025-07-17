@@ -8,7 +8,8 @@ export async function signUpUser(
   email: string,
   password: string,
   firstName: string,
-  lastName: string
+  lastName: string,
+  profileImage: string,
 ): Promise<AuthUser | null> {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -22,6 +23,7 @@ export async function signUpUser(
       email,
       userRole: 'User',
       createdAt,
+      profileImage
     });
 
     return {
@@ -31,6 +33,7 @@ export async function signUpUser(
       lastName,
       userRole: 'User',
       createdAt,
+      profileImage
     };
   } catch (error) {
     console.error('Signup failed:', error);
