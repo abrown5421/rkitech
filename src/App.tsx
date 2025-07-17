@@ -5,15 +5,29 @@ import Drawer from './features/drawer/Drawer';
 import Navbar from './features/navbar/Navbar';
 import PageShell from './features/pageShell/PageShell';
 import { Route, Routes } from 'react-router-dom';
-import { useAppSelector } from './app/hooks';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { useNavigationHook } from './hooks/useNavigationHook';
+import Cookies from 'js-cookie';
+import { setAuthUser } from './features/auth/authUserSlice';
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const clientNavigation = useNavigationHook();
   const activePage = useAppSelector((state) => state.pageShell);
   const authUser = useAppSelector((state) => state.authUser);
 
-  useEffect(()=>{console.log(authUser)}, [authUser])
+   useEffect(() => {
+        const storedUser = Cookies.get('authUser');
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                dispatch(setAuthUser(parsedUser));
+            } catch (e) {
+                console.error('Failed to parse user from cookie', e);
+                Cookies.remove('authUser'); 
+            }
+        }
+    }, [dispatch]);
 
   const pages = [
     {pageName: 'Home', pageId:'homePage', pagePath: '/', pageBg: 'bg-white', pageEntranceAnimation: 'animate__fadeIn', pageExitAnimation: 'animate__fadeOut'},
