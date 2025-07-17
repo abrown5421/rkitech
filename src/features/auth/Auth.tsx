@@ -10,6 +10,7 @@ import { openAlert } from '../alert/alertSlice';
 import { setAuthUser } from './authUserSlice';
 import { signUpUser } from '../../services/auth/signUpUser';
 import { signInUser } from '../../services/auth/signInUser';
+import Cookies from 'js-cookie';
 
 const Auth: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -94,7 +95,17 @@ const Auth: React.FC = () => {
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
                 }));
-    
+                
+                Cookies.set('authUser', JSON.stringify({
+                    userId: result.userId,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    profileImage: '',
+                    userRole: result.userRole,
+                    createdAt: result.createdAt,
+                }), { expires: 1 });
+
                 dispatch(openAlert({
                     alertOpen: true,
                     alertSeverity: 'success',
@@ -122,7 +133,17 @@ const Auth: React.FC = () => {
                     userRole: result.userRole,
                     createdAt: result.createdAt,
                 }));
-    
+                
+                Cookies.set('authUser', JSON.stringify({
+                    userId: result.userId,
+                    email: formValues.email,
+                    firstName: formValues.firstName,
+                    lastName: formValues.lastName,
+                    profileImage: '',
+                    userRole: 'User',
+                    createdAt: new Date().toISOString(),
+                }), { expires: 1 });
+
                 dispatch(openAlert({
                     alertOpen: true,
                     alertSeverity: 'success',
