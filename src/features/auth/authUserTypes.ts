@@ -3,7 +3,7 @@ export interface AuthUser {
     email: string;
     firstName: string;
     lastName: string;
-    profileImage: string;
+    profileImage?: string;
     userRole: 'User' | 'Admin' | string;
     createdAt: string; 
 }
