@@ -8,8 +8,7 @@ export async function signUpUser(
   email: string,
   password: string,
   firstName: string,
-  lastName: string,
-  profileImage: string
+  lastName: string
 ): Promise<AuthUser | null> {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -22,7 +21,6 @@ export async function signUpUser(
       lastName,
       email,
       userRole: 'User',
-      profileImage,
       createdAt,
     });
 
@@ -31,7 +29,6 @@ export async function signUpUser(
       email,
       firstName,
       lastName,
-      profileImage,
       userRole: 'User',
       createdAt,
     };
