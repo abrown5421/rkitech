@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from '../../shared/components/container/Container';
-import type { PageShellState } from './pageShellTypes';
+import type { PageShellState } from './pageTypes';
 import { useAppSelector } from '../../app/hooks';
 import Auth from '../auth/Auth';
 import Home from '../home/Home';

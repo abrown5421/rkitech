@@ -10,3 +10,17 @@ export interface PageShellState {
     activePageShellBgColor: string;
     activePageShellAnimation: EntranceExitAnimation;
 }
+
+export interface Page {
+  pageName: string;
+  pageId: string;
+  pagePath: string;
+  pageBg: string;
+  pageEntranceAnimation: string;
+  pageExitAnimation: string;
+}
+
+export interface PagesState {
+  pages: Page[];
+  activePageId: string | null;
+}

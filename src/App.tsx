@@ -3,7 +3,7 @@ import Modal from './features/modal/Modal';
 import Alert from './features/alert/Alert';
 import Drawer from './features/drawer/Drawer';
 import Navbar from './features/navbar/Navbar';
-import PageShell from './features/pageShell/PageShell';
+import PageShell from './features/pages/PageShell';
 import { Route, Routes } from 'react-router-dom';
 import { useAppSelector } from './app/hooks';
 
