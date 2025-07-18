@@ -17,9 +17,7 @@ const App: React.FC = () => {
   const clientNavigation = useNavigationHook();
   const loadingSite = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
-  const pagesFromDb = useAppSelector((state) => state.pages);
-
-  useEffect(()=>{console.log(pagesFromDb)}, [pagesFromDb])
+  const pages = useAppSelector((state) => state.pages.pages);
 
   useEffect(() => {
     const storedUser = Cookies.get('authUser');
@@ -33,12 +31,6 @@ const App: React.FC = () => {
         }
     }
   }, [dispatch]);
-
-  const pages = [
-    {pageName: 'Home', pageId:'homePage', pagePath: '/', pageBg: 'bg-white', pageEntranceAnimation: 'animate__fadeIn', pageExitAnimation: 'animate__fadeOut'},
-    {pageName: 'Auth', pageId:'authenticationPage', pagePath: '/login', pageBg: 'bg-transparent', pageEntranceAnimation: 'animate__fadeInUpBig', pageExitAnimation: 'animate__fadeOutDownBig'},
-    {pageName: 'Auth', pageId:'authenticationPage', pagePath: '/sign-up', pageBg: 'bg-transparent', pageEntranceAnimation: 'animate__fadeInUpBig', pageExitAnimation: 'animate__fadeOutDownBig'},
-  ];
 
   useEffect(()=>{
     const getPage = pages.find((page) => page.pagePath === location.pathname);
