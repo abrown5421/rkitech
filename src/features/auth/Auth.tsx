@@ -186,7 +186,7 @@ const Auth: React.FC = () => {
             justifyContent="center"
             alignItems="center"
         >
-            <Container width='w-11/12 md:w-1/3' height='min-h-1/2' padding='md' bgColor='bg-white' className='rounded-xl' flexDirection='col' justifyContent='between'>
+            <Container width='w-11/12 md:w-1/3' height='h-2/5' padding='md' bgColor='bg-white' className='rounded-xl' flexDirection='col' justifyContent='between'>
                 <Text text={isSignup ? 'Create Account' : 'Login'} size="xl" />
 
                 {isSignup && (
