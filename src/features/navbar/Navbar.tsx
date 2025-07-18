@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openDrawer } from '../drawer/drawerSlice';
 import Cookies from 'js-cookie';
 import { clearAuthUser } from '../auth/authUserSlice';
+import { getTimeOfDay } from '../../shared/utils/getTimeOfDay';
 
 const Navbar: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -68,7 +69,7 @@ const Navbar: React.FC = () => {
                         onClick={() => 
                             dispatch(openDrawer({
                                 drawerOpen: true,
-                                drawertitle: 'Good Evening',
+                                drawertitle: `${getTimeOfDay()}, ${authUser.user?.firstName}`,
                                 draweranchor: 'right',
                                 drawerchildren: (
                                     <Container flexDirection='col' height='h-full' width='w-full' justifyContent='between'>
