@@ -98,12 +98,12 @@ const Auth: React.FC = () => {
                 
                 Cookies.set('authUser', JSON.stringify({
                     userId: result.userId,
-                    email: result.email,
-                    firstName: result.firstName,
-                    lastName: result.lastName,
+                    email: formValues.email,
+                    firstName: formValues.firstName,
+                    lastName: formValues.lastName,
                     profileImage: '',
-                    userRole: result.userRole,
-                    createdAt: result.createdAt,
+                    userRole: 'User',
+                    createdAt: new Date().toISOString(),
                 }), { expires: 1 });
 
                 dispatch(openAlert({
@@ -133,15 +133,15 @@ const Auth: React.FC = () => {
                     userRole: result.userRole,
                     createdAt: result.createdAt,
                 }));
-                
+
                 Cookies.set('authUser', JSON.stringify({
                     userId: result.userId,
-                    email: formValues.email,
-                    firstName: formValues.firstName,
-                    lastName: formValues.lastName,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
                     profileImage: '',
-                    userRole: 'User',
-                    createdAt: new Date().toISOString(),
+                    userRole: result.userRole,
+                    createdAt: result.createdAt,
                 }), { expires: 1 });
 
                 dispatch(openAlert({
