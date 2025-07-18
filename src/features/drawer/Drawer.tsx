@@ -58,7 +58,7 @@ const Drawer: React.FC = () => {
         padding="md"
         bgColor='bg-white'
         className={clsx(
-          'min-w-80 shadow-xl absolute',
+          'min-w-100 shadow-xl absolute',
           positionClasses[drawer.draweranchor ?? 'right']
         )}
         animation={{
