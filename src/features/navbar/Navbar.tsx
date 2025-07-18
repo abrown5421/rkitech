@@ -71,9 +71,10 @@ const Navbar: React.FC = () => {
                                 drawertitle: 'Good Evening',
                                 draweranchor: 'right',
                                 drawerchildren: (
-                                    <Container>
+                                    <Container flexDirection='col' height='h-full' width='w-full' justifyContent='between'>
                                         <Text text='stuff' />
                                         <Button
+                                            width='w-full'
                                             padding="sm"
                                             color="primary"
                                             cursor="pointer"
