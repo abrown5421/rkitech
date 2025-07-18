@@ -76,7 +76,7 @@ const Drawer: React.FC = () => {
           className="absolute top-4 right-4"
           onClick={handleClose}
         />
-            <div className='flex flex-col'>
+            <div className='flex flex-col w-full'>
                 {drawer.drawertitle && <Text text={drawer.drawertitle} size='xl' bold={true} />}
                 {drawer.drawerchildren}
             </div>
