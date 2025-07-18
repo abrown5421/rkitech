@@ -6,6 +6,8 @@ import Image from '../../shared/components/image/Image';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openDrawer } from '../drawer/drawerSlice';
+import Cookies from 'js-cookie';
+import { clearAuthUser } from '../auth/authUserSlice';
 
 const Navbar: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -68,7 +70,23 @@ const Navbar: React.FC = () => {
                                 drawerOpen: true,
                                 drawertitle: 'Good Evening',
                                 draweranchor: 'right',
-                                drawerchildren: <div>stuff</div>,
+                                drawerchildren: (
+                                    <Container>
+                                        <Text text='stuff' />
+                                        <Button
+                                            padding="sm"
+                                            color="primary"
+                                            cursor="pointer"
+                                            onClick={() => {
+                                                Cookies.remove('authUser');
+                                                dispatch(clearAuthUser());
+                                                clientNavigation('/login', 'Auth', 'authenticationPage')()
+                                            }}
+                                        >
+                                            <Text text="Logout" color="white" />
+                                        </Button>
+                                    </Container>
+                                ),
                                 draweranimation: {
                                     entranceAnimation: 'animate__fadeInRight animate__faster',
                                     exitAnimation: 'animate__fadeOutRight animate__faster',
