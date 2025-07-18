@@ -4,9 +4,11 @@ import Text from '../../shared/components/text/Text';
 import Button from '../../shared/components/button/Button';
 import Image from '../../shared/components/image/Image';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { openDrawer } from '../drawer/drawerSlice';
 
 const Navbar: React.FC = () => {
+    const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
     const authUser = useAppSelector((state) => state.authUser);
 
@@ -63,6 +65,19 @@ const Navbar: React.FC = () => {
                         width={40}
                         height={40}
                         className="rounded-full border border-gray-300 cursor-pointer"
+                        onClick={() => 
+                            dispatch(openDrawer({
+                                drawerOpen: true,
+                                drawertitle: 'Good Evening',
+                                draweranchor: 'right',
+                                drawerchildren: <div>stuff</div>,
+                                draweranimation: {
+                                    entranceAnimation: 'animate__fadeInRight animate__faster',
+                                    exitAnimation: 'animate__fadeOutRight animate__faster',
+                                    isEntering: true,
+                                }
+                            }))
+                        }
                     />
                 ) : (
                     <Button
