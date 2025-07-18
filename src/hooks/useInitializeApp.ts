@@ -21,6 +21,17 @@ export const useInitializeApp = () => {
       })
     );
 
+    unsubscribers.push(
+      listenToCollection("Menus", (data) => {
+        const menusWithDocId = data.map(({ id, ...rest }) => ({
+          menuID: id,
+          ...rest,
+        }));
+        dispatch(setMenus(menusWithDocId));
+        setLoading(false); 
+      })
+    );
+
     return () => {
       unsubscribers.forEach((unsubscribe) => unsubscribe());
     };
