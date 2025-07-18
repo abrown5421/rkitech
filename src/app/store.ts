@@ -12,6 +12,7 @@ export const store = configureStore({
     drawer: drawerReducer,
     pageShell: pageShellReducer,
     pages: pageReducer,
+    authUser: authUserReducer,
   },
 });
 
