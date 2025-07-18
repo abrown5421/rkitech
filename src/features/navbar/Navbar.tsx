@@ -59,12 +59,10 @@ const Navbar: React.FC = () => {
                     <Text text='Test Page' color='text-black' />
                 </Button>
                 {authUser?.user ? (
-                    <Image
-                        src="../../../public/assets/images/placeholder-avatar.png" 
-                        alt="User Avatar"
-                        width={40}
-                        height={40}
-                        className="rounded-full border border-gray-300 cursor-pointer"
+                    <Button
+                        padding='sm' 
+                        variant='ghost'
+                        cursor='pointer'
                         onClick={() => 
                             dispatch(openDrawer({
                                 drawerOpen: true,
@@ -78,7 +76,16 @@ const Navbar: React.FC = () => {
                                 }
                             }))
                         }
-                    />
+                    >
+                        <Image
+                            src="../../../public/assets/images/placeholder-avatar.png" 
+                            alt="User Avatar"
+                            width={40}
+                            height={40}
+                            className="rounded-full border border-gray-300 cursor-pointer"
+                            
+                        />
+                    </Button>
                 ) : (
                     <Button
                         padding="sm"
