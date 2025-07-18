@@ -5,16 +5,21 @@ import Icon from '../../shared/components/icon/Icon';
 import Input from '../../shared/components/input/Input';
 import Button from '../../shared/components/button/Button';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openAlert } from '../alert/alertSlice';
 import { setAuthUser } from './authUserSlice';
 import { signUpUser } from '../../services/auth/signUpUser';
 import { signInUser } from '../../services/auth/signInUser';
 import Cookies from 'js-cookie';
+import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
+import Loader from '../../shared/components/loader/Loader';
 
 const Auth: React.FC = () => {
     const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
+    const { loading, id } = useAppSelector((state) => state.loading);
+    const isLoading = loading && id === 'signInButton';
+    
     const [isSignup, setIsSignup] = useState(false);
     const [formValues, setFormValues] = useState({
         firstName: '',
@@ -60,6 +65,7 @@ const Auth: React.FC = () => {
     };
 
     const handleSubmit = async () => {
+        dispatch(setLoading({loading: true, id: 'signInButton'}));
         if (!validateForm()) {
             dispatch(openAlert({
                 alertOpen: true,
@@ -71,6 +77,7 @@ const Auth: React.FC = () => {
                     isEntering: true,
                 }
             }));
+            dispatch(setNotLoading())
             return;
         }
     
@@ -116,9 +123,9 @@ const Auth: React.FC = () => {
                         isEntering: true,
                     }
                 }));
-    
+                dispatch(setNotLoading())
                 clientNavigation('/', 'Home', 'homePage')();
-    
+                
             } else {
                 const result = await signInUser(formValues.email, formValues.password);
 
@@ -154,7 +161,7 @@ const Auth: React.FC = () => {
                         isEntering: true,
                     }
                 }));
-    
+                dispatch(setNotLoading())
                 clientNavigation('/', 'Home', 'homePage')();
             }
         } catch (err: any) {
@@ -168,6 +175,7 @@ const Auth: React.FC = () => {
                     isEntering: true,
                 }
             }));
+            dispatch(setNotLoading())
         }
     };
     
@@ -186,7 +194,7 @@ const Auth: React.FC = () => {
             justifyContent="center"
             alignItems="center"
         >
-            <Container width='w-11/12 md:w-1/3' height='h-2/5' padding='md' bgColor='bg-white' className='rounded-xl' flexDirection='col' justifyContent='between'>
+            <Container width='w-11/12 md:w-1/3' padding='md' bgColor='bg-white' className='rounded-xl min-h-2/5' flexDirection='col' justifyContent='between'>
                 <Text text={isSignup ? 'Create Account' : 'Login'} size="xl" />
 
                 {isSignup && (
@@ -250,7 +258,7 @@ const Auth: React.FC = () => {
                 )}
 
                 <Button className='mt-3' padding="sm" onClick={handleSubmit}>
-                    {isSignup ? 'Create Account' : 'Login'}
+                    {isSignup ? (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Create Account') : (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Login')}
                 </Button>
 
                 <Button
