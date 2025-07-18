@@ -9,11 +9,15 @@ import { openDrawer } from '../drawer/drawerSlice';
 import Cookies from 'js-cookie';
 import { clearAuthUser } from '../auth/authUserSlice';
 import { getTimeOfDay } from '../../shared/utils/getTimeOfDay';
+import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
+import Loader from '../../shared/components/loader/Loader';
 
 const Navbar: React.FC = () => {
     const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
     const authUser = useAppSelector((state) => state.authUser);
+    const { loading, id } = useAppSelector((state) => state.loading);
+    const isLoading = loading && id === 'logoutButton';
 
      return (
          <Container height={50} padding='sm' justifyContent='between' alignItems='center' bgColor='bg-white' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)]'>
@@ -80,12 +84,14 @@ const Navbar: React.FC = () => {
                                             color="primary"
                                             cursor="pointer"
                                             onClick={() => {
+                                                dispatch(setLoading({loading: true, id: 'logoutButton'}));
                                                 Cookies.remove('authUser');
                                                 dispatch(clearAuthUser());
+                                                dispatch(setNotLoading())
                                                 clientNavigation('/login', 'Auth', 'authenticationPage')()
                                             }}
                                         >
-                                            <Text text="Logout" color="white" />
+                                            {isLoading ? <Loader variant='spinner' color='bg-white' /> : <Text text="Logout" color="white" />}
                                         </Button>
                                     </Container>
                                 ),
