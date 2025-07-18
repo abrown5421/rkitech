@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { ActivePageShellState } from "./pageShellTypes";
+import type { ActivePageShellState } from "./pageTypes";
 
 const initialState: ActivePageShellState = {
   activePageShellName: "Home",
