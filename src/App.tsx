@@ -9,25 +9,30 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { useNavigationHook } from './hooks/useNavigationHook';
 import Cookies from 'js-cookie';
 import { setAuthUser } from './features/auth/authUserSlice';
+import { useInitializeApp } from './hooks/useInitializeApp';
+import Loader from './shared/components/loader/Loader';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const clientNavigation = useNavigationHook();
+  const loadingSite = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
-  const authUser = useAppSelector((state) => state.authUser);
+  const pagesFromDb = useAppSelector((state) => state.pages);
 
-   useEffect(() => {
-        const storedUser = Cookies.get('authUser');
-        if (storedUser) {
-            try {
-                const parsedUser = JSON.parse(storedUser);
-                dispatch(setAuthUser(parsedUser));
-            } catch (e) {
-                console.error('Failed to parse user from cookie', e);
-                Cookies.remove('authUser'); 
-            }
+  useEffect(()=>{console.log(pagesFromDb)}, [pagesFromDb])
+
+  useEffect(() => {
+    const storedUser = Cookies.get('authUser');
+    if (storedUser) {
+        try {
+            const parsedUser = JSON.parse(storedUser);
+            dispatch(setAuthUser(parsedUser));
+        } catch (e) {
+            console.error('Failed to parse user from cookie', e);
+            Cookies.remove('authUser'); 
         }
-    }, [dispatch]);
+    }
+  }, [dispatch]);
 
   const pages = [
     {pageName: 'Home', pageId:'homePage', pagePath: '/', pageBg: 'bg-white', pageEntranceAnimation: 'animate__fadeIn', pageExitAnimation: 'animate__fadeOut'},
@@ -43,30 +48,38 @@ const App: React.FC = () => {
   }, [])
 
   return (
-    <div className='w-screen h-screen z-30 relative bg-black'>
-      <Navbar />
-      <Routes>
-        {pages.map((page) => { 
-          return (
-            <Route path={page.pagePath} element={
-                <PageShell 
-                  activePageShellBgColor={page.pageBg} 
-                  activePageShellAnimation = {{
-                    entranceAnimation: page.pageEntranceAnimation,
-                    exitAnimation: page.pageExitAnimation,
-                    isEntering: activePage.activePageShellIn,
-                  }}
-                />
-              } 
-            />
-          )
-        })}
-      </Routes>
-      <Modal />
-      <Alert />
-      <Drawer />
-    </div>
     
+    <>  
+      {!loadingSite ? (
+        <div className='w-screen h-screen z-30 relative bg-black'>
+          <Navbar />
+          <Routes>
+            {pages.map((page) => { 
+              return (
+                <Route path={page.pagePath} element={
+                    <PageShell 
+                      activePageShellBgColor={page.pageBg} 
+                      activePageShellAnimation = {{
+                        entranceAnimation: page.pageEntranceAnimation,
+                        exitAnimation: page.pageExitAnimation,
+                        isEntering: activePage.activePageShellIn,
+                      }}
+                    />
+                  } 
+                />
+              )
+            })}
+          </Routes>
+          <Modal />
+          <Alert />
+          <Drawer />
+        </div>
+      ) : (
+        <div className='w-screen h-screen z-30 relative bg-black flex justify-center items-center'>
+          <Loader variant='bounce' color='bg-primary' />
+        </div>
+      )}
+    </>    
   );
 };
 
