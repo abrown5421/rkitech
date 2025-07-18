@@ -4,6 +4,7 @@ import alertReducer from '../features/alert/alertSlice';
 import drawerReducer from '../features/drawer/drawerSlice';
 import pageShellReducer from '../features/pages/pageShellSlice';
 import pageReducer from '../features/pages/pagesSlice';
+import authUserReducer from '../features/auth/authUserSlice';
 
 export const store = configureStore({
   reducer: {
