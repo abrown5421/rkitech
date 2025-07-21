@@ -17,11 +17,26 @@ const Navbar: React.FC = () => {
     const clientNavigation = useNavigationHook();
     const authUser = useAppSelector((state) => state.authUser);
     const pages = useAppSelector((state) => state.pages.pages);
+    const menus = useAppSelector((state) => state.menus);
+    const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu')
     const { loading, id } = useAppSelector((state) => state.loading);
     const isLoading = loading && id === 'logoutButton';
 
      return (
          <Container height={50} padding='sm' justifyContent='between' alignItems='center' bgColor='bg-white' className='relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)]'>
+            <Container 
+                alignItems='center' 
+                animation={{
+                    entranceExit: {
+                        entranceAnimation: 'animate__fadeInLeft',
+                        exitAnimation: 'animate__fadeOutLeft',
+                        isEntering: true,
+                    },
+                }}
+            >
+                <Image src="../../../public/assets/images/logo.png" height={50} alt='Rkitech' />
+                <Text text='Rkitech' bold={true} size='xl' font='primary' color='text-black' />
+            </Container>
             <Container 
                 alignItems='center' 
                 className='gap-5'
@@ -33,20 +48,41 @@ const Navbar: React.FC = () => {
                     },
                 }}
             >
-                {pages
-                    .map((page) => (
-                        <Button
-                            key={page.pageId}
-                            padding='sm'
-                            variant='ghost'
-                            cursor='pointer'
-                            onClick={() =>
-                                clientNavigation(page.pagePath, page.pageName, page.pageId)()
+                {primaryMenu?.menuItems
+                    ?.slice()
+                    .sort((a, b) => a.itemOrder - b.itemOrder) 
+                    .map((menuItem) => {
+                        if (menuItem.itemType === 'page') {
+                            console.log(menuItem.itemId)
+                            console.log(pages)
+                            const page = pages.find((p) => p.pageID === menuItem.itemId);
+                            if (page) {
+                                return (
+                                    <Button 
+                                        key={menuItem.itemId}
+                                        padding="sm" 
+                                        variant="ghost"
+                                        cursor="pointer"
+                                        onClick={() => clientNavigation(page.pagePath, page.pageName, page.pageID)()}
+                                    >
+                                        <Text text={menuItem.itemName} color="text-black" />
+                                    </Button>
+                                );
                             }
-                        >
-                            <Text text={page.pageName} color='text-black' />
-                        </Button>
-                    ))}
+                        } else {
+                            return (
+                                <Button
+                                    key={menuItem.itemName}
+                                    padding="sm"
+                                    variant="ghost"
+                                    cursor="pointer"
+                                    onClick={() => window.open(menuItem.itemLink, '_blank')}
+                                >
+                                    <Text text={menuItem.itemName} color="text-black" />
+                                </Button>
+                            );
+                        }
+                    })}
 
                 {authUser?.user ? (
                     <Button
@@ -92,6 +128,7 @@ const Navbar: React.FC = () => {
                             width={40}
                             height={40}
                             className="rounded-full border border-gray-300 cursor-pointer"
+                            
                         />
                     </Button>
                 ) : (
