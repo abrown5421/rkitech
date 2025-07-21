@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Modal from './features/modal/Modal';
 import Alert from './features/alert/Alert';
@@ -35,7 +36,7 @@ const App: React.FC = () => {
   useEffect(()=>{
     const getPage = pages.find((page) => page.pagePath === location.pathname);
     if (getPage) {
-      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageId)()
+      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageID)()
     }
   }, [])
 

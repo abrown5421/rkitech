@@ -1,9 +1,18 @@
-export interface MenuItem {
-  itemId: string;
-  itemName: string;
-  itemType: 'page' | 'link';
-  itemPath?: string;
-}
+
+
+export type MenuItem =
+  | {
+      itemType: 'page';
+      itemId: string;
+      itemName: string;
+      itemOrder: number;
+    }
+  | {
+      itemType: 'link';
+      itemName: string;
+      itemLink: string; 
+      itemOrder: number;
+    };
 
 export interface Menu {
   menuName: string;
@@ -13,3 +22,4 @@ export interface Menu {
 export interface MenusState {
   menus: Menu[];
 }
+
