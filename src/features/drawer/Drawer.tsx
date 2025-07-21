@@ -58,7 +58,7 @@ const Drawer: React.FC = () => {
         padding="md"
         bgColor='bg-white'
         className={clsx(
-          'shadow-xl absolute',
+          'min-w-100 shadow-xl absolute',
           positionClasses[drawer.draweranchor ?? 'right']
         )}
         animation={{
@@ -76,7 +76,7 @@ const Drawer: React.FC = () => {
           className="absolute top-4 right-4"
           onClick={handleClose}
         />
-            <div className='flex flex-col'>
+            <div className='flex flex-col w-full'>
                 {drawer.drawertitle && <Text text={drawer.drawertitle} size='xl' bold={true} />}
                 {drawer.drawerchildren}
             </div>
