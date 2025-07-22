@@ -1,11 +1,12 @@
 import React from 'react';
+import Container from '../../shared/components/container/Container';
 
 const Dashboard: React.FC = () => {
 
     return (
-        <div className=''>
+        <Container padding='sm'>
             Dashboard
-        </div>
+        </Container>
     );
 };
 
