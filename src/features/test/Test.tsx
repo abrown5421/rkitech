@@ -1,11 +1,12 @@
 import React from 'react';
+import Container from '../../shared/components/container/Container';
 
 const Test: React.FC = () => {
 
     return (
-        <div className=''>
+        <Container padding='sm'>
             Test
-        </div>
+        </Container>
     );
 };
 
