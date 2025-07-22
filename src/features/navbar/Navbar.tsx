@@ -132,7 +132,7 @@ const Navbar: React.FC = () => {
             justifyContent="between"
             alignItems="center"
             bgColor="bg-white"
-            className="relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)]"
+            className="relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
         >
             <Container
                 alignItems="center"
