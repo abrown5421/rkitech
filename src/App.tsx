@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Modal from './features/modal/Modal';
 import Alert from './features/alert/Alert';
@@ -11,6 +12,7 @@ import Cookies from 'js-cookie';
 import { setAuthUser } from './features/auth/authUserSlice';
 import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
+import Container from './shared/components/container/Container';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +37,7 @@ const App: React.FC = () => {
   useEffect(()=>{
     const getPage = pages.find((page) => page.pagePath === location.pathname);
     if (getPage) {
-      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageId)()
+      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageID)()
     }
   }, [])
 
@@ -43,7 +45,7 @@ const App: React.FC = () => {
     
     <>  
       {!loadingSite ? (
-        <div className='w-screen h-screen z-30 relative bg-black'>
+        <Container flexDirection='col' className='w-screen h-screen z-30 relative bg-black'>
           <Navbar />
           <Routes>
             {pages.map((page) => { 
@@ -62,10 +64,11 @@ const App: React.FC = () => {
               )
             })}
           </Routes>
+          
           <Modal />
           <Alert />
           <Drawer />
-        </div>
+        </Container>
       ) : (
         <div className='w-screen h-screen z-30 relative bg-black flex justify-center items-center'>
           <Loader variant='bounce' color='bg-primary' />
