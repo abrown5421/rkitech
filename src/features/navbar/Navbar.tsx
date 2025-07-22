@@ -5,7 +5,7 @@ import Button from '../../shared/components/button/Button';
 import Image from '../../shared/components/image/Image';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { openDrawer } from '../drawer/drawerSlice';
+import { openDrawer, preCloseDrawer } from '../drawer/drawerSlice';
 import Cookies from 'js-cookie';
 import { clearAuthUser } from '../auth/authUserSlice';
 import { getTimeOfDay } from '../../shared/utils/getTimeOfDay';
@@ -109,7 +109,10 @@ const Navbar: React.FC = () => {
                                                                     className="pt-3 pr-0 pb-3 pl-0" 
                                                                     variant="ghost"
                                                                     cursor="pointer"
-                                                                    onClick={() => clientNavigation(page.pagePath, page.pageName, page.pageID)()}
+                                                                    onClick={() => {
+                                                                        dispatch(preCloseDrawer());
+                                                                        setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250)
+                                                                    }}
                                                                 >
                                                                     <Text text={menuItem.itemName} color="text-black" />
                                                                 </Button>
