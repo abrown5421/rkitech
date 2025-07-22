@@ -23,17 +23,19 @@ const PageShell: React.FC<PageShellState> = ({
         <Container             
             bgColor={activePageShellBgColor}
             flexDirection='col'
-            className={`relative p-0 z-20 h-[calc(100vh-50px)] overflow-scroll`}
+            className="h-[calc(100vh-50px)] flex flex-col overflow-scroll"
             animation={{
                 entranceExit: activePageShellAnimation,
             }}
         >
-            {/* all of your static pages should have a conditional render statement below. If there is not one that static page will not show */}
-            {activePage.activePageShellName === 'Home' && <Home />}
-            {activePage.activePageShellName === 'Auth' && <Auth />}
-            {activePage.activePageShellName === 'Test' && <Test />}
-            {activePage.activePageShellName === 'Profile' && <Profile />}
-            {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
+            <div className="flex-grow">
+                {/* all of your static pages should have a conditional render statement below. If there is not one that static page will not show */}
+                {activePage.activePageShellName === 'Home' && <Home />}
+                {activePage.activePageShellName === 'Auth' && <Auth />}
+                {activePage.activePageShellName === 'Test' && <Test />}
+                {activePage.activePageShellName === 'Profile' && <Profile />}
+                {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
+            </div>
             <Footer />
         </Container>
     );
