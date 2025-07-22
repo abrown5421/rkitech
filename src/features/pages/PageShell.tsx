@@ -28,7 +28,7 @@ const PageShell: React.FC<PageShellState> = ({
                 entranceExit: activePageShellAnimation,
             }}
         >
-            <div className="flex-grow">
+            <div className="min-h-[calc(100vh-50px)]">
                 {/* all of your static pages should have a conditional render statement below. If there is not one that static page will not show */}
                 {activePage.activePageShellName === 'Home' && <Home />}
                 {activePage.activePageShellName === 'Auth' && <Auth />}
