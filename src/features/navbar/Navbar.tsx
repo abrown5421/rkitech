@@ -19,6 +19,7 @@ const Navbar: React.FC = () => {
     const pages = useAppSelector((state) => state.pages.pages);
     const menus = useAppSelector((state) => state.menus);
     const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu')
+    const proffileMenu = menus.menus.find((menu) => menu.menuName === 'Profile Menu')
     const { loading, id } = useAppSelector((state) => state.loading);
     const isLoading = loading && id === 'logoutButton';
 
@@ -53,8 +54,6 @@ const Navbar: React.FC = () => {
                     .sort((a, b) => a.itemOrder - b.itemOrder) 
                     .map((menuItem) => {
                         if (menuItem.itemType === 'page') {
-                            console.log(menuItem.itemId)
-                            console.log(pages)
                             const page = pages.find((p) => p.pageID === menuItem.itemId);
                             if (page) {
                                 return (
@@ -82,7 +81,7 @@ const Navbar: React.FC = () => {
                                 </Button>
                             );
                         }
-                    })}
+                })}
 
                 {authUser?.user ? (
                     <Button
@@ -96,7 +95,41 @@ const Navbar: React.FC = () => {
                                 draweranchor: 'right',
                                 drawerchildren: (
                                     <Container flexDirection='col' height='h-full' width='w-full' justifyContent='between'>
-                                        <Text text='stuff' />
+                                        <Container flexDirection='col' height='h-full' width='w-full' alignItems='start'>
+                                            {proffileMenu?.menuItems
+                                                ?.slice()
+                                                .sort((a, b) => a.itemOrder - b.itemOrder) 
+                                                .map((menuItem) => {
+                                                    if (menuItem.itemType === 'page') {
+                                                        const page = pages.find((p) => p.pageID === menuItem.itemId);
+                                                        if (page) {
+                                                            return (
+                                                                <Button 
+                                                                    key={menuItem.itemId}
+                                                                    className="pt-3 pr-0 pb-3 pl-0" 
+                                                                    variant="ghost"
+                                                                    cursor="pointer"
+                                                                    onClick={() => clientNavigation(page.pagePath, page.pageName, page.pageID)()}
+                                                                >
+                                                                    <Text text={menuItem.itemName} color="text-black" />
+                                                                </Button>
+                                                            );
+                                                        }
+                                                    } else {
+                                                        return (
+                                                            <Button
+                                                                key={menuItem.itemName}
+                                                                padding="sm"
+                                                                variant="ghost"
+                                                                cursor="pointer"
+                                                                onClick={() => window.open(menuItem.itemLink, '_blank')}
+                                                            >
+                                                                <Text text={menuItem.itemName} color="text-black" />
+                                                            </Button>
+                                                        );
+                                                    }
+                                            })}
+                                        </Container>
                                         <Button
                                             width='w-full'
                                             padding="sm"
