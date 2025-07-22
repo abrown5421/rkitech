@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Home: React.FC = () => {
+const Test: React.FC = () => {
 
     return (
         <div className=''>
-            Home
+            Test
         </div>
     );
 };
 
-export default Home;
+export default Test;
