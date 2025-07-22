@@ -5,6 +5,8 @@ import { useAppSelector } from '../../app/hooks';
 import Auth from '../auth/Auth';
 import Home from '../home/Home';
 import Test from '../test/Test';
+import Profile from '../profile/Profile';
+import Dashboard from '../dashboard/Dashboard';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -29,6 +31,8 @@ const PageShell: React.FC<PageShellState> = ({
             {activePage.activePageShellName === 'Home' && <Home />}
             {activePage.activePageShellName === 'Auth' && <Auth />}
             {activePage.activePageShellName === 'Test' && <Test />}
+            {activePage.activePageShellName === 'Profile' && <Profile />}
+            {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
         </Container>
     );
 };
