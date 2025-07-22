@@ -168,13 +168,22 @@ const Navbar: React.FC = () => {
                             handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, LoggedInDrawerContent)
                         }
                     >
-                        <Image
-                            src="../../../public/assets/images/placeholder-avatar.png"
-                            alt="User Avatar"
-                            width={40}
-                            height={40}
-                            className="rounded-full border border-gray-300 cursor-pointer"
-                        />
+                        {authUser?.user.profileImage ? (
+                            <Image
+                                src={authUser?.user.profileImage}
+                                alt="User Avatar"
+                                width={40}
+                                height={40}
+                                className="rounded-full border border-gray-300 cursor-pointer"
+                            />
+                        ) : (
+                            <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                                <Text
+                                    className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                                    text={`${authUser?.user.firstName?.[0] || ''}${authUser?.user.lastName?.[0] || ''}`.toUpperCase()}
+                                />
+                            </Container>
+                        )}
                     </Button>
                 ) : (
                     <Button
@@ -211,13 +220,23 @@ const Navbar: React.FC = () => {
                             handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, LoggedInDrawerContent)
                         }
                     >
-                        <Image
-                            src="../../../public/assets/images/placeholder-avatar.png"
-                            alt="User Avatar"
-                            width={40}
-                            height={40}
-                            className="rounded-full border border-gray-300 cursor-pointer"
-                        />
+                        {authUser?.user.profileImage ? (
+                            <Image
+                                src={authUser?.user.profileImage}
+                                alt="User Avatar"
+                                width={40}
+                                height={40}
+                                className="rounded-full border border-gray-300 cursor-pointer"
+                            />
+                        ) : (
+                            <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                                <Text
+                                    className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                                    text={`${authUser?.user.firstName?.[0] || ''}${authUser?.user.lastName?.[0] || ''}`.toUpperCase()}
+                                />
+                            </Container>
+                        )}
+                        
                     </Button>
                 ) : (
                     <Button
