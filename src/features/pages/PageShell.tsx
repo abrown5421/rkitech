@@ -36,7 +36,11 @@ const PageShell: React.FC<PageShellState> = ({
                 {activePage.activePageShellName === 'Test' && <Test />}
                 {activePage.activePageShellName === 'Profile' && <Profile />}
                 {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
+<<<<<<< HEAD
                 {activePage.activePageShellName === 'Page Not Found' && <PageNotFound />}
+=======
+                {activePage.activePageShellName === 'PageNotFound' && <PageNotFound />}
+>>>>>>> 11c775f5de46e4b7f08f53351250a52c0109f1ed
             </div>
             <Footer />
         </Container>
