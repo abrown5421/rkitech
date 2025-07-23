@@ -5,18 +5,18 @@ import Alert from './features/alert/Alert';
 import Drawer from './features/drawer/Drawer';
 import Navbar from './features/navbar/Navbar';
 import PageShell from './features/pages/PageShell';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { useNavigationHook } from './hooks/useNavigationHook';
 import Cookies from 'js-cookie';
 import { setAuthUser } from './features/auth/authUserSlice';
 import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
 import Container from './shared/components/container/Container';
+import { setPartOfActivePageShell } from './features/pages/pageShellSlice';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const clientNavigation = useNavigationHook();
+  const navigate = useNavigate();
   const loadingSite = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
   const pages = useAppSelector((state) => state.pages.pages);
@@ -38,17 +38,26 @@ const App: React.FC = () => {
     const homePage = pages.find((page) => page.pageName === 'Home');
     const pageRef = pages.find((page) => page.pagePath === location.pathname.toLowerCase());
     const pageNotFound = pages.find((page) => page.pageName === "Page Not Found");
-    
-    if (homePage?.pageID) {
-      clientNavigation('/', 'Home', homePage.pageID)()
-    }
-    
+
     if (location.pathname !== '/' && pageRef) {
-      clientNavigation(location.pathname, pageRef?.pageName, pageRef?.pageID)()
-    } else if (pageNotFound) {
-      clientNavigation(location.pathname, pageNotFound?.pageName, pageNotFound?.pageID)()
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageRef?.pageName }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageRef?.pageID }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+    } else if (location.pathname === '/' && homePage) {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: homePage?.pageName }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: homePage?.pageID }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+    } 
+
+    if (location.pathname !== '/' && !pageRef && pageNotFound) {
+      console.log(pageNotFound?.pageName)
+      console.log(pageNotFound?.pageID)
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageNotFound?.pageName }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageNotFound?.pageID }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+      navigate(pageNotFound?.pagePath);
     }
-  }, [loadingSite])
+  }, [pages])
 
   return (
     
@@ -72,19 +81,6 @@ const App: React.FC = () => {
                 />
               )
             })}
-            <Route
-              path="*"
-              element={
-                <PageShell
-                  activePageShellBgColor="bg-white"
-                  activePageShellAnimation={{
-                    entranceAnimation: 'animate__fadeIn',
-                    exitAnimation: 'animate__fadeOut',
-                    isEntering: activePage.activePageShellIn,
-                  }}
-                />
-              }
-            />
           </Routes>
           
           <Modal />
