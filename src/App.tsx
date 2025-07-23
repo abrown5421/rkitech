@@ -35,11 +35,14 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   useEffect(()=>{
-    const getPage = pages.find((page) => page.pagePath === location.pathname);
+    console.log(location.pathname.toLowerCase())
+    console.log(pages)
+    const getPage = pages.find((page) => page.pagePath === location.pathname.toLowerCase());
+    console.log(getPage)
     if (getPage) {
       clientNavigation(location.pathname, getPage?.pageName, getPage?.pageID)()
     }
-  }, [])
+  }, [loadingSite])
 
   return (
     
@@ -63,6 +66,19 @@ const App: React.FC = () => {
                 />
               )
             })}
+            <Route
+              path="*"
+              element={
+                <PageShell
+                  activePageShellBgColor="bg-white"
+                  activePageShellAnimation={{
+                    entranceAnimation: 'animate__fadeIn',
+                    exitAnimation: 'animate__fadeOut',
+                    isEntering: activePage.activePageShellIn,
+                  }}
+                />
+              }
+            />
           </Routes>
           
           <Modal />
