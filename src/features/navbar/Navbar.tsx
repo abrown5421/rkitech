@@ -1,3 +1,4 @@
+
 import React, { type JSX } from 'react';
 import Container from '../../shared/components/container/Container';
 import Text from '../../shared/components/text/Text';
@@ -40,7 +41,17 @@ const Navbar: React.FC = () => {
                             cursor="pointer"
                             onClick={() => {
                                 dispatch(preCloseDrawer());
-                                setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
+                                setTimeout(() => {
+                                    let targetPath = page.pagePath;
+                                        
+                                    if (page.pageName === 'Profile') {
+                                        const userId = authUser.user?.userId
+                                        targetPath = `/profile/${userId}`;
+                                    }
+
+                                    clientNavigation(targetPath, page.pageName, page.pageID)() 
+
+                                }, 250);
                             }}
                         >
                             <Text text={menuItem.itemName} color="text-black" />

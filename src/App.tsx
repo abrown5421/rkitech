@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Modal from './features/modal/Modal';
 import Alert from './features/alert/Alert';
@@ -36,7 +35,13 @@ const App: React.FC = () => {
 
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');
-    const pageRef = pages.find((page) => page.pagePath === location.pathname.toLowerCase());
+    const pathname = location.pathname.toLowerCase();
+    let pageRef = pages.find((page) => {
+      if (page.pageName === 'Profile' && pathname.startsWith('/profile')) {
+        return true;
+      }
+      return page.pagePath === pathname;
+    });
     const pageNotFound = pages.find((page) => page.pageName === "Page Not Found");
 
     if (location.pathname !== '/' && pageRef) {
@@ -49,9 +54,7 @@ const App: React.FC = () => {
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
     } 
 
-    if (location.pathname !== '/' && !pageRef && pageNotFound) {
-      console.log(pageNotFound?.pageName)
-      console.log(pageNotFound?.pageID)
+    if ((location.pathname !== '/' && !pageRef && pageNotFound) || (location.pathname === '/profile' && pageNotFound)) {
       dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageNotFound?.pageName }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageNotFound?.pageID }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
@@ -66,20 +69,29 @@ const App: React.FC = () => {
         <Container flexDirection='col' className='w-screen h-screen z-30 relative bg-black'>
           <Navbar />
           <Routes>
-            {pages.map((page) => { 
+            {pages.map((page) => {
+              let routePath = page.pagePath;
+
+              if (page.pageName === 'Profile') {
+                routePath = '/profile/:userId';
+              }
+
               return (
-                <Route path={page.pagePath} element={
-                    <PageShell 
-                      activePageShellBgColor={page.pageBg} 
-                      activePageShellAnimation = {{
+                <Route
+                  key={page.pageID}
+                  path={routePath}  
+                  element={
+                    <PageShell
+                      activePageShellBgColor={page.pageBg}
+                      activePageShellAnimation={{
                         entranceAnimation: page.pageEntranceAnimation,
                         exitAnimation: page.pageExitAnimation,
                         isEntering: activePage.activePageShellIn,
                       }}
                     />
-                  } 
+                  }
                 />
-              )
+              );
             })}
           </Routes>
           
