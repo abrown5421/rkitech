@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 import { setAuthUser } from './features/auth/authUserSlice';
 import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
+import Container from './shared/components/container/Container';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -33,17 +34,20 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   useEffect(()=>{
-    const getPage = pages.find((page) => page.pagePath === location.pathname);
+    console.log(location.pathname.toLowerCase())
+    console.log(pages)
+    const getPage = pages.find((page) => page.pagePath === location.pathname.toLowerCase());
+    console.log(getPage)
     if (getPage) {
-      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageId)()
+      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageID)()
     }
-  }, [])
+  }, [loadingSite])
 
   return (
     
     <>  
       {!loadingSite ? (
-        <div className='w-screen h-screen z-30 relative bg-black'>
+        <Container flexDirection='col' className='w-screen h-screen z-30 relative bg-black'>
           <Navbar />
           <Routes>
             {pages.map((page) => { 
@@ -61,11 +65,25 @@ const App: React.FC = () => {
                 />
               )
             })}
+            <Route
+              path="*"
+              element={
+                <PageShell
+                  activePageShellBgColor="bg-white"
+                  activePageShellAnimation={{
+                    entranceAnimation: 'animate__fadeIn',
+                    exitAnimation: 'animate__fadeOut',
+                    isEntering: activePage.activePageShellIn,
+                  }}
+                />
+              }
+            />
           </Routes>
+          
           <Modal />
           <Alert />
           <Drawer />
-        </div>
+        </Container>
       ) : (
         <div className='w-screen h-screen z-30 relative bg-black flex justify-center items-center'>
           <Loader variant='bounce' color='bg-primary' />
