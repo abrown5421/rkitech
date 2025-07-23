@@ -35,12 +35,18 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   useEffect(()=>{
-    console.log(location.pathname.toLowerCase())
-    console.log(pages)
-    const getPage = pages.find((page) => page.pagePath === location.pathname.toLowerCase());
-    console.log(getPage)
-    if (getPage) {
-      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageID)()
+    const homePage = pages.find((page) => page.pageName === 'Home');
+    const pageRef = pages.find((page) => page.pagePath === location.pathname.toLowerCase());
+    const pageNotFound = pages.find((page) => page.pageName === "Page Not Found");
+    
+    if (homePage?.pageID) {
+      clientNavigation('/', 'Home', homePage.pageID)()
+    }
+    
+    if (location.pathname !== '/' && pageRef) {
+      clientNavigation(location.pathname, pageRef?.pageName, pageRef?.pageID)()
+    } else if (pageNotFound) {
+      clientNavigation(location.pathname, pageNotFound?.pageName, pageNotFound?.pageID)()
     }
   }, [loadingSite])
 
