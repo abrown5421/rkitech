@@ -8,13 +8,13 @@ const PageNotFound: React.FC = () => {
     const clientNavigation = useNavigationHook();
 
     return (
-        <Container padding='sm' flexDirection='col' justifyContent='center' alignItems='center'>
-            <Text text="404 - Page Not Found" size="9x" color="text-primary" />
-            <Text text="Sorry, the page you are looking for doesn't exist." size="lg" color="text-black" />
+        <Container padding='sm' flexDirection='col' justifyContent='center' alignItems='center' height='h-full'>
+            <Text text="404" size="9x" color="text-primary" font='primary' bold />
+            <Text text="Sorry, the page you are looking for doesn't exist." size="2x" color="text-black" />
             <Button
                 className="mt-6"
                 color="primary"
-                padding="md"
+                padding="sm"
                 onClick={() => clientNavigation('/', 'Home', 'homePage')()}
             >
                 Go Home
