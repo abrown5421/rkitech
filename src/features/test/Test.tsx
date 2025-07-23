@@ -1,12 +1,13 @@
 import React from 'react';
+import Container from '../../shared/components/container/Container';
 
-const Home: React.FC = () => {
+const Test: React.FC = () => {
 
     return (
-        <div className=''>
-            Home
-        </div>
+        <Container padding='sm'>
+            Test
+        </Container>
     );
 };
 
-export default Home;
+export default Test;
