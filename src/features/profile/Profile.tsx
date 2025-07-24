@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
 import Text from '../../shared/components/text/Text';
 import Image from '../../shared/components/image/Image';
+import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 
 const Profile: React.FC = () => {
   const { userId } = useParams();
@@ -44,12 +45,13 @@ const Profile: React.FC = () => {
         <Loader variant="spinner" color="bg-primary" />
       ) : profileUser ? (
         <>
-          {/* Banner */}
-          <Image
-            src="../../../public/assets/images/placeholder-banner.png"
-            alt="User Banner"
-            width="w-full"
+          <TrianglifyBanner
+            xColors={["#FF5733", "#FFC300"]}
+            yColors={["#DAF7A6", "#900C3F"]}
+            width="w-full" 
             height={300}
+            variance={0.6}
+            cellSize={90}
           />
 
           <Container
