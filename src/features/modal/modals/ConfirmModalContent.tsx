@@ -1,0 +1,24 @@
+import React from 'react';
+import Container from '../../../shared/components/container/Container';
+import Button from '../../../shared/components/button/Button';
+import Text from '../../../shared/components/text/Text';
+
+interface ConfirmModalProps {
+  message?: string;
+  onConfirm: () => void;
+  onDeny: () => void;
+}
+
+const ConfirmModalContent: React.FC<ConfirmModalProps> = ({ message = 'Are you sure?', onConfirm, onDeny }) => {
+  return (
+    <Container flexDirection="col" height="h-full" justifyContent="between">
+      <Text size="md" text={message} />
+      <Container flexDirection="row" width="w-full" justifyContent="end" className="gap-2">
+        <Button padding="sm" color="error" onClick={onDeny}>Deny</Button>
+        <Button padding="sm" color="primary" onClick={onConfirm}>Confirm</Button>
+      </Container>
+    </Container>
+  );
+};
+
+export default ConfirmModalContent;
