@@ -3,6 +3,8 @@ import Container from '../../../shared/components/container/Container';
 import Input from '../../../shared/components/input/Input';
 import Button from '../../../shared/components/button/Button';
 import type { EditProfileModalProps } from '../modalTypes';
+import { useAppSelector } from '../../../app/hooks';
+import Loader from '../../../shared/components/loader/Loader';
 
 const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
   firstName: initialFirstName,
@@ -11,6 +13,8 @@ const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
   onSave,
   onCancel,
 }) => {
+  const { loading, id } = useAppSelector((state) => state.loading);
+  const isProfileSaving = loading && id === 'profileSave';
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
   const [email, setEmail] = useState(initialEmail);
@@ -26,7 +30,7 @@ const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
           Cancel
         </Button>
         <Button padding="sm" color="primary" onClick={() => onSave({ firstName, lastName, email })}>
-          Save
+          {isProfileSaving ? <Loader variant="spinner" color="bg-primary" /> : 'Save'}
         </Button>
       </Container>
     </Container>
