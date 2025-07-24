@@ -1,3 +1,4 @@
+
 import React, { type JSX } from 'react';
 import Container from '../../shared/components/container/Container';
 import Text from '../../shared/components/text/Text';
@@ -18,6 +19,7 @@ const Navbar: React.FC = () => {
     const clientNavigation = useNavigationHook();
     const authUser = useAppSelector((state) => state.authUser);
     const pages = useAppSelector((state) => state.pages.pages);
+    const activePage = useAppSelector((state) => state.pageShell.activePageShellName)
     const menus = useAppSelector((state) => state.menus);
     const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
     const profileMenu = menus.menus.find((menu) => menu.menuName === 'Profile Menu');
@@ -38,12 +40,23 @@ const Navbar: React.FC = () => {
                             className="pt-3 pr-0 pb-3 pl-0"
                             variant="ghost"
                             cursor="pointer"
+                            color={activePage === menuItem.itemName ? 'primary' : 'black'}
                             onClick={() => {
                                 dispatch(preCloseDrawer());
-                                setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
+                                setTimeout(() => {
+                                    let targetPath = page.pagePath;
+                                        
+                                    if (page.pageName === 'Profile') {
+                                        const userId = authUser.user?.userId
+                                        targetPath = `/profile/${userId}`;
+                                    }
+
+                                    clientNavigation(targetPath, page.pageName, page.pageID)() 
+
+                                }, 250);
                             }}
                         >
-                            <Text text={menuItem.itemName} color="text-black" />
+                            {menuItem.itemName}
                         </Button>
                     );
                 } else {
@@ -53,9 +66,10 @@ const Navbar: React.FC = () => {
                             className="pt-3 pr-0 pb-3 pl-0"
                             variant="ghost"
                             cursor="pointer"
+                            color='black'
                             onClick={() => window.open(menuItem.itemLink, '_blank')}
                         >
-                            <Text text={menuItem.itemName} color="text-black" />
+                            {menuItem.itemName}
                         </Button>
                     );
                 }
@@ -132,7 +146,7 @@ const Navbar: React.FC = () => {
             justifyContent="between"
             alignItems="center"
             bgColor="bg-white"
-            className="relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.05)]"
+            className="relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
         >
             <Container
                 alignItems="center"
@@ -168,13 +182,22 @@ const Navbar: React.FC = () => {
                             handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, LoggedInDrawerContent)
                         }
                     >
-                        <Image
-                            src="../../../public/assets/images/placeholder-avatar.png"
-                            alt="User Avatar"
-                            width={40}
-                            height={40}
-                            className="rounded-full border border-gray-300 cursor-pointer"
-                        />
+                        {authUser?.user.profileImage ? (
+                            <Image
+                                src={authUser?.user.profileImage}
+                                alt="User Avatar"
+                                width={40}
+                                height={40}
+                                className="rounded-full border border-gray-300 cursor-pointer"
+                            />
+                        ) : (
+                            <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                                <Text
+                                    className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                                    text={`${authUser?.user.firstName?.[0] || ''}${authUser?.user.lastName?.[0] || ''}`.toUpperCase()}
+                                />
+                            </Container>
+                        )}
                     </Button>
                 ) : (
                     <Button
@@ -211,13 +234,23 @@ const Navbar: React.FC = () => {
                             handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, LoggedInDrawerContent)
                         }
                     >
-                        <Image
-                            src="../../../public/assets/images/placeholder-avatar.png"
-                            alt="User Avatar"
-                            width={40}
-                            height={40}
-                            className="rounded-full border border-gray-300 cursor-pointer"
-                        />
+                        {authUser?.user.profileImage ? (
+                            <Image
+                                src={authUser?.user.profileImage}
+                                alt="User Avatar"
+                                width={40}
+                                height={40}
+                                className="rounded-full border border-gray-300 cursor-pointer"
+                            />
+                        ) : (
+                            <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                                <Text
+                                    className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                                    text={`${authUser?.user.firstName?.[0] || ''}${authUser?.user.lastName?.[0] || ''}`.toUpperCase()}
+                                />
+                            </Container>
+                        )}
+                        
                     </Button>
                 ) : (
                     <Button
