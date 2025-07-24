@@ -84,15 +84,24 @@ const Auth: React.FC = () => {
     
         try {
             if (isSignup) {
+                const triBan = getRandomTrianglifyParams();
+                const randomizedTrianglifyBanner = {
+                    xColors: triBan.xColor,
+                    yColors: triBan.yColor,
+                    width: 'w-full',
+                    height: 250,
+                    variance: triBan.variance,
+                    cellSize: triBan.cellSize
+                }
+
                 const result = await signUpUser(
                     formValues.email,
                     formValues.password,
                     formValues.firstName,
                     formValues.lastName,
-                    ''
+                    '',
+                    randomizedTrianglifyBanner                    
                 );
-                const triBan = getRandomTrianglifyParams();
-
                 if (!result) throw new Error('Failed to sign up');
     
                 dispatch(setAuthUser({
@@ -103,14 +112,7 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
-                    trianglifyObject: {
-                        xColors: triBan.xColor,
-                        yColors: triBan.yColor,
-                        width: 'w-full',
-                        height: 250,
-                        variance: triBan.variance,
-                        cellSize: triBan.cellSize
-                    }
+                    trianglifyObject: randomizedTrianglifyBanner
                 }));
                 
                 Cookies.set('authUser', JSON.stringify({
@@ -121,6 +123,7 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
+                    trianglifyObject: randomizedTrianglifyBanner
                 }), { expires: 1 });
 
                 dispatch(openAlert({
@@ -160,6 +163,7 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: result.userRole,
                     createdAt: result.createdAt,
+                    trianglifyObject: result.trianglifyObject
                 }), { expires: 1 });
 
                 dispatch(openAlert({
