@@ -21,17 +21,18 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
       const numericHeight =
         typeof height === "number" ? height : containerRef.current.clientHeight;
 
-      const svg = trianglify({
+      const pattern = trianglify({
         width: numericWidth,
         height: numericHeight,
         cell_size: cellSize,
         variance,
         x_colors: xColors,
         y_colors: yColors,
-      }).toSVG(); 
+      });
 
-      containerRef.current.innerHTML = ""; 
-      containerRef.current.appendChild(svg); 
+      const svg = pattern.svg()
+      containerRef.current.innerHTML = "";
+      containerRef.current.appendChild(svg);
     }
   }, [xColors, yColors, width, height, variance, cellSize, auxImage]);
 
