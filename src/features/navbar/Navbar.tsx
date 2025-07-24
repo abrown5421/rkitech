@@ -19,6 +19,7 @@ const Navbar: React.FC = () => {
     const clientNavigation = useNavigationHook();
     const authUser = useAppSelector((state) => state.authUser);
     const pages = useAppSelector((state) => state.pages.pages);
+    const activePage = useAppSelector((state) => state.pageShell.activePageShellName)
     const menus = useAppSelector((state) => state.menus);
     const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
     const profileMenu = menus.menus.find((menu) => menu.menuName === 'Profile Menu');
@@ -39,6 +40,7 @@ const Navbar: React.FC = () => {
                             className="pt-3 pr-0 pb-3 pl-0"
                             variant="ghost"
                             cursor="pointer"
+                            color={activePage === menuItem.itemName ? 'primary' : 'black'}
                             onClick={() => {
                                 dispatch(preCloseDrawer());
                                 setTimeout(() => {
@@ -54,7 +56,7 @@ const Navbar: React.FC = () => {
                                 }, 250);
                             }}
                         >
-                            <Text text={menuItem.itemName} color="text-black" />
+                            {menuItem.itemName}
                         </Button>
                     );
                 } else {
@@ -64,9 +66,10 @@ const Navbar: React.FC = () => {
                             className="pt-3 pr-0 pb-3 pl-0"
                             variant="ghost"
                             cursor="pointer"
+                            color='black'
                             onClick={() => window.open(menuItem.itemLink, '_blank')}
                         >
-                            <Text text={menuItem.itemName} color="text-black" />
+                            {menuItem.itemName}
                         </Button>
                     );
                 }
