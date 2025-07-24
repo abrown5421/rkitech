@@ -16,6 +16,7 @@ import { openModal, preCloseModal } from '../modal/modalSlice';
 import { updateDataInCollection } from '../../services/database/updateData';
 import { setAuthUser } from '../auth/authUserSlice';
 import { updateAuthProfile } from '../../services/auth/updateAuthProfile';
+import { openAlert } from '../alert/alertSlice';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -83,9 +84,27 @@ const Profile: React.FC = () => {
               dispatch(preCloseModal());
               setProfileUser(updatedUser);
 
-              console.log('Profile updated successfully');
+              dispatch(openAlert({
+                  alertOpen: true,
+                  alertSeverity: 'success',
+                  alertMessage: 'Account update was successful!',
+                  alertAnimation: {
+                      entranceAnimation: 'animate__fadeInRight animate__faster',
+                      exitAnimation: 'animate__fadeOutRight animate__faster',
+                      isEntering: true,
+                  }
+              }));
             } catch (error) {
-              console.error('Error updating profile:', error);
+              dispatch(openAlert({
+                  alertOpen: true,
+                  alertSeverity: 'error',
+                  alertMessage: 'Account update failed.',
+                  alertAnimation: {
+                      entranceAnimation: 'animate__fadeInRight animate__faster',
+                      exitAnimation: 'animate__fadeOutRight animate__faster',
+                      isEntering: true,
+                  }
+              }));
             }
           },
           onCancel: () => {
