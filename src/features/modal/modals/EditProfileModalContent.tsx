@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Container from '../../../shared/components/container/Container';
-import Text from '../../../shared/components/text/Text';
 import Input from '../../../shared/components/input/Input';
 import Button from '../../../shared/components/button/Button';
 
@@ -25,8 +24,6 @@ const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
 
   return (
     <Container flexDirection="col" height="h-full" justifyContent="between" className="gap-4">
-      <Text size="lg" bold text="Edit Profile" />
-
       <Input label="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
       <Input label="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
       <Input label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
