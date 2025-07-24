@@ -73,7 +73,7 @@ const App: React.FC = () => {
               let routePath = page.pagePath;
 
               if (page.pageName === 'Profile') {
-                routePath = '/profile/:userId';
+                routePath = '/profile/:userIdFromUrl';
               }
 
               return (
