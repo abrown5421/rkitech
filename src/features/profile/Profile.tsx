@@ -15,7 +15,7 @@ import Icon from '../../shared/components/icon/Icon';
 import { openModal, preCloseModal } from '../modal/modalSlice';
 import { updateDataInCollection } from '../../services/database/updateData';
 import { setAuthUser } from '../auth/authUserSlice';
-import { updateAuthEmail } from '../../services/auth/updateAuthProfile';
+import { sendEmailChangeVerification } from '../../services/auth/updateAuthProfile';
 import { openAlert } from '../alert/alertSlice';
 
 const Profile: React.FC = () => {
@@ -59,59 +59,71 @@ const Profile: React.FC = () => {
           firstName: profileUser.firstName,
           lastName: profileUser.lastName,
           email: profileUser.email,
-          onSave: async (updatedData: { firstName: string; lastName: string; email: string }) => {
+          onSave: async (updatedData: { firstName: string; lastName: string; email: string; password?: string }) => {
             dispatch(setLoading({ loading: true, id: 'profileSave' }));
-            try {
-              await updateDataInCollection('Users', userIdFromUrl ?? '', {
-                firstName: updatedData.firstName,
-                lastName: updatedData.lastName,
-                email: updatedData.email,
-              });
 
-              if (updatedData.email !== profileUser.email) {
-                await updateAuthEmail(updatedData.email);
+            const { firstName, lastName, email, password } = updatedData;
+            const emailChanged = email !== profileUser.email;
+            const nameChanged = firstName !== profileUser.firstName || lastName !== profileUser.lastName;
+
+            try {
+              const firestoreUpdate: Partial<AuthUser> = { firstName, lastName };
+
+              if (emailChanged) {
+                if (!password) throw new Error('Password required for email change');
+                await sendEmailChangeVerification(email, password);
+              } else {
+                firestoreUpdate.email = email;
               }
 
-              const updatedUser = {
-                ...profileUser,
-                userId: userIdFromUrl!, 
-                firstName: updatedData.firstName,
-                lastName: updatedData.lastName,
-                email: updatedData.email,
-              };
-              
-              dispatch(setAuthUser(updatedUser)); 
+              await updateDataInCollection('Users', userIdFromUrl ?? '', firestoreUpdate);
 
-              dispatch(preCloseModal());
+              const updatedUser: AuthUser = {
+                ...profileUser,
+                ...firestoreUpdate,
+                userId: userIdFromUrl!,
+              };
+              dispatch(setAuthUser(updatedUser));
               setProfileUser(updatedUser);
+              dispatch(preCloseModal());
               dispatch(setNotLoading());
+              
+              let alertMessage = 'Account update was successful!';
+              if (emailChanged && nameChanged) {
+                alertMessage = 'Name updated and verification email sent to your new address.';
+              } else if (emailChanged) {
+                alertMessage = 'A verification email has been sent to your new email address. Please verify to complete the update.';
+              } else if (nameChanged) {
+                alertMessage = 'Name updated successfully!';
+              }
+
               dispatch(openAlert({
-                  alertOpen: true,
-                  alertSeverity: 'success',
-                  alertMessage: 'Account update was successful!',
-                  alertAnimation: {
-                      entranceAnimation: 'animate__fadeInRight animate__faster',
-                      exitAnimation: 'animate__fadeOutRight animate__faster',
-                      isEntering: true,
-                  }
+                alertOpen: true,
+                alertSeverity: 'success',
+                alertMessage,
+                alertAnimation: {
+                  entranceAnimation: 'animate__fadeInRight animate__faster',
+                  exitAnimation: 'animate__fadeOutRight animate__faster',
+                  isEntering: true,
+                }
               }));
+
             } catch (error) {
               dispatch(setNotLoading());
+              dispatch(preCloseModal());
               dispatch(openAlert({
-                  alertOpen: true,
-                  alertSeverity: 'error',
-                  alertMessage: 'Account update failed.',
-                  alertAnimation: {
-                      entranceAnimation: 'animate__fadeInRight animate__faster',
-                      exitAnimation: 'animate__fadeOutRight animate__faster',
-                      isEntering: true,
-                  }
+                alertOpen: true,
+                alertSeverity: 'error',
+                alertMessage: 'Account update failed.',
+                alertAnimation: {
+                  entranceAnimation: 'animate__fadeInRight animate__faster',
+                  exitAnimation: 'animate__fadeOutRight animate__faster',
+                  isEntering: true,
+                }
               }));
             }
           },
-          onCancel: () => {
-            dispatch(preCloseModal());
-          },
+          onCancel: () => dispatch(preCloseModal()),
         },
       })
     );
