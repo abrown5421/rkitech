@@ -61,6 +61,14 @@ export const colorStyles: Record<
       hoverText: 'hover:text-yellow-hover',
       hoverBorder: 'hover:border-warning',
     },
+    black: {
+      text: 'text-white',
+      bg: 'bg-black',
+      border: 'border-black',
+      hoverBg: 'hover:bg-white',
+      hoverText: 'hover:text-black',
+      hoverBorder: 'hover:border-black',
+    },
   },
   outline: {
     primary: {
@@ -103,6 +111,14 @@ export const colorStyles: Record<
       hoverText: 'hover:text-white',
       hoverBorder: 'hover:border-warning',
     },
+    black: {
+      text: 'text-black',
+      bg: 'bg-white',
+      border: 'border-black',
+      hoverBg: 'hover:bg-black',
+      hoverText: 'hover:text-white',
+      hoverBorder: 'hover:border-black',
+    },
   },
   ghost: {
     primary: {
@@ -139,6 +155,13 @@ export const colorStyles: Record<
       border: 'border-transparent',
       hoverBg: '',
       hoverText: 'hover:text-black',
+    },
+    black: {
+      text: 'text-black',
+      bg: 'bg-transparent',
+      border: 'border-transparent',
+      hoverBg: '',
+      hoverText: 'hover:text-primary',
     },
   },
 };
