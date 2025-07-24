@@ -72,12 +72,13 @@ const Profile: React.FC = () => {
 
               const updatedUser = {
                 ...profileUser,
+                userId: userIdFromUrl!, 
                 firstName: updatedData.firstName,
                 lastName: updatedData.lastName,
                 email: updatedData.email,
               };
               
-              dispatch(setAuthUser(updatedUser));
+              dispatch(setAuthUser(updatedUser)); 
 
               dispatch(preCloseModal());
               setProfileUser(updatedUser);
