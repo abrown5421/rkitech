@@ -6,6 +6,7 @@ import { closeModal, preCloseModal } from './modalSlice';
 import Icon from '../../shared/components/icon/Icon';
 import Text from '../../shared/components/text/Text';
 import ConfirmModalContent from './modals/ConfirmModalContent';
+import EditProfileModalContent from './modals/EditProfileModalContent';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -36,6 +37,16 @@ const Modal: React.FC = () => {
             message={modal.modalProps?.message}
             onConfirm={modal.modalProps?.onConfirm}
             onDeny={modal.modalProps?.onDeny}
+          />
+        );
+      case 'editProfile':
+        return (
+          <EditProfileModalContent
+            firstName={modal.modalProps?.firstName}
+            lastName={modal.modalProps?.lastName}
+            email={modal.modalProps?.email}
+            onSave={modal.modalProps?.onSave}
+            onCancel={modal.modalProps?.onCancel}
           />
         );
       default:
