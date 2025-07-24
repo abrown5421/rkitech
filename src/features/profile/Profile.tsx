@@ -9,6 +9,7 @@ import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadin
 import Text from '../../shared/components/text/Text';
 import Image from '../../shared/components/image/Image';
 import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
+import { format } from 'date-fns';
 
 const Profile: React.FC = () => {
   const { userId } = useParams();
@@ -102,7 +103,7 @@ const Profile: React.FC = () => {
                 />
                 <Text color="text-black" size="xl" text={profileUser.email} />
                 <Text
-                  text={`Member since: ${profileUser.createdAt}`}
+                  text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
                   size="sm"
                   color="text-gray-500"
                 />
