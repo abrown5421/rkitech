@@ -13,6 +13,10 @@ import { format } from 'date-fns';
 import Button from '../../shared/components/button/Button';
 import Icon from '../../shared/components/icon/Icon';
 import { openModal, preCloseModal } from '../modal/modalSlice';
+import { updateDataInCollection } from '../../services/database/updateData';
+import { setAuthUser } from '../auth/authUserSlice';
+import { updateAuthProfile } from '../../services/auth/updateAuthProfile';
+import Cookies from 'js-cookie';
 
 const Profile: React.FC = () => {
   const { userId } = useParams();
@@ -55,9 +59,35 @@ const Profile: React.FC = () => {
           firstName: profileUser.firstName,
           lastName: profileUser.lastName,
           email: profileUser.email,
-          onSave: (updatedData: { firstName: string; lastName: string; email: string }) => {
-            console.log('Updated profile data:', updatedData);
-            dispatch(preCloseModal());
+          onSave: async (updatedData: { firstName: string; lastName: string; email: string }) => {
+            try {
+              await updateDataInCollection('Users', profileUser.userId, {
+                firstName: updatedData.firstName,
+                lastName: updatedData.lastName,
+                email: updatedData.email,
+              });
+
+              await updateAuthProfile({
+                displayName: `${updatedData.firstName} ${updatedData.lastName}`,
+              });
+
+              const updatedUser = {
+                ...profileUser,
+                firstName: updatedData.firstName,
+                lastName: updatedData.lastName,
+                email: updatedData.email,
+              };
+              dispatch(setAuthUser(updatedUser));
+
+              Cookies.set('authUser', JSON.stringify(updatedUser), { expires: 1 });
+
+              dispatch(preCloseModal());
+              setProfileUser(updatedUser);
+
+              console.log('Profile updated successfully');
+            } catch (error) {
+              console.error('Error updating profile:', error);
+            }
           },
           onCancel: () => {
             dispatch(preCloseModal());
