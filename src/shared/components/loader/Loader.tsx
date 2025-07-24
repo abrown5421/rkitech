@@ -32,7 +32,7 @@ const Loader: React.FC<LoaderProps> = ({
       {delays.map((delay, i) => (
         <div
           key={i}
-          className={`${color} rounded-full animate__animated animate__slow animate__infinite animate__${variant}`}
+          className={`${color} rounded-full animate__animated animate__infinite animate__${variant}`}
           style={{ width: size, height: size, animationDelay: delay }}
         />
       ))}
