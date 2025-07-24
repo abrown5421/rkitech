@@ -9,3 +9,11 @@ export interface ModalState {
   modalProps: Record<string, any> | null;
   modalAnimation: EntranceExitAnimation;
 }
+
+export interface EditProfileModalProps {
+  firstName: string;
+  lastName: string;
+  email: string;
+  onSave: (updatedData: { firstName: string; lastName: string; email: string }) => void;
+  onCancel: () => void;
+}
