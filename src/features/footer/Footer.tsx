@@ -10,6 +10,7 @@ const Footer: React.FC = () => {
     const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
     const pages = useAppSelector((state) => state.pages.pages);
+    const activePage = useAppSelector((state) => state.pageShell.activePageShellName)
     const menus = useAppSelector((state) => state.menus);
     const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
 
@@ -37,12 +38,13 @@ const Footer: React.FC = () => {
                                     className="pt-3 pr-0 pb-3 pl-0"
                                     variant="ghost"
                                     cursor="pointer"
+                                    color={activePage === menuItem.itemName ? 'primary' : 'black'}
                                     onClick={() => {
                                         dispatch(preCloseDrawer());
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
                                     }}
                                 >
-                                    <Text text={menuItem.itemName} color="text-black" />
+                                    {menuItem.itemName}
                                 </Button>
                             );
                         } else {
@@ -52,9 +54,10 @@ const Footer: React.FC = () => {
                                     className="pt-3 pr-0 pb-3 pl-0"
                                     variant="ghost"
                                     cursor="pointer"
+                                    color={activePage === menuItem.itemName ? 'primary' : 'black'}
                                     onClick={() => window.open(menuItem.itemLink, '_blank')}
                                 >
-                                    <Text text={menuItem.itemName} color="text-black" />
+                                    {menuItem.itemName}
                                 </Button>
                             );
                         }
