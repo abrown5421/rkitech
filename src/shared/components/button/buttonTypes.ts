@@ -4,7 +4,7 @@ import type { SizeValue } from "../../types/sizeTypes";
 import type { AnimationProps } from "../../types/animationTypes";
 
 export type ButtonVariant = 'solid' | 'outline' | 'ghost';
-export type ButtonColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning';
+export type ButtonColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'black';
 
 export interface ButtonProps {
   children: ReactNode;
