@@ -10,11 +10,15 @@ import Text from '../../shared/components/text/Text';
 import Image from '../../shared/components/image/Image';
 import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 import { format } from 'date-fns';
+import Button from '../../shared/components/button/Button';
+import Icon from '../../shared/components/icon/Icon';
+import { openModal, preCloseModal } from '../modal/modalSlice';
 
 const Profile: React.FC = () => {
   const { userId } = useParams();
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
+  const authUser = useAppSelector((state) => state.authUser.user);
   const isLoading = loading && id === 'profile';
 
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
@@ -39,6 +43,29 @@ const Profile: React.FC = () => {
 
     fetchProfileData();
   }, [userId, dispatch]);
+
+  const handleProfileEditModal = () => {
+    if (!profileUser) return;
+
+    dispatch(
+      openModal({
+        title: 'Edit Profile',
+        modalType: 'editProfile',
+        modalProps: {
+          firstName: profileUser.firstName,
+          lastName: profileUser.lastName,
+          email: profileUser.email,
+          onSave: (updatedData: { firstName: string; lastName: string; email: string }) => {
+            console.log('Updated profile data:', updatedData);
+            dispatch(preCloseModal());
+          },
+          onCancel: () => {
+            dispatch(preCloseModal());
+          },
+        },
+      })
+    );
+  };
 
   return (
     <Container height="h-full" width="w-full" flexDirection="col">
@@ -92,19 +119,45 @@ const Profile: React.FC = () => {
                 )}
               </Container>
 
-              <div style={{ height: 80 }} />
+              <Container height={80} flexDirection='row' justifyContent='end' alignItems='end'>
+                <span></span>
+              </Container>
 
-              <Container flexDirection="col" padding='xl'>
+              <Container flexDirection="col" padding='xl' className='relative'>
+                {userId === authUser?.userId && (
+                  <Container className='absolute right-0'>
+                    <Button
+                      customColorClasses={{
+                        bg: 'bg-gray-200',
+                        text: 'text-black',
+                        hoverText: 'text-primary',
+                        border: 'border-gray-200',
+                        hoverBg: 'hover:bg-white',
+                      }}
+                      variant='solid'
+                      rounded='full'
+                      padding='sm' 
+                      cursor='pointer' 
+                      className='rounded-full'
+                      onClick={handleProfileEditModal}
+                    >
+                      <Icon
+                          name='Edit'
+                      />
+                    </Button>
+                  </Container>
+                )}
+                
                 <Text
                   color="text-black"
-                  size="2x"
+                  size="xl"
                   bold
                   text={profileUser.firstName + ' ' + profileUser.lastName}
                 />
-                <Text color="text-black" size="xl" text={profileUser.email} />
+                <Text color="text-black" size="md" text={profileUser.email} />
                 <Text
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
-                  size="sm"
+                  size="xs"
                   color="text-gray-500"
                 />
               </Container>
