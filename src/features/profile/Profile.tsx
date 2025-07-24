@@ -23,7 +23,7 @@ const Profile: React.FC = () => {
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
   const authUser = useAppSelector((state) => state.authUser.user);
-  const isLoading = loading && id === 'profile';
+  const isProfileLoading = loading && id === 'profile';
 
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
 
@@ -60,6 +60,7 @@ const Profile: React.FC = () => {
           lastName: profileUser.lastName,
           email: profileUser.email,
           onSave: async (updatedData: { firstName: string; lastName: string; email: string }) => {
+            dispatch(setLoading({ loading: true, id: 'profileSave' }));
             try {
               await updateDataInCollection('Users', userIdFromUrl ?? '', {
                 firstName: updatedData.firstName,
@@ -83,7 +84,7 @@ const Profile: React.FC = () => {
 
               dispatch(preCloseModal());
               setProfileUser(updatedUser);
-
+              dispatch(setNotLoading());
               dispatch(openAlert({
                   alertOpen: true,
                   alertSeverity: 'success',
@@ -95,6 +96,7 @@ const Profile: React.FC = () => {
                   }
               }));
             } catch (error) {
+              dispatch(setNotLoading());
               dispatch(openAlert({
                   alertOpen: true,
                   alertSeverity: 'error',
@@ -117,7 +119,7 @@ const Profile: React.FC = () => {
 
   return (
     <Container height="h-full" width="w-full" flexDirection="col">
-      {isLoading ? (
+      {isProfileLoading ? (
         <Loader variant="spinner" color="bg-primary" />
       ) : profileUser ? (
         <>
