@@ -13,9 +13,8 @@ declare module "trianglify" {
   }
 
   interface TrianglifyPattern {
-    toCanvas: (canvas?: HTMLCanvasElement) => HTMLCanvasElement;
-    toSVG: () => SVGElement;
-    toDataURL: () => string;
+    svg: () => SVGElement;
+    canvas: () => HTMLCanvasElement;
   }
 
   export default function trianglify(options: TrianglifyOptions): TrianglifyPattern;
