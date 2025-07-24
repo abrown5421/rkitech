@@ -15,7 +15,7 @@ import Icon from '../../shared/components/icon/Icon';
 import { openModal, preCloseModal } from '../modal/modalSlice';
 import { updateDataInCollection } from '../../services/database/updateData';
 import { setAuthUser } from '../auth/authUserSlice';
-import { updateAuthProfile } from '../../services/auth/updateAuthProfile';
+import { updateAuthEmail } from '../../services/auth/updateAuthProfile';
 import { openAlert } from '../alert/alertSlice';
 
 const Profile: React.FC = () => {
@@ -68,9 +68,9 @@ const Profile: React.FC = () => {
                 email: updatedData.email,
               });
 
-              await updateAuthProfile({
-                displayName: `${updatedData.firstName} ${updatedData.lastName}`,
-              });
+              if (updatedData.email !== profileUser.email) {
+                await updateAuthEmail(updatedData.email);
+              }
 
               const updatedUser = {
                 ...profileUser,
