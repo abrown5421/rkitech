@@ -47,12 +47,12 @@ const Profile: React.FC = () => {
       ) : profileUser ? (
         <>
           <TrianglifyBanner
-            xColors={["#FF5733", "#FFC300"]}
-            yColors={["#DAF7A6", "#900C3F"]}
-            width="w-full" 
-            height={300}
-            variance={0.6}
-            cellSize={90}
+            xColors={profileUser.trianglifyObject.xColors}
+            yColors={profileUser.trianglifyObject.yColors}
+            width={profileUser.trianglifyObject.width} 
+            height={profileUser.trianglifyObject.height}
+            variance={profileUser.trianglifyObject.variance}
+            cellSize={profileUser.trianglifyObject.cellSize}
           />
 
           <Container
