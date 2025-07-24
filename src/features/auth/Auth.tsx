@@ -13,6 +13,7 @@ import { signInUser } from '../../services/auth/signInUser';
 import Cookies from 'js-cookie';
 import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
 import Loader from '../../shared/components/loader/Loader';
+import { getRandomTrianglifyParams } from '../../shared/components/trianglifyBanner/getRandomTrianglifyParams';
 
 const Auth: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -90,7 +91,8 @@ const Auth: React.FC = () => {
                     formValues.lastName,
                     ''
                 );
-    
+                const triBan = getRandomTrianglifyParams();
+
                 if (!result) throw new Error('Failed to sign up');
     
                 dispatch(setAuthUser({
@@ -101,6 +103,14 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
+                    trianglifyObject: {
+                        xColors: triBan.xColor,
+                        yColors: triBan.yColor,
+                        width: 'w-full',
+                        height: 250,
+                        variance: triBan.variance,
+                        cellSize: triBan.cellSize
+                    }
                 }));
                 
                 Cookies.set('authUser', JSON.stringify({
@@ -139,6 +149,7 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: result.userRole,
                     createdAt: result.createdAt,
+                    trianglifyObject: result.trianglifyObject
                 }));
 
                 Cookies.set('authUser', JSON.stringify({
