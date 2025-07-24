@@ -16,10 +16,9 @@ import { openModal, preCloseModal } from '../modal/modalSlice';
 import { updateDataInCollection } from '../../services/database/updateData';
 import { setAuthUser } from '../auth/authUserSlice';
 import { updateAuthProfile } from '../../services/auth/updateAuthProfile';
-import Cookies from 'js-cookie';
 
 const Profile: React.FC = () => {
-  const { userId } = useParams();
+  const { userIdFromUrl } = useParams();
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
   const authUser = useAppSelector((state) => state.authUser.user);
@@ -29,12 +28,12 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      if (!userId) return;
+      if (!userIdFromUrl) return;
 
       try {
         dispatch(setLoading({ loading: true, id: 'profile' }));
 
-        const data = await getDocumentById('Users', userId);
+        const data = await getDocumentById('Users', userIdFromUrl);
         if (data) {
           setProfileUser(data as AuthUser);
         }
@@ -46,7 +45,7 @@ const Profile: React.FC = () => {
     };
 
     fetchProfileData();
-  }, [userId, dispatch]);
+  }, [userIdFromUrl, dispatch]);
 
   const handleProfileEditModal = () => {
     if (!profileUser) return;
@@ -61,7 +60,7 @@ const Profile: React.FC = () => {
           email: profileUser.email,
           onSave: async (updatedData: { firstName: string; lastName: string; email: string }) => {
             try {
-              await updateDataInCollection('Users', profileUser.userId, {
+              await updateDataInCollection('Users', userIdFromUrl ?? '', {
                 firstName: updatedData.firstName,
                 lastName: updatedData.lastName,
                 email: updatedData.email,
@@ -77,9 +76,8 @@ const Profile: React.FC = () => {
                 lastName: updatedData.lastName,
                 email: updatedData.email,
               };
+              
               dispatch(setAuthUser(updatedUser));
-
-              Cookies.set('authUser', JSON.stringify(updatedUser), { expires: 1 });
 
               dispatch(preCloseModal());
               setProfileUser(updatedUser);
@@ -154,7 +152,7 @@ const Profile: React.FC = () => {
               </Container>
 
               <Container flexDirection="col" padding='xl' className='relative'>
-                {userId === authUser?.userId && (
+                {userIdFromUrl === authUser?.userId && (
                   <Container className='absolute right-0'>
                     <Button
                       customColorClasses={{
