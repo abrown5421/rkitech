@@ -2,14 +2,7 @@ import React, { useState } from 'react';
 import Container from '../../../shared/components/container/Container';
 import Input from '../../../shared/components/input/Input';
 import Button from '../../../shared/components/button/Button';
-
-interface EditProfileModalProps {
-  firstName: string;
-  lastName: string;
-  email: string;
-  onSave: (updatedData: { firstName: string; lastName: string; email: string }) => void;
-  onCancel: () => void;
-}
+import type { EditProfileModalProps } from '../modalTypes';
 
 const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
   firstName: initialFirstName,
