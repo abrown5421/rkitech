@@ -12,25 +12,26 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
   auxImage,
   className = "",
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!auxImage && canvasRef.current) {
+    if (!auxImage && containerRef.current) {
       const numericWidth =
-        typeof width === "number" ? width : canvasRef.current.clientWidth;
+        typeof width === "number" ? width : containerRef.current.clientWidth;
       const numericHeight =
-        typeof height === "number" ? height : canvasRef.current.clientHeight;
+        typeof height === "number" ? height : containerRef.current.clientHeight;
 
-      const pattern = trianglify({
+      const svg = trianglify({
         width: numericWidth,
         height: numericHeight,
         cell_size: cellSize,
         variance,
         x_colors: xColors,
         y_colors: yColors,
-      });
+      }).toSVG(); 
 
-      pattern.toCanvas(canvasRef.current);
+      containerRef.current.innerHTML = ""; 
+      containerRef.current.appendChild(svg); 
     }
   }, [xColors, yColors, width, height, variance, cellSize, auxImage]);
 
@@ -44,19 +45,18 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
 
   return (
     <div
+      ref={containerRef}
       className={`overflow-hidden relative ${typeof width === "string" ? width : ""} ${
         typeof height === "string" ? height : ""
       } ${className}`}
       style={wrapperStyles}
     >
-      {auxImage ? (
+      {auxImage && (
         <img
           src={auxImage}
           alt="Auxiliary Banner"
           className="w-full h-full object-cover"
         />
-      ) : (
-        <canvas ref={canvasRef} className="w-full h-full" />
       )}
     </div>
   );
