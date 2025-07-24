@@ -1,9 +1,21 @@
-import type { ButtonColor, ButtonVariant } from "./buttonTypes";
+import type { ButtonColor, ButtonVariant, RoundedSize } from "./buttonTypes";
 
 export const variantBaseMap: Record<ButtonVariant, string> = {
   solid: 'border-1',
   outline: 'bg-transparent border-1',
   ghost: 'bg-transparent border-transparent',
+};
+
+export const roundedMap: Record<RoundedSize, string> = {
+  xs: 'rounded-xs',
+  sm: 'rounded-sm',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  xl: 'rounded-xl',
+  '2xl': 'rounded-2xl',
+  '3xl': 'rounded-3xl',
+  '4xl': 'rounded-4xl',
+  full: 'rounded-full',
 };
 
 export const colorStyles: Record<
