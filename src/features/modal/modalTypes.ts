@@ -14,6 +14,7 @@ export interface EditProfileModalProps {
   firstName: string;
   lastName: string;
   email: string;
-  onSave: (updatedData: { firstName: string; lastName: string; email: string }) => void;
+  password: string;
+  onSave: (updatedData: { firstName: string; lastName: string; email: string; password: string; }) => void;
   onCancel: () => void;
 }
