@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openDrawer, preCloseDrawer } from '../drawer/drawerSlice';
 import { getTimeOfDay } from '../../shared/utils/getTimeOfDay';
 import Icon from '../../shared/components/icon/Icon';
+import './navbar.css';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +18,7 @@ const Navbar: React.FC = () => {
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const menus = useAppSelector((state) => state.menus);
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
+  const isLoginHidden = activePage === 'Auth';
 
   const renderMenuItems = (menuItems: any[]) =>
     menuItems
@@ -188,14 +190,17 @@ const Navbar: React.FC = () => {
             )}
           </Button>
         ) : (
-          <Button
-            padding="sm"
-            color="primary"
-            cursor="pointer"
-            onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
-          >
-            <Text text="Login" color="white" />
-          </Button>
+          <Container className={`collapse-wrapper ${isLoginHidden ? 'collapse-closed' : 'collapse-open'}`}>
+            <Button
+              padding="sm"
+              color="primary"
+              cursor="pointer"
+              className={`transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-in'}`}
+              onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
+            >
+              <Text text="Login" color="white" />
+            </Button>
+          </Container>
         )}
       </Container>
     </Container>
