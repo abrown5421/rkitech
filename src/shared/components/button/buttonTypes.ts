@@ -31,4 +31,5 @@ export interface ButtonProps {
   width?: SizeValue;
   height?: SizeValue;
   cursor?: string;
+  style?: React.CSSProperties;
 }
