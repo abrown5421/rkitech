@@ -48,3 +48,18 @@ html, body {
 ::-webkit-scrollbar {
   display: none;
 }
+
+.collapse-wrapper {
+  overflow: hidden;
+  transition: max-width 0.3s ease-in-out, padding 0.3s ease-in-out;
+  display: inline-block;
+}
+
+.collapse-open {
+  max-width: 150px; 
+}
+
+.collapse-closed {
+  max-width: 0;
+  padding: 0;
+}
