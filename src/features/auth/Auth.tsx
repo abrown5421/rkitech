@@ -166,16 +166,6 @@ const Auth: React.FC = () => {
                     trianglifyObject: result.trianglifyObject
                 }), { expires: 1 });
 
-                dispatch(openAlert({
-                    alertOpen: true,
-                    alertSeverity: 'success',
-                    alertMessage: 'Login successful!',
-                    alertAnimation: {
-                        entranceAnimation: 'animate__fadeInRight animate__faster',
-                        exitAnimation: 'animate__fadeOutRight animate__faster',
-                        isEntering: true,
-                    }
-                }));
                 dispatch(setNotLoading())
                 clientNavigation('/', 'Home', 'homePage')();
             }
