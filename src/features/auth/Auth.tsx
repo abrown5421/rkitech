@@ -121,18 +121,7 @@ const Auth: React.FC = () => {
                     userRole: userData.userRole,
                     createdAt: userData.createdAt,
                 }));
-    
-                dispatch(openAlert({
-                    alertOpen: true,
-                    alertSeverity: 'success',
-                    alertMessage: 'Login successful!',
-                    alertAnimation: {
-                        entranceAnimation: 'animate__fadeInRight animate__faster',
-                        exitAnimation: 'animate__fadeOutRight animate__faster',
-                        isEntering: true,
-                    }
-                }));
-    
+
                 clientNavigation('/', 'Home', 'homePage')();
             }
         } catch (err: any) {
