@@ -73,7 +73,7 @@ const LoggedOutDrawerContent: React.FC = () => {
         entranceExit: {
           entranceAnimation: 'animate__fadeIn',
           exitAnimation: 'animate__fadeOut',
-          isEntering: isLoginHidden,
+          isEntering: !isLoginHidden,
         },
       }}
       >
