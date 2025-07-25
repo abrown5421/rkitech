@@ -1,4 +1,4 @@
 export interface TextProps {
   text: string;
-  twClasses?: string[]; 
+  twClasses?: string | string[]; 
 }
