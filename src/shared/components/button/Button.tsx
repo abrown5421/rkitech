@@ -23,6 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   className,
   width,
   height,
+  style,
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const animationClasses = getAnimationClasses(animation, isHovered);
@@ -80,7 +81,7 @@ const Button: React.FC<ButtonProps> = ({
       type="button"
       onClick={onClick}
       className={classes}
-      style={inlineStyle}
+      style={{ ...inlineStyle, ...style }}
       disabled={disabled}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
