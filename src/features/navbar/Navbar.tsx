@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openDrawer, preCloseDrawer } from '../drawer/drawerSlice';
 import { getTimeOfDay } from '../../shared/utils/getTimeOfDay';
 import Icon from '../../shared/components/icon/Icon';
-import './navbar.css';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
