@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import type { ButtonProps } from './buttonTypes';
-import { colorStyles, variantBaseMap } from './buttonConstants';
+import { colorStyles, roundedMap, variantBaseMap } from './buttonConstants';
 import { paddingMap, marginMap } from '../../constants/spacingConstants';
 import { resolveDimension } from '../../constants/sizeConstants';
 import { getAnimationClasses } from '../../utils/useAnimation';
@@ -12,6 +12,7 @@ const Button: React.FC<ButtonProps> = ({
   cursor,
   variant = 'solid',
   color = 'primary',
+  customColorClasses,
   padding = 'md',
   margin = 'none',
   rounded = true,
@@ -36,10 +37,21 @@ const Button: React.FC<ButtonProps> = ({
     ...(typeof resolvedWidth === 'object' ? resolvedWidth : {}),
     ...(typeof resolvedHeight === 'object' ? resolvedHeight : {}),
   };
-  
-  const variantBase = variantBaseMap[variant];
 
-  const colorStyle = colorStyles[variant][color];
+  const variantBase = variantBaseMap[variant];
+  const defaultColorStyle = colorStyles[variant][color];
+
+  const colorStyle = {
+    ...defaultColorStyle,
+    ...customColorClasses,
+  };
+
+  let roundedClass = '';
+  if (typeof rounded === 'string') {
+    roundedClass = roundedMap[rounded] || 'rounded-md';
+  } else if (rounded === true) {
+    roundedClass = 'rounded-xl';
+  }
 
   const classes = clsx(
     'inline-flex items-center justify-center font-medium transition-all duration-200',
@@ -52,13 +64,13 @@ const Button: React.FC<ButtonProps> = ({
     colorStyle.hoverBorder,
     paddingMap[padding],
     marginMap[margin],
-    rounded && 'rounded-xl',
+    roundedClass,
     shadow && 'shadow-md',
     fullWidth && 'w-full',
     tailwindWidthClass,
     tailwindHeightClass,
     animationClasses,
-    !disabled && `cursor-${cursor || 'pointer'}`, 
+    !disabled && `cursor-${cursor || 'pointer'}`,
     disabled && 'opacity-50 pointer-events-none cursor-not-allowed',
     className
   );
@@ -79,3 +91,4 @@ const Button: React.FC<ButtonProps> = ({
 };
 
 export default Button;
+

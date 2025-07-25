@@ -1,9 +1,21 @@
-import type { ButtonColor, ButtonVariant } from "./buttonTypes";
+import type { ButtonColor, ButtonVariant, RoundedSize } from "./buttonTypes";
 
 export const variantBaseMap: Record<ButtonVariant, string> = {
   solid: 'border-1',
   outline: 'bg-transparent border-1',
   ghost: 'bg-transparent border-transparent',
+};
+
+export const roundedMap: Record<RoundedSize, string> = {
+  xs: 'rounded-xs',
+  sm: 'rounded-sm',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  xl: 'rounded-xl',
+  '2xl': 'rounded-2xl',
+  '3xl': 'rounded-3xl',
+  '4xl': 'rounded-4xl',
+  full: 'rounded-full',
 };
 
 export const colorStyles: Record<
@@ -61,6 +73,14 @@ export const colorStyles: Record<
       hoverText: 'hover:text-yellow-hover',
       hoverBorder: 'hover:border-warning',
     },
+    black: {
+      text: 'text-white',
+      bg: 'bg-black',
+      border: 'border-black',
+      hoverBg: 'hover:bg-white',
+      hoverText: 'hover:text-black',
+      hoverBorder: 'hover:border-black',
+    },
   },
   outline: {
     primary: {
@@ -103,6 +123,14 @@ export const colorStyles: Record<
       hoverText: 'hover:text-white',
       hoverBorder: 'hover:border-warning',
     },
+    black: {
+      text: 'text-black',
+      bg: 'bg-white',
+      border: 'border-black',
+      hoverBg: 'hover:bg-black',
+      hoverText: 'hover:text-white',
+      hoverBorder: 'hover:border-black',
+    },
   },
   ghost: {
     primary: {
@@ -139,6 +167,13 @@ export const colorStyles: Record<
       border: 'border-transparent',
       hoverBg: '',
       hoverText: 'hover:text-black',
+    },
+    black: {
+      text: 'text-black',
+      bg: 'bg-transparent',
+      border: 'border-transparent',
+      hoverBg: '',
+      hoverText: 'hover:text-primary',
     },
   },
 };
