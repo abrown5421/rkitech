@@ -5,15 +5,22 @@ import Icon from '../../shared/components/icon/Icon';
 import Input from '../../shared/components/input/Input';
 import Button from '../../shared/components/button/Button';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openAlert } from '../alert/alertSlice';
 import { setAuthUser } from './authUserSlice';
 import { signUpUser } from '../../services/auth/signUpUser';
 import { signInUser } from '../../services/auth/signInUser';
+import Cookies from 'js-cookie';
+import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
+import Loader from '../../shared/components/loader/Loader';
+import { getRandomTrianglifyParams } from '../../shared/components/trianglifyBanner/getRandomTrianglifyParams';
 
 const Auth: React.FC = () => {
     const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
+    const { loading, id } = useAppSelector((state) => state.loading);
+    const isLoading = loading && id === 'signInButton';
+    
     const [isSignup, setIsSignup] = useState(false);
     const [formValues, setFormValues] = useState({
         firstName: '',
@@ -59,6 +66,7 @@ const Auth: React.FC = () => {
     };
 
     const handleSubmit = async () => {
+        dispatch(setLoading({loading: true, id: 'signInButton'}));
         if (!validateForm()) {
             dispatch(openAlert({
                 alertOpen: true,
@@ -70,18 +78,30 @@ const Auth: React.FC = () => {
                     isEntering: true,
                 }
             }));
+            dispatch(setNotLoading())
             return;
         }
     
         try {
             if (isSignup) {
+                const triBan = getRandomTrianglifyParams();
+                const randomizedTrianglifyBanner = {
+                    xColors: triBan.xColor,
+                    yColors: triBan.yColor,
+                    width: 'w-full',
+                    height: 250,
+                    variance: triBan.variance,
+                    cellSize: triBan.cellSize
+                }
+
                 const result = await signUpUser(
                     formValues.email,
                     formValues.password,
                     formValues.firstName,
-                    formValues.lastName
+                    formValues.lastName,
+                    '',
+                    randomizedTrianglifyBanner                    
                 );
-    
                 if (!result) throw new Error('Failed to sign up');
     
                 dispatch(setAuthUser({
@@ -89,10 +109,23 @@ const Auth: React.FC = () => {
                     email: formValues.email,
                     firstName: formValues.firstName,
                     lastName: formValues.lastName,
+                    profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
+                    trianglifyObject: randomizedTrianglifyBanner
                 }));
-    
+                
+                Cookies.set('authUser', JSON.stringify({
+                    userId: result.userId,
+                    email: formValues.email,
+                    firstName: formValues.firstName,
+                    lastName: formValues.lastName,
+                    profileImage: '',
+                    userRole: 'User',
+                    createdAt: new Date().toISOString(),
+                    trianglifyObject: randomizedTrianglifyBanner
+                }), { expires: 1 });
+
                 dispatch(openAlert({
                     alertOpen: true,
                     alertSeverity: 'success',
@@ -103,25 +136,47 @@ const Auth: React.FC = () => {
                         isEntering: true,
                     }
                 }));
-    
+                dispatch(setNotLoading())
                 clientNavigation('/', 'Home', 'homePage')();
-    
+                
             } else {
                 const result = await signInUser(formValues.email, formValues.password);
-    
+
                 if (!result) throw new Error('Login failed');
-    
-                const userData = result.userData; 
-    
+
                 dispatch(setAuthUser({
                     userId: result.userId,
-                    email: userData.email,
-                    firstName: userData.firstName,
-                    lastName: userData.lastName,
-                    userRole: userData.userRole,
-                    createdAt: userData.createdAt,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    profileImage: '',
+                    userRole: result.userRole,
+                    createdAt: result.createdAt,
+                    trianglifyObject: result.trianglifyObject
                 }));
 
+                Cookies.set('authUser', JSON.stringify({
+                    userId: result.userId,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    profileImage: '',
+                    userRole: result.userRole,
+                    createdAt: result.createdAt,
+                    trianglifyObject: result.trianglifyObject
+                }), { expires: 1 });
+
+                dispatch(openAlert({
+                    alertOpen: true,
+                    alertSeverity: 'success',
+                    alertMessage: 'Login successful!',
+                    alertAnimation: {
+                        entranceAnimation: 'animate__fadeInRight animate__faster',
+                        exitAnimation: 'animate__fadeOutRight animate__faster',
+                        isEntering: true,
+                    }
+                }));
+                dispatch(setNotLoading())
                 clientNavigation('/', 'Home', 'homePage')();
             }
         } catch (err: any) {
@@ -135,6 +190,7 @@ const Auth: React.FC = () => {
                     isEntering: true,
                 }
             }));
+            dispatch(setNotLoading())
         }
     };
     
@@ -153,7 +209,7 @@ const Auth: React.FC = () => {
             justifyContent="center"
             alignItems="center"
         >
-            <Container width='w-11/12 md:w-1/3' height='min-h-1/2' padding='md' bgColor='bg-white' className='rounded-xl' flexDirection='col' justifyContent='between'>
+            <Container width='w-11/12 md:w-1/3' padding='md' bgColor='bg-white' className='rounded-xl min-h-2/5' flexDirection='col' justifyContent='between'>
                 <Text text={isSignup ? 'Create Account' : 'Login'} size="xl" />
 
                 {isSignup && (
@@ -217,7 +273,7 @@ const Auth: React.FC = () => {
                 )}
 
                 <Button className='mt-3' padding="sm" onClick={handleSubmit}>
-                    {isSignup ? 'Create Account' : 'Login'}
+                    {isSignup ? (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Create Account') : (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Login')}
                 </Button>
 
                 <Button
