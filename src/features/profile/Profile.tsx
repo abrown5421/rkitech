@@ -145,8 +145,8 @@ const Profile: React.FC = () => {
           />
 
           <Container
-            flexDirection="row"
-            className="relative"
+            flexDirection='col'
+            className="relative md:flex-row"
           >
             <Container
               flexDirection="col"
@@ -187,7 +187,7 @@ const Profile: React.FC = () => {
 
               <Container flexDirection="col" padding='xl' className='relative'>
                 {userIdFromUrl === authUser?.userId && (
-                  <Container className='absolute right-0'>
+                  <Container className='absolute right-8 top-8 md:right-2 md:top-2'>
                     <Button
                       customColorClasses={{
                         bg: 'bg-gray-200',
@@ -214,7 +214,7 @@ const Profile: React.FC = () => {
                   color="text-black"
                   size="xl"
                   bold
-                  text={profileUser.firstName + ' ' + profileUser.lastName}
+                  text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
                 />
                 <Text color="text-black" size="md" text={profileUser.email} />
                 <Text
@@ -226,6 +226,9 @@ const Profile: React.FC = () => {
             </Container>
 
             <Container flexDirection="col" className="flex-[9]" padding='xl'>
+              <Container height={80} flexDirection='row' justifyContent='end' alignItems='end' className='hidden md:flex'>
+                <span></span>
+              </Container>
               profile stuff
             </Container>
           </Container>
