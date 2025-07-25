@@ -214,7 +214,7 @@ const Profile: React.FC = () => {
                   color="text-black"
                   size="xl"
                   bold
-                  text={profileUser.firstName + ' ' + profileUser.lastName}
+                  text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
                 />
                 <Text color="text-black" size="md" text={profileUser.email} />
                 <Text
