@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../../shared/components/container/Container';
 import Text from '../../shared/components/text/Text';
 import Button from '../../shared/components/button/Button';
@@ -18,19 +18,32 @@ const Navbar: React.FC = () => {
   const menus = useAppSelector((state) => state.menus);
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
   const isLoginHidden = activePage === 'Auth';
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 50); 
+    return () => clearTimeout(timer);
+  }, []);
+
+  const shouldShowLogin = mounted && !isLoginHidden;
 
   const renderMenuItems = (menuItems: any[]) =>
     menuItems
       ?.slice()
       .sort((a, b) => a.itemOrder - b.itemOrder)
-      .map((menuItem) => {
+      .map((menuItem, index) => {
+        const totalItems = menuItems.length;
+        const delay = `${(totalItems - index) * 200}ms`;
+        const animationClass = "animate__animated animate__fadeIn";
+
         if (menuItem.itemType === 'page') {
           const page = pages.find((p) => p.pageID === menuItem.itemId);
           if (!page) return null;
           return (
             <Button
               key={menuItem.itemId}
-              className="pt-3 pr-0 pb-3 pl-0"
+              className={`pt-3 pr-0 pb-3 pl-0 ${animationClass}`}
+              style={{ animationDelay: delay }}
               variant="ghost"
               cursor="pointer"
               color={activePage === menuItem.itemName ? 'primary' : 'black'}
@@ -49,22 +62,23 @@ const Navbar: React.FC = () => {
               {menuItem.itemName}
             </Button>
           );
-        } else {
-          return (
-            <Button
-              key={menuItem.itemName}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
-              cursor="pointer"
-              color="black"
-              onClick={() => window.open(menuItem.itemLink, '_blank')}
-            >
-              {menuItem.itemName}
-            </Button>
-          );
         }
-      });
 
+        return (
+          <Button
+            key={menuItem.itemName}
+            className={`pt-3 pr-0 pb-3 pl-0 ${animationClass}`}
+            style={{ animationDelay: delay }}
+            variant="ghost"
+            cursor="pointer"
+            color="black"
+            onClick={() => window.open(menuItem.itemLink, '_blank')}
+          >
+            {menuItem.itemName}
+          </Button>
+        );
+      });
+      
   const handleDrawerOpen = (title: string, contentType: 'loggedInMenu' | 'loggedOutMenu') => {
     dispatch(
       openDrawer({
@@ -154,13 +168,6 @@ const Navbar: React.FC = () => {
       <Container
         alignItems="center"
         className="gap-5 hidden md:flex"
-        animation={{
-          entranceExit: {
-            entranceAnimation: 'animate__fadeInRight',
-            exitAnimation: 'animate__fadeOutRight',
-            isEntering: true,
-          },
-        }}
       >
         {renderMenuItems(primaryMenu?.menuItems || [])}
 
@@ -189,12 +196,12 @@ const Navbar: React.FC = () => {
             )}
           </Button>
         ) : (
-          <Container className={`collapse-wrapper ${isLoginHidden ? 'collapse-closed' : 'collapse-open'}`}>
+          <Container   className={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
             <Button
               padding="sm"
               color="primary"
               cursor="pointer"
-              className={`transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-in'}`}
+              className={`transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
               onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
             >
               <Text text="Login" color="white" />
