@@ -13,6 +13,7 @@ const LoggedOutDrawerContent: React.FC = () => {
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const { loading, id } = useAppSelector((state) => state.loading);
   const isLoading = loading && id === 'logoutButton';
+  const isLoginHidden = activePage === 'Auth';
 
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
 
@@ -68,6 +69,13 @@ const LoggedOutDrawerContent: React.FC = () => {
         color="primary"
         cursor="pointer"
         onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
+        animation={{
+        entranceExit: {
+          entranceAnimation: 'animate__fadeIn',
+          exitAnimation: 'animate__fadeOut',
+          isEntering: isLoginHidden,
+        },
+      }}
       >
         {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" color="white" />}
       </Button>
