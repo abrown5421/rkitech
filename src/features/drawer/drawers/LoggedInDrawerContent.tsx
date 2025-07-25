@@ -81,17 +81,14 @@ const LoggedInDrawerContent: React.FC = () => {
   return (
     <Container flexDirection="col" height="h-full" width="w-full" justifyContent="between">
       <Container flexDirection="col" height="h-full" width="w-full" alignItems="start">
-        {/* Mobile Primary Menu with separator */}
         <Container flexDirection="col" width="w-full" alignItems="start" className="md:hidden">
           {renderMenuItems(primaryMenu?.menuItems || [])}
           <hr className="w-full border-gray-300 my-2" />
         </Container>
 
-        {/* Profile Menu */}
         {renderMenuItems(profileMenu?.menuItems || [])}
       </Container>
 
-      {/* Logout Button */}
       <Button width="w-full" padding="sm" color="primary" cursor="pointer" onClick={handleLogout}>
         {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" color="white" />}
       </Button>
