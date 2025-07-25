@@ -48,3 +48,25 @@ html, body {
 ::-webkit-scrollbar {
   display: none;
 }
+
+.collapse-container {
+  overflow: hidden;       
+  transform-origin: right; 
+  transition: transform 0.3s ease-in-out;
+}
+
+.collapse-enter {
+  transform: scaleX(0);
+}
+
+.collapse-enter-active {
+  transform: scaleX(1);
+}
+
+.collapse-exit {
+  transform: scaleX(1);
+}
+
+.collapse-exit-active {
+  transform: scaleX(0);
+}
