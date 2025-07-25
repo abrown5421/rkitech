@@ -63,22 +63,16 @@ const LoggedOutDrawerContent: React.FC = () => {
         {renderMenuItems(primaryMenu?.menuItems || [])}
       </Container>
 
-      <Button
-        width="w-full"
-        padding="sm"
-        color="primary"
-        cursor="pointer"
-        onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
-        animation={{
-        entranceExit: {
-          entranceAnimation: 'animate__fadeIn',
-          exitAnimation: 'animate__fadeOut',
-          isEntering: !isLoginHidden,
-        },
-      }}
-      >
-        {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" color="white" />}
-      </Button>
+      {!isLoginHidden && (
+        <Button
+          width="w-full"
+          padding="sm"
+          color="primary"
+          cursor="pointer"
+          onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
+        >
+          {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" color="white" />}
+        </Button>)}
     </Container>
   );
 };
