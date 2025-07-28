@@ -66,9 +66,7 @@ const Footer: React.FC = () => {
 
             <Text
                 text={`© ${currentYear} Rkitech. All rights reserved.`}
-                size="sm"
-                color="text-gray-500"
-                className="mt-4"
+                TwClassName="mt-4 text-sm text-gray-500"
             />
         </Container>
     );

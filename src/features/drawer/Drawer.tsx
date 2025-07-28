@@ -72,7 +72,7 @@ const Drawer: React.FC = () => {
       >
         <Icon name="X" cursor="pointer" className="absolute top-4 right-4" onClick={handleClose} />
         <div className="flex flex-col w-full">
-          {drawer.drawertitle && <Text text={drawer.drawertitle} size="xl" bold />}
+          {drawer.drawertitle && <Text text={drawer.drawertitle} TwClassName="text-xl font-bold" />}
           {drawer.drawerContentType && drawerContentRegistry[drawer.drawerContentType]}
         </div>
       </Container>

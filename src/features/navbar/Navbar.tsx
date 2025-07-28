@@ -114,7 +114,7 @@ const Navbar: React.FC = () => {
         }}
       >
         <Image src="../../../public/assets/images/logo.png" height={50} alt="Rkitech" />
-        <Text text="Rkitech" bold size="xl" font="primary" color="text-black" />
+        <Text text="Rkitech" TwClassName="text-xl font-primary text-black" />
       </Container>
 
       <Container
@@ -146,7 +146,7 @@ const Navbar: React.FC = () => {
             ) : (
               <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
                 <Text
-                  className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                  TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
                   text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
                 />
               </Container>
@@ -189,7 +189,7 @@ const Navbar: React.FC = () => {
             ) : (
               <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
                 <Text
-                  className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                  TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
                   text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
                 />
               </Container>
@@ -204,7 +204,7 @@ const Navbar: React.FC = () => {
               className={`transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
               onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
             >
-              <Text text="Login" color="white" />
+              <Text text="Login" TwClassName="text-white" />
             </Button>
           </Container>
         )}
