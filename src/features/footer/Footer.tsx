@@ -13,6 +13,7 @@ const Footer: React.FC = () => {
     const activePage = useAppSelector((state) => state.pageShell.activePageShellName)
     const menus = useAppSelector((state) => state.menus);
     const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
+    const auxilaryMenu = menus.menus.find((menu) => menu.menuName === 'Auxilary Menu');
 
     const currentYear = new Date().getFullYear();
 
@@ -59,6 +60,38 @@ const Footer: React.FC = () => {
                 text={`© ${currentYear} Rkitech. All rights reserved.`}
                 TwClassName="mt-4 text-sm text-gray-500"
             />
+            {primaryMenu?.menuItems
+                    ?.slice()
+                    .sort((a, b) => a.itemOrder - b.itemOrder)
+                    .map((menuItem) => {
+                        if (menuItem.itemType === 'page') {
+                            const page = pages.find((p) => p.pageID === menuItem.itemId);
+                            if (!page) return null;
+                            return (
+                                <Button
+                                    key={menuItem.itemId}
+                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 mt-4 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
+                                    onClick={() => {
+                                        dispatch(preCloseDrawer());
+                                        setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
+                                    }}
+                                >
+                                    {menuItem.itemName}
+                                </Button>
+                            );
+                        } else {
+                            return (
+                                <Button
+                                    key={menuItem.itemName}
+                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 mt-4 text-sm text-gray-500 text-black hover:text-primary`}
+                                    cursor="pointer"
+                                    onClick={() => window.open(menuItem.itemLink, '_blank')}
+                                >
+                                    {menuItem.itemName}
+                                </Button>
+                            );
+                        }
+                    }}
         </Container>
     );
 };
