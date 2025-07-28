@@ -10,7 +10,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
   variance = 0.75,
   cellSize = 75,
   auxImage,
-  className = "",
+  TwClassName = "",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +49,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
       ref={containerRef}
       className={`overflow-hidden relative ${typeof width === "string" ? width : ""} ${
         typeof height === "string" ? height : ""
-      } ${className}`}
+      } ${TwClassName}`}
       style={wrapperStyles}
     >
       {auxImage && (
