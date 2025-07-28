@@ -55,12 +55,12 @@ const Footer: React.FC = () => {
                         }
                 })}
             </Container>
-
-            <Text
-                text={`© ${currentYear} Rkitech. All rights reserved.`}
-                TwClassName="mt-4 text-sm text-gray-500"
-            />
-            {primaryMenu?.menuItems
+            <Container TwClassName='flex-row gap-2'>
+                <Text
+                    text={`© ${currentYear} Rkitech. All rights reserved.`}
+                    TwClassName="mt-4 text-sm text-gray-500"
+                />
+                {auxilaryMenu?.menuItems
                     ?.slice()
                     .sort((a, b) => a.itemOrder - b.itemOrder)
                     .map((menuItem) => {
@@ -70,20 +70,21 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemId}
-                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 mt-4 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
+                                    TwClassName={`pt-4 pr-0 pb-3 pl-0 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
                                     onClick={() => {
                                         dispatch(preCloseDrawer());
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
                                     }}
                                 >
-                                    {menuItem.itemName}
+                                    <span className="text-gray-400 pt-0 pr-3 pb-0 pl-0">|</span>
+                                   {menuItem.itemName}
                                 </Button>
                             );
                         } else {
                             return (
                                 <Button
                                     key={menuItem.itemName}
-                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 mt-4 text-sm text-gray-500 text-black hover:text-primary`}
+                                    TwClassName={`pt-4 pr-0 pb-3 pl-0 text-sm text-gray-500 text-black hover:text-primary`}
                                     cursor="pointer"
                                     onClick={() => window.open(menuItem.itemLink, '_blank')}
                                 >
@@ -91,7 +92,8 @@ const Footer: React.FC = () => {
                                 </Button>
                             );
                         }
-                    }}
+                })}
+            </Container>
         </Container>
     );
 };
