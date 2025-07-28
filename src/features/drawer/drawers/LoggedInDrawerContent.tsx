@@ -79,9 +79,9 @@ const LoggedInDrawerContent: React.FC = () => {
   };
 
   return (
-    <Container flexDirection="col" height="h-full" width="w-full" justifyContent="between">
-      <Container flexDirection="col" height="h-full" width="w-full" alignItems="start">
-        <Container flexDirection="col" width="w-full" alignItems="start" className="md:hidden">
+    <Container TwClassName="flex-col h-full w-full justify-between">
+      <Container TwClassName="flex-col h-full w-full items-start">
+        <Container TwClassName="flex-col w-full items-start md:hidden">
           {renderMenuItems(primaryMenu?.menuItems || [])}
           <hr className="w-full border-gray-300 my-2" />
         </Container>

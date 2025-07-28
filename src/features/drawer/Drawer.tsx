@@ -38,11 +38,8 @@ const Drawer: React.FC = () => {
 
   return (
     <Container
-      width="w-full"
-      height="h-full"
-      bgColor="bg-gray-950/60"
-      className={clsx(
-        'fixed top-0 left-0 flex',
+      TwClassName={clsx(
+        'fixed top-0 left-0 flex w-full h-full bg-gray-950/60',
         drawer.draweranchor === 'right' || drawer.draweranchor === 'left'
           ? 'justify-start'
           : 'items-start',
@@ -58,9 +55,7 @@ const Drawer: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        padding="md"
-        bgColor="bg-white"
-        className={clsx('min-w-100 shadow-xl absolute', positionClasses[drawer.draweranchor ?? 'right'])}
+        TwClassName={clsx('p-4 bg-white min-w-100 shadow-xl absolute', positionClasses[drawer.draweranchor ?? 'right'])}
         animation={{
           entranceExit: {
             entranceAnimation: drawer.draweranimation.entranceAnimation,

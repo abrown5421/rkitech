@@ -96,15 +96,10 @@ const Navbar: React.FC = () => {
 
   return (
     <Container
-      height={50}
-      padding="sm"
-      justifyContent="between"
-      alignItems="center"
-      bgColor="bg-white"
-      className="relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
+      TwClassName="h-[50px] justify-between items-center bg-white p-2 relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
     >
       <Container
-        alignItems="center"
+        TwClassName="items-center"
         animation={{
           entranceExit: {
             entranceAnimation: 'animate__fadeInLeft',
@@ -118,8 +113,7 @@ const Navbar: React.FC = () => {
       </Container>
 
       <Container
-        alignItems="center"
-        className="md:hidden"
+        TwClassName="items-center md:hidden"
         animation={{
           entranceExit: {
             entranceAnimation: 'animate__fadeInRight',
@@ -144,7 +138,7 @@ const Navbar: React.FC = () => {
                 className="rounded-full border border-gray-300 cursor-pointer"
               />
             ) : (
-              <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+              <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
                 <Text
                   TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
                   text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
@@ -166,8 +160,7 @@ const Navbar: React.FC = () => {
       </Container>
 
       <Container
-        alignItems="center"
-        className="gap-5 hidden md:flex"
+        TwClassName="items-center gap-5 hidden md:flex"
       >
         {renderMenuItems(primaryMenu?.menuItems || [])}
 
@@ -187,7 +180,7 @@ const Navbar: React.FC = () => {
                 className="rounded-full border border-gray-300 cursor-pointer"
               />
             ) : (
-              <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+              <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
                 <Text
                   TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
                   text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
@@ -196,7 +189,7 @@ const Navbar: React.FC = () => {
             )}
           </Button>
         ) : (
-          <Container   className={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
+          <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
             <Button
               padding="sm"
               color="primary"

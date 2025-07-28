@@ -11,9 +11,9 @@ interface ConfirmModalProps {
 
 const ConfirmModalContent: React.FC<ConfirmModalProps> = ({ message = 'Are you sure?', onConfirm, onDeny }) => {
   return (
-    <Container flexDirection="col" height="h-full" justifyContent="between">
+    <Container TwClassName="flex-col h-full justify-between">
       <Text TwClassName="text-md" text={message} />
-      <Container flexDirection="row" width="w-full" justifyContent="end" className="gap-2">
+      <Container TwClassName="flex-row w-full justify-end gap-2">
         <Button padding="sm" color="error" onClick={onDeny}>Deny</Button>
         <Button padding="sm" color="primary" onClick={onConfirm}>Confirm</Button>
       </Container>
