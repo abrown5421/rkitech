@@ -7,5 +7,5 @@ export type TrianglifyBannerProps = {
   variance?: number;
   cellSize?: number;
   auxImage?: string; 
-  className?: string; 
+  TwClassName?: string; 
 };
