@@ -1,59 +1,134 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import type { DragEvent } from 'react';
 import Container from '../../../shared/components/container/Container';
-import { useAppSelector } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { uploadProfileImage } from '../../../services/storage/uploadImage';
 import { updateDataInCollection } from '../../../services/database/updateData';
+import Icon from '../../../shared/components/icon/Icon';
+import Button from '../../../shared/components/button/Button';
+import Loader from '../../../shared/components/loader/Loader';
+import { setLoading, setNotLoading } from '../../../app/globalSlices/loading/loadingSlice';
+import { openAlert } from '../../alert/alertSlice';
+import { preCloseModal } from '../modalSlice';
+import { deleteImageFromStorage } from '../../../services/storage/deleteImage';
 
 const ProfilePictureModalContent: React.FC = () => {
+  const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.authUser.user);
+  const { loading, id } = useAppSelector((state) => state.loading);
+  const isProfilePicLoading = loading && id === 'profilePic';
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+    setPreviewURL(URL.createObjectURL(file));
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setPreviewURL(URL.createObjectURL(file));
-    }
+    if (file) handleFileSelect(file);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) handleFileSelect(file);
   };
 
   const handleUpload = async () => {
     if (!selectedFile || !authUser?.userId) return;
+    dispatch(setLoading({ loading: true, id: 'profilePic' }));
 
     try {
-      setStatus('Uploading...');
-      const imageUrl = await uploadProfileImage(selectedFile, authUser.userId);
-      await updateDataInCollection('Users', authUser.userId, { profileImage: imageUrl });
-      setStatus('Upload successful!');
+        if (authUser.profileImage) {
+        await deleteImageFromStorage(authUser.profileImage);
+        }
+
+        const imageUrl = await uploadProfileImage(selectedFile, authUser.userId);
+        await updateDataInCollection('Users', authUser.userId, { profileImage: imageUrl });
+
+        dispatch(preCloseModal());
+        dispatch(setNotLoading());
+        dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'success',
+        alertMessage: 'Profile Picture was uploaded successfully!',
+        alertAnimation: {
+            entranceAnimation: 'animate__fadeInRight animate__faster',
+            exitAnimation: 'animate__fadeOutRight animate__faster',
+            isEntering: true,
+        }
+        }));
     } catch (error) {
-      console.error(error);
-      setStatus('Upload failed. Please try again.');
+        console.error(error);
+        dispatch(preCloseModal());
+        dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'error',
+        alertMessage: 'Profile Picture upload failed.',
+        alertAnimation: {
+            entranceAnimation: 'animate__fadeInRight animate__faster',
+            exitAnimation: 'animate__fadeOutRight animate__faster',
+            isEntering: true,
+        }
+        }));
+        dispatch(setNotLoading());
     }
-  };
+    };
 
   return (
     <Container TwClassName="flex-col h-full justify-between gap-4">
-      <label className="text-sm font-medium">Upload Profile Picture</label>
-      <input type="file" accept="image/*" onChange={handleFileChange} />
-
-      {previewURL && (
-        <img
-          src={previewURL}
-          alt="Preview"
-          className="w-32 h-32 object-cover rounded-full border"
+      <div
+        className={`border-2 ${
+          isDragging ? 'border-primary bg-blue-50' : 'border-dashed border-gray-400'
+        } rounded-lg p-4 flex items-center justify-center cursor-pointer relative h-48 transition-colors`}
+        onClick={() => fileInputRef.current?.click()}
+        onDrop={handleDrop}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
+      >
+        {!previewURL ? (
+          <div className="flex flex-col items-center text-gray-500">
+            <Icon name="Camera" TwClassName="w-10 h-10 mb-2" />
+            <span className="text-sm">Click or drag image to upload</span>
+          </div>
+        ) : (
+          <img
+            src={previewURL}
+            alt="Preview"
+            className="absolute inset-0 w-full h-full object-cover rounded-lg"
+          />
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
         />
-      )}
+      </div>
 
-      <button
+      <Button 
+        TwClassName='mt-3 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary'
         onClick={handleUpload}
         disabled={!selectedFile}
-        className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
       >
-        Upload
-      </button>
+        {isProfilePicLoading ? (
+            <Loader variant="spinner" color="bg-white" />
+        ) : (
+            <>Upload</>
+        )}
+      </Button>
 
-      {status && <p className="text-sm text-gray-600">{status}</p>}
     </Container>
   );
 };
