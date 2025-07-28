@@ -143,7 +143,18 @@ const Profile: React.FC = () => {
             variance={profileUser.trianglifyObject.variance}
             cellSize={profileUser.trianglifyObject.cellSize}
           />
-
+          <Container TwClassName='absolute top-[245px] right-[5px]'>
+            <Button
+              cursor='pointer' 
+              TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+              onClick={handleProfileEditModal}
+            >
+              <Icon
+                name='Edit'
+                
+              />
+            </Button>
+          </Container>
           <Container
             TwClassName='flex-col relative md:flex-row'
           >
@@ -153,6 +164,18 @@ const Profile: React.FC = () => {
               <Container
                 TwClassName="p-8 absolute top-0 transform -translate-y-1/2 z-10"
               >
+                <Container TwClassName='absolute bottom-8 right-8'>
+                  <Button
+                    cursor='pointer' 
+                    TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+                    onClick={handleProfileEditModal}
+                  >
+                    <Icon
+                      name='Camera'
+                      
+                    />
+                  </Button>
+                </Container>
                 {profileUser?.profileImage ? (
                   <Image
                     src={profileUser.profileImage}
@@ -166,7 +189,7 @@ const Profile: React.FC = () => {
                     TwClassName="w-[160px] h-[160px] rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
                   >
                     <Text
-                      TwClassName="text-white font-primary text-6x w-full flex justify-center items-center"
+                      TwClassName="text-white font-primary text-4xl w-full flex justify-center items-center"
                       text={`${profileUser.firstName?.[0] || ''}${profileUser.lastName?.[0] || ''}`.toUpperCase()}
                     />
                   </Container>
@@ -182,7 +205,7 @@ const Profile: React.FC = () => {
                   <Container TwClassName='absolute right-8 top-8 md:right-2 md:top-2'>
                     <Button
                       cursor='pointer' 
-                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:bg-transparent hover:border-primary p-2'
+                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
                       onClick={handleProfileEditModal}
                     >
                       <Icon
