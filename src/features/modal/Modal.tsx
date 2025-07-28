@@ -7,6 +7,7 @@ import Icon from '../../shared/components/icon/Icon';
 import Text from '../../shared/components/text/Text';
 import ConfirmModalContent from './modals/ConfirmModalContent';
 import EditProfileModalContent from './modals/EditProfileModalContent';
+import ProfilePictureModalContent from './modals/ProfilePictureModalContent';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -49,6 +50,10 @@ const Modal: React.FC = () => {
             onSave={modal.modalProps?.onSave}
             onCancel={modal.modalProps?.onCancel}
           />
+        );
+      case 'editProfilePic':
+        return (
+          <ProfilePictureModalContent />
         );
       default:
         return null;
