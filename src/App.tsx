@@ -66,7 +66,7 @@ const App: React.FC = () => {
     
     <>  
       {!loadingSite ? (
-        <Container flexDirection='col' className='w-screen h-screen z-30 relative bg-black'>
+        <Container TwClassName='flex-col w-screen h-screen z-30 relative bg-black'>
           <Navbar />
           <Routes>
             {pages.map((page) => {

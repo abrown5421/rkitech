@@ -18,13 +18,9 @@ const Footer: React.FC = () => {
 
     return (
         <Container
-            flexDirection='col'
-            justifyContent="between"
-            alignItems="start"
-            bgColor="bg-white"
-            className="relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]"
+            TwClassName='flex-col justify-between items-start bg-white relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]'
         >
-            <Container flexDirection='row' className='gap-5'>
+            <Container TwClassName='flex-row gap-5'>
                 {primaryMenu?.menuItems
                     ?.slice()
                     .sort((a, b) => a.itemOrder - b.itemOrder)

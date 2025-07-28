@@ -24,7 +24,7 @@ const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
   const emailChanged = email !== initialEmail;
 
   return (
-    <Container flexDirection="col" height="h-full" justifyContent="between" className="gap-4">
+    <Container TwClassName="flex-col h-full justify-between gap-4">
       <Input label="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
       <Input label="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
       <Input label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -39,7 +39,7 @@ const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
         />
       )}
 
-      <Container flexDirection="row" justifyContent="end" className="gap-2 mt-4">
+      <Container TwClassName="flex-row justify-end gap-2 mt-4">
         <Button padding="sm" color="error" onClick={onCancel}>
           Cancel
         </Button>

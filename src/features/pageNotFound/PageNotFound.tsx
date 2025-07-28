@@ -8,7 +8,7 @@ const PageNotFound: React.FC = () => {
     const clientNavigation = useNavigationHook();
 
     return (
-        <Container padding='sm' flexDirection='col' justifyContent='center' alignItems='center' height='h-full'>
+        <Container TwClassName='p-2 flex-col justify-center items-center h-full'>
             <Text text="404" TwClassName="text-9x text-primary font-primary font-bold" />
             <Text text="Sorry, the page you are looking for doesn't exist." TwClassName="text-2x text-black" />
             <Button

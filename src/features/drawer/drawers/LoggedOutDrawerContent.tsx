@@ -58,8 +58,8 @@ const LoggedOutDrawerContent: React.FC = () => {
       });
 
   return (
-    <Container flexDirection="col" height="h-full" width="w-full" justifyContent="between">
-      <Container flexDirection="col" height="h-full" width="w-full" alignItems="start">
+    <Container TwClassName="flex-col h-full w-full justify-between">
+      <Container TwClassName="flex-col h-full w-full items-start">
         {renderMenuItems(primaryMenu?.menuItems || [])}
       </Container>
 

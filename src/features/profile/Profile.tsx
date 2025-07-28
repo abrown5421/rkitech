@@ -130,7 +130,7 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <Container height="h-full" width="w-full" flexDirection="col">
+    <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
         <Loader variant="spinner" color="bg-primary" />
       ) : profileUser ? (
@@ -145,16 +145,13 @@ const Profile: React.FC = () => {
           />
 
           <Container
-            flexDirection='col'
-            className="relative md:flex-row"
+            TwClassName='flex-col relative md:flex-row'
           >
             <Container
-              flexDirection="col"
-              className="flex-[3] relative min-w-[240px]"
+              TwClassName="col flex-[3] relative min-w-[240px]"
             >
               <Container
-                padding='xl'
-                className="absolute top-0 transform -translate-y-1/2 z-10"
+                TwClassName="p-8 absolute top-0 transform -translate-y-1/2 z-10"
               >
                 {profileUser?.profileImage ? (
                   <Image
@@ -166,9 +163,7 @@ const Profile: React.FC = () => {
                   />
                 ) : (
                   <Container
-                    width={160}
-                    height={160}
-                    className="rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
+                    TwClassName="w-[160px] h-[160px] rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
                   >
                     <Text
                       TwClassName="text-white font-primary text-6x w-full flex justify-center items-center"
@@ -178,13 +173,13 @@ const Profile: React.FC = () => {
                 )}
               </Container>
 
-              <Container height={80} flexDirection='row' justifyContent='end' alignItems='end'>
+              <Container TwClassName="h-[80px] row justify-end items-end">
                 <span></span>
               </Container>
 
-              <Container flexDirection="col" padding='xl' className='relative'>
+              <Container TwClassName="flex-col p-8 relative">
                 {userIdFromUrl === authUser?.userId && (
-                  <Container className='absolute right-8 top-8 md:right-2 md:top-2'>
+                  <Container TwClassName='absolute right-8 top-8 md:right-2 md:top-2'>
                     <Button
                       customColorClasses={{
                         bg: 'bg-gray-200',
@@ -219,8 +214,8 @@ const Profile: React.FC = () => {
               </Container>
             </Container>
 
-            <Container flexDirection="col" className="flex-[9]" padding='xl'>
-              <Container height={80} flexDirection='row' justifyContent='end' alignItems='end' className='hidden md:flex'>
+            <Container TwClassName="flex-col flex-[9] p-8">
+              <Container TwClassName="h-[80px] flex-row justify-end items-end hidden md:flex">
                 <span></span>
               </Container>
               profile stuff
@@ -229,11 +224,7 @@ const Profile: React.FC = () => {
         </>
       ) : (
         <Container
-          flexDirection="col"
-          height="h-full"
-          width="w-full"
-          justifyContent="center"
-          alignItems="center"
+          TwClassName="flex-col h-full w-full justify-center items-center"
         >
           <Text
             text="We are sorry there is no profile with that user ID."

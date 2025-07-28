@@ -57,12 +57,7 @@ const Modal: React.FC = () => {
 
   return (
     <Container
-      width="w-full"
-      height="h-full"
-      justifyContent="center"
-      alignItems="center"
-      bgColor="bg-gray-950/60"
-      className={clsx('absolute top-0', isVisible ? 'z-40' : 'z-0')}
+      TwClassName={clsx("w-full h-full justify-center items-center bg-gray-950/60 absolute top-0", isVisible ? 'z-40' : 'z-0')}
       animation={{
         entranceExit: {
           entranceAnimation: 'animate__fadeIn',
@@ -73,11 +68,7 @@ const Modal: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        width="w-4/5 md:w-1/3"
-        padding="md"
-        flexDirection="col"
-        bgColor="bg-white"
-        className={clsx('rounded-2xl', isVisible ? 'z-50' : 'z-0')}
+        TwClassName={clsx('w-4/5 md:w-1/3 p-4 flex-col bg-white rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
             entranceAnimation: modal.modalAnimation.entranceAnimation,
