@@ -88,7 +88,7 @@ const Modal: React.FC = () => {
         onClick={(e) => e.stopPropagation()}
       >
         <Icon name="X" cursor="pointer" className="absolute top-4 right-4" onClick={handleClose} />
-        <Text text={modal.modalTitle} size="2x" className='mb-4'/>
+        <Text text={modal.modalTitle} TwClassName="text-2x mb-4" />
         {renderModalContent()}
       </Container>
     </Container>

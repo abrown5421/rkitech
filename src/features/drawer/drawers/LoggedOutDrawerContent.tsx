@@ -71,7 +71,7 @@ const LoggedOutDrawerContent: React.FC = () => {
           cursor="pointer"
           onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
         >
-          {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" color="white" />}
+          {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" TwClassName="text-white" />}
         </Button>)}
     </Container>
   );

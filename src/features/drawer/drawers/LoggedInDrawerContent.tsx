@@ -90,7 +90,7 @@ const LoggedInDrawerContent: React.FC = () => {
       </Container>
 
       <Button width="w-full" padding="sm" color="primary" cursor="pointer" onClick={handleLogout}>
-        {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" color="white" />}
+        {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" TwClassName="text-white" />}
       </Button>
     </Container>
   );

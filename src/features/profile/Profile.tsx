@@ -171,10 +171,7 @@ const Profile: React.FC = () => {
                     className="rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
                   >
                     <Text
-                      color="text-white"
-                      font="primary"
-                      size="6x"
-                      className="w-full flex justify-center items-center"
+                      TwClassName="text-white font-primary text-6x w-full flex justify-center items-center"
                       text={`${profileUser.firstName?.[0] || ''}${profileUser.lastName?.[0] || ''}`.toUpperCase()}
                     />
                   </Container>
@@ -211,16 +208,13 @@ const Profile: React.FC = () => {
                 )}
                 
                 <Text
-                  color="text-black"
-                  size="xl"
-                  bold
+                  TwClassName="text-black text-xl font-bold"
                   text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
                 />
-                <Text color="text-black" size="md" text={profileUser.email} />
+                <Text TwClassName="text-black text-md" text={profileUser.email} />
                 <Text
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
-                  size="xs"
-                  color="text-gray-500"
+                  TwClassName="text-xs text-gray-500"
                 />
               </Container>
             </Container>
@@ -243,8 +237,7 @@ const Profile: React.FC = () => {
         >
           <Text
             text="We are sorry there is no profile with that user ID."
-            size="xl"
-            color="text-black"
+            TwClassName="text-xl text-black"
           />
         </Container>
       )}
