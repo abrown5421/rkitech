@@ -159,7 +159,7 @@ const Profile: React.FC = () => {
                     alt="User Avatar"
                     width={160}
                     height={160}
-                    className="rounded-full border-4 border-white shadow-lg"
+                    TwClassName="rounded-full border-4 border-white shadow-lg"
                   />
                 ) : (
                   <Container
