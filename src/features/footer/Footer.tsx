@@ -13,18 +13,15 @@ const Footer: React.FC = () => {
     const activePage = useAppSelector((state) => state.pageShell.activePageShellName)
     const menus = useAppSelector((state) => state.menus);
     const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
+    const auxilaryMenu = menus.menus.find((menu) => menu.menuName === 'Auxilary Menu');
 
     const currentYear = new Date().getFullYear();
 
     return (
         <Container
-            flexDirection='col'
-            justifyContent="between"
-            alignItems="start"
-            bgColor="bg-white"
-            className="relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]"
+            TwClassName='flex-col justify-between items-start bg-white relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]'
         >
-            <Container flexDirection='row' className='gap-5'>
+            <Container TwClassName='flex-row gap-5'>
                 {primaryMenu?.menuItems
                     ?.slice()
                     .sort((a, b) => a.itemOrder - b.itemOrder)
@@ -35,10 +32,7 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemId}
-                                    className="pt-3 pr-0 pb-3 pl-0"
-                                    variant="ghost"
-                                    cursor="pointer"
-                                    color={activePage === menuItem.itemName ? 'primary' : 'black'}
+                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
                                     onClick={() => {
                                         dispatch(preCloseDrawer());
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
@@ -51,10 +45,8 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemName}
-                                    className="pt-3 pr-0 pb-3 pl-0"
-                                    variant="ghost"
+                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
                                     cursor="pointer"
-                                    color={activePage === menuItem.itemName ? 'primary' : 'black'}
                                     onClick={() => window.open(menuItem.itemLink, '_blank')}
                                 >
                                     {menuItem.itemName}
@@ -66,10 +58,40 @@ const Footer: React.FC = () => {
 
             <Text
                 text={`© ${currentYear} Rkitech. All rights reserved.`}
-                size="sm"
-                color="text-gray-500"
-                className="mt-4"
+                TwClassName="mt-4 text-sm text-gray-500"
             />
+            {primaryMenu?.menuItems
+                    ?.slice()
+                    .sort((a, b) => a.itemOrder - b.itemOrder)
+                    .map((menuItem) => {
+                        if (menuItem.itemType === 'page') {
+                            const page = pages.find((p) => p.pageID === menuItem.itemId);
+                            if (!page) return null;
+                            return (
+                                <Button
+                                    key={menuItem.itemId}
+                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 mt-4 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
+                                    onClick={() => {
+                                        dispatch(preCloseDrawer());
+                                        setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
+                                    }}
+                                >
+                                    {menuItem.itemName}
+                                </Button>
+                            );
+                        } else {
+                            return (
+                                <Button
+                                    key={menuItem.itemName}
+                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 mt-4 text-sm text-gray-500 text-black hover:text-primary`}
+                                    cursor="pointer"
+                                    onClick={() => window.open(menuItem.itemLink, '_blank')}
+                                >
+                                    {menuItem.itemName}
+                                </Button>
+                            );
+                        }
+                    }}
         </Container>
     );
 };
