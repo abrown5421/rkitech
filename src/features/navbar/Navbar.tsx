@@ -42,11 +42,9 @@ const Navbar: React.FC = () => {
           return (
             <Button
               key={menuItem.itemId}
-              className={`pt-3 pr-0 pb-3 pl-0 ${animationClass}`}
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary ${animationClass}`}
               style={{ animationDelay: delay }}
-              variant="ghost"
               cursor="pointer"
-              color={activePage === menuItem.itemName ? 'primary' : 'black'}
               onClick={() => {
                 dispatch(preCloseDrawer());
                 setTimeout(() => {
@@ -67,11 +65,9 @@ const Navbar: React.FC = () => {
         return (
           <Button
             key={menuItem.itemName}
-            className={`pt-3 pr-0 pb-3 pl-0 ${animationClass}`}
-            style={{ animationDelay: delay }}
-            variant="ghost"
+            TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary ${animationClass}`}
             cursor="pointer"
-            color="black"
+            style={{ animationDelay: delay }}
             onClick={() => window.open(menuItem.itemLink, '_blank')}
           >
             {menuItem.itemName}
@@ -124,8 +120,7 @@ const Navbar: React.FC = () => {
       >
         {authUser?.user ? (
           <Button
-            padding="sm"
-            variant="ghost"
+            TwClassName="p-2"
             cursor="pointer"
             onClick={() => handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, 'loggedInMenu')}
           >
@@ -148,9 +143,7 @@ const Navbar: React.FC = () => {
           </Button>
         ) : (
           <Button
-            padding="sm"
-            color="primary"
-            variant="ghost"
+            TwClassName="p-2"
             cursor="pointer"
             onClick={() => handleDrawerOpen(getTimeOfDay(), 'loggedOutMenu')}
           >
@@ -166,8 +159,7 @@ const Navbar: React.FC = () => {
 
         {authUser?.user ? (
           <Button
-            padding="sm"
-            variant="ghost"
+            TwClassName="p-2"
             cursor="pointer"
             onClick={() => handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, 'loggedInMenu')}
           >
@@ -191,13 +183,11 @@ const Navbar: React.FC = () => {
         ) : (
           <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
             <Button
-              padding="sm"
-              color="primary"
               cursor="pointer"
-              className={`transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
+              TwClassName={`p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
               onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
             >
-              <Text text="Login" TwClassName="text-white" />
+              <Text text="Login" />
             </Button>
           </Container>
         )}

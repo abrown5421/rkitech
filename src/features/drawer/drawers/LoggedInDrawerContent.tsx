@@ -35,10 +35,8 @@ const LoggedInDrawerContent: React.FC = () => {
           return (
             <Button
               key={menuItem.itemId}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}
               cursor="pointer"
-              color={activePage === menuItem.itemName ? 'primary' : 'black'}
               onClick={() => {
                 dispatch(preCloseDrawer());
                 setTimeout(() => {
@@ -58,10 +56,8 @@ const LoggedInDrawerContent: React.FC = () => {
           return (
             <Button
               key={menuItem.itemName}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
               cursor="pointer"
-              color="black"
               onClick={() => window.open(menuItem.itemLink, '_blank')}
             >
               {menuItem.itemName}
@@ -89,8 +85,8 @@ const LoggedInDrawerContent: React.FC = () => {
         {renderMenuItems(profileMenu?.menuItems || [])}
       </Container>
 
-      <Button width="w-full" padding="sm" color="primary" cursor="pointer" onClick={handleLogout}>
-        {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" TwClassName="text-white" />}
+      <Button TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" cursor="pointer" onClick={handleLogout}>
+        {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" />}
       </Button>
     </Container>
   );

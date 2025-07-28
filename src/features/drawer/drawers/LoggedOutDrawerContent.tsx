@@ -28,10 +28,8 @@ const LoggedOutDrawerContent: React.FC = () => {
           return (
             <Button
               key={menuItem.itemId}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}
               cursor="pointer"
-              color={activePage === menuItem.itemName ? 'primary' : 'black'}
               onClick={() => {
                 setTimeout(() => {
                   clientNavigation(page.pagePath, page.pageName, page.pageID)();
@@ -45,10 +43,8 @@ const LoggedOutDrawerContent: React.FC = () => {
           return (
             <Button
               key={menuItem.itemName}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
               cursor="pointer"
-              color="black"
               onClick={() => window.open(menuItem.itemLink, '_blank')}
             >
               {menuItem.itemName}
@@ -65,9 +61,7 @@ const LoggedOutDrawerContent: React.FC = () => {
 
       {!isLoginHidden && (
         <Button
-          width="w-full"
-          padding="sm"
-          color="primary"
+          TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" 
           cursor="pointer"
           onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
         >

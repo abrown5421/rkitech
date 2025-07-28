@@ -148,7 +148,7 @@ const Profile: React.FC = () => {
             TwClassName='flex-col relative md:flex-row'
           >
             <Container
-              TwClassName="col flex-[3] relative min-w-[240px]"
+              TwClassName="flex-col flex-[3] relative min-w-[240px]"
             >
               <Container
                 TwClassName="p-8 absolute top-0 transform -translate-y-1/2 z-10"
@@ -173,7 +173,7 @@ const Profile: React.FC = () => {
                 )}
               </Container>
 
-              <Container TwClassName="h-[80px] row justify-end items-end">
+              <Container TwClassName="h-[80px] flex-row justify-end items-end">
                 <span></span>
               </Container>
 
@@ -181,18 +181,8 @@ const Profile: React.FC = () => {
                 {userIdFromUrl === authUser?.userId && (
                   <Container TwClassName='absolute right-8 top-8 md:right-2 md:top-2'>
                     <Button
-                      customColorClasses={{
-                        bg: 'bg-gray-200',
-                        text: 'text-black',
-                        hoverText: 'text-primary',
-                        border: 'border-gray-200',
-                        hoverBg: 'hover:bg-white',
-                      }}
-                      variant='solid'
-                      rounded='full'
-                      padding='sm' 
                       cursor='pointer' 
-                      className='rounded-full'
+                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:bg-transparent hover:border-primary p-2'
                       onClick={handleProfileEditModal}
                     >
                       <Icon

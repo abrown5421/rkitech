@@ -259,14 +259,12 @@ const Auth: React.FC = () => {
                     />
                 )}
 
-                <Button className='mt-3' padding="sm" onClick={handleSubmit}>
+                <Button TwClassName='mt-3 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary' onClick={handleSubmit}>
                     {isSignup ? (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Create Account') : (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Login')}
                 </Button>
 
                 <Button
-                    padding="none"
-                    variant="ghost"
-                    className="text-sm text-blue-600 hover:underline"
+                    TwClassName="text-sm text-black hover:underline"
                     onClick={() => {
                         isSignup
                             ? clientNavigation('/login', 'Auth', 'authenticationPage')()

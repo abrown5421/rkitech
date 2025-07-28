@@ -14,8 +14,8 @@ const ConfirmModalContent: React.FC<ConfirmModalProps> = ({ message = 'Are you s
     <Container TwClassName="flex-col h-full justify-between">
       <Text TwClassName="text-md" text={message} />
       <Container TwClassName="flex-row w-full justify-end gap-2">
-        <Button padding="sm" color="error" onClick={onDeny}>Deny</Button>
-        <Button padding="sm" color="primary" onClick={onConfirm}>Confirm</Button>
+        <Button TwClassName='p-2 bg-gray-200 rounded-xl text-black border-1 border-gray-200 hover:bg-transparent hover:text-black' onClick={onDeny}>Deny</Button>
+        <Button TwClassName='p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary' onClick={onConfirm}>Confirm</Button>
       </Container>
     </Container>
   );
