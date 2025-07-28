@@ -207,7 +207,7 @@ const Auth: React.FC = () => {
                             onChange={handleChange('firstName')}
                             error={!!errors.firstName}
                             helperText={errors.firstName}
-                            className='mt-3'
+                            TwClassName='mt-3'
                         />
                         <Input
                             label="Last Name"
@@ -215,7 +215,7 @@ const Auth: React.FC = () => {
                             onChange={handleChange('lastName')}
                             error={!!errors.lastName}
                             helperText={errors.lastName}
-                            className='mt-3'
+                            TwClassName='mt-3'
                         />
                     </>
                 )}
@@ -227,7 +227,7 @@ const Auth: React.FC = () => {
                     onChange={handleChange('email')}
                     error={!!errors.email}
                     helperText={errors.email}
-                    className='mt-3'
+                    TwClassName='mt-3'
                 />
 
                 <Input
@@ -237,7 +237,7 @@ const Auth: React.FC = () => {
                     onChange={handleChange('password')}
                     error={!!errors.password}
                     helperText={errors.password}
-                    className='mt-3'
+                    TwClassName='mt-3'
                     endAdornment={
                         <Icon
                             TwClassName="relative z-50 cursor-pointer"
@@ -255,7 +255,7 @@ const Auth: React.FC = () => {
                         onChange={handleChange('confirmPassword')}
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword}
-                        className='mt-3'
+                        TwClassName='mt-3'
                     />
                 )}
 

@@ -1,15 +1,12 @@
 import React, { useState, useRef } from "react";
 import clsx from "clsx";
 import type { InputProps } from "./inputTypes";
-import { marginMap, paddingMap } from "../../constants/spacingConstants";
 import { getAnimationClasses } from "../../utils/useAnimation";
 
 const Input: React.FC<InputProps> = ({
   label,
-  className,
+  TwClassName,
   animation,
-  padding,
-  margin,
   error = false,
   helperText,
   startAdornment,
@@ -41,13 +38,13 @@ const Input: React.FC<InputProps> = ({
   const paddingRight = endAdornment ? "pr-10" : "pr-3";
 
   return (
-    <div className={clsx("relative w-full", margin && marginMap[margin], animationClasses)} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+    <div className={clsx("relative w-full", TwClassName, animationClasses)} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <div
         className={clsx(
           "relative flex items-center border rounded-md transition-colors duration-200",
           error ? "border-red-500" : "border-gray-300",
-          focused ? "ring-2 ring-blue-500 border-blue-500" : "ring-0",
-          className
+          focused ? "ring-2 ring-primary border-primary" : "ring-0",
+          TwClassName
         )}
       >
         {startAdornment && (
@@ -62,7 +59,6 @@ const Input: React.FC<InputProps> = ({
             "peer w-full h-12 bg-transparent text-base placeholder-transparent focus:outline-none",
             paddingLeft,
             paddingRight,
-            padding && paddingMap[padding]
           )}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -77,7 +73,7 @@ const Input: React.FC<InputProps> = ({
               "absolute left-3 transition-all duration-200 bg-white px-1",
               startAdornment && "left-10",
               (focused || hasValue)
-                ? "text-xs -top-2.5 text-blue-600"
+                ? "text-xs -top-2.5 text-primary"
                 : "text-base top-3 text-gray-500"
             )}
           >
