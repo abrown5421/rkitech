@@ -129,6 +129,17 @@ const Profile: React.FC = () => {
     );
   };
 
+  const handleProfilePictureEditModal = () => {
+    if (!profileUser) return;
+
+    dispatch(
+      openModal({
+        title: 'Edit Profile Picture',
+        modalType: 'editProfilePic',
+      })
+    );
+  };
+
   return (
     <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
@@ -168,7 +179,7 @@ const Profile: React.FC = () => {
                   <Button
                     cursor='pointer' 
                     TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-                    onClick={handleProfileEditModal}
+                    onClick={handleProfilePictureEditModal}
                   >
                     <Icon
                       name='Camera'
@@ -182,7 +193,7 @@ const Profile: React.FC = () => {
                     alt="User Avatar"
                     width={160}
                     height={160}
-                    TwClassName="rounded-full border-4 border-white shadow-lg"
+                    TwClassName="rounded-full border-4 border-white shadow-lg object-cover"
                   />
                 ) : (
                   <Container
