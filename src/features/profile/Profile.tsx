@@ -130,7 +130,7 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <Container height="h-full" width="w-full" flexDirection="col">
+    <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
         <Loader variant="spinner" color="bg-primary" />
       ) : profileUser ? (
@@ -143,64 +143,69 @@ const Profile: React.FC = () => {
             variance={profileUser.trianglifyObject.variance}
             cellSize={profileUser.trianglifyObject.cellSize}
           />
-
+          <Container TwClassName='absolute top-[245px] right-[5px]'>
+            <Button
+              cursor='pointer' 
+              TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+              onClick={handleProfileEditModal}
+            >
+              <Icon
+                name='Edit'
+                
+              />
+            </Button>
+          </Container>
           <Container
-            flexDirection='col'
-            className="relative md:flex-row"
+            TwClassName='flex-col relative md:flex-row'
           >
             <Container
-              flexDirection="col"
-              className="flex-[3] relative min-w-[240px]"
+              TwClassName="flex-col flex-[3] relative min-w-[240px]"
             >
               <Container
-                padding='xl'
-                className="absolute top-0 transform -translate-y-1/2 z-10"
+                TwClassName="p-8 absolute top-0 transform -translate-y-1/2 z-10"
               >
+                <Container TwClassName='absolute bottom-8 right-8'>
+                  <Button
+                    cursor='pointer' 
+                    TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+                    onClick={handleProfileEditModal}
+                  >
+                    <Icon
+                      name='Camera'
+                      
+                    />
+                  </Button>
+                </Container>
                 {profileUser?.profileImage ? (
                   <Image
                     src={profileUser.profileImage}
                     alt="User Avatar"
                     width={160}
                     height={160}
-                    className="rounded-full border-4 border-white shadow-lg"
+                    TwClassName="rounded-full border-4 border-white shadow-lg"
                   />
                 ) : (
                   <Container
-                    width={160}
-                    height={160}
-                    className="rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
+                    TwClassName="w-[160px] h-[160px] rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
                   >
                     <Text
-                      color="text-white"
-                      font="primary"
-                      size="6x"
-                      className="w-full flex justify-center items-center"
+                      TwClassName="text-white font-primary text-4xl w-full flex justify-center items-center"
                       text={`${profileUser.firstName?.[0] || ''}${profileUser.lastName?.[0] || ''}`.toUpperCase()}
                     />
                   </Container>
                 )}
               </Container>
 
-              <Container height={80} flexDirection='row' justifyContent='end' alignItems='end'>
+              <Container TwClassName="h-[80px] flex-row justify-end items-end">
                 <span></span>
               </Container>
 
-              <Container flexDirection="col" padding='xl' className='relative'>
+              <Container TwClassName="flex-col p-8 relative">
                 {userIdFromUrl === authUser?.userId && (
-                  <Container className='absolute right-8 top-8 md:right-2 md:top-2'>
+                  <Container TwClassName='absolute right-8 top-8 md:right-2 md:top-2'>
                     <Button
-                      customColorClasses={{
-                        bg: 'bg-gray-200',
-                        text: 'text-black',
-                        hoverText: 'text-primary',
-                        border: 'border-gray-200',
-                        hoverBg: 'hover:bg-white',
-                      }}
-                      variant='solid'
-                      rounded='full'
-                      padding='sm' 
                       cursor='pointer' 
-                      className='rounded-full'
+                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
                       onClick={handleProfileEditModal}
                     >
                       <Icon
@@ -211,22 +216,19 @@ const Profile: React.FC = () => {
                 )}
                 
                 <Text
-                  color="text-black"
-                  size="xl"
-                  bold
+                  TwClassName="text-black text-xl font-bold"
                   text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
                 />
-                <Text color="text-black" size="md" text={profileUser.email} />
+                <Text TwClassName="text-black text-md" text={profileUser.email} />
                 <Text
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
-                  size="xs"
-                  color="text-gray-500"
+                  TwClassName="text-xs text-gray-500"
                 />
               </Container>
             </Container>
 
-            <Container flexDirection="col" className="flex-[9]" padding='xl'>
-              <Container height={80} flexDirection='row' justifyContent='end' alignItems='end' className='hidden md:flex'>
+            <Container TwClassName="flex-col flex-[9] p-8">
+              <Container TwClassName="h-[80px] flex-row justify-end items-end hidden md:flex">
                 <span></span>
               </Container>
               profile stuff
@@ -235,16 +237,11 @@ const Profile: React.FC = () => {
         </>
       ) : (
         <Container
-          flexDirection="col"
-          height="h-full"
-          width="w-full"
-          justifyContent="center"
-          alignItems="center"
+          TwClassName="flex-col h-full w-full justify-center items-center"
         >
           <Text
             text="We are sorry there is no profile with that user ID."
-            size="xl"
-            color="text-black"
+            TwClassName="text-xl text-black"
           />
         </Container>
       )}
