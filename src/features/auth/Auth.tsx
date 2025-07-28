@@ -240,7 +240,7 @@ const Auth: React.FC = () => {
                     className='mt-3'
                     endAdornment={
                         <Icon
-                            className="relative z-50 cursor-pointer"
+                            TwClassName="relative z-50 cursor-pointer"
                             name={showPassword ? 'EyeOff' : 'Eye'}
                             onClick={() => setShowPassword((prev) => !prev)}
                         />

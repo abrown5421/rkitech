@@ -60,7 +60,7 @@ const Alert: React.FC = () => {
       <Icon
         name="X"
         cursor="pointer"
-        className="absolute top-4 right-4"
+        TwClassName="absolute top-4 right-4"
         onClick={handleClose}
       />
       {alert.alertMessage}
