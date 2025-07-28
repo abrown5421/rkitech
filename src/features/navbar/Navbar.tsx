@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
                 alt="User Avatar"
                 width={40}
                 height={40}
-                className="rounded-full border border-gray-300 cursor-pointer"
+                TwClassName="rounded-full border border-gray-300 cursor-pointer"
               />
             ) : (
               <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
@@ -177,7 +177,7 @@ const Navbar: React.FC = () => {
                 alt="User Avatar"
                 width={40}
                 height={40}
-                className="rounded-full border border-gray-300 cursor-pointer"
+                TwClassName="rounded-full border border-gray-300 cursor-pointer"
               />
             ) : (
               <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
