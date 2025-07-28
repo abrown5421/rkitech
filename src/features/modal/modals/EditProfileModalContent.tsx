@@ -40,12 +40,11 @@ const EditProfileModalContent: React.FC<EditProfileModalProps> = ({
       )}
 
       <Container TwClassName="flex-row justify-end gap-2 mt-4">
-        <Button padding="sm" color="error" onClick={onCancel}>
+        <Button TwClassName='p-2 bg-gray-200 rounded-xl text-black border-1 border-gray-200 hover:bg-transparent hover:text-black' onClick={onCancel}>
           Cancel
         </Button>
         <Button
-          padding="sm"
-          color="primary"
+          TwClassName='p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary'
           onClick={() => onSave({ firstName, lastName, email, password })}
           disabled={emailChanged && !password} 
         >
