@@ -9,6 +9,7 @@ import Profile from '../profile/Profile';
 import Dashboard from '../dashboard/Dashboard';
 import Footer from '../footer/Footer';
 import PageNotFound from '../pageNotFound/PageNotFound';
+import PrivacyPolicy from '../privacyPolicy/PrivacyPolicy';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -35,6 +36,7 @@ const PageShell: React.FC<PageShellState> = ({
                 {activePage.activePageShellName === 'Profile' && <Profile />}
                 {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
                 {activePage.activePageShellName === 'Page Not Found' && <PageNotFound />}
+                {activePage.activePageShellName === 'Privacy Policy' && <PrivacyPolicy />}
             </Container>
             <Footer />
         </Container>
