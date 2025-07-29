@@ -1,4 +1,4 @@
-import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export async function updateDataInCollection(
@@ -43,4 +43,26 @@ export async function removeFromArrayInCollection(
   const docRef = doc(db, collectionName, docId);
   await updateDoc(docRef, { [arrayField]: arrayRemove(value) });
   console.log(`Removed from ${arrayField} in ${docId}`);
+}
+
+export async function removeFromArrayByCondition(
+  collectionName: string,
+  docId: string,
+  arrayField: string,
+  matchFn: (item: any) => boolean
+): Promise<void> {
+  const docRef = doc(db, collectionName, docId);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    throw new Error(`Document ${docId} does not exist in collection ${collectionName}`);
+  }
+
+  const data = docSnap.data();
+  const array = data[arrayField] || [];
+
+  const updatedArray = array.filter((item: any) => !matchFn(item));
+
+  await updateDoc(docRef, { [arrayField]: updatedArray });
+  console.log(`Filtered ${arrayField} in ${docId}`);
 }
