@@ -43,8 +43,24 @@
 html, body {
   margin: 0px;
   padding: 0px;
+  overflow-x: hidden !important;
 }
 
 ::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+}
+
+.collapse-wrapper {
+  overflow: hidden !important;
+  transition: max-width 0.3s ease-in-out, padding 0.3s ease-in-out !important;
+  display: inline-block !important;
+}
+
+.collapse-open {
+  max-width: 150px !important; 
+}
+
+.collapse-closed {
+  max-width: 0 !important;
+  padding: 0 !important;
 }
