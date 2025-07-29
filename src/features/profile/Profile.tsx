@@ -110,18 +110,20 @@ const Profile: React.FC = () => {
             cellSize={profileUser.trianglifyObject.cellSize}
             auxImage={profileUser.trianglifyObject.auxImage}
           />
-          <Container TwClassName='absolute top-[245px] right-[5px]'>
-            <Button
-              cursor='pointer' 
-              TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-              onClick={handleProfileBannerEditModal}
-            >
-              <Icon
-                name='Edit'
-                
-              />
-            </Button>
-          </Container>
+          {userIdFromUrl === authUser?.userId && (
+            <Container TwClassName='absolute top-[245px] right-[5px]'>
+              <Button
+                cursor='pointer' 
+                TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+                onClick={handleProfileBannerEditModal}
+              >
+                <Icon
+                  name='Edit'
+                  
+                />
+              </Button>
+            </Container>
+          )}
           <Container
             TwClassName='flex-col relative md:flex-row'
           >
@@ -131,18 +133,20 @@ const Profile: React.FC = () => {
               <Container
                 TwClassName="p-8 absolute top-0 transform -translate-y-1/2 z-10"
               >
-                <Container TwClassName='absolute bottom-8 right-8'>
-                  <Button
-                    cursor='pointer' 
-                    TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-                    onClick={handleProfilePictureEditModal}
-                  >
-                    <Icon
-                      name='Camera'
-                      
-                    />
-                  </Button>
-                </Container>
+                {userIdFromUrl === authUser?.userId && (
+                  <Container TwClassName='absolute bottom-8 right-8'>
+                    <Button
+                      cursor='pointer' 
+                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+                      onClick={handleProfilePictureEditModal}
+                    >
+                      <Icon
+                        name='Camera'
+                        
+                      />
+                    </Button>
+                  </Container>
+                )}
                 {profileUser?.profileImage ? (
                   <Image
                     src={profileUser.profileImage}
