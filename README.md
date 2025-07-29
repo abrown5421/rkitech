@@ -1,69 +1,138 @@
-# React + TypeScript + Vite
+rkitech
+A modern full-stack boilerplate for personal and freelance web projects.
+Built to scale from idea to deployment — fast.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🧠 Philosophy
+rkitech is a foundational starter kit designed for rapid development and long-term scalability. It’s built for developers who value:
 
-## Expanding the ESLint configuration
+Type safety and maintainability
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Scalable file structures
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Separation of concerns (API, UI, state)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+Rapid prototyping with clean abstractions
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🛠️ Tech Stack
+Frontend
+React (w/ Vite)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+TypeScript
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Tailwind CSS v4
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Redux Toolkit for global state
+
+React Router for navigation
+
+MUI components (selectively used)
+
+Backend
+Express.js (Node.js)
+
+Firestore (as the default database)
+
+CORS, dotenv, and clean route separation
+
+📁 Folder Structure (WIP)
+bash
+Copy
+Edit
+rkitech/
+├── client/                 # Frontend codebase
+│   ├── components/         # Reusable UI components
+│   ├── containers/         # Page-level components
+│   ├── store/              # Redux slices and hooks
+│   └── styles/             # Tailwind configs and global styles
+├── server/                 # Express backend
+│   ├── controllers/
+│   ├── routes/
+│   └── services/
+├── .env
+├── package.json
+└── README.md
+🚀 Getting Started
+bash
+Copy
+Edit
+# Clone the repo
+git clone https://github.com/abrown5421/rkitech.git
+
+# Install dependencies
+cd rkitech
+npm install
+
+# Run both frontend and backend
+npm run dev
+You’ll need to create a .env file in the root directory. Example:
+
+ini
+Copy
+Edit
+PORT=5000
+VITE_API_BASE_URL=http://localhost:5000
+FIREBASE_API_KEY=...
+🧩 Features (current & planned)
+✅ Current
+🔄 Fullstack local dev setup with proxy
+
+🎨 Tailwind + MUI hybrid styling
+
+📁 Modular file structure with scalable architecture
+
+🔒 Environment variables support
+
+🛠 In Progress / Planned
+🧠 Component configuration system via Firestore
+
+🗂 CMS-style page and form editor
+
+🗺 Custom navigation + animation framework
+
+📦 Component + form libraries
+
+🌍 Deployment (Vercel/Firebase/etc.)
+
+🧪 Scripts
+bash
+Copy
+Edit
+npm run dev       # Run frontend + backend
+npm run client    # Start frontend only
+npm run server    # Start backend only
+npm run build     # Build frontend
+📚 Usage
+You can use rkitech as a boilerplate for:
+
+Freelance client dashboards
+
+Admin portals and CMS apps
+
+Experimental product MVPs
+
+Static + dynamic hybrid sites
+
+🙋‍♂️ Why the Name?
+"rkitech" is a stylized take on “architecture,” reflecting the clean, scalable, and structured approach to fullstack app development.
+
+📝 License
+This project is licensed under the MIT License.
+See the LICENSE file for details.
+
+📌 Notes
+This repo is still actively evolving.
+
+PRs, ideas, and discussions welcome.
+
+📍 To-Do (Internal)
+ Add Firestore rules and setup guide
+
+ Create CLI or script to spin up new components/forms
+
+ Add CI/CD pipeline
+
+ Improve type sharing between client/server
+
+ Add tests (unit + integration)

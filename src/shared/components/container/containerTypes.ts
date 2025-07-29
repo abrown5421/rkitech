@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import type { Margin, Padding } from "../../types/spacingTypes";
-import type { SizeValue } from "../../types/sizeTypes";
 import type { AnimationProps } from "../../types/animationTypes";
 
 export type ContainerBorder = 'none' | 'default' | 'thick' | 'dashed';
@@ -10,16 +8,7 @@ export type AlignItems = 'start'| 'center'| 'end'| 'stretch'| 'baseline';
 
 export interface ContainerProps {
   children: ReactNode;
-  padding?: Padding;
-  margin?: Margin;
-  border?: ContainerBorder;
-  rounded?: boolean;
-  shadow?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   animation?: AnimationProps;
-  className?: string;
-  flexDirection?: FlexDirection;
-  justifyContent?: JustifyContent;
-  alignItems?: AlignItems;
-  width?: SizeValue;
-  height?: SizeValue;
+  TwClassName?: string;
 }
