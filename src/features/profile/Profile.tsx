@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Container from '../../shared/components/container/Container';
 import { useParams } from 'react-router-dom';
 import { getDocumentById } from '../../services/database/readData';
@@ -13,6 +13,8 @@ import Button from '../../shared/components/button/Button';
 import Icon from '../../shared/components/icon/Icon';
 import { openModal } from '../modal/modalSlice';
 import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
+import { appendToArrayInCollection, removeFromArrayInCollection } from '../../services/database/updateData';
+import { openAlert } from '../alert/alertSlice';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -20,6 +22,9 @@ const Profile: React.FC = () => {
   const { loading, id } = useAppSelector((state) => state.loading);
   const authUser = useAppSelector((state) => state.authUser.user);
   const isProfileLoading = loading && id === 'profile';
+  const isAdding = loading && id === 'addFriend';
+  const isRemoving = loading && id === 'remFriend';
+  const isConfirming = loading && id === 'confirmFriend';
 
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
 
@@ -95,6 +100,107 @@ const Profile: React.FC = () => {
 
   }
   
+  const friendRelation = useMemo(() => {
+    if (!authUser?.friends || !userIdFromUrl) return null;
+
+    return authUser.friends.find(friend =>
+      (friend.requester === authUser.userId && friend.requestee === userIdFromUrl) ||
+      (friend.requestee === authUser.userId && friend.requester === userIdFromUrl)
+    );
+  }, [authUser?.friends, userIdFromUrl]);
+
+  useEffect(()=>{console.log(friendRelation)}, [friendRelation])
+
+  const handleAddFriend = async () => {
+    dispatch(setLoading({ loading: true, id: 'addFriend' }));
+    if (!authUser?.userId || !userIdFromUrl) return;
+    try {
+      await appendToArrayInCollection('Users', authUser.userId, 'friends', {
+        friends: false,
+        requester: authUser.userId,
+        requestee: userIdFromUrl,
+        seen: true,
+      });
+
+      await appendToArrayInCollection('Users', userIdFromUrl, 'friends', {
+        friends: false,
+        requester: authUser.userId,
+        requestee: userIdFromUrl,
+        seen: false,
+      });
+      
+      dispatch(setNotLoading());
+      dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'success',
+        alertMessage: 'Friend request sent!',
+        alertAnimation: {
+          entranceAnimation: 'animate__fadeInRight animate__faster',
+          exitAnimation: 'animate__fadeOutRight animate__faster',
+          isEntering: true,
+        },
+      }));
+    } catch {
+      dispatch(setNotLoading());
+      dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'error',
+        alertMessage: 'Friend request failed.',
+        alertAnimation: {
+          entranceAnimation: 'animate__fadeInRight animate__faster',
+          exitAnimation: 'animate__fadeOutRight animate__faster',
+          isEntering: true,
+        },
+      }));
+    } finally {
+      dispatch(setNotLoading());
+    }
+  };
+
+
+  const handleAcceptFriend = async () => {
+    dispatch(setLoading({ loading: true, id: 'confirmFriend' }));
+    if (!authUser?.userId || !userIdFromUrl) return;
+    try {
+      console.log('accept')
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+      dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'error',
+        alertMessage: 'Friend request acceptance failed.',
+        alertAnimation: {
+          entranceAnimation: 'animate__fadeInRight animate__faster',
+          exitAnimation: 'animate__fadeOutRight animate__faster',
+          isEntering: true,
+        },
+      }));
+    } finally {
+      dispatch(setNotLoading());
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    dispatch(setLoading({ loading: true, id: 'remFriend' }));
+    if (!authUser?.userId || !userIdFromUrl) return;
+    try {
+      console.log('removal')
+    } catch {
+      dispatch(setNotLoading());
+      dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'error',
+        alertMessage: 'Friend request denial failed.',
+        alertAnimation: {
+          entranceAnimation: 'animate__fadeInRight animate__faster',
+          exitAnimation: 'animate__fadeOutRight animate__faster',
+          isEntering: true,
+        },
+      }));
+    } finally {
+      dispatch(setNotLoading());
+    }
+  };
   return (
     <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
@@ -194,7 +300,46 @@ const Profile: React.FC = () => {
                 <Text
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
                   TwClassName="text-xs text-gray-500"
-                />
+                />                
+                {userIdFromUrl !== authUser?.userId && (
+                  <Container TwClassName='flex-row justify-between gap-2 mt-3'>
+                    {friendRelation === undefined && (
+                      <Button onClick={handleAddFriend} TwClassName="relative flex-1 mt-3 p-2 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
+                        <span className="absolute left-3">
+                          <Icon name="UserPlus" />
+                        </span>
+                        {isAdding ? <Loader variant="spinner" color="bg-primary" /> : <>Add Friend</>}
+                      </Button>
+                    )}
+
+                    {friendRelation?.friends && (
+                      <Button onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-2 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center">
+                        <span className="absolute left-3">
+                          <Icon name="UserMinus" />
+                        </span>
+                        {isRemoving ? <Loader variant="spinner" color="bg-primary" /> : <>Unfriend</>}
+                      </Button>
+                    )}  
+
+                    {!friendRelation?.friends && friendRelation?.requester === authUser?.userId && (
+                      <Button disabled TwClassName="relative flex-1 mt-3 p-2 bg-gray-200 rounded-xl text-gray-500 border border-gray-200 hover:bg-transparent hover:text-gray-200 flex justify-center items-center">
+                        <span className="absolute left-3">
+                          <Icon name="UserCog" />
+                        </span>
+                        {isAdding ? <Loader variant="spinner" color="bg-primary" /> : <>Pending</>}
+                      </Button>
+                    )}
+
+                    {friendRelation !== undefined && !friendRelation?.friends && friendRelation?.requester !== authUser?.userId && (
+                      <Button onClick={handleAcceptFriend} TwClassName="relative flex-1 mt-3 p-2 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
+                        <span className="absolute left-3">
+                          <Icon name="UserPlus" />
+                        </span>
+                        {isConfirming ? <Loader variant="spinner" color="bg-primary" /> : <>Accept</>}
+                      </Button>
+                    )}
+                  </Container>
+                )}
               </Container>
             </Container>
 
