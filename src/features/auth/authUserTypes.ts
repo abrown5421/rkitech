@@ -9,6 +9,14 @@ export interface AuthUser {
     userRole: 'User' | 'Admin' | string;
     createdAt: string; 
     trianglifyObject: TrianglifyBannerProps;
+    friends: FriendMap[];
+}
+
+export interface FriendMap {
+    friends: boolean,
+    requester: string,
+    requestee: string,
+    seen: boolean,
 }
 
 export interface AuthUserState {
