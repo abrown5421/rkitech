@@ -17,16 +17,24 @@
 @theme {
   --color-primary: #FE9A00;
   --color-primary-hover: #e48a00;
+  --color-primary-faded: #ffddaa;
   --color-secondary: #E17100;
   --color-secondary-hover: #c26202;
+  --color-secondary-faded: #dda166;
   --color-black: #101828;
   --color-white: #F9FAFB;
   --color-error: #c80c19;
   --color-error-hover: #9F0712;
+  --color-error-faded: #e8a7ab;
   --color-warning: #e5a125;
   --color-warning-hover: #D08700;
+  --color-warning-faded: #f2ddbc;
   --color-success: #016630;
   --color-success-hover: #01a24c;
+  --color-success-faded: #9ae0b8;
+  --color-info: #0082a3;
+  --color-info-hover: #3e9fb7;
+  --color-info-faded: #8cbfcc;
 
   --font-primary: "Primary", sans-serif;
   --font-secondary: "Secondary", sans-serif;
@@ -35,8 +43,24 @@
 html, body {
   margin: 0px;
   padding: 0px;
+  overflow-x: hidden !important;
 }
 
 ::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+}
+
+.collapse-wrapper {
+  overflow: hidden !important;
+  transition: max-width 0.3s ease-in-out, padding 0.3s ease-in-out !important;
+  display: inline-block !important;
+}
+
+.collapse-open {
+  max-width: 150px !important; 
+}
+
+.collapse-closed {
+  max-width: 0 !important;
+  padding: 0 !important;
 }
