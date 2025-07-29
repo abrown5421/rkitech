@@ -46,6 +46,7 @@ const Modal: React.FC = () => {
             firstName={modal.modalProps?.firstName}
             lastName={modal.modalProps?.lastName}
             email={modal.modalProps?.email}
+            userId={modal.modalProps?.userId}   // ✅ FIX HERE
             password=''
             onSave={modal.modalProps?.onSave}
             onCancel={modal.modalProps?.onCancel}

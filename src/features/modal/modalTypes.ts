@@ -13,6 +13,7 @@ export interface ModalState {
 export interface EditProfileModalProps {
   firstName: string;
   lastName: string;
+  userId: string;
   email: string;
   password: string;
   onSave: (updatedData: { firstName: string; lastName: string; email: string; password: string; }) => void;
