@@ -112,7 +112,8 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
-                    trianglifyObject: randomizedTrianglifyBanner
+                    trianglifyObject: randomizedTrianglifyBanner,
+                    friends: []
                 }));
                 
                 Cookies.set('authUser', JSON.stringify({
@@ -152,7 +153,8 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: result.userRole,
                     createdAt: result.createdAt,
-                    trianglifyObject: result.trianglifyObject
+                    trianglifyObject: result.trianglifyObject,
+                    friends: result.friends
                 }));
 
                 Cookies.set('authUser', JSON.stringify({
