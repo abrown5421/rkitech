@@ -76,6 +76,25 @@ const Profile: React.FC = () => {
     );
   };
 
+  const handleProfileBannerEditModal = () => {
+    if (!profileUser) return;
+
+    dispatch(
+      openModal({
+        title: 'Edit Profile',
+        modalType: 'editProfileBanner',
+        modalProps: {
+          yColors: profileUser.trianglifyObject.yColors,
+          xColors: profileUser.trianglifyObject.xColors,
+          auxImage: profileUser.trianglifyObject.auxImage,
+          cellSize: profileUser.trianglifyObject.cellSize,
+          variance: profileUser.trianglifyObject.variance
+        },
+      })
+    );
+
+  }
+  
   return (
     <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
@@ -94,7 +113,7 @@ const Profile: React.FC = () => {
             <Button
               cursor='pointer' 
               TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-              onClick={handleProfileEditModal}
+              onClick={handleProfileBannerEditModal}
             >
               <Icon
                 name='Edit'
