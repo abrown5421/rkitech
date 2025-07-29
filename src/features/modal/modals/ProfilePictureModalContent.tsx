@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { DragEvent } from 'react';
 import Container from '../../../shared/components/container/Container';
@@ -57,7 +58,7 @@ const ProfilePictureModalContent: React.FC = () => {
         await deleteImageFromStorage(authUser.profileImage);
         }
 
-        const imageUrl = await uploadProfileImage(selectedFile, authUser.userId);
+        const imageUrl = await uploadProfileImage(selectedFile, authUser.userId, 'profileImages');
         await updateDataInCollection('Users', authUser.userId, { profileImage: imageUrl });
 
         dispatch(preCloseModal());
@@ -166,7 +167,7 @@ const ProfilePictureModalContent: React.FC = () => {
       <Container TwClassName='flex-row justify-between gap-3'>
         {authUser?.profileImage && (
           <Button
-            TwClassName="mt-2 p-2 bg-red-500 rounded-xl text-white border-1 border-red-500 hover:bg-transparent hover:text-red-500 flex-1"
+            TwClassName="mt-2 p-2 bg-error rounded-xl text-white border-1 border-error hover:bg-transparent hover:text-error flex-1"
             onClick={handleDeleteProfilePicture}
           >
             {isProfilePicDeleting ? (
@@ -178,7 +179,7 @@ const ProfilePictureModalContent: React.FC = () => {
         )}
       
       <Button 
-        TwClassName='mt-3 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary flex-1'
+        TwClassName='mt-2 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary flex-1'
         onClick={handleUpload}
         disabled={!selectedFile}
       >
