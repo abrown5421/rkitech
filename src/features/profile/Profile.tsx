@@ -104,10 +104,11 @@ const Profile: React.FC = () => {
           <TrianglifyBanner
             xColors={profileUser.trianglifyObject.xColors}
             yColors={profileUser.trianglifyObject.yColors}
-            width={profileUser.trianglifyObject.width} 
-            height={profileUser.trianglifyObject.height}
+            width="w-full" 
+            height={250}
             variance={profileUser.trianglifyObject.variance}
             cellSize={profileUser.trianglifyObject.cellSize}
+            auxImage={profileUser.trianglifyObject.auxImage}
           />
           <Container TwClassName='absolute top-[245px] right-[5px]'>
             <Button
@@ -216,3 +217,4 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+
