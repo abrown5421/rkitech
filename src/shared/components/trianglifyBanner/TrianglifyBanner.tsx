@@ -45,21 +45,28 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
       : undefined;
 
   return (
-    <div
-      ref={containerRef}
-      className={`overflow-hidden relative ${typeof width === "string" ? width : ""} ${
-        typeof height === "string" ? height : ""
-      } ${TwClassName}`}
-      style={wrapperStyles}
-    >
-      {auxImage && (
+    <>
+      {auxImage ? (
         <img
           src={auxImage}
           alt="Auxiliary Banner"
-          className="w-full h-full object-cover"
+          className={`w-full object-cover ${
+            typeof height === "string" ? height : ""
+          }`}
+          style={wrapperStyles}
+        />
+      ) : (
+        <div
+          ref={containerRef}
+          className={`overflow-hidden relative ${typeof width === "string" ? width : ""} ${
+            typeof height === "string" ? height : ""
+          } ${TwClassName}`}
+          style={wrapperStyles}
         />
       )}
-    </div>
+      
+        
+    </>
   );
 };
 
