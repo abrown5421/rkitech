@@ -17,6 +17,7 @@ export interface FriendMap {
     requester: string,
     requestee: string,
     seen: boolean,
+    friendAvi: string,
 }
 
 export interface AuthUserState {
