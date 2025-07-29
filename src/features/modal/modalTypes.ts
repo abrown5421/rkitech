@@ -1,6 +1,6 @@
 import type { EntranceExitAnimation } from '../../shared/types/animationTypes';
 
-export type ModalContentType = 'confirm' | 'editProfile' | 'form' | null;
+export type ModalContentType = 'confirm' | 'editProfile' | 'editProfilePic' | 'form' | null;
 
 export interface ModalState {
   modalOpen: boolean;
@@ -13,6 +13,7 @@ export interface ModalState {
 export interface EditProfileModalProps {
   firstName: string;
   lastName: string;
+  userId: string;
   email: string;
   password: string;
   onSave: (updatedData: { firstName: string; lastName: string; email: string; password: string; }) => void;
