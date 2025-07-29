@@ -8,6 +8,7 @@ import Text from '../../shared/components/text/Text';
 import ConfirmModalContent from './modals/ConfirmModalContent';
 import EditProfileModalContent from './modals/EditProfileModalContent';
 import ProfilePictureModalContent from './modals/ProfilePictureModalContent';
+import ProfileBannerModalContent from './modals/ProfileBannerModalContent';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -46,7 +47,7 @@ const Modal: React.FC = () => {
             firstName={modal.modalProps?.firstName}
             lastName={modal.modalProps?.lastName}
             email={modal.modalProps?.email}
-            userId={modal.modalProps?.userId}   // ✅ FIX HERE
+            userId={modal.modalProps?.userId}   
             password=''
             onSave={modal.modalProps?.onSave}
             onCancel={modal.modalProps?.onCancel}
@@ -56,6 +57,16 @@ const Modal: React.FC = () => {
         return (
           <ProfilePictureModalContent />
         );
+      case 'editProfileBanner':
+        return (
+          <ProfileBannerModalContent 
+            yColors={modal.modalProps?.yColors}
+            xColors={modal.modalProps?.xColors}
+            auxImage={modal.modalProps?.auxImage}
+            cellSize={modal.modalProps?.cellSize}
+            variance={modal.modalProps?.variance}
+          />
+        )
       default:
         return null;
     }
