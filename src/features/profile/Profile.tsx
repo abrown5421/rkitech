@@ -8,15 +8,12 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
 import Text from '../../shared/components/text/Text';
 import Image from '../../shared/components/image/Image';
-import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 import { format } from 'date-fns';
 import Button from '../../shared/components/button/Button';
 import Icon from '../../shared/components/icon/Icon';
-import { openModal, preCloseModal } from '../modal/modalSlice';
-import { updateDataInCollection } from '../../services/database/updateData';
-import { setAuthUser } from '../auth/authUserSlice';
-import { sendEmailChangeVerification } from '../../services/auth/updateAuthProfile';
-import { openAlert } from '../alert/alertSlice';
+import { openModal } from '../modal/modalSlice';
+import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
+
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -36,7 +33,7 @@ const Profile: React.FC = () => {
 
         const data = await getDocumentById('Users', userIdFromUrl);
         if (data) {
-          setProfileUser(data as AuthUser);
+          setProfileUser({ ...(data as AuthUser), userId: userIdFromUrl });
         }
       } catch (error) {
         console.error('Error fetching profile data:', error);
@@ -59,71 +56,7 @@ const Profile: React.FC = () => {
           firstName: profileUser.firstName,
           lastName: profileUser.lastName,
           email: profileUser.email,
-          onSave: async (updatedData: { firstName: string; lastName: string; email: string; password?: string }) => {
-            dispatch(setLoading({ loading: true, id: 'profileSave' }));
-
-            const { firstName, lastName, email, password } = updatedData;
-            const emailChanged = email !== profileUser.email;
-            const nameChanged = firstName !== profileUser.firstName || lastName !== profileUser.lastName;
-
-            try {
-              const firestoreUpdate: Partial<AuthUser> = { firstName, lastName };
-
-              if (emailChanged) {
-                if (!password) throw new Error('Password required for email change');
-                await sendEmailChangeVerification(email, password);
-              } else {
-                firestoreUpdate.email = email;
-              }
-
-              await updateDataInCollection('Users', userIdFromUrl ?? '', firestoreUpdate);
-
-              const updatedUser: AuthUser = {
-                ...profileUser,
-                ...firestoreUpdate,
-                userId: userIdFromUrl!,
-              };
-              dispatch(setAuthUser(updatedUser));
-              setProfileUser(updatedUser);
-              dispatch(preCloseModal());
-              dispatch(setNotLoading());
-              
-              let alertMessage = 'Account update was successful!';
-              if (emailChanged && nameChanged) {
-                alertMessage = 'Name updated and verification email sent to your new address.';
-              } else if (emailChanged) {
-                alertMessage = 'A verification email has been sent to your new email address. Please verify to complete the update.';
-              } else if (nameChanged) {
-                alertMessage = 'Name updated successfully!';
-              }
-
-              dispatch(openAlert({
-                alertOpen: true,
-                alertSeverity: 'success',
-                alertMessage,
-                alertAnimation: {
-                  entranceAnimation: 'animate__fadeInRight animate__faster',
-                  exitAnimation: 'animate__fadeOutRight animate__faster',
-                  isEntering: true,
-                }
-              }));
-
-            } catch (error) {
-              dispatch(setNotLoading());
-              dispatch(preCloseModal());
-              dispatch(openAlert({
-                alertOpen: true,
-                alertSeverity: 'error',
-                alertMessage: 'Account update failed.',
-                alertAnimation: {
-                  entranceAnimation: 'animate__fadeInRight animate__faster',
-                  exitAnimation: 'animate__fadeOutRight animate__faster',
-                  isEntering: true,
-                }
-              }));
-            }
-          },
-          onCancel: () => dispatch(preCloseModal()),
+          userId: profileUser.userId,
         },
       })
     );
