@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import type { DragEvent } from 'react';
 import Container from '../../../shared/components/container/Container';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -16,11 +17,18 @@ const ProfilePictureModalContent: React.FC = () => {
   const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.authUser.user);
   const { loading, id } = useAppSelector((state) => state.loading);
-  const isProfilePicLoading = loading && id === 'profilePic';
+  const isProfilePicUploading = loading && id === 'profilePic';
+  const isProfilePicDeleting = loading && id === 'profilePicDeleting';
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewURL, setPreviewURL] = useState<string | null>(null);
+  const [previewURL, setPreviewURL] = useState<string | null>(authUser?.profileImage || null);
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (authUser?.profileImage && !selectedFile) {
+      setPreviewURL(authUser.profileImage);
+    }
+  }, [authUser?.profileImage, selectedFile]);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -50,7 +58,7 @@ const ProfilePictureModalContent: React.FC = () => {
         await deleteImageFromStorage(authUser.profileImage);
         }
 
-        const imageUrl = await uploadProfileImage(selectedFile, authUser.userId);
+        const imageUrl = await uploadProfileImage(selectedFile, authUser.userId, 'profileImages');
         await updateDataInCollection('Users', authUser.userId, { profileImage: imageUrl });
 
         dispatch(preCloseModal());
@@ -80,7 +88,46 @@ const ProfilePictureModalContent: React.FC = () => {
         }));
         dispatch(setNotLoading());
     }
-    };
+  };
+
+  const handleDeleteProfilePicture = async () => {
+    if (!authUser?.userId || !authUser.profileImage) return;
+  
+    dispatch(setLoading({ loading: true, id: 'profilePicDeleting' }));
+  
+    try {
+      await deleteImageFromStorage(authUser.profileImage);
+      await updateDataInCollection('Users', authUser.userId, { profileImage: '' });
+
+      setPreviewURL(null);
+      setSelectedFile(null);
+  
+      dispatch(setNotLoading());
+      dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'success',
+        alertMessage: 'Profile Picture has been deleted.',
+        alertAnimation: {
+          entranceAnimation: 'animate__fadeInRight animate__faster',
+          exitAnimation: 'animate__fadeOutRight animate__faster',
+          isEntering: true,
+        }
+      }));
+    } catch (error) {
+      console.error(error);
+      dispatch(setNotLoading());
+      dispatch(openAlert({
+        alertOpen: true,
+        alertSeverity: 'error',
+        alertMessage: 'Failed to delete Profile Picture.',
+        alertAnimation: {
+          entranceAnimation: 'animate__fadeInRight animate__faster',
+          exitAnimation: 'animate__fadeOutRight animate__faster',
+          isEntering: true,
+        }
+      }));
+    }
+  };
 
   return (
     <Container TwClassName="flex-col h-full justify-between gap-4">
@@ -117,18 +164,32 @@ const ProfilePictureModalContent: React.FC = () => {
         />
       </div>
 
+      <Container TwClassName='flex-row justify-between gap-3'>
+        {authUser?.profileImage && (
+          <Button
+            TwClassName="mt-2 p-2 bg-error rounded-xl text-white border-1 border-error hover:bg-transparent hover:text-error flex-1"
+            onClick={handleDeleteProfilePicture}
+          >
+            {isProfilePicDeleting ? (
+              <Loader variant="spinner" color="bg-white" />
+            ) : (
+              <>Delete Picture</>
+            )}
+          </Button>
+        )}
+      
       <Button 
-        TwClassName='mt-3 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary'
+        TwClassName='mt-2 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary flex-1'
         onClick={handleUpload}
         disabled={!selectedFile}
       >
-        {isProfilePicLoading ? (
+        {isProfilePicUploading ? (
             <Loader variant="spinner" color="bg-white" />
         ) : (
             <>Upload</>
         )}
       </Button>
-
+      </Container>
     </Container>
   );
 };
