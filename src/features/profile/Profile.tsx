@@ -14,6 +14,10 @@ import Icon from '../../shared/components/icon/Icon';
 import { openModal } from '../modal/modalSlice';
 import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 import FriendProfileModule from '../friends/FriendProfileModule';
+import Tabs from '../tabs/Tabs';
+import type { TabItem } from '../tabs/tabTypes';
+import ProfileAboutTab from '../tabs/tabContent/ProfileAboutTab';
+import ProfileFriendTab from '../tabs/tabContent/ProfileFriendTab';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -95,6 +99,19 @@ const Profile: React.FC = () => {
 
   }
 
+  const tabData: TabItem[] = [
+    {
+      id: 'about',
+      label: 'About',
+      content: <ProfileAboutTab />,
+    },
+    {
+      id: 'friends',
+      label: 'Friends',
+      content: <ProfileFriendTab />,
+    }
+  ];
+  
   return (
     <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
@@ -207,7 +224,10 @@ const Profile: React.FC = () => {
               <Container TwClassName="h-[80px] flex-row justify-end items-end hidden md:flex">
                 <span></span>
               </Container>
-              profile stuff
+              <Tabs
+                tabs={tabData}
+                tabGroupId="profileTabs"
+              />
             </Container>
           </Container>
         </>
