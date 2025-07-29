@@ -8,15 +8,11 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
 import Text from '../../shared/components/text/Text';
 import Image from '../../shared/components/image/Image';
-import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 import { format } from 'date-fns';
 import Button from '../../shared/components/button/Button';
 import Icon from '../../shared/components/icon/Icon';
-import { openModal, preCloseModal } from '../modal/modalSlice';
-import { updateDataInCollection } from '../../services/database/updateData';
-import { setAuthUser } from '../auth/authUserSlice';
-import { sendEmailChangeVerification } from '../../services/auth/updateAuthProfile';
-import { openAlert } from '../alert/alertSlice';
+import { openModal } from '../modal/modalSlice';
+import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -33,11 +29,15 @@ const Profile: React.FC = () => {
 
       try {
         dispatch(setLoading({ loading: true, id: 'profile' }));
-
-        const data = await getDocumentById('Users', userIdFromUrl);
-        if (data) {
-          setProfileUser(data as AuthUser);
+        if (authUser?.userId === userIdFromUrl) {
+          setProfileUser(authUser)
+        } else {
+          const data = await getDocumentById('Users', userIdFromUrl);
+          if (data) {
+            setProfileUser({ ...(data as AuthUser), userId: userIdFromUrl });
+          }     
         }
+        
       } catch (error) {
         console.error('Error fetching profile data:', error);
       } finally {
@@ -46,7 +46,7 @@ const Profile: React.FC = () => {
     };
 
     fetchProfileData();
-  }, [userIdFromUrl, dispatch]);
+  }, [userIdFromUrl, authUser, dispatch]);
 
   const handleProfileEditModal = () => {
     if (!profileUser) return;
@@ -59,71 +59,7 @@ const Profile: React.FC = () => {
           firstName: profileUser.firstName,
           lastName: profileUser.lastName,
           email: profileUser.email,
-          onSave: async (updatedData: { firstName: string; lastName: string; email: string; password?: string }) => {
-            dispatch(setLoading({ loading: true, id: 'profileSave' }));
-
-            const { firstName, lastName, email, password } = updatedData;
-            const emailChanged = email !== profileUser.email;
-            const nameChanged = firstName !== profileUser.firstName || lastName !== profileUser.lastName;
-
-            try {
-              const firestoreUpdate: Partial<AuthUser> = { firstName, lastName };
-
-              if (emailChanged) {
-                if (!password) throw new Error('Password required for email change');
-                await sendEmailChangeVerification(email, password);
-              } else {
-                firestoreUpdate.email = email;
-              }
-
-              await updateDataInCollection('Users', userIdFromUrl ?? '', firestoreUpdate);
-
-              const updatedUser: AuthUser = {
-                ...profileUser,
-                ...firestoreUpdate,
-                userId: userIdFromUrl!,
-              };
-              dispatch(setAuthUser(updatedUser));
-              setProfileUser(updatedUser);
-              dispatch(preCloseModal());
-              dispatch(setNotLoading());
-              
-              let alertMessage = 'Account update was successful!';
-              if (emailChanged && nameChanged) {
-                alertMessage = 'Name updated and verification email sent to your new address.';
-              } else if (emailChanged) {
-                alertMessage = 'A verification email has been sent to your new email address. Please verify to complete the update.';
-              } else if (nameChanged) {
-                alertMessage = 'Name updated successfully!';
-              }
-
-              dispatch(openAlert({
-                alertOpen: true,
-                alertSeverity: 'success',
-                alertMessage,
-                alertAnimation: {
-                  entranceAnimation: 'animate__fadeInRight animate__faster',
-                  exitAnimation: 'animate__fadeOutRight animate__faster',
-                  isEntering: true,
-                }
-              }));
-
-            } catch (error) {
-              dispatch(setNotLoading());
-              dispatch(preCloseModal());
-              dispatch(openAlert({
-                alertOpen: true,
-                alertSeverity: 'error',
-                alertMessage: 'Account update failed.',
-                alertAnimation: {
-                  entranceAnimation: 'animate__fadeInRight animate__faster',
-                  exitAnimation: 'animate__fadeOutRight animate__faster',
-                  isEntering: true,
-                }
-              }));
-            }
-          },
-          onCancel: () => dispatch(preCloseModal()),
+          userId: profileUser.userId,
         },
       })
     );
@@ -140,6 +76,25 @@ const Profile: React.FC = () => {
     );
   };
 
+  const handleProfileBannerEditModal = () => {
+    if (!profileUser) return;
+
+    dispatch(
+      openModal({
+        title: 'Edit Profile',
+        modalType: 'editProfileBanner',
+        modalProps: {
+          yColors: profileUser.trianglifyObject.yColors,
+          xColors: profileUser.trianglifyObject.xColors,
+          auxImage: profileUser.trianglifyObject.auxImage,
+          cellSize: profileUser.trianglifyObject.cellSize,
+          variance: profileUser.trianglifyObject.variance
+        },
+      })
+    );
+
+  }
+  
   return (
     <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
@@ -149,16 +104,17 @@ const Profile: React.FC = () => {
           <TrianglifyBanner
             xColors={profileUser.trianglifyObject.xColors}
             yColors={profileUser.trianglifyObject.yColors}
-            width={profileUser.trianglifyObject.width} 
-            height={profileUser.trianglifyObject.height}
+            width="w-full" 
+            height={250}
             variance={profileUser.trianglifyObject.variance}
             cellSize={profileUser.trianglifyObject.cellSize}
+            auxImage={profileUser.trianglifyObject.auxImage}
           />
           <Container TwClassName='absolute top-[245px] right-[5px]'>
             <Button
               cursor='pointer' 
               TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-              onClick={handleProfileEditModal}
+              onClick={handleProfileBannerEditModal}
             >
               <Icon
                 name='Edit'
@@ -261,3 +217,4 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+
