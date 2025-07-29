@@ -1,13 +1,13 @@
 import React from 'react';
 import Container from '../../shared/components/container/Container';
 
-const Home: React.FC = () => {
+const Test: React.FC = () => {
 
     return (
         <Container TwClassName='p-4'>
-            Home
+            Test
         </Container>
     );
 };
 
-export default Home;
+export default Test;

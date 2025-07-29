@@ -1,13 +1,13 @@
 import React from 'react';
 import Container from '../../shared/components/container/Container';
 
-const Home: React.FC = () => {
+const Dashboard: React.FC = () => {
 
     return (
         <Container TwClassName='p-4'>
-            Home
+            Dashboard
         </Container>
     );
 };
 
-export default Home;
+export default Dashboard;
