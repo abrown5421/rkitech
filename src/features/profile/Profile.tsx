@@ -8,15 +8,12 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
 import Text from '../../shared/components/text/Text';
 import Image from '../../shared/components/image/Image';
-import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 import { format } from 'date-fns';
 import Button from '../../shared/components/button/Button';
 import Icon from '../../shared/components/icon/Icon';
-import { openModal, preCloseModal } from '../modal/modalSlice';
-import { updateDataInCollection } from '../../services/database/updateData';
-import { setAuthUser } from '../auth/authUserSlice';
-import { sendEmailChangeVerification } from '../../services/auth/updateAuthProfile';
-import { openAlert } from '../alert/alertSlice';
+import { openModal } from '../modal/modalSlice';
+import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
+
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -36,7 +33,7 @@ const Profile: React.FC = () => {
 
         const data = await getDocumentById('Users', userIdFromUrl);
         if (data) {
-          setProfileUser(data as AuthUser);
+          setProfileUser({ ...(data as AuthUser), userId: userIdFromUrl });
         }
       } catch (error) {
         console.error('Error fetching profile data:', error);
@@ -59,78 +56,25 @@ const Profile: React.FC = () => {
           firstName: profileUser.firstName,
           lastName: profileUser.lastName,
           email: profileUser.email,
-          onSave: async (updatedData: { firstName: string; lastName: string; email: string; password?: string }) => {
-            dispatch(setLoading({ loading: true, id: 'profileSave' }));
-
-            const { firstName, lastName, email, password } = updatedData;
-            const emailChanged = email !== profileUser.email;
-            const nameChanged = firstName !== profileUser.firstName || lastName !== profileUser.lastName;
-
-            try {
-              const firestoreUpdate: Partial<AuthUser> = { firstName, lastName };
-
-              if (emailChanged) {
-                if (!password) throw new Error('Password required for email change');
-                await sendEmailChangeVerification(email, password);
-              } else {
-                firestoreUpdate.email = email;
-              }
-
-              await updateDataInCollection('Users', userIdFromUrl ?? '', firestoreUpdate);
-
-              const updatedUser: AuthUser = {
-                ...profileUser,
-                ...firestoreUpdate,
-                userId: userIdFromUrl!,
-              };
-              dispatch(setAuthUser(updatedUser));
-              setProfileUser(updatedUser);
-              dispatch(preCloseModal());
-              dispatch(setNotLoading());
-              
-              let alertMessage = 'Account update was successful!';
-              if (emailChanged && nameChanged) {
-                alertMessage = 'Name updated and verification email sent to your new address.';
-              } else if (emailChanged) {
-                alertMessage = 'A verification email has been sent to your new email address. Please verify to complete the update.';
-              } else if (nameChanged) {
-                alertMessage = 'Name updated successfully!';
-              }
-
-              dispatch(openAlert({
-                alertOpen: true,
-                alertSeverity: 'success',
-                alertMessage,
-                alertAnimation: {
-                  entranceAnimation: 'animate__fadeInRight animate__faster',
-                  exitAnimation: 'animate__fadeOutRight animate__faster',
-                  isEntering: true,
-                }
-              }));
-
-            } catch (error) {
-              dispatch(setNotLoading());
-              dispatch(preCloseModal());
-              dispatch(openAlert({
-                alertOpen: true,
-                alertSeverity: 'error',
-                alertMessage: 'Account update failed.',
-                alertAnimation: {
-                  entranceAnimation: 'animate__fadeInRight animate__faster',
-                  exitAnimation: 'animate__fadeOutRight animate__faster',
-                  isEntering: true,
-                }
-              }));
-            }
-          },
-          onCancel: () => dispatch(preCloseModal()),
+          userId: profileUser.userId,
         },
       })
     );
   };
 
+  const handleProfilePictureEditModal = () => {
+    if (!profileUser) return;
+
+    dispatch(
+      openModal({
+        title: 'Edit Profile Picture',
+        modalType: 'editProfilePic',
+      })
+    );
+  };
+
   return (
-    <Container height="h-full" width="w-full" flexDirection="col">
+    <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
         <Loader variant="spinner" color="bg-primary" />
       ) : profileUser ? (
@@ -143,64 +87,69 @@ const Profile: React.FC = () => {
             variance={profileUser.trianglifyObject.variance}
             cellSize={profileUser.trianglifyObject.cellSize}
           />
-
+          <Container TwClassName='absolute top-[245px] right-[5px]'>
+            <Button
+              cursor='pointer' 
+              TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+              onClick={handleProfileEditModal}
+            >
+              <Icon
+                name='Edit'
+                
+              />
+            </Button>
+          </Container>
           <Container
-            flexDirection="row"
-            className="relative"
+            TwClassName='flex-col relative md:flex-row'
           >
             <Container
-              flexDirection="col"
-              className="flex-[3] relative min-w-[240px]"
+              TwClassName="flex-col flex-[3] relative min-w-[240px]"
             >
               <Container
-                padding='xl'
-                className="absolute top-0 transform -translate-y-1/2 z-10"
+                TwClassName="p-8 absolute top-0 transform -translate-y-1/2 z-10"
               >
+                <Container TwClassName='absolute bottom-8 right-8'>
+                  <Button
+                    cursor='pointer' 
+                    TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+                    onClick={handleProfilePictureEditModal}
+                  >
+                    <Icon
+                      name='Camera'
+                      
+                    />
+                  </Button>
+                </Container>
                 {profileUser?.profileImage ? (
                   <Image
                     src={profileUser.profileImage}
                     alt="User Avatar"
                     width={160}
                     height={160}
-                    className="rounded-full border-4 border-white shadow-lg"
+                    TwClassName="rounded-full border-4 border-white shadow-lg object-cover"
                   />
                 ) : (
                   <Container
-                    width={160}
-                    height={160}
-                    className="rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
+                    TwClassName="w-[160px] h-[160px] rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
                   >
                     <Text
-                      color="text-white"
-                      font="primary"
-                      size="6x"
-                      className="w-full flex justify-center items-center"
+                      TwClassName="text-white font-primary text-4xl w-full flex justify-center items-center"
                       text={`${profileUser.firstName?.[0] || ''}${profileUser.lastName?.[0] || ''}`.toUpperCase()}
                     />
                   </Container>
                 )}
               </Container>
 
-              <Container height={80} flexDirection='row' justifyContent='end' alignItems='end'>
+              <Container TwClassName="h-[80px] flex-row justify-end items-end">
                 <span></span>
               </Container>
 
-              <Container flexDirection="col" padding='xl' className='relative'>
+              <Container TwClassName="flex-col p-8 relative">
                 {userIdFromUrl === authUser?.userId && (
-                  <Container className='absolute right-0'>
+                  <Container TwClassName='absolute right-8 top-8 md:right-2 md:top-2'>
                     <Button
-                      customColorClasses={{
-                        bg: 'bg-gray-200',
-                        text: 'text-black',
-                        hoverText: 'text-primary',
-                        border: 'border-gray-200',
-                        hoverBg: 'hover:bg-white',
-                      }}
-                      variant='solid'
-                      rounded='full'
-                      padding='sm' 
                       cursor='pointer' 
-                      className='rounded-full'
+                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
                       onClick={handleProfileEditModal}
                     >
                       <Icon
@@ -211,37 +160,32 @@ const Profile: React.FC = () => {
                 )}
                 
                 <Text
-                  color="text-black"
-                  size="xl"
-                  bold
+                  TwClassName="text-black text-xl font-bold"
                   text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
                 />
-                <Text color="text-black" size="md" text={profileUser.email} />
+                <Text TwClassName="text-black text-md" text={profileUser.email} />
                 <Text
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
-                  size="xs"
-                  color="text-gray-500"
+                  TwClassName="text-xs text-gray-500"
                 />
               </Container>
             </Container>
 
-            <Container flexDirection="col" className="flex-[9]" padding='xl'>
+            <Container TwClassName="flex-col flex-[9] p-8">
+              <Container TwClassName="h-[80px] flex-row justify-end items-end hidden md:flex">
+                <span></span>
+              </Container>
               profile stuff
             </Container>
           </Container>
         </>
       ) : (
         <Container
-          flexDirection="col"
-          height="h-full"
-          width="w-full"
-          justifyContent="center"
-          alignItems="center"
+          TwClassName="flex-col h-full w-full justify-center items-center"
         >
           <Text
             text="We are sorry there is no profile with that user ID."
-            size="xl"
-            color="text-black"
+            TwClassName="text-xl text-black"
           />
         </Container>
       )}
@@ -250,3 +194,10 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+
+
+
+
+
+
+
