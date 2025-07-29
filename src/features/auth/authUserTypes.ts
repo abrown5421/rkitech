@@ -1,4 +1,5 @@
 import type { TrianglifyBannerProps } from "../../shared/components/trianglifyBanner/trianglifyBannerTypes";
+import type { FriendMap } from "../friends/friendTypes";
 
 export interface AuthUser {
     userId: string;
@@ -10,15 +11,6 @@ export interface AuthUser {
     createdAt: string; 
     trianglifyObject: TrianglifyBannerProps;
     friends: FriendMap[];
-}
-
-export interface FriendMap {
-    friends: boolean,
-    requester: string,
-    requestee: string,
-    seen: boolean,
-    friendAvi: string,
-    friendId: string,
 }
 
 export interface AuthUserState {
