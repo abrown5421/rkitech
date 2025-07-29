@@ -13,7 +13,7 @@ import Button from '../../shared/components/button/Button';
 import Icon from '../../shared/components/icon/Icon';
 import { openModal } from '../modal/modalSlice';
 import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
-import { appendToArrayInCollection, removeFromArrayInCollection } from '../../services/database/updateData';
+import { appendToArrayInCollection, removeFromArrayByCondition } from '../../services/database/updateData';
 import { openAlert } from '../alert/alertSlice';
 
 const Profile: React.FC = () => {
@@ -115,11 +115,15 @@ const Profile: React.FC = () => {
     dispatch(setLoading({ loading: true, id: 'addFriend' }));
     if (!authUser?.userId || !userIdFromUrl) return;
     try {
+      const profileInitials =
+        (profileUser?.firstName?.[0] || '') + (profileUser?.lastName?.[0] || '');
+
       await appendToArrayInCollection('Users', authUser.userId, 'friends', {
         friends: false,
         requester: authUser.userId,
         requestee: userIdFromUrl,
         seen: true,
+        friendAvi: profileInitials,
       });
 
       await appendToArrayInCollection('Users', userIdFromUrl, 'friends', {
@@ -127,6 +131,7 @@ const Profile: React.FC = () => {
         requester: authUser.userId,
         requestee: userIdFromUrl,
         seen: false,
+        friendAvi: authUser.profileImage ? authUser.profileImage : authUser.firstName?.[0] + authUser.lastName?.[0]
       });
       
       dispatch(setNotLoading());
@@ -162,7 +167,33 @@ const Profile: React.FC = () => {
     dispatch(setLoading({ loading: true, id: 'confirmFriend' }));
     if (!authUser?.userId || !userIdFromUrl) return;
     try {
-      console.log('accept')
+      const profileInitials =
+        (profileUser?.firstName?.[0] || '') + (profileUser?.lastName?.[0] || '');
+
+      await removeFromArrayByCondition('Users', authUser.userId, 'friends', (item) => {
+        return item.requester === userIdFromUrl && item.requestee === authUser.userId
+      });
+
+      await removeFromArrayByCondition('Users', userIdFromUrl, 'friends', (item) => {
+        return item.requester === userIdFromUrl && item.requestee === authUser.userId
+      });
+
+      await appendToArrayInCollection('Users', authUser.userId, 'friends', {
+        friends: true,
+        requester: userIdFromUrl,
+        requestee: authUser.userId,
+        seen: true,
+        friendAvi: profileInitials,        
+      });
+
+      await appendToArrayInCollection('Users', userIdFromUrl, 'friends', {
+        friends: true,
+        requester: userIdFromUrl,
+        requestee: authUser.userId,
+        seen: true,
+        friendAvi: authUser.profileImage ? authUser.profileImage : authUser.firstName?.[0] + authUser.lastName?.[0]
+      });
+
     } catch (error) {
       console.error('Error accepting friend request:', error);
       dispatch(openAlert({
@@ -184,7 +215,14 @@ const Profile: React.FC = () => {
     dispatch(setLoading({ loading: true, id: 'remFriend' }));
     if (!authUser?.userId || !userIdFromUrl) return;
     try {
-      console.log('removal')
+      await removeFromArrayByCondition('Users', authUser.userId, 'friends', (item) => {
+        return item.requester === authUser.userId && item.requestee === userIdFromUrl
+      });
+
+      await removeFromArrayByCondition('Users', userIdFromUrl, 'friends', (item) => {
+        return item.requester === authUser.userId && item.requestee === userIdFromUrl
+      });
+
     } catch {
       dispatch(setNotLoading());
       dispatch(openAlert({
@@ -300,11 +338,13 @@ const Profile: React.FC = () => {
                 <Text
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
                   TwClassName="text-xs text-gray-500"
-                />                
+                />     
+
+                
                 {userIdFromUrl !== authUser?.userId && (
                   <Container TwClassName='flex-row justify-between gap-2 mt-3'>
                     {friendRelation === undefined && (
-                      <Button onClick={handleAddFriend} TwClassName="relative flex-1 mt-3 p-2 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
+                      <Button onClick={handleAddFriend} TwClassName="relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
                         <span className="absolute left-3">
                           <Icon name="UserPlus" />
                         </span>
@@ -313,7 +353,7 @@ const Profile: React.FC = () => {
                     )}
 
                     {friendRelation?.friends && (
-                      <Button onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-2 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center">
+                      <Button onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center">
                         <span className="absolute left-3">
                           <Icon name="UserMinus" />
                         </span>
@@ -321,8 +361,17 @@ const Profile: React.FC = () => {
                       </Button>
                     )}  
 
+                    {friendRelation?.friends && (
+                      <Button disabled onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
+                        <span className="absolute left-3">
+                          <Icon name="UserCheck" />
+                        </span>
+                        {isRemoving ? <Loader variant="spinner" color="bg-primary" /> : <>Friends</>}
+                      </Button>
+                    )} 
+
                     {!friendRelation?.friends && friendRelation?.requester === authUser?.userId && (
-                      <Button disabled TwClassName="relative flex-1 mt-3 p-2 bg-gray-200 rounded-xl text-gray-500 border border-gray-200 hover:bg-transparent hover:text-gray-200 flex justify-center items-center">
+                      <Button disabled TwClassName="relative flex-1 mt-3 p-1 bg-gray-200 rounded-xl text-gray-500 border border-gray-200 hover:bg-transparent hover:text-gray-200 flex justify-center items-center">
                         <span className="absolute left-3">
                           <Icon name="UserCog" />
                         </span>
@@ -331,14 +380,70 @@ const Profile: React.FC = () => {
                     )}
 
                     {friendRelation !== undefined && !friendRelation?.friends && friendRelation?.requester !== authUser?.userId && (
-                      <Button onClick={handleAcceptFriend} TwClassName="relative flex-1 mt-3 p-2 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
+                      <Button onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center">
+                        <span className="absolute left-3">
+                          <Icon name="UserMinus" />
+                        </span>
+                        {isConfirming ? <Loader variant="spinner" color="bg-primary" /> : <>Decline</>}
+                      </Button>
+                    )}
+
+                    {friendRelation !== undefined && !friendRelation?.friends && friendRelation?.requester !== authUser?.userId && (
+                      <Button onClick={handleAcceptFriend} TwClassName="relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
                         <span className="absolute left-3">
                           <Icon name="UserPlus" />
                         </span>
                         {isConfirming ? <Loader variant="spinner" color="bg-primary" /> : <>Accept</>}
                       </Button>
                     )}
+                    
                   </Container>
+                )}
+
+                <Text
+                  text={profileUser.friends && profileUser.friends.length > 0 ? (`${profileUser.friends.length === 1 ? '1 Friend:' : profileUser.friends.length + ' Friends:'}`) : 'Friends:'}
+                  TwClassName="text-black text-xl font-bold mt-5"
+                />
+                {profileUser.friends && profileUser.friends.length > 0 ? (
+                  <Container TwClassName="flex flex-row items-center relative">
+                    {profileUser.friends.map((friend, index) => {
+                      if (friend.friends) {
+                        return (
+                          <Container
+                            key={index}
+                            TwClassName={`w-[40px] h-[40px] rounded-full cursor-pointer bg-black flex justify-center items-center border-3 border-white ${
+                              index !== 0 ? '-ml-3' : ''
+                            } z-${index + 10}`}
+                          >
+                            {friend.friendAvi.startsWith('https://') ? (
+                              <Image
+                                src={friend.friendAvi}
+                                alt="User Avatar"
+                                width={30}
+                                height={30}
+                                TwClassName="rounded-full object-cover"
+                              />
+                            ) : (
+                              <Text
+                                TwClassName="text-white font-primary text-xs w-full flex justify-center items-center"
+                                text={friend.friendAvi}
+                              />
+                            )}
+                          </Container>
+                        );
+                      }
+                      return null;
+                    })}
+                  </Container>
+                ) : (
+                  <Text
+                    text={
+                      userIdFromUrl === authUser?.userId
+                        ? 'You do not have any friends yet'
+                        : 'This user does not have any friends'
+                    }
+                    TwClassName="text-xs text-gray-500"
+                  />
                 )}
               </Container>
             </Container>
