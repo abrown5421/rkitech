@@ -15,8 +15,10 @@ import { openModal } from '../modal/modalSlice';
 import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 import { appendToArrayInCollection, removeFromArrayByCondition } from '../../services/database/updateData';
 import { openAlert } from '../alert/alertSlice';
+import { useNavigationHook } from '../../hooks/useNavigationHook';
 
 const Profile: React.FC = () => {
+  const clientNavigation = useNavigationHook();
   const { userIdFromUrl } = useParams();
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
@@ -25,8 +27,45 @@ const Profile: React.FC = () => {
   const isAdding = loading && id === 'addFriend';
   const isRemoving = loading && id === 'remFriend';
   const isConfirming = loading && id === 'confirmFriend';
-
+  const [friendAvatars, setFriendAvatars] = useState<Record<string, string>>({});
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      if (!profileUser?.friends) return;
+
+      const confirmedFriends = profileUser.friends.filter(f => f.friends).slice(0, 5);
+      const avatarPromises = confirmedFriends.map(async (friend) => {
+        try {
+          const data = await getDocumentById('Users', friend.friendId);
+
+          if (!data) return null; 
+
+          const typedData = data as AuthUser; 
+
+          if (typedData.profileImage) {
+            return { id: friend.friendId, avatar: typedData.profileImage };
+          } else {
+            const initials = `${typedData.firstName?.[0] || ''}${typedData.lastName?.[0] || ''}`.toUpperCase();
+            return { id: friend.friendId, avatar: initials };
+          }
+        } catch (e) {
+          console.error('Failed to fetch friend avatar:', e);
+          return null;
+        }
+      });
+
+      const avatars = await Promise.all(avatarPromises);
+      const avatarMap: Record<string, string> = {};
+      avatars.forEach(a => {
+        if (a) avatarMap[a.id] = a.avatar;
+      });
+
+      setFriendAvatars(avatarMap);
+    };
+
+    fetchAvatars();
+  }, [profileUser?.friends]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -115,15 +154,12 @@ const Profile: React.FC = () => {
     dispatch(setLoading({ loading: true, id: 'addFriend' }));
     if (!authUser?.userId || !userIdFromUrl) return;
     try {
-      const profileInitials =
-        (profileUser?.firstName?.[0] || '') + (profileUser?.lastName?.[0] || '');
-
       await appendToArrayInCollection('Users', authUser.userId, 'friends', {
         friends: false,
         requester: authUser.userId,
         requestee: userIdFromUrl,
         seen: true,
-        friendAvi: profileInitials,
+        friendId: userIdFromUrl
       });
 
       await appendToArrayInCollection('Users', userIdFromUrl, 'friends', {
@@ -131,7 +167,7 @@ const Profile: React.FC = () => {
         requester: authUser.userId,
         requestee: userIdFromUrl,
         seen: false,
-        friendAvi: authUser.profileImage ? authUser.profileImage : authUser.firstName?.[0] + authUser.lastName?.[0]
+        friendId: authUser.userId
       });
       
       dispatch(setNotLoading());
@@ -167,8 +203,6 @@ const Profile: React.FC = () => {
     dispatch(setLoading({ loading: true, id: 'confirmFriend' }));
     if (!authUser?.userId || !userIdFromUrl) return;
     try {
-      const profileInitials =
-        (profileUser?.firstName?.[0] || '') + (profileUser?.lastName?.[0] || '');
 
       await removeFromArrayByCondition('Users', authUser.userId, 'friends', (item) => {
         return item.requester === userIdFromUrl && item.requestee === authUser.userId
@@ -183,7 +217,7 @@ const Profile: React.FC = () => {
         requester: userIdFromUrl,
         requestee: authUser.userId,
         seen: true,
-        friendAvi: profileInitials,        
+        friendId: userIdFromUrl,        
       });
 
       await appendToArrayInCollection('Users', userIdFromUrl, 'friends', {
@@ -191,7 +225,7 @@ const Profile: React.FC = () => {
         requester: userIdFromUrl,
         requestee: authUser.userId,
         seen: true,
-        friendAvi: authUser.profileImage ? authUser.profileImage : authUser.firstName?.[0] + authUser.lastName?.[0]
+        friendId: authUser.userId
       });
 
     } catch (error) {
@@ -242,7 +276,9 @@ const Profile: React.FC = () => {
   return (
     <Container TwClassName="h-full w-full flex-col">
       {isProfileLoading ? (
-        <Loader variant="spinner" color="bg-primary" />
+        <Container TwClassName="h-full w-full flex-col justify-center items-center">
+          <Loader variant="spinner" color="bg-primary" />
+        </Container>
       ) : profileUser ? (
         <>
           <TrianglifyBanner
@@ -406,34 +442,47 @@ const Profile: React.FC = () => {
                 />
                 {profileUser.friends && profileUser.friends.length > 0 ? (
                   <Container TwClassName="flex flex-row items-center relative">
-                    {profileUser.friends.map((friend, index) => {
-                      if (friend.friends) {
+                    {profileUser.friends
+                      .filter(friend => friend.friends)
+                      .slice(0, 5)
+                      .map((friend, index) => {
+                        const avatar = friendAvatars[friend.friendId];
                         return (
                           <Container
-                            key={index}
+                            key={friend.friendId}
                             TwClassName={`w-[40px] h-[40px] rounded-full cursor-pointer bg-black flex justify-center items-center border-3 border-white ${
                               index !== 0 ? '-ml-3' : ''
-                            } z-${index + 10}`}
+                            } z-${index * 10}`}
+                            onClick={() => {
+                              clientNavigation('/profile/' + friend.friendId, 'Profile', '5MMXnlLFK6gBQArZR3wW')()
+                            }}
                           >
-                            {friend.friendAvi.startsWith('https://') ? (
+                            {avatar?.startsWith('http') ? (
                               <Image
-                                src={friend.friendAvi}
+                                src={avatar}
                                 alt="User Avatar"
-                                width={30}
-                                height={30}
-                                TwClassName="rounded-full object-cover"
+                                TwClassName="rounded-full w-full h-full object-cover"
                               />
                             ) : (
                               <Text
                                 TwClassName="text-white font-primary text-xs w-full flex justify-center items-center"
-                                text={friend.friendAvi}
+                                text={avatar}
                               />
                             )}
                           </Container>
                         );
-                      }
-                      return null;
-                    })}
+                      })}
+
+                    {profileUser.friends.filter(friend => friend.friends).length > 5 && (
+                      <Container
+                        TwClassName="w-[40px] h-[40px] rounded-full bg-black text-white flex justify-center items-center font-primary -ml-3 z-50 border-3 border-white"
+                      >
+                        <Text
+                          TwClassName="text-white font-primary text-xs w-full flex justify-center items-center"
+                          text='...'
+                        />
+                      </Container>
+                    )}
                   </Container>
                 ) : (
                   <Text
@@ -471,4 +520,3 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
-
