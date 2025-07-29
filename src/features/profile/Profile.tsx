@@ -14,7 +14,6 @@ import Icon from '../../shared/components/icon/Icon';
 import { openModal } from '../modal/modalSlice';
 import TrianglifyBanner from '../../shared/components/trianglifyBanner/TrianglifyBanner';
 
-
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
   const dispatch = useAppDispatch();
@@ -30,11 +29,15 @@ const Profile: React.FC = () => {
 
       try {
         dispatch(setLoading({ loading: true, id: 'profile' }));
-
-        const data = await getDocumentById('Users', userIdFromUrl);
-        if (data) {
-          setProfileUser({ ...(data as AuthUser), userId: userIdFromUrl });
+        if (authUser?.userId === userIdFromUrl) {
+          setProfileUser(authUser)
+        } else {
+          const data = await getDocumentById('Users', userIdFromUrl);
+          if (data) {
+            setProfileUser({ ...(data as AuthUser), userId: userIdFromUrl });
+          }     
         }
+        
       } catch (error) {
         console.error('Error fetching profile data:', error);
       } finally {
@@ -43,7 +46,7 @@ const Profile: React.FC = () => {
     };
 
     fetchProfileData();
-  }, [userIdFromUrl, dispatch]);
+  }, [userIdFromUrl, authUser, dispatch]);
 
   const handleProfileEditModal = () => {
     if (!profileUser) return;
