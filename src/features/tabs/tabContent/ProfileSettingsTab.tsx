@@ -1,17 +1,27 @@
 import React from "react";
 import Container from "../../../shared/components/container/Container";
-import { useAppSelector } from "../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Text from "../../../shared/components/text/Text";
 import Button from "../../../shared/components/button/Button";
 import Loader from "../../../shared/components/loader/Loader";
+import { openModal } from "../../modal/modalSlice";
+import { setLoading } from "../../../app/globalSlices/loading/loadingSlice";
 
 const MyProfileAboutTab: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
   const isAccountDisabling = loading && id === "profileDisable";
   const isAccountDeleting = loading && id === "profileDelete";
 
+  const handleAccountDelete = () => {
+    dispatch(setLoading({ loading: true, id: "profileDelete" }));
+    dispatch(openModal({
+        title: "",
+        modalType: "deleteAccount",
+    }));
+  };
+  
   const handleAccountDisable = async () => {}
-  const handleAccountDelete = async () => {}
 
   return (
     <Container TwClassName="flex-col gap-5 mt-5 justify-end border-1 border-error bg-error-faded ring-error rounded-xl pt-4 pr-2 pb-4 pl-2">
