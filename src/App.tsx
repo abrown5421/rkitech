@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Modal from './features/modal/Modal';
 import Alert from './features/alert/Alert';
@@ -13,6 +12,8 @@ import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
 import Container from './shared/components/container/Container';
 import { setPartOfActivePageShell } from './features/pages/pageShellSlice';
+import { getDocumentById } from './services/database/readData';
+import type { AuthUser } from './features/auth/authUserTypes';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,21 +23,37 @@ const App: React.FC = () => {
   const pages = useAppSelector((state) => state.pages.pages);
 
   useEffect(() => {
-    const storedUser = Cookies.get('authUser');
-    if (storedUser) {
+    const fetchUser = async () => {
+      const storedUser = Cookies.get('authUser');
+      if (storedUser) {
         try {
-            const parsedUser = JSON.parse(storedUser);
-            dispatch(setAuthUser(parsedUser));
+          const parsedUser = JSON.parse(storedUser);
+          const data = await getDocumentById('Users', parsedUser.userId);
+  
+          if (data) {
+            dispatch(setAuthUser({ ...(data as AuthUser), userId: parsedUser.userId }));
+          } else {
+            console.warn('User document not found');
+          }
         } catch (e) {
-            console.error('Failed to parse user from cookie', e);
-            Cookies.remove('authUser'); 
+          console.error('Failed to parse user from cookie', e);
+          Cookies.remove('authUser');
         }
-    }
+      }
+    };
+  
+    fetchUser();
   }, [dispatch]);
 
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');
-    const pageRef = pages.find((page) => page.pagePath === location.pathname.toLowerCase());
+    const pathname = location.pathname.toLowerCase();
+    let pageRef = pages.find((page) => {
+      if (page.pageName === 'Profile' && pathname.startsWith('/profile')) {
+        return true;
+      }
+      return page.pagePath === pathname;
+    });
     const pageNotFound = pages.find((page) => page.pageName === "Page Not Found");
 
     if (location.pathname !== '/' && pageRef) {
@@ -49,9 +66,7 @@ const App: React.FC = () => {
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
     } 
 
-    if (location.pathname !== '/' && !pageRef && pageNotFound) {
-      console.log(pageNotFound?.pageName)
-      console.log(pageNotFound?.pageID)
+    if ((location.pathname !== '/' && !pageRef && pageNotFound) || (location.pathname === '/profile' && pageNotFound)) {
       dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageNotFound?.pageName }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageNotFound?.pageID }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
@@ -63,23 +78,32 @@ const App: React.FC = () => {
     
     <>  
       {!loadingSite ? (
-        <Container flexDirection='col' className='w-screen h-screen z-30 relative bg-black'>
+        <Container TwClassName='flex-col w-screen h-screen z-30 relative bg-black'>
           <Navbar />
           <Routes>
-            {pages.map((page) => { 
+            {pages.map((page) => {
+              let routePath = page.pagePath;
+
+              if (page.pageName === 'Profile') {
+                routePath = '/profile/:userIdFromUrl';
+              }
+
               return (
-                <Route path={page.pagePath} element={
-                    <PageShell 
-                      activePageShellBgColor={page.pageBg} 
-                      activePageShellAnimation = {{
+                <Route
+                  key={page.pageID}
+                  path={routePath}  
+                  element={
+                    <PageShell
+                      activePageShellBgColor={page.pageBg}
+                      activePageShellAnimation={{
                         entranceAnimation: page.pageEntranceAnimation,
                         exitAnimation: page.pageExitAnimation,
                         isEntering: activePage.activePageShellIn,
                       }}
                     />
-                  } 
+                  }
                 />
-              )
+              );
             })}
           </Routes>
           

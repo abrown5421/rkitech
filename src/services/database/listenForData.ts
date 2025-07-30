@@ -1,4 +1,4 @@
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from '../firebase';
 
 export function listenToCollection(collectionName: string, callback: (data: any[]) => void) {
@@ -13,3 +13,25 @@ export function listenToCollection(collectionName: string, callback: (data: any[
   });
 
   return unsubscribe; }
+
+export function listenToDocument(
+  collectionName: string,
+  docId: string,
+  callback: (data: any | null) => void
+) {
+  const docRef = doc(db, collectionName, docId);
+
+  const unsubscribe = onSnapshot(docRef, (snapshot) => {
+    if (snapshot.exists()) {
+      callback({
+        id: snapshot.id,
+        ...snapshot.data(),
+      });
+    } else {
+      callback(null);
+    }
+  });
+
+  return unsubscribe;
+}
+

@@ -19,6 +19,7 @@ export async function signInUser(email: string, password: string): Promise<AuthU
       profileImage: userData.profileImage,
       userRole: userData.userRole,
       createdAt: userData.createdAt,
+      trianglifyObject: userData.trianglifyObject,
     };
   } catch (error) {
     console.error('Login failed:', error);

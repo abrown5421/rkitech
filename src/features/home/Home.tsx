@@ -4,7 +4,7 @@ import Container from '../../shared/components/container/Container';
 const Home: React.FC = () => {
 
     return (
-        <Container padding='sm'>
+        <Container TwClassName='p-4'>
             Home
         </Container>
     );
