@@ -224,11 +224,15 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
               onDragLeave={() => setIsDragging(false)}
             >
               {authUser?.profileImage && (
-                <Icon
-                    name="Trash"
-                    onClick={handleDeleteProfilePicture}
-                    TwClassName="absolute top-2 right-2 text-error hover:text-error-hover cursor-pointer"
-                />
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteProfilePicture();
+                  }}
+                  className="absolute top-2 right-2 cursor-pointer z-50 text-error hover:text-error-hover"
+                >
+                  <Icon name="Trash" />
+                </div>
               )}
               {!previewURL ? (
                 <div className="flex flex-col items-center text-gray-500">
