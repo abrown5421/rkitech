@@ -28,8 +28,6 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
   const ownedProfile = profileUser.profileUser.userId === authUser?.userId;
   const { loading, id } = useAppSelector((state) => state.loading);
   const isProfileSaving = loading && id === "profileSave";
-  const isProfilePicUploading = loading && id === "profilePic";
-  const isProfilePicDeleting = loading && id === "profilePicDeleting";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [firstName, setFirstName] = useState(profileUser.profileUser.firstName);
   const [lastName, setLastName] = useState(profileUser.profileUser.lastName);
@@ -69,55 +67,6 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
 
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith("image/")) handleFileSelect(file);
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile || !authUser?.userId) return;
-    dispatch(setLoading({ loading: true, id: "profilePic" }));
-
-    try {
-      if (authUser.profileImage) {
-        await deleteImageFromStorage(authUser.profileImage);
-      }
-
-      const imageUrl = await uploadProfileImage(
-        selectedFile,
-        authUser.userId,
-        "profileImages"
-      );
-      await updateDataInCollection("Users", authUser.userId, {
-        profileImage: imageUrl,
-      });
-
-      dispatch(setNotLoading());
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage: "Profile Picture was uploaded successfully!",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } catch (error) {
-      console.error(error);
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Profile Picture upload failed.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-      dispatch(setNotLoading());
-    }
   };
 
   const handleDeleteProfilePicture = async () => {
@@ -164,6 +113,7 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
       );
     }
   };
+
   const handleSave = async () => {
     dispatch(setLoading({ loading: true, id: "profileSave" }));
 
@@ -175,6 +125,21 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
         await sendEmailChangeVerification(email, password);
       } else {
         firestoreUpdate.email = email;
+      }
+
+      if (selectedFile && authUser?.userId) {
+        if (authUser.profileImage) {
+          await deleteImageFromStorage(authUser.profileImage);
+        }
+
+        const imageUrl = await uploadProfileImage(
+          selectedFile,
+          authUser.userId,
+          "profileImages"
+        );
+
+        firestoreUpdate.profileImage = imageUrl;
+        setPreviewURL(imageUrl); 
       }
 
       await updateDataInCollection(
@@ -203,6 +168,10 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
         alertMessage = "Name updated successfully!";
       }
 
+      if (selectedFile) {
+        alertMessage += " Profile picture updated.";
+      }
+
       dispatch(
         openAlert({
           alertOpen: true,
@@ -215,7 +184,10 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
           },
         })
       );
+
+      setSelectedFile(null);
     } catch (error) {
+      console.error(error);
       dispatch(setNotLoading());
       dispatch(
         openAlert({
@@ -231,6 +203,7 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
       );
     }
   };
+
   return (
     <>
       {ownedProfile ? (
