@@ -5,7 +5,7 @@ const Home: React.FC = () => {
 
     return (
         <Container TwClassName='min-h-[calc(100vh-50px)] p-4'>
-            Home
+          Home
         </Container>
     );
 };
