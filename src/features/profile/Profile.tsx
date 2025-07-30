@@ -94,15 +94,21 @@ const Profile: React.FC = () => {
     {
       id: 'about',
       label: ownedProfile ? 'Profile' : 'About',
-      content: profileUser && (profileUser.userId === authUser?.userId ? <MyProfileAboutTab profileUser={profileUser} /> : <TheirProfileAboutTab profileUser={profileUser} />),
+      content: profileUser && (ownedProfile
+        ? <MyProfileAboutTab profileUser={profileUser} />
+        : <TheirProfileAboutTab profileUser={profileUser} />
+      ),
     },
-    {
-      id: 'settings',
-      label: 'Settings',
-      content: <ProfileSettingsTab />,
-    }    
+    ...(ownedProfile
+      ? [
+          {
+            id: 'settings',
+            label: 'Settings',
+            content: <ProfileSettingsTab />,
+          },
+        ]
+      : []),
   ];
-  
   return (
     <Container TwClassName='min-h-[calc(100vh-50px)] w-full flex-col'>
       {isProfileLoading ? (
