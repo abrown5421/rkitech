@@ -133,7 +133,7 @@ const Profile: React.FC = () => {
               TwClassName="flex-col flex-[3] relative min-w-[240px]"
             >
               <Container
-                TwClassName="p-8 absolute top-0 transform -translate-y-1/2 z-10"
+                TwClassName="p-4 md:p-8 absolute top-0 transform -translate-y-1/2 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 z-10"
               >
                 {userIdFromUrl === authUser?.userId && (
                   <Container TwClassName='absolute bottom-8 right-8'>
@@ -173,7 +173,7 @@ const Profile: React.FC = () => {
                 <span></span>
               </Container>
 
-              <Container TwClassName="flex-col p-8 relative">                
+              <Container TwClassName="flex-col p-4 md:p-8 relative">                
                 <Text
                   TwClassName="text-black text-xl font-bold"
                   text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
@@ -194,7 +194,7 @@ const Profile: React.FC = () => {
               </Container>
             </Container>
 
-            <Container TwClassName="flex-col flex-[9] p-8">
+            <Container TwClassName="flex-col flex-[9] p-4 md:p-8">
               <Container TwClassName="h-[80px] flex-row justify-end items-end hidden md:flex">
                 <span></span>
               </Container>
