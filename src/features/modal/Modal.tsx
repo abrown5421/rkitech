@@ -8,6 +8,7 @@ import Text from '../../shared/components/text/Text';
 import ConfirmModalContent from './modals/ConfirmModalContent';
 import ProfilePictureModalContent from './modals/ProfilePictureModalContent';
 import ProfileBannerModalContent from './modals/ProfileBannerModalContent';
+import DeleteAccountModalContent from './modals/DeleteAccountModalContent';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -54,6 +55,8 @@ const Modal: React.FC = () => {
             variance={modal.modalProps?.variance}
           />
         )
+      case 'deleteAccount':
+        return <DeleteAccountModalContent />;
       default:
         return null;
     }
