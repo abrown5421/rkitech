@@ -12,6 +12,8 @@ import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
 import Container from './shared/components/container/Container';
 import { setPartOfActivePageShell } from './features/pages/pageShellSlice';
+import { getDocumentById } from './services/database/readData';
+import type { AuthUser } from './features/auth/authUserTypes';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,16 +23,26 @@ const App: React.FC = () => {
   const pages = useAppSelector((state) => state.pages.pages);
 
   useEffect(() => {
-    const storedUser = Cookies.get('authUser');
-    if (storedUser) {
+    const fetchUser = async () => {
+      const storedUser = Cookies.get('authUser');
+      if (storedUser) {
         try {
-            const parsedUser = JSON.parse(storedUser);
-            dispatch(setAuthUser(parsedUser));
+          const parsedUser = JSON.parse(storedUser);
+          const data = await getDocumentById('Users', parsedUser.userId);
+  
+          if (data) {
+            dispatch(setAuthUser({ ...(data as AuthUser), userId: parsedUser.userId }));
+          } else {
+            console.warn('User document not found');
+          }
         } catch (e) {
-            console.error('Failed to parse user from cookie', e);
-            Cookies.remove('authUser'); 
+          console.error('Failed to parse user from cookie', e);
+          Cookies.remove('authUser');
         }
-    }
+      }
+    };
+  
+    fetchUser();
   }, [dispatch]);
 
   useEffect(()=>{
