@@ -52,23 +52,6 @@ const Profile: React.FC = () => {
     fetchProfileData();
   }, [userIdFromUrl, authUser, dispatch]);
 
-  const handleProfileEditModal = () => {
-    if (!profileUser) return;
-
-    dispatch(
-      openModal({
-        title: 'Edit Profile',
-        modalType: 'editProfile',
-        modalProps: {
-          firstName: profileUser.firstName,
-          lastName: profileUser.lastName,
-          email: profileUser.email,
-          userId: profileUser.userId,
-        },
-      })
-    );
-  };
-
   const handleProfilePictureEditModal = () => {
     if (!profileUser) return;
 
@@ -190,21 +173,7 @@ const Profile: React.FC = () => {
                 <span></span>
               </Container>
 
-              <Container TwClassName="flex-col p-8 relative">
-                {userIdFromUrl === authUser?.userId && (
-                  <Container TwClassName='absolute right-8 top-8 md:right-2 md:top-2'>
-                    <Button
-                      cursor='pointer' 
-                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-                      onClick={handleProfileEditModal}
-                    >
-                      <Icon
-                          name='Edit'
-                      />
-                    </Button>
-                  </Container>
-                )}
-                
+              <Container TwClassName="flex-col p-8 relative">                
                 <Text
                   TwClassName="text-black text-xl font-bold"
                   text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
