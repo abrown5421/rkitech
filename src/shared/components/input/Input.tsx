@@ -55,7 +55,7 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <div
-      className={clsx("relative w-full", TwClassName, animationClasses)}
+      className={clsx("relative w-full", rows === "fill" && "flex-grow", TwClassName, animationClasses)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -64,7 +64,7 @@ const Input: React.FC<InputProps> = ({
           "relative flex border rounded-md transition-colors duration-200",
           error ? "border-red-500" : "border-gray-300",
           focused ? "ring-2 ring-primary border-primary" : "ring-0",
-          rows === "fill" ? "flex-1" : "items-center",
+          rows === "fill" ? "h-full" : "items-center",
         )}
       >
         {startAdornment && (
