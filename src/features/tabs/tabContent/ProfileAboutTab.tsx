@@ -306,8 +306,9 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
           </Container>
         </Container>
       ) : (
-        <Container TwClassName="flex-row">
-          <Container TwClassName="flex-col flex-1">
+        <>
+        <Container TwClassName="flex-col md:flex-row">
+          <Container TwClassName="flex-col flex-2 items-center md:items-start">
             {profileUser.profileUser?.profileImage ? (
               <Image
                 src={profileUser.profileUser.profileImage}
@@ -327,7 +328,7 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
               </Container>
             )}
           </Container>
-          <Container TwClassName="flex-col flex-9 justify-center">
+          <Container TwClassName="flex-col flex-9 justify-center items-center md:items-start">
             <Text
               TwClassName="text-black text-xl font-bold"
               text={`${
@@ -336,10 +337,12 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
                 profileUser.profileUser.lastName?.charAt(0).toUpperCase() || ""
               }${profileUser.profileUser.lastName?.slice(1) || ""}`}
             />
-            <Text
-              TwClassName="text-black text-md"
-              text={profileUser.profileUser.email}
-            />
+            {profileUser.profileUser.bio && (
+              <Text
+                TwClassName="text-black text-md"
+                text={profileUser.profileUser.bio}
+              />
+            )}
             <Text
               text={`Member since: ${format(
                 profileUser.profileUser.createdAt,
@@ -349,6 +352,48 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
             />
           </Container>
         </Container>
+        <Container TwClassName="flex-row mt-5">
+          <Container TwClassName="hidden md:flex-col flex-2 gap-5 w-full">
+            <Container TwClassName="w-[100px] h-[100px] rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg invisible">
+              <span></span>
+            </Container>
+          </Container>
+          <Container TwClassName="flex-col flex-9 gap-5 w-full items-center md:items-start">
+            <Text TwClassName="text-black text-xl font-bold" text="Contact Info" />
+            <Container TwClassName="flex-row gap-3 items-start">
+              <Container TwClassName="w-6 flex justify-center">
+                <Icon name="Mail" />
+              </Container>
+              <Text TwClassName="text-black text-md text-left" text={profileUser.profileUser.email} />
+            </Container>
+            <Container TwClassName="flex-row gap-3 items-start">
+              <Container TwClassName="w-6 flex justify-center">
+                <Icon name="Phone" />
+              </Container>
+              <Text
+                TwClassName="text-black text-md text-left"
+                text={profileUser.profileUser.phone || "No phone available"}
+              />
+            </Container>
+            <Container TwClassName="flex-row gap-3 items-start">
+              <Container TwClassName="w-6 flex justify-center">
+                <Icon name="House" />
+              </Container>
+              <Text
+                TwClassName="text-black text-md text-left"
+                text={
+                  profileUser.profileUser.addressLn1 &&
+                  profileUser.profileUser.addressCity &&
+                  profileUser.profileUser.addressState &&
+                  profileUser.profileUser.addressPostCode
+                    ? `${profileUser.profileUser.addressLn1} ${profileUser.profileUser.addressCity}, ${profileUser.profileUser.addressState} ${profileUser.profileUser.addressPostCode}`
+                    : "No address available"
+                }
+              />
+            </Container>
+          </Container>
+        </Container>
+        </>
       )}
     </>
   );
