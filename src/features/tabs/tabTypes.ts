@@ -1,3 +1,5 @@
+import type { AuthUser } from "../auth/authUserTypes";
+
 export interface TabItem {
   id: string;
   label: string;
@@ -19,4 +21,8 @@ export interface TabProps {
 
 export interface TabsState {
   [groupId: string]: string;
+}
+
+export interface ProfileAboutTabProps {
+    profileUser: AuthUser;
 }
