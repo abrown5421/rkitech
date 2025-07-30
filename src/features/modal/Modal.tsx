@@ -41,18 +41,6 @@ const Modal: React.FC = () => {
             onDeny={modal.modalProps?.onDeny}
           />
         );
-      case 'editProfile':
-        return (
-          <EditProfileModalContent
-            firstName={modal.modalProps?.firstName}
-            lastName={modal.modalProps?.lastName}
-            email={modal.modalProps?.email}
-            userId={modal.modalProps?.userId}   
-            password=''
-            onSave={modal.modalProps?.onSave}
-            onCancel={modal.modalProps?.onCancel}
-          />
-        );
       case 'editProfilePic':
         return (
           <ProfilePictureModalContent />
