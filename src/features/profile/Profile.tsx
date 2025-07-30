@@ -183,7 +183,12 @@ const Profile: React.FC = () => {
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
                   TwClassName="text-xs text-gray-500"
                 />     
-
+                {profileUser.bio && (
+                  <Text
+                    text={profileUser.bio}
+                    TwClassName="text-md text-black mt-3"
+                  />
+                )}   
                 {profileUser && <FriendProfileModule profileUser={profileUser} />}
                 
               </Container>
