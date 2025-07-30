@@ -32,6 +32,7 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
   const [firstName, setFirstName] = useState(profileUser.profileUser.firstName);
   const [lastName, setLastName] = useState(profileUser.profileUser.lastName);
   const [email, setEmail] = useState(profileUser.profileUser.email);
+  const [bio, setBio] = useState(profileUser.profileUser.bio);
   const [password, setPassword] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(
@@ -257,6 +258,10 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
             </div>
           </Container>
           <Container TwClassName="flex-col flex-8 gap-5">
+            <Text
+              TwClassName="text-black text-xl font-bold"
+              text='Personal Information'
+            />
             <Container TwClassName="flex-row justify-between gap-5">
                 <Container TwClassName="flex-col flex-1">
                     <Input
@@ -275,34 +280,12 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
             </Container>
             
             <Input
-              label="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              label="Bio"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              multiline
+              rows='fill'
             />
-            
-            {emailChanged && (
-              <Input
-                label="Current Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password to confirm email change"
-              />
-            )}
-
-            <Container TwClassName="flex-row justify-end gap-2 mt-4">
-              <Button
-                TwClassName="p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary"
-                onClick={handleSave}
-                disabled={emailChanged && !password}
-              >
-                {isProfileSaving ? (
-                  <Loader variant="spinner" color="bg-primary" />
-                ) : (
-                  "Save"
-                )}
-              </Button>
-            </Container>
           </Container>
         </Container>
       ) : (
