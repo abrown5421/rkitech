@@ -4,7 +4,7 @@ import Container from '../../shared/components/container/Container';
 const Test: React.FC = () => {
 
     return (
-        <Container padding='sm'>
+        <Container TwClassName='min-h-[calc(100vh-50px)] p-4'>
             Test
         </Container>
     );
