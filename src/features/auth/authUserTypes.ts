@@ -11,6 +11,14 @@ export interface AuthUser {
     createdAt: string; 
     trianglifyObject: TrianglifyBannerProps;
     friends: FriendMap[];
+    gender?: 'Male' | 'Female' | 'Non-Binary' | 'Prefer not to say' | 'Other'
+    phone?: string;
+    addressLn1?: string;
+    addressLn2?: string;
+    addressCity: string;
+    addressState: string;
+    addressPostCode: string;
+
 }
 
 export interface AuthUserState {
