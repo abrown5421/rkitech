@@ -196,7 +196,7 @@ const Auth: React.FC = () => {
 
     return (
         <Container
-            TwClassName="w-full h-full justify-center items-center"
+            TwClassName="w-full min-h-[calc(100vh-50px)] justify-center items-center"
         >
             <Container TwClassName='w-11/12 md:w-1/3 p-4 bg-white rounded-xl min-h-2/5 flex-col justify-between'>
                 <Text text={isSignup ? 'Create Account' : 'Login'} TwClassName="text-xl" />
