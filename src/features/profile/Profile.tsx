@@ -103,7 +103,7 @@ const Profile: React.FC = () => {
     {
       id: 'about',
       label: 'About',
-      content: <ProfileAboutTab />,
+      content: profileUser && <ProfileAboutTab profileUser={profileUser} />,
     },
     {
       id: 'friends',
