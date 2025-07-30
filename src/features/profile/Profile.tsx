@@ -16,8 +16,9 @@ import TrianglifyBanner from '../../shared/components/trianglifyBanner/Trianglif
 import FriendProfileModule from '../friends/FriendProfileModule';
 import Tabs from '../tabs/Tabs';
 import type { TabItem } from '../tabs/tabTypes';
-import ProfileAboutTab from '../tabs/tabContent/ProfileAboutTab';
+import MyProfileAboutTab from '../tabs/tabContent/MyProfileAboutTab';
 import ProfileFriendTab from '../tabs/tabContent/ProfileFriendTab';
+import { TheirProfileAboutTab } from '../tabs/tabContent/TheirProfileAboutTab';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -86,7 +87,7 @@ const Profile: React.FC = () => {
     {
       id: 'about',
       label: 'About',
-      content: profileUser && <ProfileAboutTab profileUser={profileUser} />,
+      content: profileUser && (profileUser.userId === authUser?.userId ? <MyProfileAboutTab profileUser={profileUser} /> : <TheirProfileAboutTab profileUser={profileUser} />),
     },
     {
       id: 'friends',
