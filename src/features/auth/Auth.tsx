@@ -149,9 +149,9 @@ const Auth: React.FC = () => {
 
                 dispatch(setAuthUser({
                     userId: result.userId,
-                    email: formValues.email,
-                    firstName: formValues.firstName,
-                    lastName: formValues.lastName,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
