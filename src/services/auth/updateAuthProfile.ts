@@ -7,6 +7,7 @@ import {
   deleteUser,
 } from "firebase/auth";
 import { auth } from "../firebase";
+import { deleteDocument } from "../database/deleteData";
 
 export async function sendEmailChangeVerification(newEmail: string, currentPassword: string): Promise<void> {
   const user = auth.currentUser;
@@ -49,6 +50,8 @@ export async function deleteAuthenticatedAccount(currentPassword: string): Promi
     
     await deleteUser(user);
     
+    await deleteDocument('Users', user.uid);
+
     console.log("User account deleted successfully");
   } catch (error) {
     console.error("Error deleting user account:", error);
