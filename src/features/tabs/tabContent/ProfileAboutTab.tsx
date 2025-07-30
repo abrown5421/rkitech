@@ -224,29 +224,28 @@ const ProfileAboutTab: React.FC<ProfileAboutTabProps> = (profileUser) => {
               onDragLeave={() => setIsDragging(false)}
             >
               {authUser?.profileImage && (
-                <div
+                <Container
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDeleteProfilePicture();
                   }}
-                  className="absolute top-2 right-2 cursor-pointer z-50 text-error hover:text-error-hover"
+                  TwClassName="absolute top-2 right-2 cursor-pointer z-50 text-error hover:text-error-hover"
                 >
                   <Icon name="Trash" />
-                </div>
+                </Container>
               )}
               {!previewURL ? (
-                <div className="flex flex-col items-center text-gray-500">
+                <Container TwClassName="flex flex-col items-center text-gray-500">
                   <Icon name="Camera" TwClassName="w-10 h-10 mb-2" />
                   
                   <span className="text-sm">Click or drag image to upload</span>
-                </div>
+                </Container>
               ) : (
-                <img
+                <Image 
                   src={previewURL}
                   alt="Preview"
-                  className="absolute inset-0 w-full h-full object-contain rounded-lg"
+                  TwClassName="absolute inset-0 w-full h-full object-contain rounded-lg"
                 />
-                
               )}
               <input
                 type="file"
