@@ -5,6 +5,12 @@ import { useAppSelector } from '../../app/hooks';
 import Auth from '../auth/Auth';
 import Home from '../home/Home';
 import Test from '../test/Test';
+import Profile from '../profile/Profile';
+import Dashboard from '../dashboard/Dashboard';
+import Footer from '../footer/Footer';
+import PageNotFound from '../pageNotFound/PageNotFound';
+import PrivacyPolicy from '../privacyPolicy/PrivacyPolicy';
+import TermsOfService from '../termsOfService/TermsOfService';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -17,21 +23,26 @@ const PageShell: React.FC<PageShellState> = ({
     const activePage = useAppSelector((state) => state.pageShell);
 
     return (
-        <Container 
-            padding='md' 
-            bgColor={activePageShellBgColor}
-            className={`relative z-20 h-[calc(100vh-50px)]`}
+        <Container             
+            TwClassName={`${activePageShellBgColor} flex-col h-[calc(100vh-50px)] flex flex-col overflow-scroll`}
             animation={{
                 entranceExit: activePageShellAnimation,
             }}
         >
-            {/* all of your static pages should have a conditional render statement below. If there is not one that static page will not show */}
-            {activePage.activePageShellName === 'Home' && <Home />}
-            {activePage.activePageShellName === 'Auth' && <Auth />}
-            {activePage.activePageShellName === 'Test' && <Test />}
+            <Container TwClassName="">
+                {/* all of your static pages should have a conditional render statement below. If there is not one that static page will not show */}
+                {activePage.activePageShellName === 'Home' && <Home />}
+                {activePage.activePageShellName === 'Auth' && <Auth />}
+                {activePage.activePageShellName === 'Test' && <Test />}
+                {activePage.activePageShellName === 'Profile' && <Profile />}
+                {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
+                {activePage.activePageShellName === 'Page Not Found' && <PageNotFound />}
+                {activePage.activePageShellName === 'Privacy Policy' && <PrivacyPolicy />}
+                {activePage.activePageShellName === 'Terms Of Service' && <TermsOfService />}
+            </Container>
+            <Footer />
         </Container>
     );
 };
 
 export default PageShell;
- 
