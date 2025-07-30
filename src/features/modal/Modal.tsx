@@ -5,7 +5,9 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { closeModal, preCloseModal } from './modalSlice';
 import Icon from '../../shared/components/icon/Icon';
 import Text from '../../shared/components/text/Text';
-import Button from '../../shared/components/button/Button';
+import ConfirmModalContent from './modals/ConfirmModalContent';
+import ProfilePictureModalContent from './modals/ProfilePictureModalContent';
+import ProfileBannerModalContent from './modals/ProfileBannerModalContent';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -14,52 +16,52 @@ const Modal: React.FC = () => {
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-
     if (modal.modalOpen && modal.modalAnimation.isEntering) {
-        setIsVisible(true);
+      setIsVisible(true);
     } else if (!modal.modalAnimation.isEntering) {
-        timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         setIsVisible(false);
         dispatch(closeModal());
-        }, 500);
+      }, 500);
     }
-
     return () => clearTimeout(timeout);
   }, [modal.modalOpen, modal.modalAnimation.isEntering, dispatch]);
 
-  const handleClose = () => {
-    dispatch(preCloseModal());
-  };
-
+  const handleClose = () => dispatch(preCloseModal());
   if (!isVisible && !modal.modalOpen) return null;
 
   const renderModalContent = () => {
     switch (modal.modalType) {
-        case 'confirm':
+      case 'confirm':
         return (
-            <Container flexDirection='col' height='h-full' justifyContent='between'>
-                <Text size='md' text={modal.modalProps?.message || 'Are you sure?'} />
-                <Container flexDirection='row' width='w-full' justifyContent='end' className='gap-2'>
-                    <Button padding="sm" color="error" onClick={modal.modalProps?.onDeny}>Deny</Button>
-                    <Button padding="sm" color="primary" onClick={modal.modalProps?.onConfirm}>Confirm</Button>
-                </Container>
-            </Container>
+          <ConfirmModalContent
+            message={modal.modalProps?.message}
+            onConfirm={modal.modalProps?.onConfirm}
+            onDeny={modal.modalProps?.onDeny}
+          />
         );
-        case 'custom':
-        return modal.modalProps?.customComponent || null;
-        default:
+      case 'editProfilePic':
+        return (
+          <ProfilePictureModalContent />
+        );
+      case 'editProfileBanner':
+        return (
+          <ProfileBannerModalContent 
+            yColors={modal.modalProps?.yColors}
+            xColors={modal.modalProps?.xColors}
+            auxImage={modal.modalProps?.auxImage}
+            cellSize={modal.modalProps?.cellSize}
+            variance={modal.modalProps?.variance}
+          />
+        )
+      default:
         return null;
     }
   };
 
   return (
     <Container
-      width="w-full"
-      height="h-full"
-      justifyContent="center"
-      alignItems="center"
-      bgColor="bg-gray-950/60"
-      className={clsx('absolute top-0', isVisible ? 'z-40' : 'z-0')}
+      TwClassName={clsx("w-full h-full justify-center items-center bg-gray-950/60 absolute top-0", isVisible ? 'z-40' : 'z-0')}
       animation={{
         entranceExit: {
           entranceAnimation: 'animate__fadeIn',
@@ -70,12 +72,7 @@ const Modal: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        width="w-4/5 md:w-1/3"
-        height="h-1/3"
-        padding='md'
-        flexDirection='col'
-        bgColor='bg-white'
-        className={clsx('rounded-2xl', isVisible ? 'z-50' : 'z-0')}
+        TwClassName={clsx('w-4/5 md:w-1/3 p-4 flex-col bg-white rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
             entranceAnimation: modal.modalAnimation.entranceAnimation,
@@ -85,13 +82,8 @@ const Modal: React.FC = () => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <Icon
-            name="X"
-            cursor="pointer"
-            className="absolute top-4 right-4"
-            onClick={handleClose}
-        />
-        <Text text={modal.modalTitle} size='2x'/>
+        <Icon name="X" cursor="pointer" TwClassName="absolute top-4 right-4" onClick={handleClose} />
+        <Text text={modal.modalTitle} TwClassName="text-2x mb-4" />
         {renderModalContent()}
       </Container>
     </Container>

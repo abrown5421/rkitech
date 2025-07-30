@@ -13,6 +13,7 @@ import { signInUser } from '../../services/auth/signInUser';
 import Cookies from 'js-cookie';
 import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
 import Loader from '../../shared/components/loader/Loader';
+import { getRandomTrianglifyParams } from '../../shared/components/trianglifyBanner/getRandomTrianglifyParams';
 
 const Auth: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -83,14 +84,24 @@ const Auth: React.FC = () => {
     
         try {
             if (isSignup) {
+                const triBan = getRandomTrianglifyParams();
+                const randomizedTrianglifyBanner = {
+                    xColors: triBan.xColor,
+                    yColors: triBan.yColor,
+                    width: 'w-full',
+                    height: 250,
+                    variance: triBan.variance,
+                    cellSize: triBan.cellSize
+                }
+
                 const result = await signUpUser(
                     formValues.email,
                     formValues.password,
                     formValues.firstName,
                     formValues.lastName,
-                    ''
+                    '',
+                    randomizedTrianglifyBanner                    
                 );
-    
                 if (!result) throw new Error('Failed to sign up');
     
                 dispatch(setAuthUser({
@@ -101,6 +112,8 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
+                    trianglifyObject: randomizedTrianglifyBanner,
+                    friends: []
                 }));
                 
                 Cookies.set('authUser', JSON.stringify({
@@ -111,6 +124,7 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
+                    trianglifyObject: randomizedTrianglifyBanner
                 }), { expires: 1 });
 
                 dispatch(openAlert({
@@ -139,6 +153,8 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: result.userRole,
                     createdAt: result.createdAt,
+                    trianglifyObject: result.trianglifyObject,
+                    friends: result.friends
                 }));
 
                 Cookies.set('authUser', JSON.stringify({
@@ -149,18 +165,9 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: result.userRole,
                     createdAt: result.createdAt,
+                    trianglifyObject: result.trianglifyObject
                 }), { expires: 1 });
 
-                dispatch(openAlert({
-                    alertOpen: true,
-                    alertSeverity: 'success',
-                    alertMessage: 'Login successful!',
-                    alertAnimation: {
-                        entranceAnimation: 'animate__fadeInRight animate__faster',
-                        exitAnimation: 'animate__fadeOutRight animate__faster',
-                        isEntering: true,
-                    }
-                }));
                 dispatch(setNotLoading())
                 clientNavigation('/', 'Home', 'homePage')();
             }
@@ -189,13 +196,10 @@ const Auth: React.FC = () => {
 
     return (
         <Container
-            width="w-full"
-            height="h-full"
-            justifyContent="center"
-            alignItems="center"
+            TwClassName="w-full h-full justify-center items-center"
         >
-            <Container width='w-11/12 md:w-1/3' padding='md' bgColor='bg-white' className='rounded-xl min-h-2/5' flexDirection='col' justifyContent='between'>
-                <Text text={isSignup ? 'Create Account' : 'Login'} size="xl" />
+            <Container TwClassName='w-11/12 md:w-1/3 p-4 bg-white rounded-xl min-h-2/5 flex-col justify-between'>
+                <Text text={isSignup ? 'Create Account' : 'Login'} TwClassName="text-xl" />
 
                 {isSignup && (
                     <>
@@ -205,7 +209,7 @@ const Auth: React.FC = () => {
                             onChange={handleChange('firstName')}
                             error={!!errors.firstName}
                             helperText={errors.firstName}
-                            className='mt-3'
+                            TwClassName='mt-3'
                         />
                         <Input
                             label="Last Name"
@@ -213,7 +217,7 @@ const Auth: React.FC = () => {
                             onChange={handleChange('lastName')}
                             error={!!errors.lastName}
                             helperText={errors.lastName}
-                            className='mt-3'
+                            TwClassName='mt-3'
                         />
                     </>
                 )}
@@ -225,7 +229,7 @@ const Auth: React.FC = () => {
                     onChange={handleChange('email')}
                     error={!!errors.email}
                     helperText={errors.email}
-                    className='mt-3'
+                    TwClassName='mt-3'
                 />
 
                 <Input
@@ -235,10 +239,10 @@ const Auth: React.FC = () => {
                     onChange={handleChange('password')}
                     error={!!errors.password}
                     helperText={errors.password}
-                    className='mt-3'
+                    TwClassName='mt-3'
                     endAdornment={
                         <Icon
-                            className="relative z-50 cursor-pointer"
+                            TwClassName="relative z-50 cursor-pointer"
                             name={showPassword ? 'EyeOff' : 'Eye'}
                             onClick={() => setShowPassword((prev) => !prev)}
                         />
@@ -253,18 +257,16 @@ const Auth: React.FC = () => {
                         onChange={handleChange('confirmPassword')}
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword}
-                        className='mt-3'
+                        TwClassName='mt-3'
                     />
                 )}
 
-                <Button className='mt-3' padding="sm" onClick={handleSubmit}>
+                <Button TwClassName='mt-3 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary' onClick={handleSubmit}>
                     {isSignup ? (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Create Account') : (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Login')}
                 </Button>
 
                 <Button
-                    padding="none"
-                    variant="ghost"
-                    className="text-sm text-blue-600 hover:underline"
+                    TwClassName="text-sm text-black hover:underline"
                     onClick={() => {
                         isSignup
                             ? clientNavigation('/login', 'Auth', 'authenticationPage')()
