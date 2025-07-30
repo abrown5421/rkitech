@@ -23,6 +23,6 @@ export interface TabsState {
   [groupId: string]: string;
 }
 
-export interface ProfileAboutTabProps {
+export interface ProfileTab {
     profileUser: AuthUser;
 }
