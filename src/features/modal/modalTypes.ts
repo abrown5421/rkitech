@@ -1,6 +1,6 @@
 import type { EntranceExitAnimation } from '../../shared/types/animationTypes';
 
-export type ModalContentType = 'confirm' | 'editProfile' | 'editProfilePic' | 'editProfileBanner' | 'form' | null;
+export type ModalContentType = 'confirm' | 'deleteAccount' | 'editProfilePic' | 'editProfileBanner' | 'form' | null;
 
 export interface ModalState {
   modalOpen: boolean;
