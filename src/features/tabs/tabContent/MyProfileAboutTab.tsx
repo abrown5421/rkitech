@@ -7,35 +7,37 @@ import Text from "../../../shared/components/text/Text";
 import Image from "../../../shared/components/image/Image";
 import Input from "../../../shared/components/input/Input";
 import { openAlert } from "../../alert/alertSlice";
-import {
-  setLoading,
-  setNotLoading,
-} from "../../../app/globalSlices/loading/loadingSlice";
+import { setLoading, setNotLoading } from "../../../app/globalSlices/loading/loadingSlice";
 import { setAuthUser } from "../../auth/authUserSlice";
 import type { AuthUser } from "../../auth/authUserTypes";
 import { updateDataInCollection } from "../../../services/database/updateData";
-import {
-  sendEmailChangeVerification,
-  updateUserPassword,
-} from "../../../services/auth/updateAuthProfile";
+import { sendEmailChangeVerification, updateUserPassword } from "../../../services/auth/updateAuthProfile";
 import Button from "../../../shared/components/button/Button";
 import Loader from "../../../shared/components/loader/Loader";
-import {
-  uploadProfileImage,
-} from "../../../services/storage/uploadImage";
+import { uploadProfileImage } from "../../../services/storage/uploadImage";
 import { deleteImageFromStorage } from "../../../services/storage/deleteImage";
 import Icon from "../../../shared/components/icon/Icon";
 
-const EMAIL_REGEX =
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\d{3}-\d{3}-\d{4}$/;
+
+const formatPhoneNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, '');
+  const limitedDigits = digits.slice(0, 10);
+  
+  if (limitedDigits.length <= 3) {
+    return limitedDigits;
+  } else if (limitedDigits.length <= 6) {
+    return `${limitedDigits.slice(0, 3)}-${limitedDigits.slice(3)}`;
+  } else {
+    return `${limitedDigits.slice(0, 3)}-${limitedDigits.slice(3, 6)}-${limitedDigits.slice(6)}`;
+  }
+};
 
 const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
   const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.authUser.user);
   const { loading, id } = useAppSelector((state) => state.loading);
-  const isProfileSaving = loading && id === "profileSave";
-  const isProfileRestoring = loading && id === "profileRestore";
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
@@ -56,18 +58,14 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
     selectedFile: null as File | null,
   });
 
-  const [previewURL, setPreviewURL] = useState<string | null>(
-    authUser?.profileImage || null
-  );
-
+  const [previewURL, setPreviewURL] = useState<string | null>(authUser?.profileImage || null);
   const [isDragging, setIsDragging] = useState(false);
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const isProfileSaving = loading && id === "profileSave";
+  const isProfileRestoring = loading && id === "profileRestore";
   const emailChanged = form.email !== profileUser.email;
-  const nameChanged =
-    form.firstName !== profileUser.firstName ||
-    form.lastName !== profileUser.lastName;
+  const nameChanged = form.firstName !== profileUser.firstName || form.lastName !== profileUser.lastName;
 
   useEffect(() => {
     if (authUser?.profileImage && !form.selectedFile) {
@@ -75,8 +73,26 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
     }
   }, [authUser?.profileImage, form.selectedFile]);
 
+  const showAlert = (severity: "success" | "error", message: string) => {
+    dispatch(openAlert({
+      alertOpen: true,
+      alertSeverity: severity,
+      alertMessage: message,
+      alertAnimation: {
+        entranceAnimation: "animate__fadeInRight animate__faster",
+        exitAnimation: "animate__fadeOutRight animate__faster",
+        isEntering: true,
+      },
+    }));
+  };
+
   const handleInputChange = (key: keyof typeof form, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    let processedValue = value;
+    if (key === 'phone') {
+      processedValue = formatPhoneNumber(value);
+    }
+    
+    setForm((prev) => ({ ...prev, [key]: processedValue }));
     setErrors((prev) => {
       const newErrors = { ...prev };
       delete newErrors[key];
@@ -98,17 +114,14 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith("image/")) handleFileSelect(file);
   };
 
   const validateFields = () => {
     const newErrors: Record<string, string> = {};
-
-    if (!form.firstName.trim()) {
-      newErrors.firstName = "First name is required.";
-    }
+    
+    if (!form.firstName.trim()) newErrors.firstName = "First name is required.";
     if (!form.email.trim()) {
       newErrors.email = "Email is required.";
     } else if (!EMAIL_REGEX.test(form.email.trim())) {
@@ -122,87 +135,38 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  function validatePasswordFields() {
+  const validatePasswordFields = () => {
     if (!form.oldPassword || !form.newPassword || !form.confirmNewPassword) {
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Please fill out all password fields.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      showAlert("error", "Please fill out all password fields.");
       return false;
     }
     if (form.newPassword !== form.confirmNewPassword) {
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "New password and confirmation do not match.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      showAlert("error", "New password and confirmation do not match.");
       return false;
     }
     return true;
-  }
+  };
 
   const handleDeleteProfilePicture = async () => {
     if (!authUser?.userId || !authUser.profileImage) return;
 
     dispatch(setLoading({ loading: true, id: "profilePicDeleting" }));
-
     try {
       await deleteImageFromStorage(authUser.profileImage);
-      await updateDataInCollection("Users", authUser.userId, {
-        profileImage: "",
-      });
-
+      await updateDataInCollection("Users", authUser.userId, { profileImage: "" });
+      
       setPreviewURL(null);
-      handleInputChange("selectedFile",null);
-
+      handleInputChange("selectedFile", null);
       dispatch(setNotLoading());
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage: "Profile Picture has been deleted.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      showAlert("success", "Profile Picture has been deleted.");
     } catch (error) {
       console.error(error);
       dispatch(setNotLoading());
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Failed to delete Profile Picture.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      showAlert("error", "Failed to delete Profile Picture.");
     }
   };
 
-  const handleRestore = () => {
-    dispatch(setLoading({ loading: true, id: "profileRestore" }));
+  const resetForm = () => {
     setForm({
       firstName: profileUser.firstName || "",
       lastName: profileUser.lastName || "",
@@ -218,35 +182,26 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
       oldPassword: "",
       newPassword: "",
       confirmNewPassword: "",
-      selectedFile: null as File | null,
+      selectedFile: null,
     });
-
-    handleInputChange("selectedFile",null);
     setPreviewURL(authUser?.profileImage || null);
     setErrors({});
+  };
+
+  const handleRestore = () => {
+    dispatch(setLoading({ loading: true, id: "profileRestore" }));
+    resetForm();
     dispatch(setNotLoading());
   };
 
   const handleSave = async () => {
     if (!validateFields()) {
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage:
-            "Please fix the errors before saving your profile.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      showAlert("error", "Please fix the errors before saving your profile.");
       return;
     }
 
     dispatch(setLoading({ loading: true, id: "profileSave" }));
-
+    
     try {
       const firestoreUpdate: Partial<AuthUser> = {
         firstName: form.firstName,
@@ -270,22 +225,12 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
         if (authUser.profileImage) {
           await deleteImageFromStorage(authUser.profileImage);
         }
-
-        const imageUrl = await uploadProfileImage(
-          form.selectedFile,
-          authUser.userId,
-          "profileImages"
-        );
-
+        const imageUrl = await uploadProfileImage(form.selectedFile, authUser.userId, "profileImages");
         firestoreUpdate.profileImage = imageUrl;
         setPreviewURL(imageUrl);
       }
 
-      await updateDataInCollection(
-        "Users",
-        profileUser.userId ?? "",
-        firestoreUpdate
-      );
+      await updateDataInCollection("Users", profileUser.userId ?? "", firestoreUpdate);
 
       if (form.oldPassword || form.newPassword || form.confirmNewPassword) {
         if (!validatePasswordFields()) {
@@ -295,62 +240,29 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
         await updateUserPassword(form.oldPassword, form.newPassword);
       }
 
-      const updatedUser: AuthUser = {
-        ...authUser!,
-        ...firestoreUpdate,
-        userId: profileUser.userId,
-      };
-
+      const updatedUser: AuthUser = { ...authUser!, ...firestoreUpdate, userId: profileUser.userId };
       dispatch(setAuthUser(updatedUser));
 
-      let alertMessage = "Account update was successful!";
+      let message = "Account update was successful!";
       if (emailChanged && nameChanged) {
-        alertMessage =
-          "Name updated and verification email sent to your new address.";
+        message = "Name updated and verification email sent to your new address.";
       } else if (emailChanged) {
-        alertMessage =
-          "A verification email has been sent to your new email address. Please verify to complete the update.";
+        message = "A verification email has been sent to your new email address. Please verify to complete the update.";
       } else if (nameChanged) {
-        alertMessage = "Name updated successfully!";
+        message = "Name updated successfully!";
       }
+      if (form.selectedFile) message += " Profile picture updated.";
 
-      if (form.selectedFile) {
-        alertMessage += " Profile picture updated.";
-      }
-
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage,
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
+      showAlert("success", message);
+      
+      ["selectedFile", "password", "oldPassword", "newPassword", "confirmNewPassword"].forEach(field => 
+        handleInputChange(field as keyof typeof form, field === "selectedFile" ? null : "")
       );
-
-      handleInputChange("selectedFile", null);
-      handleInputChange("password", "")
-      handleInputChange("oldPassword", "")
-      handleInputChange("newPassword", "")
-      handleInputChange("confirmNewPassword", "")
+      
       dispatch(setNotLoading());
     } catch (error) {
       console.error(error);
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Account update failed.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      showAlert("error", "Account update failed.");
       dispatch(setNotLoading());
     }
   };
@@ -360,25 +272,15 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
       <Container TwClassName="flex-row gap-5 justify-between">
         <Container TwClassName="flex-col flex-3">
           <div
-            className={`border-2 ${
-              isDragging
-                ? "border-primary bg-blue-50"
-                : "border-dashed border-gray-400"
-            } rounded-lg p-4 flex items-center justify-center cursor-pointer relative h-60 transition-colors`}
+            className={`border-2 ${isDragging ? "border-primary bg-blue-50" : "border-dashed border-gray-400"} rounded-lg p-4 flex items-center justify-center cursor-pointer relative h-60 transition-colors`}
             onClick={() => fileInputRef.current?.click()}
             onDrop={handleDrop}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDragging(true);
-            }}
+            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
           >
             {authUser?.profileImage && (
               <Container
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteProfilePicture();
-                }}
+                onClick={(e) => { e.stopPropagation(); handleDeleteProfilePicture(); }}
                 TwClassName="absolute top-2 right-2 cursor-pointer z-50 text-error hover:text-error-hover"
               >
                 <Icon name="Trash" />
@@ -387,30 +289,17 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
             {!previewURL ? (
               <Container TwClassName="flex flex-col items-center text-gray-500">
                 <Icon name="Camera" TwClassName="w-10 h-10 mb-2" />
-
                 <span className="text-sm">Click or drag image to upload</span>
               </Container>
             ) : (
-              <Image
-                src={previewURL}
-                alt="Preview"
-                TwClassName="absolute inset-0 w-full h-full object-contain rounded-lg"
-              />
+              <Image src={previewURL} alt="Preview" TwClassName="absolute inset-0 w-full h-full object-contain rounded-lg" />
             )}
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
           </div>
         </Container>
+        
         <Container TwClassName="flex-col flex-8 gap-5">
-          <Text
-            TwClassName="text-black text-xl font-bold"
-            text="Personal Information"
-          />
+          <Text TwClassName="text-black text-xl font-bold" text="Personal Information" />
           <Container TwClassName="flex-row justify-between gap-5">
             <Container TwClassName="flex-col flex-1">
               <Input
@@ -429,7 +318,6 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
               />
             </Container>
           </Container>
-
           <Input
             label="Bio"
             value={form.bio}
@@ -439,12 +327,10 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
           />
         </Container>
       </Container>
+
       <Container TwClassName="flex-row gap-5 justify-between">
         <Container TwClassName="flex-col flex-8 gap-5 mt-5">
-          <Text
-            TwClassName="text-black text-xl font-bold"
-            text="Contact Information"
-          />
+          <Text TwClassName="text-black text-xl font-bold" text="Contact Information" />
           <Input
             label="Phone"
             value={form.phone}
@@ -498,7 +384,6 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
             helperText={errors.email}
             onChange={(e) => handleInputChange("email", e.target.value)}
           />
-
           {emailChanged && (
             <Input
               label="Current Password"
@@ -510,12 +395,10 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
           )}
         </Container>
       </Container>
+
       <Container TwClassName="flex-row gap-5 justify-between">
         <Container TwClassName="flex-col flex-8 gap-5 mt-5">
-          <Text
-            TwClassName="text-black text-xl font-bold"
-            text="Account Information"
-          />
+          <Text TwClassName="text-black text-xl font-bold" text="Account Information" />
           <Container TwClassName="flex-col gap-4">
             <Input
               label="Old Password"
@@ -541,28 +424,21 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
           </Container>
         </Container>
       </Container>
+
       <Container TwClassName="flex-row gap-5 mt-5 justify-end">
         <Button
           TwClassName="p-2 bg-gray-300 rounded-xl text-black border-1 min-w-[150px] border-gray-300 hover:bg-transparent hover:text-gray-300"
           onClick={handleRestore}
           disabled={isProfileRestoring}
         >
-          {isProfileRestoring ? (
-            <Loader variant="spinner" color="bg-primary" />
-          ) : (
-            "Restore Changes"
-          )}
+          {isProfileRestoring ? <Loader variant="spinner" color="bg-primary" /> : "Restore Changes"}
         </Button>
         <Button
           TwClassName="p-2 bg-primary rounded-xl text-white border-1 min-w-[150px] border-primary hover:bg-transparent hover:text-primary"
           onClick={handleSave}
           disabled={isProfileSaving || (emailChanged && !form.password)}
         >
-          {isProfileSaving ? (
-            <Loader variant="spinner" color="bg-primary" />
-          ) : (
-            "Save Changes"
-          )}
+          {isProfileSaving ? <Loader variant="spinner" color="bg-primary" /> : "Save Changes"}
         </Button>
       </Container>
     </>
