@@ -19,6 +19,7 @@ import type { TabItem } from '../tabs/tabTypes';
 import MyProfileAboutTab from '../tabs/tabContent/MyProfileAboutTab';
 import ProfileFriendTab from '../tabs/tabContent/ProfileFriendTab';
 import { TheirProfileAboutTab } from '../tabs/tabContent/TheirProfileAboutTab';
+import ProfileSettingsTab from '../tabs/tabContent/ProfileSettingsTab';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -27,6 +28,7 @@ const Profile: React.FC = () => {
   const authUser = useAppSelector((state) => state.authUser.user);
   const isProfileLoading = loading && id === 'profile';
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
+  const ownedProfile = authUser?.userId === userIdFromUrl;
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -34,7 +36,7 @@ const Profile: React.FC = () => {
 
       try {
         dispatch(setLoading({ loading: true, id: 'profile' }));
-        if (authUser?.userId === userIdFromUrl) {
+        if (ownedProfile) {
           setProfileUser(authUser)
         } else {
           const data = await getDocumentById('Users', userIdFromUrl);
@@ -85,15 +87,20 @@ const Profile: React.FC = () => {
 
   const tabData: TabItem[] = [
     {
-      id: 'about',
-      label: 'About',
-      content: profileUser && (profileUser.userId === authUser?.userId ? <MyProfileAboutTab profileUser={profileUser} /> : <TheirProfileAboutTab profileUser={profileUser} />),
-    },
-    {
       id: 'friends',
       label: 'Friends',
       content: <ProfileFriendTab />,
-    }
+    },
+    {
+      id: 'about',
+      label: ownedProfile ? 'Profile' : 'About',
+      content: profileUser && (profileUser.userId === authUser?.userId ? <MyProfileAboutTab profileUser={profileUser} /> : <TheirProfileAboutTab profileUser={profileUser} />),
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      content: <ProfileSettingsTab />,
+    }    
   ];
   
   return (
