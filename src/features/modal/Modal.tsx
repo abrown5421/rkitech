@@ -6,7 +6,6 @@ import { closeModal, preCloseModal } from './modalSlice';
 import Icon from '../../shared/components/icon/Icon';
 import Text from '../../shared/components/text/Text';
 import ConfirmModalContent from './modals/ConfirmModalContent';
-import EditProfileModalContent from './modals/EditProfileModalContent';
 import ProfilePictureModalContent from './modals/ProfilePictureModalContent';
 import ProfileBannerModalContent from './modals/ProfileBannerModalContent';
 
