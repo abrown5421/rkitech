@@ -96,7 +96,7 @@ const Profile: React.FC = () => {
   ];
   
   return (
-    <Container TwClassName="h-full w-full flex-col">
+    <Container TwClassName='min-h-[calc(100vh-50px)] w-full flex-col'>
       {isProfileLoading ? (
         <Container TwClassName="h-full w-full flex-col justify-center items-center">
           <Loader variant="spinner" color="bg-primary" />
