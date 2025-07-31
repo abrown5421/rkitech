@@ -49,9 +49,7 @@ export async function deleteAuthenticatedAccount(currentPassword: string, UID: s
   try {
     const credential = EmailAuthProvider.credential(user.email, currentPassword);
     await reauthenticateWithCredential(user, credential);
-    console.log(UID)
     const userDocument = await getDocumentById('Users', UID);
-    console.log(userDocument)
     const profileImageUrl = userDocument?.profileImage;
     if (profileImageUrl) {
       const profilePath = getStoragePathFromUrl(profileImageUrl);
