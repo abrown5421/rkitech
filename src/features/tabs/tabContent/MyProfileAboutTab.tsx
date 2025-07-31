@@ -281,7 +281,7 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
             {authUser?.profileImage && (
               <Container
                 onClick={(e) => { e.stopPropagation(); handleDeleteProfilePicture(); }}
-                TwClassName="absolute top-2 right-2 cursor-pointer z-50 text-error hover:text-error-hover"
+                TwClassName="absolute top-2 right-2 cursor-pointer z-50 rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2"
               >
                 <Icon name="Trash" />
               </Container>
