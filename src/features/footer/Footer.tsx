@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Button from '../../shared/components/button/Button';
 import { preCloseDrawer } from '../drawer/drawerSlice';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
+import Image from '../../shared/components/image/Image';
 
 const Footer: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -21,7 +22,13 @@ const Footer: React.FC = () => {
         <Container
             TwClassName='flex-col justify-between items-start bg-white relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]'
         >
-            <Container TwClassName='flex-row gap-5'>
+            <Container
+                TwClassName="items-center block md:hidden"
+            >
+                <Image src="../../../public/assets/images/logo.png" height={50} alt="Rkitech" />
+                <Text text="Rkitech" TwClassName="text-xl font-primary text-black" />
+            </Container>
+            <Container TwClassName='w-full items-start flex-col md:flex-row gap-0 md:gap-5'>
                 {primaryMenu?.menuItems
                     ?.slice()
                     .sort((a, b) => a.itemOrder - b.itemOrder)
@@ -32,7 +39,7 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemId}
-                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
+                                    TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
                                     onClick={() => {
                                         dispatch(preCloseDrawer());
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
@@ -45,7 +52,7 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemName}
-                                    TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
+                                    TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 text-black hover:text-primary`}
                                     cursor="pointer"
                                     onClick={() => window.open(menuItem.itemLink, '_blank')}
                                 >
@@ -54,8 +61,9 @@ const Footer: React.FC = () => {
                             );
                         }
                 })}
+                
             </Container>
-            <Container TwClassName='flex-row gap-2'>
+            <Container TwClassName='w-full items-center flex-col md:flex-row gap-0 md:gap-2'>
                 <Text
                     text={`© ${currentYear} Rkitech. All rights reserved.`}
                     TwClassName="mt-4 text-sm text-gray-500"
@@ -70,13 +78,13 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemId}
-                                    TwClassName={`pt-4 pr-0 pb-3 pl-0 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
+                                    TwClassName={`p-2 md:pt-4 md:pr-0 md:pb-3 md:pl-0 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
                                     onClick={() => {
                                         dispatch(preCloseDrawer());
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
                                     }}
                                 >
-                                    <span className="text-gray-400 pt-0 pr-3 pb-0 pl-0">|</span>
+                                    <span className="text-gray-400 pt-0 pr-3 pb-0 pl-0 hidden md:block">|</span>
                                    {menuItem.itemName}
                                 </Button>
                             );
