@@ -116,7 +116,7 @@ const Profile: React.FC = () => {
           <Loader variant="spinner" color="bg-primary" />
         </Container>
       ) : profileUser ? (
-        <>
+        <Container TwClassName='relative flex-col'>
           <TrianglifyBanner
             xColors={profileUser.trianglifyObject.xColors}
             yColors={profileUser.trianglifyObject.yColors}
@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
             auxImage={profileUser.trianglifyObject.auxImage}
           />
           {userIdFromUrl === authUser?.userId && (
-            <Container TwClassName='absolute top-[245px] right-[5px]'>
+            <Container TwClassName='absolute top-[200px] right-[5px]'>
               <Button
                 cursor='pointer' 
                 TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
@@ -218,7 +218,7 @@ const Profile: React.FC = () => {
               />
             </Container>
           </Container>
-        </>
+        </Container>
       ) : (
         <Container
           TwClassName="flex-col h-full w-full justify-center items-center"
