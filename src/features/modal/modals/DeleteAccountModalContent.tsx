@@ -9,9 +9,12 @@ import Input from '../../../shared/components/input/Input';
 import { deleteAuthenticatedAccount } from '../../../services/auth/updateAuthProfile';
 import { setLoading, setNotLoading } from '../../../app/globalSlices/loading/loadingSlice';
 import { openAlert } from '../../alert/alertSlice';
+import { useNavigationHook } from '../../../hooks/useNavigationHook';
 
 const DeleteAccountModalContent: React.FC = () => {
   const dispatch = useAppDispatch();
+  const clientNavigation = useNavigationHook();
+  const authUser = useAppSelector((state) => state.authUser.user);
   const { loading, id } = useAppSelector((state) => state.loading);
   const isProfilePicDeleting = loading && id === 'profileDeletion';
 
@@ -35,7 +38,22 @@ const DeleteAccountModalContent: React.FC = () => {
     dispatch(setLoading({ loading: true, id: 'profileDeletion' }));
 
     try {
-      await deleteAuthenticatedAccount(password.input);
+      if (!authUser?.userId) {
+        dispatch(setNotLoading());
+        dispatch(openAlert({
+            alertOpen: true,
+            alertSeverity: 'error',
+            alertMessage: 'Unable to delete account. User ID is missing.',
+            alertAnimation: {
+            entranceAnimation: 'animate__fadeInRight animate__faster',
+            exitAnimation: 'animate__fadeOutRight animate__faster',
+            isEntering: true,
+            },
+        }));
+
+        return;
+    }
+    await deleteAuthenticatedAccount(password.input, authUser.userId);
 
       dispatch(openAlert({
         alertOpen: true,
@@ -73,7 +91,8 @@ const DeleteAccountModalContent: React.FC = () => {
       }));
     } finally {
       dispatch(setNotLoading());
-      dispatch(preCloseModal())
+      dispatch(preCloseModal());
+      clientNavigation('/', 'Home', 'homePage')();
     }
   };
 
