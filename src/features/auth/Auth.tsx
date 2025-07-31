@@ -126,22 +126,6 @@ const Auth: React.FC = () => {
                 
                 Cookies.set('authUser', JSON.stringify({
                     userId: result.userId,
-                    email: formValues.email,
-                    firstName: formValues.firstName,
-                    lastName: formValues.lastName,
-                    profileImage: '',
-                    userRole: 'User',
-                    createdAt: new Date().toISOString(),
-                    trianglifyObject: randomizedTrianglifyBanner,
-                    friends: [],
-                    bio: '',
-                    gender: undefined,
-                    phone: '',
-                    addressLn1: '',
-                    addressLn2: '',
-                    addressCity: '',
-                    addressState: '',
-                    addressPostCode: ''
                 }), { expires: 1 });
 
                 dispatch(openAlert({
@@ -171,11 +155,11 @@ const Auth: React.FC = () => {
                     email: result.email,
                     firstName: result.firstName,
                     lastName: result.lastName,
-                    profileImage: '',
-                    userRole: 'User',
-                    createdAt: new Date().toISOString(),
+                    profileImage: result.profileImage,
+                    userRole: result.userRole,
+                    createdAt: result.createdAt,
                     trianglifyObject: result.trianglifyObject,
-                    friends: [],
+                    friends: result.friends,
                     bio: result.bio,
                     gender: result.gender,
                     phone: result.phone,
@@ -188,22 +172,6 @@ const Auth: React.FC = () => {
 
                 Cookies.set('authUser', JSON.stringify({
                     userId: result.userId,
-                    email: result.email,
-                    firstName: result.firstName,
-                    lastName: result.lastName,
-                    profileImage: '',
-                    userRole: 'User',
-                    createdAt: new Date().toISOString(),
-                    trianglifyObject: result.trianglifyObject,
-                    friends: [],
-                    bio: result.bio,
-                    gender: result.gender,
-                    phone: result.phone,
-                    addressLn1: result.addressLn1,
-                    addressLn2: result.addressLn2,
-                    addressCity: result.addressCity,
-                    addressState: result.addressState,
-                    addressPostCode: result.addressPostCode
                 }), { expires: 1 });
 
                 dispatch(setNotLoading())
