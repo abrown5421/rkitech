@@ -7,7 +7,7 @@ import Loader from "../../../shared/components/loader/Loader";
 import { openModal } from "../../modal/modalSlice";
 import { setLoading } from "../../../app/globalSlices/loading/loadingSlice";
 
-const MyProfileAboutTab: React.FC = () => {
+const ProfileSettingsTab: React.FC = () => {
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
   const isAccountDisabling = loading && id === "profileDisable";
@@ -21,7 +21,13 @@ const MyProfileAboutTab: React.FC = () => {
     }));
   };
   
-  const handleAccountDisable = async () => {}
+  const handleAccountDisable = async () => {
+    dispatch(setLoading({ loading: true, id: "profileDisable" }));
+    dispatch(openModal({
+        title: "",
+        modalType: "disableAccount",
+    }));
+  }
 
   return (
     <Container TwClassName="flex-col gap-5 mt-5 justify-end border-1 border-error bg-error-faded ring-error rounded-xl pt-4 pr-2 pb-4 pl-2">
@@ -60,4 +66,4 @@ const MyProfileAboutTab: React.FC = () => {
   );
 };
 
-export default MyProfileAboutTab;
+export default ProfileSettingsTab;
