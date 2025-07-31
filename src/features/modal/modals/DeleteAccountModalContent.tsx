@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Cookies from 'js-cookie';
 import Container from '../../../shared/components/container/Container';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import Button from '../../../shared/components/button/Button';
@@ -90,6 +91,7 @@ const DeleteAccountModalContent: React.FC = () => {
         },
       }));
     } finally {
+      Cookies.remove('authUser');
       dispatch(setNotLoading());
       dispatch(preCloseModal());
       clientNavigation('/', 'Home', 'homePage')();
