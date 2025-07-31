@@ -1,39 +1,46 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { DrawerState } from './drawerTypes';
+import type { DrawerState, DrawerContentType } from './drawerTypes';
+import type { EntranceExitAnimation } from '../../shared/types/animationTypes';
 
 const initialState: DrawerState = {
   drawerOpen: false,
   drawertitle: '',
-  draweranchor: 'right', 
+  draweranchor: 'right',
   draweranimation: {
     entranceAnimation: 'animate__fadeInRight animate__faster',
     exitAnimation: 'animate__fadeOutRight animate__faster',
     isEntering: false,
   },
-  drawerchildren: null,
+  drawerContentType: null,
 };
 
 const drawerSlice = createSlice({
   name: 'drawer',
   initialState,
   reducers: {
-    openDrawer: (state, action: PayloadAction<DrawerState>) => {
+    openDrawer: (
+      state,
+      action: PayloadAction<{
+        title?: string;
+        anchor?: 'left' | 'right' | 'top' | 'bottom';
+        animation?: EntranceExitAnimation;
+        contentType: DrawerContentType;
+      }>
+    ) => {
       state.drawerOpen = true;
-      state.drawertitle = action.payload.drawertitle;
-      state.draweranchor = action.payload.draweranchor ?? 'right';
-      state.drawerchildren = action.payload.drawerchildren ?? null;
-      state.draweranimation = action.payload.draweranimation;
+      state.drawertitle = action.payload.title || '';
+      state.draweranchor = action.payload.anchor ?? 'right';
+      state.draweranimation = action.payload.animation || initialState.draweranimation;
+      state.draweranimation.isEntering = true;
+      state.drawerContentType = action.payload.contentType;
     },
     preCloseDrawer: (state) => {
       state.draweranimation.isEntering = false;
     },
-    closeDrawer: () => {
-      return initialState;
-    },
+    closeDrawer: () => initialState,
   },
 });
-
 
 export const { openDrawer, preCloseDrawer, closeDrawer } = drawerSlice.actions;
 export default drawerSlice.reducer;
