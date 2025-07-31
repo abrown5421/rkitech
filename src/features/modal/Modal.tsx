@@ -9,6 +9,7 @@ import ConfirmModalContent from './modals/ConfirmModalContent';
 import ProfilePictureModalContent from './modals/ProfilePictureModalContent';
 import ProfileBannerModalContent from './modals/ProfileBannerModalContent';
 import DeleteAccountModalContent from './modals/DeleteAccountModalContent';
+import DisableAccountModalContent from './modals/DisableAccountModalContent';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -57,6 +58,8 @@ const Modal: React.FC = () => {
         )
       case 'deleteAccount':
         return <DeleteAccountModalContent />;
+      case 'disableAccount':
+        return <DisableAccountModalContent />;
       default:
         return null;
     }
