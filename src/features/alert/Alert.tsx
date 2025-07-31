@@ -48,9 +48,7 @@ const Alert: React.FC = () => {
 
   return (
     <Container
-      padding="md"
-      bgColor={bg}
-      className={`border-l-4 md:w-1/4 w-3/4  absolute bottom-3 right-3 ${text} ${border}`}
+      TwClassName={`p-4 border-l-4 md:w-1/4 w-3/4  absolute bottom-3 right-3 ${text} ${border} ${bg}`}
       animation={{
         entranceExit: {
           entranceAnimation: alert.alertAnimation.entranceAnimation,
@@ -62,7 +60,7 @@ const Alert: React.FC = () => {
       <Icon
         name="X"
         cursor="pointer"
-        className="absolute top-4 right-4"
+        TwClassName="absolute top-4 right-4"
         onClick={handleClose}
       />
       {alert.alertMessage}
