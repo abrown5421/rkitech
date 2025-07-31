@@ -147,6 +147,10 @@ const Auth: React.FC = () => {
 
                 if (!result) throw new Error('Login failed');
 
+                if (result.userRole === 'Disabled') {
+                    throw new Error('This account has been disabled. Please contact an administrator.');
+                }
+                
                 dispatch(setAuthUser({
                     userId: result.userId,
                     email: result.email,
