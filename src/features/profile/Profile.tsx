@@ -203,7 +203,7 @@ const Profile: React.FC = () => {
                     TwClassName="text-md text-black mt-3"
                   />
                 )}   
-                {profileUser && <FriendProfileModule profileUser={profileUser} /> }
+                {profileUser && <FriendProfileModule profileUser={profileUser} />}
                 
               </Container>
             </Container>
