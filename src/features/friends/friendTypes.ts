@@ -1,14 +1,16 @@
-import type { AuthUser } from "../auth/authUserTypes";
-
-export interface FriendMap {
-    friends: boolean,
-    requester: string,
-    requestee: string,
-    seen: boolean,
-    friendAvi: string,
-    friendId: string,
+export interface Friend {
+  id: string; 
+  requesterId: string;
+  requesteeId: string;
+  status: string;
+  seenByRequestee: boolean
+  createdAt: string;
+  acceptedAt: string;
 }
 
-export interface FriendProfileModuleProps {
-  profileUser: AuthUser;
+export interface FriendState {
+  friends: Friend[];
+  requests: Friend[];
+  sentRequests: Friend[];
 }
+
