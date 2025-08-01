@@ -18,7 +18,6 @@ const Navbar: React.FC = () => {
   const menus = useAppSelector((state) => state.menus);
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
   const isLoginHidden = activePage === 'Auth';
-  const unseenFriendRequests = authUser.user?.friends?.filter(friend => friend.seen === false).length || 0;
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -143,11 +142,7 @@ const Navbar: React.FC = () => {
                 </Container>
               )}
 
-              {unseenFriendRequests > 0 && (
-                <div className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] min-w-[16px] h-[16px] px-[4px] rounded-full flex items-center justify-center">
-                  {unseenFriendRequests}
-                </div>
-              )}
+              
             </div>
           </Button>
         ) : (
@@ -189,11 +184,6 @@ const Navbar: React.FC = () => {
               </Container>
             )}
             
-            {unseenFriendRequests > 0 && (
-              <div className="absolute top-0.5 right-2.5 bg-error text-white text-[10px] min-w-[16px] h-[16px] px-[4px] rounded-full flex items-center justify-center">
-                {unseenFriendRequests}
-              </div>
-            )}
           </Button>
         ) : (
           <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
