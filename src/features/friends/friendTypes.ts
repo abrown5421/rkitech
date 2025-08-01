@@ -1,3 +1,5 @@
+import type { AuthUser } from "../auth/authUserTypes";
+
 export interface Friend {
   id: string; 
   requesterId: string;
@@ -14,3 +16,6 @@ export interface FriendState {
   sentRequests: Friend[];
 }
 
+export interface FriendProfileModuleState {
+  profileUser: AuthUser
+}
