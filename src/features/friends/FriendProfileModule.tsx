@@ -10,12 +10,17 @@ import { setLoading, setNotLoading } from "../../app/globalSlices/loading/loadin
 import { openAlert } from "../alert/alertSlice";
 import Text from "../../shared/components/text/Text";
 import { format } from "date-fns";
-import type { FriendProfileModuleState } from "./friendTypes";
+import type { Friend, FriendProfileModuleState } from "./friendTypes";
 import { deleteDocument } from "../../services/database/deleteData";
 import { updateDataInCollection } from "../../services/database/updateData";
+import { getDocumentById } from "../../services/database/readData";
+import Image from "../../shared/components/image/Image";
+import type { AuthUser } from "../auth/authUserTypes";
+import { useNavigationHook } from "../../hooks/useNavigationHook";
 
 const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) => { 
   const dispatch = useAppDispatch();
+  const clientNavigation = useNavigationHook();
   const { userIdFromUrl } = useParams();
   const authUser = useAppSelector((state) => state.authUser.user);
   const friends = useAppSelector((state) => state.friends);
@@ -23,6 +28,42 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
   const [ownedProfile, setOwnedProfile] = useState<boolean>(true);
   const friendRemoval = loading && id === 'addFriend';
   const friendAddition = loading && id === 'remFriend';
+  const [randomFriends, setRandomFriends] = useState<AuthUser[]>([])
+
+  function getRandomFriendIds(
+    friends: Friend[],
+    count: number = 5
+  ): string[] {
+    const friendIds = friends.map((f) =>
+      f.requesterId === authUser?.userId ? f.requesteeId : f.requesterId
+    );
+    const shuffled = [...friendIds].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }
+
+  useEffect(() => {
+    async function fetchRandomFriends() {
+      const fiveFriendIds = getRandomFriendIds(friends.friends, 5);
+  
+      try {
+        const friendDocs = await Promise.all(
+          fiveFriendIds.map((id) => getDocumentById("Users", id))
+        );
+        
+        const validFriends = friendDocs.filter((doc): doc is AuthUser => Boolean(doc));
+        
+        setRandomFriends(validFriends);
+      } catch (err) {
+        console.error("Error fetching random friends:", err);
+      }
+    }
+  
+    if (friends.friends.length) {
+      fetchRandomFriends();
+    }
+  }, [friends.friends]);
+
+  useEffect(()=>{console.log(randomFriends)}, [randomFriends])
 
   useEffect(()=>{
     if (authUser?.userId === userIdFromUrl) {
@@ -280,7 +321,44 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
             </Container>
           }
         </Container>
-      ) : 'friend list'}
+      ) : (
+        <Container TwClassName="flex-col">
+          <Text
+            text={
+              friends.friends.length >= 0
+                ? `${friends.friends.length === 1 ? "1 Friend:" : friends.friends.length + " Friends:"}`
+                : "Friends:"
+            }
+            TwClassName="text-black text-xl font-bold mt-5"
+          />
+          <Container TwClassName="flex-row">
+            {randomFriends.map((friend) => (
+              <Container onClick={() => clientNavigation(`/profile/${friend.userId}`, 'Profile', '')()}>
+                {friend.profileImage ? (
+                  <Image
+                    key={friend.userId}
+                    src={friend.profileImage}
+                    alt="User Avatar"
+                    width={28}
+                    height={28}
+                    TwClassName="-ml-1.5 rounded-full border border-gray-300 cursor-pointer object-cover border-3 border-white"
+                  />
+                ) : (
+                  <Container
+                    key={friend.userId}
+                    TwClassName="-ml-1.5 rounded-full w-7 h-7 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
+                  >
+                    <Text
+                      TwClassName="text-white w-full text-xs font-semibold leading-[2.5rem] text-center"
+                      text={`${friend.firstName?.[0] || ''}${friend.lastName?.[0] || ''}`.toUpperCase()}
+                    />
+                  </Container>
+                )}
+              </Container>
+            ))}
+          </Container>
+        </Container>
+      )}
     </Container>
   );
 };
