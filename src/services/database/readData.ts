@@ -89,7 +89,7 @@ export async function searchUsers(input: string): Promise<AuthUser[]> {
     if (matches) {
       results.push({ userId: doc.id, ...rest });
     }
-  });
+  }); 
 
   return results;
 }
