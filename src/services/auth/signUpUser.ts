@@ -25,7 +25,8 @@ export async function signUpUser(
       userRole: 'User',
       createdAt,
       profileImage,
-      trianglifyObject
+      trianglifyObject,
+      friends: []
     });
 
     return {
@@ -36,7 +37,8 @@ export async function signUpUser(
       userRole: 'User',
       createdAt,
       profileImage,
-      trianglifyObject
+      trianglifyObject,
+      friends: []
     };
   } catch (error) {
     console.error('Signup failed:', error);

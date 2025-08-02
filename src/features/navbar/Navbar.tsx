@@ -1,5 +1,4 @@
-
-import React, { type JSX } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../../shared/components/container/Container';
 import Text from '../../shared/components/text/Text';
 import Button from '../../shared/components/button/Button';
@@ -7,261 +6,194 @@ import Image from '../../shared/components/image/Image';
 import { useNavigationHook } from '../../hooks/useNavigationHook';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openDrawer, preCloseDrawer } from '../drawer/drawerSlice';
-import Cookies from 'js-cookie';
-import { clearAuthUser } from '../auth/authUserSlice';
 import { getTimeOfDay } from '../../shared/utils/getTimeOfDay';
-import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
-import Loader from '../../shared/components/loader/Loader';
 import Icon from '../../shared/components/icon/Icon';
 
 const Navbar: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const clientNavigation = useNavigationHook();
-    const authUser = useAppSelector((state) => state.authUser);
-    const pages = useAppSelector((state) => state.pages.pages);
-    const menus = useAppSelector((state) => state.menus);
-    const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
-    const profileMenu = menus.menus.find((menu) => menu.menuName === 'Profile Menu');
-    const { loading, id } = useAppSelector((state) => state.loading);
-    const isLoading = loading && id === 'logoutButton';
+  const dispatch = useAppDispatch();
+  const clientNavigation = useNavigationHook();
+  const authUser = useAppSelector((state) => state.authUser);
+  const pages = useAppSelector((state) => state.pages.pages);
+  const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
+  const menus = useAppSelector((state) => state.menus);
+  const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
+  const isLoginHidden = activePage === 'Auth';
+  const [mounted, setMounted] = useState<boolean>(false);
 
-    const renderMenuItems = (menuItems: any[]) =>
-        menuItems
-            ?.slice()
-            .sort((a, b) => a.itemOrder - b.itemOrder)
-            .map((menuItem) => {
-                if (menuItem.itemType === 'page') {
-                    const page = pages.find((p) => p.pageID === menuItem.itemId);
-                    if (!page) return null;
-                    return (
-                        <Button
-                            key={menuItem.itemId}
-                            className="pt-3 pr-0 pb-3 pl-0"
-                            variant="ghost"
-                            cursor="pointer"
-                            onClick={() => {
-                                dispatch(preCloseDrawer());
-                                setTimeout(() => {
-                                    let targetPath = page.pagePath;
-                                        
-                                    if (page.pageName === 'Profile') {
-                                        const userId = authUser.user?.userId
-                                        targetPath = `/profile/${userId}`;
-                                    }
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 50); 
+    return () => clearTimeout(timer);
+  }, []);
 
-                                    clientNavigation(targetPath, page.pageName, page.pageID)() 
+  const shouldShowLogin = mounted && !isLoginHidden;
 
-                                }, 250);
-                            }}
-                        >
-                            <Text text={menuItem.itemName} color="text-black" />
-                        </Button>
-                    );
-                } else {
-                    return (
-                        <Button
-                            key={menuItem.itemName}
-                            className="pt-3 pr-0 pb-3 pl-0"
-                            variant="ghost"
-                            cursor="pointer"
-                            onClick={() => window.open(menuItem.itemLink, '_blank')}
-                        >
-                            <Text text={menuItem.itemName} color="text-black" />
-                        </Button>
-                    );
-                }
-            });
+  const renderMenuItems = (menuItems: any[]) =>
+    menuItems
+      ?.slice()
+      .sort((a, b) => a.itemOrder - b.itemOrder)
+      .map((menuItem, index) => {
+        const totalItems = menuItems.length;
+        const delay = `${(totalItems - index) * 200}ms`;
+        const animationClass = "animate__animated animate__fadeIn";
 
-    const handleDrawerOpen = (title: string, content: JSX.Element) => {
-        dispatch(
-            openDrawer({
-                drawerOpen: true,
-                drawertitle: title,
-                draweranchor: 'right',
-                drawerchildren: content,
-                draweranimation: {
-                    entranceAnimation: 'animate__fadeInRight animate__faster',
-                    exitAnimation: 'animate__fadeOutRight animate__faster',
-                    isEntering: true,
-                },
-            })
-        );
-    };
+        if (menuItem.itemType === 'page') {
+          const page = pages.find((p) => p.pageID === menuItem.itemId);
+          if (!page) return null;
+          return (
+            <Button
+              key={menuItem.itemId}
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary ${animationClass}`}
+              style={{ animationDelay: delay }}
+              cursor="pointer"
+              onClick={() => {
+                dispatch(preCloseDrawer());
+                setTimeout(() => {
+                  let targetPath = page.pagePath;
+                  if (page.pageName === 'Profile') {
+                    const userId = authUser.user?.userId;
+                    targetPath = `/profile/${userId}`;
+                  }
+                  clientNavigation(targetPath, page.pageName, page.pageID)();
+                }, 250);
+              }}
+            >
+              {menuItem.itemName}
+            </Button>
+          );
+        }
 
-    const handleLogout = () => {
-        dispatch(setLoading({ loading: true, id: 'logoutButton' }));
-        Cookies.remove('authUser');
-        dispatch(clearAuthUser());
-        dispatch(setNotLoading());
-        clientNavigation('/login', 'Auth', 'authenticationPage')();
-    };
-
-    const LoginButton = (
-        <Button
-            width="w-full"
-            padding="sm"
-            color="primary"
+        return (
+          <Button
+            key={menuItem.itemName}
+            TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary ${animationClass}`}
             cursor="pointer"
-            onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
-        >
-            {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" color="white" />}
-        </Button>
+            style={{ animationDelay: delay }}
+            onClick={() => window.open(menuItem.itemLink, '_blank')}
+          >
+            {menuItem.itemName}
+          </Button>
+        );
+      });
+      
+  const handleDrawerOpen = (title: string, contentType: 'loggedInMenu' | 'loggedOutMenu') => {
+    dispatch(
+      openDrawer({
+        title,
+        contentType,
+        anchor: 'right',
+        animation: {
+          entranceAnimation: 'animate__fadeInRight animate__faster',
+          exitAnimation: 'animate__fadeOutRight animate__faster',
+          isEntering: true,
+        },
+      })
     );
+  };
 
-    const LogoutButton = (
-        <Button width="w-full" padding="sm" color="primary" cursor="pointer" onClick={handleLogout}>
-            {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" color="white" />}
-        </Button>
-    );
+  return (
+    <Container
+      TwClassName="h-[50px] justify-between items-center bg-white p-2 relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
+    >
+      <Container
+        TwClassName="items-center"
+        animation={{
+          entranceExit: {
+            entranceAnimation: 'animate__fadeInLeft',
+            exitAnimation: 'animate__fadeOutLeft',
+            isEntering: true,
+          },
+        }}
+      >
+        <Image src="../../../public/assets/images/logo.png" height={50} alt="Rkitech" />
+        <Text text="Rkitech" TwClassName="text-xl font-primary text-black" />
+      </Container>
 
-    const LoggedInDrawerContent = (
-        <Container flexDirection="col" height="h-full" width="w-full" justifyContent="between">
-            <Container flexDirection="col" height="h-full" width="w-full" alignItems="start">
-                <Container flexDirection="col" width="w-full" alignItems="start" className='md:hidden'>
-                    {renderMenuItems(primaryMenu?.menuItems || [])}
-                    <hr className="w-full border-gray-300 my-2" />
-                </Container>
-                {renderMenuItems(profileMenu?.menuItems || [])}
-            </Container>
-            {LogoutButton}
-        </Container>
-    );
+      <Container
+        TwClassName="items-center md:hidden"
+        animation={{
+          entranceExit: {
+            entranceAnimation: 'animate__fadeInRight',
+            exitAnimation: 'animate__fadeOutRight',
+            isEntering: true,
+          },
+        }}
+      >
+        {authUser?.user ? (
+          <Button
+            TwClassName="p-2"
+            cursor="pointer"
+            onClick={() => handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, 'loggedInMenu')}
+          >
+            {authUser?.user.profileImage ? (
+              <Image
+                src={authUser.user.profileImage}
+                alt="User Avatar"
+                width={40}
+                height={40}
+                TwClassName="rounded-full border border-gray-300 cursor-pointer object-cover"
+              />
+            ) : (
+              <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                <Text
+                  TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                  text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
+                />
+              </Container>
+            )}
+          </Button>
+        ) : (
+          <Button
+            TwClassName="p-2"
+            cursor="pointer"
+            onClick={() => handleDrawerOpen(getTimeOfDay(), 'loggedOutMenu')}
+          >
+            <Icon name="Menu" />
+          </Button>
+        )}
+      </Container>
 
-    const LoggedOutDrawerContent = (
-        <Container flexDirection="col" height="h-full" width="w-full" justifyContent="between">
-            <Container flexDirection="col" height="h-full" width="w-full" alignItems="start">
-                {renderMenuItems(primaryMenu?.menuItems || [])}
-            </Container>
-            {LoginButton}
-        </Container>
-    );
+      <Container
+        TwClassName="items-center gap-5 hidden md:flex"
+      >
+        {renderMenuItems(primaryMenu?.menuItems || [])}
 
-    return (
-        <Container
-            height={50}
-            padding="sm"
-            justifyContent="between"
-            alignItems="center"
-            bgColor="bg-white"
-            className="relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
-        >
-            <Container
-                alignItems="center"
-                animation={{
-                    entranceExit: {
-                        entranceAnimation: 'animate__fadeInLeft',
-                        exitAnimation: 'animate__fadeOutLeft',
-                        isEntering: true,
-                    },
-                }}
+        {authUser?.user ? (
+          <Button
+            TwClassName="p-2"
+            cursor="pointer"
+            onClick={() => handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, 'loggedInMenu')}
+          >
+            {authUser.user.profileImage ? (
+              <Image
+                src={authUser.user.profileImage}
+                alt="User Avatar"
+                width={40}
+                height={40}
+                TwClassName="rounded-full border border-gray-300 cursor-pointer object-cover"
+              />
+            ) : (
+              <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                <Text
+                  TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                  text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
+                />
+              </Container>
+            )}
+          </Button>
+        ) : (
+          <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
+            <Button
+              cursor="pointer"
+              TwClassName={`p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
+              onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
             >
-                <Image src="../../../public/assets/images/logo.png" height={50} alt="Rkitech" />
-                <Text text="Rkitech" bold size="xl" font="primary" color="text-black" />
-            </Container>
-
-            <Container
-                alignItems="center"
-                className="md:hidden"
-                animation={{
-                    entranceExit: {
-                        entranceAnimation: 'animate__fadeInRight',
-                        exitAnimation: 'animate__fadeOutRight',
-                        isEntering: true,
-                    },
-                }}
-            >
-                {authUser?.user ? (
-                    <Button
-                        padding="sm"
-                        variant="ghost"
-                        cursor="pointer"
-                        onClick={() =>
-                            handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, LoggedInDrawerContent)
-                        }
-                    >
-                        {authUser?.user.profileImage ? (
-                            <Image
-                                src={authUser?.user.profileImage}
-                                alt="User Avatar"
-                                width={40}
-                                height={40}
-                                className="rounded-full border border-gray-300 cursor-pointer"
-                            />
-                        ) : (
-                            <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
-                                <Text
-                                    className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
-                                    text={`${authUser?.user.firstName?.[0] || ''}${authUser?.user.lastName?.[0] || ''}`.toUpperCase()}
-                                />
-                            </Container>
-                        )}
-                    </Button>
-                ) : (
-                    <Button
-                        padding="sm"
-                        color="primary"
-                        variant="ghost"
-                        cursor="pointer"
-                        onClick={() => handleDrawerOpen(getTimeOfDay(), LoggedOutDrawerContent)}
-                    >
-                        <Icon name="Menu" />
-                    </Button>
-                )}
-            </Container>
-
-            <Container
-                alignItems="center"
-                className="gap-5 hidden md:flex"
-                animation={{
-                    entranceExit: {
-                        entranceAnimation: 'animate__fadeInRight',
-                        exitAnimation: 'animate__fadeOutRight',
-                        isEntering: true,
-                    },
-                }}
-            >
-                {renderMenuItems(primaryMenu?.menuItems || [])}
-
-                {authUser?.user ? (
-                    <Button
-                        padding="sm"
-                        variant="ghost"
-                        cursor="pointer"
-                        onClick={() =>
-                            handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, LoggedInDrawerContent)
-                        }
-                    >
-                        {authUser?.user.profileImage ? (
-                            <Image
-                                src={authUser?.user.profileImage}
-                                alt="User Avatar"
-                                width={40}
-                                height={40}
-                                className="rounded-full border border-gray-300 cursor-pointer"
-                            />
-                        ) : (
-                            <Container className="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
-                                <Text
-                                    className="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
-                                    text={`${authUser?.user.firstName?.[0] || ''}${authUser?.user.lastName?.[0] || ''}`.toUpperCase()}
-                                />
-                            </Container>
-                        )}
-                        
-                    </Button>
-                ) : (
-                    <Button
-                        padding="sm"
-                        color="primary"
-                        cursor="pointer"
-                        onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
-                    >
-                        <Text text="Login" color="white" />
-                    </Button>
-                )}
-            </Container>
-        </Container>
-    );
+              <Text text="Login" />
+            </Button>
+          </Container>
+        )}
+      </Container>
+    </Container>
+  );
 };
 
 export default Navbar;
