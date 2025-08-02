@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, type JSX } from 'react';
 import Container from '../../shared/components/container/Container';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { closeDrawer, preCloseDrawer } from './drawerSlice';
-import Icon from '../../shared/components/icon/Icon';
 import clsx from 'clsx';
+import Icon from '../../shared/components/icon/Icon';
 import Text from '../../shared/components/text/Text';
+import LoggedInDrawerContent from './drawers/LoggedInDrawerContent';
+import LoggedOutDrawerContent from './drawers/LoggedOutDrawerContent';
 
 const Drawer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -12,11 +14,7 @@ const Drawer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (drawer.drawerOpen) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
+    setIsVisible(drawer.drawerOpen);
   }, [drawer.drawerOpen]);
 
   const handleClose = () => {
@@ -33,13 +31,15 @@ const Drawer: React.FC = () => {
     bottom: 'bottom-0 left-0 w-full',
   };
 
+  const drawerContentRegistry: Record<string, JSX.Element> = {
+    loggedInMenu: <LoggedInDrawerContent />,
+    loggedOutMenu: <LoggedOutDrawerContent />,
+  };
+
   return (
     <Container
-      width="w-full"
-      height="h-full"
-      bgColor='bg-gray-950/60'
-      className={clsx(
-        'fixed top-0 left-0 flex',
+      TwClassName={clsx(
+        'fixed top-0 left-0 flex w-full h-full bg-gray-950/60',
         drawer.draweranchor === 'right' || drawer.draweranchor === 'left'
           ? 'justify-start'
           : 'items-start',
@@ -52,15 +52,10 @@ const Drawer: React.FC = () => {
           isEntering: drawer.draweranimation.isEntering,
         },
       }}
-      onClick={handleClose} 
+      onClick={handleClose}
     >
       <Container
-        padding="md"
-        bgColor='bg-white'
-        className={clsx(
-          'shadow-xl absolute',
-          positionClasses[drawer.draweranchor ?? 'right']
-        )}
+        TwClassName={clsx('p-4 bg-white min-w-100 shadow-xl absolute', positionClasses[drawer.draweranchor ?? 'right'])}
         animation={{
           entranceExit: {
             entranceAnimation: drawer.draweranimation.entranceAnimation,
@@ -70,16 +65,11 @@ const Drawer: React.FC = () => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <Icon
-          name="X"
-          cursor="pointer"
-          className="absolute top-4 right-4"
-          onClick={handleClose}
-        />
-            <div className='flex flex-col'>
-                {drawer.drawertitle && <Text text={drawer.drawertitle} size='xl' bold={true} />}
-                {drawer.drawerchildren}
-            </div>
+        <Icon name="X" cursor="pointer" TwClassName="absolute top-4 right-4" onClick={handleClose} />
+        <div className="flex flex-col w-full">
+          {drawer.drawertitle && <Text text={drawer.drawertitle} TwClassName="text-xl font-bold" />}
+          {drawer.drawerContentType && drawerContentRegistry[drawer.drawerContentType]}
+        </div>
       </Container>
     </Container>
   );

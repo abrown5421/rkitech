@@ -1,11 +1,12 @@
 import React from 'react';
+import Container from '../../shared/components/container/Container';
 
 const Home: React.FC = () => {
 
     return (
-        <div className=''>
-            Home
-        </div>
+        <Container TwClassName='min-h-[calc(100vh-50px)] p-4'>
+          Home
+        </Container>
     );
 };
 
