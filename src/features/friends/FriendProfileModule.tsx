@@ -105,7 +105,6 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
 
   const validReceivedCreatedAt = isValidDate(receivedRequest?.createdAt);
   const validSentCreatedAt = isValidDate(sentRequest?.createdAt);
-  const validAcceptededAt = isValidDate(acceptedRequest?.acceptedAt);
 
   const acceptFriend = async () => {
     dispatch(setLoading({ loading: true, id: "addFriend" }));
@@ -309,7 +308,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
                 </span>
                 {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Unfriend'}
               </Button>
-              {acceptedRequest && validAcceptededAt && profileUser?.firstName && (
+              {acceptedRequest && profileUser?.firstName && (
                 <Text
                   TwClassName="text-xs text-gray-500 mt-2"
                   text={`You've been friends with ${profileUser.firstName} since: ${format(
