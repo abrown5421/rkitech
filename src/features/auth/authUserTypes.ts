@@ -9,6 +9,15 @@ export interface AuthUser {
     userRole: 'User' | 'Admin' | string;
     createdAt: string; 
     trianglifyObject: TrianglifyBannerProps;
+    bio?: string;
+    gender?: 'Male' | 'Female' | 'Non-Binary' | 'Prefer not to say' | 'Other'
+    phone?: string;
+    addressLn1?: string;
+    addressLn2?: string;
+    addressCity: string;
+    addressState: string;
+    addressPostCode: string;
+
 }
 
 export interface AuthUserState {
