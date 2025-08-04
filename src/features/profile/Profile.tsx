@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Container from '../../shared/components/container/Container';
 import { useParams } from 'react-router-dom';
@@ -24,6 +25,7 @@ import ProfileMainTab from '../tabs/tabContent/mainTabs/ProfileMainTab';
 import ProfileFriendRequestTab from '../tabs/tabContent/friendTabs/ProfileFriendRequestTab';
 import ProfileFriendsTab from '../tabs/tabContent/friendTabs/ProfileFriendsTab';
 import ProfileFriendMutalsTab from '../tabs/tabContent/friendTabs/ProfileFriendMutalsTab';
+import { fetchProfileFriends } from '../../hooks/useTheirFriends';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -34,6 +36,16 @@ const Profile: React.FC = () => {
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
   const [activeProfileSection, setActiveProfileSection] = useState<string>('Main');
   const ownedProfile = authUser?.userId === userIdFromUrl;
+
+  useEffect(() => {
+    if (!userIdFromUrl) return;
+
+    const unsubscribe = fetchProfileFriends(userIdFromUrl, dispatch);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userIdFromUrl, dispatch]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
