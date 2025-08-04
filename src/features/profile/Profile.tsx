@@ -16,10 +16,14 @@ import TrianglifyBanner from '../../shared/components/trianglifyBanner/Trianglif
 import FriendProfileModule from '../friends/FriendProfileModule';
 import Tabs from '../tabs/Tabs';
 import type { TabItem } from '../tabs/tabTypes';
-import MyProfileAboutTab from '../tabs/tabContent/MyProfileAboutTab';
-import ProfileFriendTab from '../tabs/tabContent/ProfileFriendTab';
-import { TheirProfileAboutTab } from '../tabs/tabContent/TheirProfileAboutTab';
-import ProfileSettingsTab from '../tabs/tabContent/ProfileSettingsTab';
+import MyProfileAboutTab from '../tabs/tabContent/profileTabs/MyProfileAboutTab';
+import ProfileFriendSearchTab from '../tabs/tabContent/friendTabs/ProfileFriendSearchTab';
+import { TheirProfileAboutTab } from '../tabs/tabContent/profileTabs/TheirProfileAboutTab';
+import ProfileSettingsTab from '../tabs/tabContent/profileTabs/ProfileSettingsTab';
+import ProfileMainTab from '../tabs/tabContent/mainTabs/ProfileMainTab';
+import ProfileFriendRequestTab from '../tabs/tabContent/friendTabs/ProfileFriendRequestTab';
+import ProfileFriendsTab from '../tabs/tabContent/friendTabs/ProfileFriendsTab';
+import ProfileFriendMutalsTab from '../tabs/tabContent/friendTabs/ProfileFriendMutalsTab';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
@@ -28,6 +32,7 @@ const Profile: React.FC = () => {
   const authUser = useAppSelector((state) => state.authUser.user);
   const isProfileLoading = loading && id === 'profile';
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
+  const [activeProfileSection, setActiveProfileSection] = useState<string>('Main');
   const ownedProfile = authUser?.userId === userIdFromUrl;
 
   useEffect(() => {
@@ -85,12 +90,46 @@ const Profile: React.FC = () => {
 
   }
 
-  const tabData: TabItem[] = [
+  const mainTabData: TabItem[] = [
+    {
+      id: 'testTab',
+      label: 'Tab',
+      content: <ProfileMainTab />,
+    }
+  ];
+
+  const friendTabData: TabItem[] = [
+  ...(ownedProfile
+    ? [
+        {
+          id: 'friendSearch',
+          label: 'Friend Search',
+          content: <ProfileFriendSearchTab />,
+        },
+        {
+          id: 'friendRequest',
+          label: 'Friend Requests',
+          content: <ProfileFriendRequestTab />,
+        },
+      ]
+    : []),
     {
       id: 'friends',
       label: 'Friends',
-      content: <ProfileFriendTab />,
+      content: <ProfileFriendsTab />,
     },
+  ...(!ownedProfile
+    ? [
+        {
+          id: 'mutalFriends',
+          label: 'Mutual Friends',
+          content: <ProfileFriendMutalsTab />,
+        }
+      ]
+    : []),
+];
+
+  const profileTabData: TabItem[] = [
     {
       id: 'about',
       label: ownedProfile ? 'Profile' : 'About',
@@ -99,16 +138,13 @@ const Profile: React.FC = () => {
         : <TheirProfileAboutTab profileUser={profileUser} />
       ),
     },
-    ...(ownedProfile
-      ? [
-          {
-            id: 'settings',
-            label: 'Settings',
-            content: <ProfileSettingsTab />,
-          },
-        ]
-      : []),
+    {
+      id: 'settings',
+      label: 'Settings',
+      content: <ProfileSettingsTab />,
+    },
   ];
+
   return (
     <Container TwClassName='min-h-[calc(100vh-50px)] w-full flex-col'>
       {isProfileLoading ? (
@@ -206,16 +242,64 @@ const Profile: React.FC = () => {
                 {profileUser && <FriendProfileModule profileUser={profileUser} />}
                 
               </Container>
+              <Container TwClassName="flex-col p-4 md:p-8 relative">
+                <Button
+                  onClick={() => setActiveProfileSection('Main')}
+                  TwClassName={
+                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                  }>
+                    <span className="absolute left-3">
+                        <Icon name="House" />
+                    </span>
+                    Home
+                </Button>
+                <Button
+                  onClick={() => setActiveProfileSection('Friends')}
+                  TwClassName={
+                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                  }>
+                    <span className="absolute left-3">
+                        <Icon name="ContactRound" />
+                    </span>
+                    Friends
+                </Button>
+                {ownedProfile && (
+                  <Button
+                    onClick={() => setActiveProfileSection('Profile')}
+                    TwClassName={
+                        "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                    }>
+                      <span className="absolute left-3">
+                          <Icon name="User" />
+                      </span>
+                      Profile
+                  </Button>
+                )}
+              </Container>
             </Container>
 
             <Container TwClassName="flex-col flex-[9] p-4 md:p-8">
               <Container TwClassName="h-[80px] flex-row justify-end items-end hidden md:flex">
                 <span></span>
               </Container>
-              <Tabs
-                tabs={tabData}
-                tabGroupId="profileTabs"
-              />
+              {activeProfileSection === 'Main' && (
+                <Tabs
+                  tabs={mainTabData}
+                  tabGroupId="profileMainTabs"
+                />
+              )}
+              {activeProfileSection === 'Friends' && (
+                <Tabs
+                  tabs={friendTabData}
+                  tabGroupId="profileFriendsTabs"
+                />
+              )}
+              {activeProfileSection === 'Profile' && (
+                <Tabs
+                  tabs={profileTabData}
+                  tabGroupId="profileSettingsTabs"
+                />
+              )}
             </Container>
           </Container>
         </Container>
