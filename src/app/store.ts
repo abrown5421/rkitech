@@ -11,8 +11,6 @@ import menuReducer from './globalSlices/menus/menusSlice';
 import friendsReducer from '../features/friends/myFriendSlice';
 import notificationReducer from '../features/notifications/notificationSlice';
 import theirFriendsReducer from '../features/friends/theirFriendSlice';
-import friendsReducer from '../features/friends/friendSlice';
-import notificationReducer from '../features/notifications/notificationSlice';
 
 export const store = configureStore({
   reducer: {
