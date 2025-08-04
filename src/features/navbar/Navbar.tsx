@@ -13,6 +13,7 @@ const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const clientNavigation = useNavigationHook();
   const authUser = useAppSelector((state) => state.authUser);
+  const notifications = useAppSelector((state) => state.notifications);
   const pages = useAppSelector((state) => state.pages.pages);
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const menus = useAppSelector((state) => state.menus);
@@ -89,6 +90,10 @@ const Navbar: React.FC = () => {
       })
     );
   };
+
+  const unreadCount = notifications.notifications.filter(
+    (n) => n.userId === authUser.user?.userId && !n.isRead
+  )?.length || 0;
 
   return (
     <Container
@@ -167,7 +172,7 @@ const Navbar: React.FC = () => {
             cursor="pointer"
             onClick={() => handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, 'loggedInMenu')}
           >
-            {authUser.user.profileImage ? (
+            {authUser?.user.profileImage ? (
               <Image
                 src={authUser.user.profileImage}
                 alt="User Avatar"
@@ -181,6 +186,12 @@ const Navbar: React.FC = () => {
                   TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
                   text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
                 />
+              </Container>
+            )}
+
+            {unreadCount > 0 && (
+              <Container TwClassName="absolute top-0 right-1.5 bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {unreadCount}
               </Container>
             )}
             

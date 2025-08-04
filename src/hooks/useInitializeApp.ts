@@ -10,6 +10,8 @@ import type { Friend } from "../features/friends/friendTypes";
 import { setFriends } from "../features/friends/friendSlice";
 import { collection, query, where } from "firebase/firestore";
 import { db } from "../services/firebase"; 
+import { setNotifications } from "../features/notifications/notificationSlice";
+import type { Notification } from "../features/notifications/notificationTypes";
 
 export const useInitializeApp = () => {
   const [loading, setLoading] = useState(true);
@@ -94,7 +96,25 @@ export const useInitializeApp = () => {
           handleMergeAndDispatch();
         });
 
-        unsubscribers.push(unsubscribeRequester, unsubscribeRequestee);
+        const notificationsQuery = query(
+          collection(db, "Notifications"),
+          where("userId", "==", parsedUser.userId)
+        );
+
+        const unsubscribeNotifications = listenToQuery(notificationsQuery, (data) => {
+          const notifications = data.map((doc: any) => ({
+            id: doc.id,
+            userId: doc.userId,
+            type: doc.type,
+            isRead: doc.isRead,
+            createdAt: doc.createdAt,
+            targetPageName: doc.targetPageName,
+          })) as Notification[];
+
+          dispatch(setNotifications(notifications));
+        });
+
+        unsubscribers.push(unsubscribeRequester, unsubscribeRequestee, unsubscribeNotifications);
       } catch (e) {
         console.error("Failed to parse user cookie", e);
         Cookies.remove("authUser");

@@ -63,8 +63,6 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
     }
   }, [friends.friends]);
 
-  useEffect(()=>{console.log(randomFriends)}, [randomFriends])
-
   useEffect(()=>{
     if (authUser?.userId === userIdFromUrl) {
       setOwnedProfile(true)
@@ -198,7 +196,16 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
       createdAt: new Date().toISOString(),
       acceptedAt: ''
     }
+
+    const requestNotif = {
+      userId: userIdFromUrl,
+      type: 'friend_request',
+      isRead: false,
+      createdAt: new Date().toISOString(),
+    }
+
     try {
+      await insertDataIntoCollection('Notifications', requestNotif)
       await insertDataIntoCollection('Friends', newRelationship)
 
       dispatch(openAlert({
