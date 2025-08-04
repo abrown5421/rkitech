@@ -3,7 +3,7 @@ import { listenToQuery } from "../services/database/listenForData";
 import type { Friend } from "../features/friends/friendTypes";
 import { clearProfileFriends, setProfileFriends } from "../features/friends/theirFriendSlice";
 import type { AppDispatch } from "../app/store";
-
+ 
 export const fetchProfileFriends = (profileUserId: string, dispatch: AppDispatch) => {
   const requesterQuery = buildQuery("Friends", [["requesterId", "==", profileUserId]]);
   const requesteeQuery = buildQuery("Friends", [["requesteeId", "==", profileUserId]]);

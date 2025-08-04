@@ -1,3 +1,4 @@
+
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { insertDataIntoCollection } from "../services/database/createData";
@@ -128,7 +129,7 @@ export function useFriendActions({
     try {
       await insertDataIntoCollection("Notifications", requestNotif);
       await insertDataIntoCollection("Friends", newRelationship);
-
+ 
       dispatch(
         openAlert({
           alertOpen: true,
@@ -162,3 +163,4 @@ export function useFriendActions({
 
   return { acceptFriend, removeFriend, addFriend };
 }
+
