@@ -4,7 +4,7 @@ import Container from '../../shared/components/container/Container';
 const TermsOfService: React.FC = () => {
 
     return (
-        <Container TwClassName='p-4'>
+        <Container TwClassName='min-h-[calc(100vh-50px)] p-4'>
             TermsOfService
         </Container>
     );

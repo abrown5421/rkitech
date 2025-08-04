@@ -4,8 +4,8 @@ import Container from '../../shared/components/container/Container';
 const Home: React.FC = () => {
 
     return (
-        <Container TwClassName='p-4'>
-            Home
+        <Container TwClassName='min-h-[calc(100vh-50px)] p-4'>
+          Home
         </Container>
     );
 };

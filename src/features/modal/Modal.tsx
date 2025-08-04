@@ -6,9 +6,10 @@ import { closeModal, preCloseModal } from './modalSlice';
 import Icon from '../../shared/components/icon/Icon';
 import Text from '../../shared/components/text/Text';
 import ConfirmModalContent from './modals/ConfirmModalContent';
-import EditProfileModalContent from './modals/EditProfileModalContent';
 import ProfilePictureModalContent from './modals/ProfilePictureModalContent';
 import ProfileBannerModalContent from './modals/ProfileBannerModalContent';
+import DeleteAccountModalContent from './modals/DeleteAccountModalContent';
+import DisableAccountModalContent from './modals/DisableAccountModalContent';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -41,18 +42,6 @@ const Modal: React.FC = () => {
             onDeny={modal.modalProps?.onDeny}
           />
         );
-      case 'editProfile':
-        return (
-          <EditProfileModalContent
-            firstName={modal.modalProps?.firstName}
-            lastName={modal.modalProps?.lastName}
-            email={modal.modalProps?.email}
-            userId={modal.modalProps?.userId}   
-            password=''
-            onSave={modal.modalProps?.onSave}
-            onCancel={modal.modalProps?.onCancel}
-          />
-        );
       case 'editProfilePic':
         return (
           <ProfilePictureModalContent />
@@ -67,6 +56,10 @@ const Modal: React.FC = () => {
             variance={modal.modalProps?.variance}
           />
         )
+      case 'deleteAccount':
+        return <DeleteAccountModalContent />;
+      case 'disableAccount':
+        return <DisableAccountModalContent />;
       default:
         return null;
     }

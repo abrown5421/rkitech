@@ -6,14 +6,10 @@ import Navbar from './features/navbar/Navbar';
 import PageShell from './features/pages/PageShell';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import Cookies from 'js-cookie';
-import { setAuthUser } from './features/auth/authUserSlice';
 import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
 import Container from './shared/components/container/Container';
 import { setPartOfActivePageShell } from './features/pages/pageShellSlice';
-import { getDocumentById } from './services/database/readData';
-import type { AuthUser } from './features/auth/authUserTypes';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,29 +17,6 @@ const App: React.FC = () => {
   const loadingSite = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
   const pages = useAppSelector((state) => state.pages.pages);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const storedUser = Cookies.get('authUser');
-      if (storedUser) {
-        try {
-          const parsedUser = JSON.parse(storedUser);
-          const data = await getDocumentById('Users', parsedUser.userId);
-  
-          if (data) {
-            dispatch(setAuthUser({ ...(data as AuthUser), userId: parsedUser.userId }));
-          } else {
-            console.warn('User document not found');
-          }
-        } catch (e) {
-          console.error('Failed to parse user from cookie', e);
-          Cookies.remove('authUser');
-        }
-      }
-    };
-  
-    fetchUser();
-  }, [dispatch]);
 
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');
