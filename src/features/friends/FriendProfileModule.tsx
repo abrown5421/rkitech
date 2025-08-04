@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Container from "../../shared/components/container/Container";
 import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import Button from "../../shared/components/button/Button";
 import Icon from "../../shared/components/icon/Icon";
 import Loader from "../../shared/components/loader/Loader";
-import { insertDataIntoCollection } from "../../services/database/createData";
-import { setLoading, setNotLoading } from "../../app/globalSlices/loading/loadingSlice";
-import { openAlert } from "../alert/alertSlice";
 import Text from "../../shared/components/text/Text";
 import { format } from "date-fns";
 import type { Friend, FriendProfileModuleState } from "./friendTypes";
-import { deleteDocument } from "../../services/database/deleteData";
-import { updateDataInCollection } from "../../services/database/updateData";
 import { getDocumentById } from "../../services/database/readData";
 import Image from "../../shared/components/image/Image";
 import type { AuthUser } from "../auth/authUserTypes";
 import { useNavigationHook } from "../../hooks/useNavigationHook";
+import { useFriendActions } from "../../hooks/useFriendActions";
 
 const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) => { 
-  const dispatch = useAppDispatch();
   const clientNavigation = useNavigationHook();
   const { userIdFromUrl } = useParams();
   const authUser = useAppSelector((state) => state.authUser.user);
@@ -29,7 +24,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
   const friendRemoval = loading && id === 'addFriend';
   const friendAddition = loading && id === 'remFriend';
   const [randomFriends, setRandomFriends] = useState<AuthUser[]>([])
-
+  
   function getRandomFriendIds(
     friends: Friend[],
     count: number = 5
@@ -62,8 +57,6 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
       fetchRandomFriends();
     }
   }, [friends.friends]);
-
-  useEffect(()=>{console.log(randomFriends)}, [randomFriends])
 
   useEffect(()=>{
     if (authUser?.userId === userIdFromUrl) {
@@ -106,126 +99,17 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
   const validReceivedCreatedAt = isValidDate(receivedRequest?.createdAt);
   const validSentCreatedAt = isValidDate(sentRequest?.createdAt);
 
-  const acceptFriend = async () => {
-    dispatch(setLoading({ loading: true, id: "addFriend" }));
-    try {
-      await updateDataInCollection("Friends", receivedRequest?.id!, {
-        status: "accepted",
-        acceptedAt: new Date().toISOString(),
-      });
-  
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage: "You are now friends!",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } catch (error) {
-      console.error("Error accepting friend request:", error);
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Failed to accept friend request. Try again.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } finally {
-      dispatch(setNotLoading());
-    }
-  };
-
-  const removeFriend = async () => {
-    dispatch(setLoading({ loading: true, id: "remFriend" }));
-    try {
-      const requestId =
-        sentRequest?.id || receivedRequest?.id || acceptedRequest?.id;
-  
-      if (!requestId) return;
-  
-      await deleteDocument("Friends", requestId);
-  
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage: isAcceptedRequest
-            ? "Friend removed successfully."
-            : "Friend request removed.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } catch (error) {
-      console.error("Error removing friend:", error);
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Failed to remove friend. Try again.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } finally {
-      dispatch(setNotLoading());
-    }
-  };
-
-  const addFriend = async () => {
-    dispatch(setLoading({loading: true, id: 'addFriend'}))
-    const newRelationship = {
-      requesterId: authUser?.userId,
-      requesteeId: userIdFromUrl,
-      status: 'pending',
-      seenByRequestee: false,
-      createdAt: new Date().toISOString(),
-      acceptedAt: ''
-    }
-    try {
-      await insertDataIntoCollection('Friends', newRelationship)
-
-      dispatch(openAlert({
-        alertOpen: true,
-        alertSeverity: 'success',
-        alertMessage: 'Friend request sent!',
-        alertAnimation: {
-            entranceAnimation: 'animate__fadeInRight animate__faster',
-            exitAnimation: 'animate__fadeOutRight animate__faster',
-            isEntering: true,
-        }
-      }));
-    } catch {
-      dispatch(openAlert({
-        alertOpen: true,
-        alertSeverity: 'success',
-        alertMessage: 'Friend request sent!',
-        alertAnimation: {
-            entranceAnimation: 'animate__fadeInRight animate__faster',
-            exitAnimation: 'animate__fadeOutRight animate__faster',
-            isEntering: true,
-        }
-      }));
-    } finally {
-      dispatch(setNotLoading())
-    }
-  }
+  const {
+    acceptFriend,
+    removeFriend,
+    addFriend,
+  } = useFriendActions({
+    userIdFromUrl: userIdFromUrl!,
+    receivedRequestId: receivedRequest?.id,
+    sentRequestId: sentRequest?.id,
+    acceptedRequestId: acceptedRequest?.id,
+    isAcceptedRequest,
+  });
 
   return (
     <Container TwClassName="h-full w-full flex-col">
@@ -280,7 +164,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
               disabled={isSentRequest}
               onClick={addFriend} TwClassName={
                 !isSentRequest ? "relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
-                : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-white border border-gray-300 hover:bg-transparent hover:text-gray-300 flex justify-center items-center"
+                : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-black border border-gray-300 hover:bg-transparent flex justify-center items-center"
             }>
               <span className="absolute left-3">
                   <Icon name="UserPlus" />
