@@ -17,6 +17,9 @@ const App: React.FC = () => {
   const loadingSite = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
   const pages = useAppSelector((state) => state.pages.pages);
+  const notif = useAppSelector((state) => state.notifications);
+
+  useEffect(()=>{console.log(notif)}, [notif])
 
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');
