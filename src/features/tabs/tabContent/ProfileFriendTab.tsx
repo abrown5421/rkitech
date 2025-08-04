@@ -8,8 +8,10 @@ import type { AuthUser } from "../../auth/authUserTypes";
 import { searchUsers } from "../../../services/database/readData";
 import Image from "../../../shared/components/image/Image";
 import Text from "../../../shared/components/text/Text";
+import { useNavigationHook } from "../../../hooks/useNavigationHook";
 
 const ProfileFriendTab: React.FC = () => {
+  const clientNavigation = useNavigationHook();
   const authUser = useAppSelector((state) => state.authUser.user);
   const { userIdFromUrl } = useParams();
   const [searchValue, setSearchValue] = useState("");
@@ -21,7 +23,6 @@ const ProfileFriendTab: React.FC = () => {
     setOwnedProfile(authUser?.userId === userIdFromUrl);
   }, [userIdFromUrl, authUser?.userId]);
 
-  // Debounced live search
   useEffect(() => {
     if (!searchValue.trim()) {
       setResults([]);
@@ -37,6 +38,11 @@ const ProfileFriendTab: React.FC = () => {
 
     return () => clearTimeout(timeout);
   }, [searchValue]);
+
+  const capitalize = (str: string) => {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
 
   return (
     <Container TwClassName="flex-col space-y-4">
@@ -58,34 +64,36 @@ const ProfileFriendTab: React.FC = () => {
 
           {isSearching && <p className="text-gray-400">Searching...</p>}
 
-          <Container TwClassName="flex flex-col space-y-2">
+          <Container TwClassName="flex flex-col space-y-2 cursor-pointer">
             {results.map((user) => (
               <Container
                 key={user.userId}
-                TwClassName="flex items-center gap-3 border-b pb-2"
+                TwClassName="flex-row items-start gap-3 border-b border-gray-300 m-0 pt-2 pb-2 hover:bg-gray-100"
+                onClick={() => clientNavigation(`/profile/${user.userId}`, 'Profile', '')()}
               >
-                {user.profileImage ? (
-                  <Image
-                    src={user.profileImage}
-                    alt="User Avatar"
-                    width={28}
-                    height={28}
-                    TwClassName="-ml-1.5 rounded-full border border-gray-300 cursor-pointer object-cover border-3 border-white"
-                  />
-                ) : (
-                  <Container
-                    TwClassName="-ml-1.5 rounded-full w-7 h-7 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
-                  >
-                    <Text
-                      TwClassName="text-white w-full text-xs font-semibold leading-[2.5rem] text-center"
-                      text={`${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase()}
+                <Container TwClassName="flex-col justify-center">
+                  {user.profileImage ? (
+                    <Image
+                      src={user.profileImage}
+                      alt="User Avatar"
+                      width={40}
+                      height={40}
+                      TwClassName="-ml-1.5 rounded-full border border-gray-300 cursor-pointer object-cover border-3 border-white"
                     />
-                  </Container>
-                )}
-
-                <Container>
+                  ) : (
+                    <Container
+                      TwClassName="-ml-1.5 rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
+                    >
+                      <Text
+                        TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                        text={`${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase()}
+                      />
+                    </Container>
+                  )}
+                </Container>
+                <Container TwClassName="flex-col justify-center">
                   <Text
-                    text={`${user.firstName} ${user.lastName}`}
+                    text={`${capitalize(user.firstName)} ${capitalize(user.lastName)}`}
                     TwClassName="font-semibold"
                   />
                   <Text
