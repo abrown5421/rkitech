@@ -287,7 +287,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
               disabled={isSentRequest}
               onClick={addFriend} TwClassName={
                 !isSentRequest ? "relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
-                : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-white border border-gray-300 hover:bg-transparent hover:text-gray-300 flex justify-center items-center"
+                : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-black border border-gray-300 hover:bg-transparent flex justify-center items-center"
             }>
               <span className="absolute left-3">
                   <Icon name="UserPlus" />
