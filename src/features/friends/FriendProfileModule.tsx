@@ -1,323 +1,363 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import Container from '../../shared/components/container/Container';
-import { useParams } from 'react-router-dom';
-import { getDocumentById } from '../../services/database/readData';
-import type { AuthUser } from '../auth/authUserTypes';
-import Loader from '../../shared/components/loader/Loader';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
-import Text from '../../shared/components/text/Text';
-import Image from '../../shared/components/image/Image';
-import Button from '../../shared/components/button/Button';
-import Icon from '../../shared/components/icon/Icon';
-import { appendToArrayInCollection, removeFromArrayByCondition } from '../../services/database/updateData';
-import { openAlert } from '../alert/alertSlice';
-import { useNavigationHook } from '../../hooks/useNavigationHook';
-import type { FriendProfileModuleProps } from './friendTypes';
+import React, { useEffect, useState } from "react";
+import Container from "../../shared/components/container/Container";
+import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import Button from "../../shared/components/button/Button";
+import Icon from "../../shared/components/icon/Icon";
+import Loader from "../../shared/components/loader/Loader";
+import { insertDataIntoCollection } from "../../services/database/createData";
+import { setLoading, setNotLoading } from "../../app/globalSlices/loading/loadingSlice";
+import { openAlert } from "../alert/alertSlice";
+import Text from "../../shared/components/text/Text";
+import { format } from "date-fns";
+import type { Friend, FriendProfileModuleState } from "./friendTypes";
+import { deleteDocument } from "../../services/database/deleteData";
+import { updateDataInCollection } from "../../services/database/updateData";
+import { getDocumentById } from "../../services/database/readData";
+import Image from "../../shared/components/image/Image";
+import type { AuthUser } from "../auth/authUserTypes";
+import { useNavigationHook } from "../../hooks/useNavigationHook";
 
-const FriendProfileModule: React.FC<FriendProfileModuleProps> = ({ profileUser }) => {
+const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) => { 
+  const dispatch = useAppDispatch();
   const clientNavigation = useNavigationHook();
   const { userIdFromUrl } = useParams();
-  const dispatch = useAppDispatch();
-  const { loading, id } = useAppSelector((state) => state.loading);
   const authUser = useAppSelector((state) => state.authUser.user);
-  const isAdding = loading && id === 'addFriend';
-  const isRemoving = loading && id === 'remFriend';
-  const isConfirming = loading && id === 'confirmFriend';
-  const [friendAvatars, setFriendAvatars] = useState<Record<string, string>>({});
+  const friends = useAppSelector((state) => state.friends);
+  const {loading, id} = useAppSelector((state) => state.loading);
+  const [ownedProfile, setOwnedProfile] = useState<boolean>(true);
+  const friendRemoval = loading && id === 'addFriend';
+  const friendAddition = loading && id === 'remFriend';
+  const [randomFriends, setRandomFriends] = useState<AuthUser[]>([])
+
+  function getRandomFriendIds(
+    friends: Friend[],
+    count: number = 5
+  ): string[] {
+    const friendIds = friends.map((f) =>
+      f.requesterId === authUser?.userId ? f.requesteeId : f.requesterId
+    );
+    const shuffled = [...friendIds].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }
 
   useEffect(() => {
-    const fetchAvatars = async () => {
-      if (!profileUser?.friends) return;
+    async function fetchRandomFriends() {
+      const fiveFriendIds = getRandomFriendIds(friends.friends, 5);
+  
+      try {
+        const friendDocs = await Promise.all(
+          fiveFriendIds.map((id) => getDocumentById("Users", id))
+        );
+        
+        const validFriends = friendDocs.filter((doc): doc is AuthUser => Boolean(doc));
+        
+        setRandomFriends(validFriends);
+      } catch (err) {
+        console.error("Error fetching random friends:", err);
+      }
+    }
+  
+    if (friends.friends.length) {
+      fetchRandomFriends();
+    }
+  }, [friends.friends]);
 
-      const confirmedFriends = profileUser?.friends.filter(f => f.friends).slice(0, 5);
-      const avatarPromises = confirmedFriends.map(async (friend) => {
-        try {
-          const data = await getDocumentById('Users', friend.friendId);
+  useEffect(()=>{console.log(randomFriends)}, [randomFriends])
 
-          if (!data) return null; 
+  useEffect(()=>{
+    if (authUser?.userId === userIdFromUrl) {
+      setOwnedProfile(true)
+    } else {
+      setOwnedProfile(false)
+    }
+  }, [userIdFromUrl, authUser?.userId])
+  
+  const acceptedRequest = friends.friends.find(
+    (req) =>
+      req.requesteeId === userIdFromUrl ||
+      req.requesterId === userIdFromUrl &&
+      req.status === "accepted"
+  );
+  
+  const isAcceptedRequest = Boolean(acceptedRequest);
 
-          const typedData = data as AuthUser; 
+  const sentRequest = friends.sentRequests.find(
+    (req) =>
+      req.requesteeId === userIdFromUrl &&
+      req.requesterId === authUser?.userId &&
+      req.status === "pending"
+  );
+  
+  const isSentRequest = Boolean(sentRequest);
 
-          if (typedData.profileImage) {
-            return { id: friend.friendId, avatar: typedData.profileImage };
-          } else {
-            const initials = `${typedData.firstName?.[0] || ''}${typedData.lastName?.[0] || ''}`.toUpperCase();
-            return { id: friend.friendId, avatar: initials };
-          }
-        } catch (e) {
-          console.error('Failed to fetch friend avatar:', e);
-          return null;
-        }
-      });
+  const receivedRequest = friends.requests.find(
+    (req) =>
+      req.requesterId === userIdFromUrl &&
+      req.requesteeId === authUser?.userId &&
+      req.status === "pending"
+  );
+  
+  const isRecievedRequest = Boolean(receivedRequest);
 
-      const avatars = await Promise.all(avatarPromises);
-      const avatarMap: Record<string, string> = {};
-      avatars.forEach(a => {
-        if (a) avatarMap[a.id] = a.avatar;
-      });
+  const isValidDate = (d?: string | Date) =>
+  !!d && !isNaN(new Date(d).getTime());
 
-      setFriendAvatars(avatarMap);
-    };
+  const validReceivedCreatedAt = isValidDate(receivedRequest?.createdAt);
+  const validSentCreatedAt = isValidDate(sentRequest?.createdAt);
 
-    fetchAvatars();
-  }, [profileUser?.friends]);
-
-  const friendRelation = useMemo(() => {
-    if (!authUser?.friends || !userIdFromUrl) return null;
-
-    return authUser.friends.find(friend =>
-      (friend.requester === authUser.userId && friend.requestee === userIdFromUrl) ||
-      (friend.requestee === authUser.userId && friend.requester === userIdFromUrl)
-    );
-  }, [authUser?.friends, userIdFromUrl]);
-
-  useEffect(()=>{console.log(friendRelation)}, [friendRelation])
-
-  const handleAddFriend = async () => {
-    dispatch(setLoading({ loading: true, id: 'addFriend' }));
-    if (!authUser?.userId || !userIdFromUrl) return;
+  const acceptFriend = async () => {
+    dispatch(setLoading({ loading: true, id: "addFriend" }));
     try {
-      await appendToArrayInCollection('Users', authUser.userId, 'friends', {
-        friends: false,
-        requester: authUser.userId,
-        requestee: userIdFromUrl,
-        seen: true,
-        friendId: userIdFromUrl
+      await updateDataInCollection("Friends", receivedRequest?.id!, {
+        status: "accepted",
+        acceptedAt: new Date().toISOString(),
       });
-
-      await appendToArrayInCollection('Users', userIdFromUrl, 'friends', {
-        friends: false,
-        requester: authUser.userId,
-        requestee: userIdFromUrl,
-        seen: false,
-        friendId: authUser.userId
-      });
-      
+  
+      dispatch(
+        openAlert({
+          alertOpen: true,
+          alertSeverity: "success",
+          alertMessage: "You are now friends!",
+          alertAnimation: {
+            entranceAnimation: "animate__fadeInRight animate__faster",
+            exitAnimation: "animate__fadeOutRight animate__faster",
+            isEntering: true,
+          },
+        })
+      );
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
+      dispatch(
+        openAlert({
+          alertOpen: true,
+          alertSeverity: "error",
+          alertMessage: "Failed to accept friend request. Try again.",
+          alertAnimation: {
+            entranceAnimation: "animate__fadeInRight animate__faster",
+            exitAnimation: "animate__fadeOutRight animate__faster",
+            isEntering: true,
+          },
+        })
+      );
+    } finally {
       dispatch(setNotLoading());
+    }
+  };
+
+  const removeFriend = async () => {
+    dispatch(setLoading({ loading: true, id: "remFriend" }));
+    try {
+      const requestId =
+        sentRequest?.id || receivedRequest?.id || acceptedRequest?.id;
+  
+      if (!requestId) return;
+  
+      await deleteDocument("Friends", requestId);
+  
+      dispatch(
+        openAlert({
+          alertOpen: true,
+          alertSeverity: "success",
+          alertMessage: isAcceptedRequest
+            ? "Friend removed successfully."
+            : "Friend request removed.",
+          alertAnimation: {
+            entranceAnimation: "animate__fadeInRight animate__faster",
+            exitAnimation: "animate__fadeOutRight animate__faster",
+            isEntering: true,
+          },
+        })
+      );
+    } catch (error) {
+      console.error("Error removing friend:", error);
+      dispatch(
+        openAlert({
+          alertOpen: true,
+          alertSeverity: "error",
+          alertMessage: "Failed to remove friend. Try again.",
+          alertAnimation: {
+            entranceAnimation: "animate__fadeInRight animate__faster",
+            exitAnimation: "animate__fadeOutRight animate__faster",
+            isEntering: true,
+          },
+        })
+      );
+    } finally {
+      dispatch(setNotLoading());
+    }
+  };
+
+  const addFriend = async () => {
+    dispatch(setLoading({loading: true, id: 'addFriend'}))
+    const newRelationship = {
+      requesterId: authUser?.userId,
+      requesteeId: userIdFromUrl,
+      status: 'pending',
+      seenByRequestee: false,
+      createdAt: new Date().toISOString(),
+      acceptedAt: ''
+    }
+    try {
+      await insertDataIntoCollection('Friends', newRelationship)
+
       dispatch(openAlert({
         alertOpen: true,
         alertSeverity: 'success',
         alertMessage: 'Friend request sent!',
         alertAnimation: {
-          entranceAnimation: 'animate__fadeInRight animate__faster',
-          exitAnimation: 'animate__fadeOutRight animate__faster',
-          isEntering: true,
-        },
+            entranceAnimation: 'animate__fadeInRight animate__faster',
+            exitAnimation: 'animate__fadeOutRight animate__faster',
+            isEntering: true,
+        }
       }));
     } catch {
-      dispatch(setNotLoading());
       dispatch(openAlert({
         alertOpen: true,
-        alertSeverity: 'error',
-        alertMessage: 'Friend request failed.',
+        alertSeverity: 'success',
+        alertMessage: 'Friend request sent!',
         alertAnimation: {
-          entranceAnimation: 'animate__fadeInRight animate__faster',
-          exitAnimation: 'animate__fadeOutRight animate__faster',
-          isEntering: true,
-        },
+            entranceAnimation: 'animate__fadeInRight animate__faster',
+            exitAnimation: 'animate__fadeOutRight animate__faster',
+            isEntering: true,
+        }
       }));
     } finally {
-      dispatch(setNotLoading());
+      dispatch(setNotLoading())
     }
-  };
+  }
 
-
-  const handleAcceptFriend = async () => {
-    dispatch(setLoading({ loading: true, id: 'confirmFriend' }));
-    if (!authUser?.userId || !userIdFromUrl) return;
-    try {
-
-      await removeFromArrayByCondition('Users', authUser.userId, 'friends', (item) => {
-        return item.requester === userIdFromUrl && item.requestee === authUser.userId
-      });
-
-      await removeFromArrayByCondition('Users', userIdFromUrl, 'friends', (item) => {
-        return item.requester === userIdFromUrl && item.requestee === authUser.userId
-      });
-
-      await appendToArrayInCollection('Users', authUser.userId, 'friends', {
-        friends: true,
-        requester: userIdFromUrl,
-        requestee: authUser.userId,
-        seen: true,
-        friendId: userIdFromUrl,        
-      });
-
-      await appendToArrayInCollection('Users', userIdFromUrl, 'friends', {
-        friends: true,
-        requester: userIdFromUrl,
-        requestee: authUser.userId,
-        seen: true,
-        friendId: authUser.userId
-      });
-
-    } catch (error) {
-      console.error('Error accepting friend request:', error);
-      dispatch(openAlert({
-        alertOpen: true,
-        alertSeverity: 'error',
-        alertMessage: 'Friend request acceptance failed.',
-        alertAnimation: {
-          entranceAnimation: 'animate__fadeInRight animate__faster',
-          exitAnimation: 'animate__fadeOutRight animate__faster',
-          isEntering: true,
-        },
-      }));
-    } finally {
-      dispatch(setNotLoading());
-    }
-  };
-
-  const handleRemoveFriend = async () => {
-    dispatch(setLoading({ loading: true, id: 'remFriend' }));
-    if (!authUser?.userId || !userIdFromUrl) return;
-    try {
-      await removeFromArrayByCondition('Users', authUser.userId, 'friends', (item) => {
-        return item.requester === authUser.userId && item.requestee === userIdFromUrl
-      });
-
-      await removeFromArrayByCondition('Users', userIdFromUrl, 'friends', (item) => {
-        return item.requester === authUser.userId && item.requestee === userIdFromUrl
-      });
-
-    } catch {
-      dispatch(setNotLoading());
-      dispatch(openAlert({
-        alertOpen: true,
-        alertSeverity: 'error',
-        alertMessage: 'Friend request denial failed.',
-        alertAnimation: {
-          entranceAnimation: 'animate__fadeInRight animate__faster',
-          exitAnimation: 'animate__fadeOutRight animate__faster',
-          isEntering: true,
-        },
-      }));
-    } finally {
-      dispatch(setNotLoading());
-    }
-  };
-  
   return (
     <Container TwClassName="h-full w-full flex-col">
-        {userIdFromUrl !== authUser?.userId && (
-            <Container TwClassName='flex-row justify-between gap-2 mt-3'>
-            {friendRelation === undefined && (
-                <Button onClick={handleAddFriend} TwClassName="relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
-                <span className="absolute left-3">
-                    <Icon name="UserPlus" />
-                </span>
-                {isAdding ? <Loader variant="spinner" color="bg-primary" /> : <>Add Friend</>}
+      {!ownedProfile ? (
+        <Container TwClassName="flex-col">
+          {isSentRequest && 
+            <Button
+              onClick={removeFriend} TwClassName={
+                !isSentRequest ? "relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
+                : "relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
+            }>
+              <span className="absolute left-3">
+                  <Icon name="UserMinus" />
+              </span>
+              {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Rescind'}
+            </Button>
+          }
+          {isRecievedRequest && 
+            <Container TwClassName="flex-col">
+                <Button
+                  onClick={removeFriend} TwClassName={
+                    "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
+                }>
+                  <span className="absolute left-3">
+                      <Icon name="UserMinus" />
+                  </span>
+                  {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Decline'}
                 </Button>
-            )}
-
-            {friendRelation?.friends && (
-                <Button onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center">
-                <span className="absolute left-3">
-                    <Icon name="UserMinus" />
-                </span>
-                {isRemoving ? <Loader variant="spinner" color="bg-primary" /> : <>Unfriend</>}
+                <Button
+                  onClick={acceptFriend} TwClassName={
+                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
+                  }>
+                    <span className="absolute left-3">
+                        <Icon name="UserPlus" />
+                    </span>
+                    {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Accept'}
                 </Button>
-            )}  
-
-            {friendRelation?.friends && (
-                <Button disabled onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
-                <span className="absolute left-3">
-                    <Icon name="UserCheck" />
-                </span>
-                {isRemoving ? <Loader variant="spinner" color="bg-primary" /> : <>Friends</>}
-                </Button>
-            )} 
-
-            {!friendRelation?.friends && friendRelation?.requester === authUser?.userId && (
-                <Button disabled TwClassName="relative flex-1 mt-3 p-1 bg-gray-200 rounded-xl text-gray-500 border border-gray-200 hover:bg-transparent hover:text-gray-200 flex justify-center items-center">
-                <span className="absolute left-3">
-                    <Icon name="UserCog" />
-                </span>
-                {isAdding ? <Loader variant="spinner" color="bg-primary" /> : <>Pending</>}
-                </Button>
-            )}
-
-            {friendRelation !== undefined && !friendRelation?.friends && friendRelation?.requester !== authUser?.userId && (
-                <Button onClick={handleRemoveFriend} TwClassName="relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center">
-                <span className="absolute left-3">
-                    <Icon name="UserMinus" />
-                </span>
-                {isConfirming ? <Loader variant="spinner" color="bg-primary" /> : <>Decline</>}
-                </Button>
-            )}
-
-            {friendRelation !== undefined && !friendRelation?.friends && friendRelation?.requester !== authUser?.userId && (
-                <Button onClick={handleAcceptFriend} TwClassName="relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center">
-                <span className="absolute left-3">
-                    <Icon name="UserPlus" />
-                </span>
-                {isConfirming ? <Loader variant="spinner" color="bg-primary" /> : <>Accept</>}
-                </Button>
-            )}
-            
-            </Container>
-        )}
-
-        <Text
-            text={profileUser?.friends && profileUser?.friends.length > 0 ? (`${profileUser?.friends.length === 1 ? '1 Friend:' : profileUser?.friends.length + ' Friends:'}`) : 'Friends:'}
-            TwClassName="text-black text-xl font-bold mt-5"
-        />
-        {profileUser?.friends && profileUser?.friends.length > 0 ? (
-            <Container TwClassName="flex flex-row items-center relative">
-            {profileUser?.friends
-                .filter(friend => friend.friends)
-                .slice(0, 5)
-                .map((friend, index) => {
-                const avatar = friendAvatars[friend.friendId];
-                return (
-                    <Container
-                    key={friend.friendId}
-                    TwClassName={`w-[40px] h-[40px] rounded-full cursor-pointer bg-black flex justify-center items-center border-3 border-white ${
-                        index !== 0 ? '-ml-3' : ''
-                    } z-${index * 10}`}
-                    onClick={() => {
-                        clientNavigation('/profile/' + friend.friendId, 'Profile', '5MMXnlLFK6gBQArZR3wW')()
-                    }}
-                    >
-                    {avatar?.startsWith('http') ? (
-                        <Image
-                        src={avatar}
-                        alt="User Avatar"
-                        TwClassName="rounded-full w-full h-full object-cover"
-                        />
-                    ) : (
-                        <Text
-                        TwClassName="text-white font-primary text-xs w-full flex justify-center items-center"
-                        text={avatar}
-                        />
-                    )}
-                    </Container>
-                );
-                })}
-
-            {profileUser?.friends.filter(friend => friend.friends).length > 5 && (
-                <Container
-                TwClassName="w-[40px] h-[40px] rounded-full bg-black text-white flex justify-center items-center font-primary -ml-3 z-50 border-3 border-white"
-                >
-                <Text
-                    TwClassName="text-white font-primary text-xs w-full flex justify-center items-center"
-                    text='...'
-                />
-                </Container>
-            )}
-            </Container>
-        ) : (
-            <Text
-            text={
-                userIdFromUrl === authUser?.userId
-                ? 'You do not have any friends yet'
-                : 'This user does not have any friends'
-            }
-            TwClassName="text-xs text-gray-500"
-            />
-        )}
               
+              {receivedRequest && validReceivedCreatedAt && profileUser?.firstName && (
+                <Text
+                  TwClassName="text-xs text-gray-500 mt-2"
+                  text={`${profileUser.firstName} invited you to be friends on: ${format(
+                    new Date(receivedRequest.createdAt),
+                    "EEEE, MMMM do, yyyy"
+                  )}`}
+                />
+              )}
+            </Container>
+          }
+          {!isRecievedRequest && !isAcceptedRequest &&
+            <Button 
+              disabled={isSentRequest}
+              onClick={addFriend} TwClassName={
+                !isSentRequest ? "relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
+                : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-white border border-gray-300 hover:bg-transparent hover:text-gray-300 flex justify-center items-center"
+            }>
+              <span className="absolute left-3">
+                  <Icon name="UserPlus" />
+              </span>
+              {friendAddition ? <Loader variant="spinner" color="bg-primary" /> : (!isSentRequest ? 'Add Friend' : 'Pending')}
+            </Button>
+          }
+          {sentRequest && validSentCreatedAt && profileUser?.firstName && (
+            <Text
+              TwClassName="text-xs text-gray-500 mt-2"
+              text={`You invited ${profileUser.firstName} to be friends on: ${format(
+                new Date(sentRequest.createdAt),
+                "EEEE, MMMM do, yyyy"
+              )}`}
+            />
+          )}
+          {isAcceptedRequest && 
+            <Container TwClassName="flex-col">
+              <Button
+                onClick={removeFriend} TwClassName={
+                  "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
+              }>
+                <span className="absolute left-3">
+                    <Icon name="UserMinus" />
+                </span>
+                {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Unfriend'}
+              </Button>
+              {acceptedRequest && profileUser?.firstName && (
+                <Text
+                  TwClassName="text-xs text-gray-500 mt-2"
+                  text={`You've been friends with ${profileUser.firstName} since: ${format(
+                    new Date(acceptedRequest.createdAt),
+                    "EEEE, MMMM do, yyyy"
+                  )}`}
+                />
+              )}
+            </Container>
+          }
+        </Container>
+      ) : (
+        <Container TwClassName="flex-col">
+          <Text
+            text={
+              friends.friends.length >= 0
+                ? `${friends.friends.length === 1 ? "1 Friend:" : friends.friends.length + " Friends:"}`
+                : "Friends:"
+            }
+            TwClassName="text-black text-xl font-bold mt-5"
+          />
+          <Container TwClassName="flex-row">
+            {randomFriends.map((friend) => (
+              <Container onClick={() => clientNavigation(`/profile/${friend.userId}`, 'Profile', '')()}>
+                {friend.profileImage ? (
+                  <Image
+                    key={friend.userId}
+                    src={friend.profileImage}
+                    alt="User Avatar"
+                    width={28}
+                    height={28}
+                    TwClassName="-ml-1.5 rounded-full border border-gray-300 cursor-pointer object-cover border-3 border-white"
+                  />
+                ) : (
+                  <Container
+                    key={friend.userId}
+                    TwClassName="-ml-1.5 rounded-full w-7 h-7 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
+                  >
+                    <Text
+                      TwClassName="text-white w-full text-xs font-semibold leading-[2.5rem] text-center"
+                      text={`${friend.firstName?.[0] || ''}${friend.lastName?.[0] || ''}`.toUpperCase()}
+                    />
+                  </Container>
+                )}
+              </Container>
+            ))}
+          </Container>
+        </Container>
+      )}
     </Container>
   );
 };

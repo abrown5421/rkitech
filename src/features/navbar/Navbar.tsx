@@ -124,22 +124,26 @@ const Navbar: React.FC = () => {
             cursor="pointer"
             onClick={() => handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, 'loggedInMenu')}
           >
-            {authUser?.user.profileImage ? (
-              <Image
-                src={authUser.user.profileImage}
-                alt="User Avatar"
-                width={40}
-                height={40}
-                TwClassName="rounded-full border border-gray-300 cursor-pointer object-cover"
-              />
-            ) : (
-              <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
-                <Text
-                  TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
-                  text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
+            <div className="relative inline-block">
+              {authUser?.user.profileImage ? (
+                <Image
+                  src={authUser.user.profileImage}
+                  alt="User Avatar"
+                  width={40}
+                  height={40}
+                  TwClassName="rounded-full border border-gray-300 cursor-pointer object-cover"
                 />
-              </Container>
-            )}
+              ) : (
+                <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                  <Text
+                    TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                    text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
+                  />
+                </Container>
+              )}
+
+              
+            </div>
           </Button>
         ) : (
           <Button
@@ -179,6 +183,7 @@ const Navbar: React.FC = () => {
                 />
               </Container>
             )}
+            
           </Button>
         ) : (
           <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>

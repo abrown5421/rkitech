@@ -8,6 +8,7 @@ import authUserReducer from '../features/auth/authUserSlice';
 import tabReducer from '../features/tabs/tabSlice';
 import loadingReducer from './globalSlices/loading/loadingSlice';
 import menuReducer from './globalSlices/menus/menusSlice';
+import friendsReducer from '../features/friends/friendSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     pages: pageReducer,
     menus: menuReducer,
     authUser: authUserReducer,
+    friends: friendsReducer,
   },
 });
 
