@@ -11,7 +11,7 @@ import menuReducer from './globalSlices/menus/menusSlice';
 import friendsReducer from '../features/friends/myFriendSlice';
 import notificationReducer from '../features/notifications/notificationSlice';
 import theirFriendsReducer from '../features/friends/theirFriendSlice';
- 
+
 export const store = configureStore({
   reducer: {
     modal: modalReducer,
