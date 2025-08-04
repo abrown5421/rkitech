@@ -13,7 +13,7 @@ export interface PageShellState {
 
 export interface Page {
   pageName: string;
-  pageId: string;
+  pageID: string;
   pagePath: string;
   pageBg: string;
   pageEntranceAnimation: string;
