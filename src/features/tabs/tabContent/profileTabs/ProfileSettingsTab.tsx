@@ -1,11 +1,11 @@
 import React from "react";
-import Container from "../../../shared/components/container/Container";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import Text from "../../../shared/components/text/Text";
-import Button from "../../../shared/components/button/Button";
-import Loader from "../../../shared/components/loader/Loader";
-import { openModal } from "../../modal/modalSlice";
-import { setLoading } from "../../../app/globalSlices/loading/loadingSlice";
+import Container from "../../../../shared/components/container/Container";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import Text from "../../../../shared/components/text/Text";
+import Button from "../../../../shared/components/button/Button";
+import Loader from "../../../../shared/components/loader/Loader";
+import { openModal } from "../../../modal/modalSlice";
+import { setLoading } from "../../../../app/globalSlices/loading/loadingSlice";
 
 const ProfileSettingsTab: React.FC = () => {
   const dispatch = useAppDispatch();

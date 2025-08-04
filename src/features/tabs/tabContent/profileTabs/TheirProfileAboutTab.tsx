@@ -1,8 +1,8 @@
 import React from "react";
-import Container from "../../../shared/components/container/Container";
-import Text from "../../../shared/components/text/Text";
-import Icon from "../../../shared/components/icon/Icon";
-import type { ProfileTab } from "../tabTypes";
+import Container from "../../../../shared/components/container/Container";
+import Text from "../../../../shared/components/text/Text";
+import Icon from "../../../../shared/components/icon/Icon";
+import type { ProfileTab } from "../../tabTypes";
 
 export const TheirProfileAboutTab: React.FC<ProfileTab> = ({
   profileUser,
