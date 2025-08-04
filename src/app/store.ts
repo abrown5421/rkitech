@@ -9,6 +9,7 @@ import tabReducer from '../features/tabs/tabSlice';
 import loadingReducer from './globalSlices/loading/loadingSlice';
 import menuReducer from './globalSlices/menus/menusSlice';
 import friendsReducer from '../features/friends/friendSlice';
+import notificationReducer from '../features/notifications/notificationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     menus: menuReducer,
     authUser: authUserReducer,
     friends: friendsReducer,
+    notifications: notificationReducer,
   },
 });
 
