@@ -11,6 +11,7 @@ import PageShell from './client/features/pages/PageShell';
 import Modal from './shared/features/modal/Modal';
 import Alert from './shared/features/alert/Alert';
 import Drawer from './shared/features/drawer/Drawer';
+import AdminAuth from './admin/features/auth/AdminAuth';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -93,6 +94,10 @@ const App: React.FC = () => {
                 />
               );
             })}
+            <Route
+              path='/Admin'  
+              element={<AdminAuth />}
+            />
           </Routes>
           
           <Modal />
