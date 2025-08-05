@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import type { ImageProps } from "./imageTypes";
-import { getAnimationClasses } from "../../utils/useAnimation";
+import { getAnimationClasses } from "../../../client/utils/useAnimation";
 
 const Image: React.FC<ImageProps> = ({
   src,

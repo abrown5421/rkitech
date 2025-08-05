@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import clsx from "clsx";
 import type { SelectProps } from "./selectTypes";
-import { getAnimationClasses } from "../../utils/useAnimation";
+import { getAnimationClasses } from "../../../client/utils/useAnimation";
 
 const Select: React.FC<SelectProps> = ({
   label,

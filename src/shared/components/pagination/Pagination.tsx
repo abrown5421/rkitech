@@ -48,7 +48,6 @@ const Pagination: React.FC<PaginationProps> = ({
       className={`flex items-center justify-center mt-6 space-x-2 ${className}`} 
       aria-label="Pagination"
     >
-      {/* Previous Button */}
       <Button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!canGoPrevious}
@@ -63,7 +62,6 @@ const Pagination: React.FC<PaginationProps> = ({
         </svg>
       </Button>
 
-      {/* Page Numbers */}
       {visiblePages.map((pageIndex) => (
         <button
           key={pageIndex}
@@ -78,7 +76,6 @@ const Pagination: React.FC<PaginationProps> = ({
         </button>
       ))}
 
-      {/* Next Button */}
       <Button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!canGoNext}

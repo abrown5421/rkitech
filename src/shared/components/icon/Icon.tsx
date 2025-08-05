@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as LucideIcons from 'lucide-react';
 import type { LucideProps } from 'lucide-react';
 import clsx from 'clsx';
-import { getAnimationClasses } from '../../utils/useAnimation';
+import { getAnimationClasses } from '../../../client/utils/useAnimation';
 import type { IconProps } from './iconTypes';
 
 const Icon: React.FC<IconProps> = ({

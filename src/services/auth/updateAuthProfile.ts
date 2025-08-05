@@ -10,6 +10,7 @@ import { auth, storage } from "../firebase";
 import { deleteDocument } from "../database/deleteData";
 import { getDocumentById } from "../database/readData";
 import { deleteObject, ref } from "firebase/storage";
+import type { AuthUser } from "../../client/features/auth/authUserTypes";
 
 export async function sendEmailChangeVerification(newEmail: string, currentPassword: string): Promise<void> {
   const user = auth.currentUser;
@@ -49,7 +50,7 @@ export async function deleteAuthenticatedAccount(currentPassword: string, UID: s
   try {
     const credential = EmailAuthProvider.credential(user.email, currentPassword);
     await reauthenticateWithCredential(user, credential);
-    const userDocument = await getDocumentById('Users', UID);
+    const userDocument = await getDocumentById('Users', UID) as AuthUser;
     const profileImageUrl = userDocument?.profileImage;
     if (profileImageUrl) {
       const profilePath = getStoragePathFromUrl(profileImageUrl);
