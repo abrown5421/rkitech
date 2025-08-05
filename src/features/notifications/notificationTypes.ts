@@ -1,6 +1,7 @@
 export interface Notification {
   id: string
-  userId: string, 
+  senderUserId: string, 
+  recieverUserId: string, 
   type: "friend_request" | "comment"  
   isRead: boolean,
   createdAt: string,

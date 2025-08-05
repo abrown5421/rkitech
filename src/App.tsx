@@ -10,16 +10,31 @@ import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
 import Container from './shared/components/container/Container';
 import { setPartOfActivePageShell } from './features/pages/pageShellSlice';
+import Cookies from 'js-cookie';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const loadingSite = useInitializeApp();
+  const initializeApp = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
   const pages = useAppSelector((state) => state.pages.pages);
   const notif = useAppSelector((state) => state.notifications);
+  const authUser = useAppSelector((state) => state.authUser);
+  const [loadingSite, setLoadingSite] = React.useState(true);
 
   useEffect(()=>{console.log(notif)}, [notif])
+
+  useEffect(() => {
+    const storedUser = Cookies.get("authUser");
+    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+    const unsubscribe = initializeApp(parsedUser);
+    setLoadingSite(false);
+
+    return () => {
+      unsubscribe?.(); 
+    };
+  }, [authUser.user?.userId]);
 
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');

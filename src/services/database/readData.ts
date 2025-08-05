@@ -1,4 +1,4 @@
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, Query } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { AuthUser } from '../../features/auth/authUserTypes';
 
@@ -92,4 +92,23 @@ export async function searchUsers(input: string): Promise<AuthUser[]> {
   }); 
 
   return results;
+}
+
+export async function getDocumentsByQuery(queryObj: Query): Promise<any[] | null> {
+  try {
+    const querySnapshot = await getDocs(queryObj);
+
+    if (querySnapshot.empty) {
+      console.log('No matching documents!');
+      return null;
+    }
+
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error("Error getting documents by query:", error);
+    return null;
+  }
 }
