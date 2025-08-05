@@ -16,6 +16,7 @@ const LoggedInDrawerContent: React.FC = () => {
 
   const menus = useAppSelector((state) => state.menus);
   const pages = useAppSelector((state) => state.pages.pages);
+  const notifications = useAppSelector((state) => state.notifications);
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const authUser = useAppSelector((state) => state.authUser);
   const { loading, id } = useAppSelector((state) => state.loading);
@@ -33,12 +34,7 @@ const LoggedInDrawerContent: React.FC = () => {
           const page = pages.find((p) => p.pageID === menuItem.itemId);
           if (!page) return null;
           return (
-            <Button
-              key={menuItem.itemId}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
-              cursor="pointer"
-              color={activePage === menuItem.itemName ? 'primary' : 'black'}
+            <Container 
               onClick={() => {
                 dispatch(preCloseDrawer());
                 setTimeout(() => {
@@ -50,18 +46,36 @@ const LoggedInDrawerContent: React.FC = () => {
                   clientNavigation(targetPath, page.pageName, page.pageID)();
                 }, 250);
               }}
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 flex-row w-full justify-between items-center cursor-pointer ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary hover:bg-gray-100`}
             >
               {menuItem.itemName}
-            </Button>
+              {notifications.notifications.filter(
+                (n) =>
+                  menuItem.itemName === 'Profile' &&
+                  n.senderUserId === authUser.user?.userId &&
+                  !n.isRead &&
+                  n.type === "friend_request"
+              ).length > 0 && (
+                <Container TwClassName="bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow ml-2">
+                  {
+                    notifications.notifications.filter(
+                      (n) =>
+                        menuItem.itemName === 'Profile' &&
+                        n.senderUserId === authUser.user?.userId &&
+                        !n.isRead &&
+                        n.type === "friend_request"
+                    ).length
+                  }
+                </Container>
+              )}
+            </Container>
           );
         } else {
           return (
             <Button
               key={menuItem.itemName}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
               cursor="pointer"
-              color="black"
               onClick={() => window.open(menuItem.itemLink, '_blank')}
             >
               {menuItem.itemName}
@@ -79,9 +93,9 @@ const LoggedInDrawerContent: React.FC = () => {
   };
 
   return (
-    <Container flexDirection="col" height="h-full" width="w-full" justifyContent="between">
-      <Container flexDirection="col" height="h-full" width="w-full" alignItems="start">
-        <Container flexDirection="col" width="w-full" alignItems="start" className="md:hidden">
+    <Container TwClassName="flex-col h-full w-full justify-between">
+      <Container TwClassName="flex-col h-full w-full items-start">
+        <Container TwClassName="flex-col w-full items-start md:hidden">
           {renderMenuItems(primaryMenu?.menuItems || [])}
           <hr className="w-full border-gray-300 my-2" />
         </Container>
@@ -89,8 +103,8 @@ const LoggedInDrawerContent: React.FC = () => {
         {renderMenuItems(profileMenu?.menuItems || [])}
       </Container>
 
-      <Button width="w-full" padding="sm" color="primary" cursor="pointer" onClick={handleLogout}>
-        {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" color="white" />}
+      <Button TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" cursor="pointer" onClick={handleLogout}>
+        {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Logout" />}
       </Button>
     </Container>
   );
