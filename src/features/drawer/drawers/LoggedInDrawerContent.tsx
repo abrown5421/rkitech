@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Container from '../../../shared/components/container/Container';
 import Text from '../../../shared/components/text/Text';
@@ -16,6 +17,7 @@ const LoggedInDrawerContent: React.FC = () => {
 
   const menus = useAppSelector((state) => state.menus);
   const pages = useAppSelector((state) => state.pages.pages);
+  const notifications = useAppSelector((state) => state.notifications);
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const authUser = useAppSelector((state) => state.authUser);
   const { loading, id } = useAppSelector((state) => state.loading);
@@ -33,10 +35,7 @@ const LoggedInDrawerContent: React.FC = () => {
           const page = pages.find((p) => p.pageID === menuItem.itemId);
           if (!page) return null;
           return (
-            <Button
-              key={menuItem.itemId}
-              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}
-              cursor="pointer"
+            <Container 
               onClick={() => {
                 dispatch(preCloseDrawer());
                 setTimeout(() => {
@@ -48,9 +47,29 @@ const LoggedInDrawerContent: React.FC = () => {
                   clientNavigation(targetPath, page.pageName, page.pageID)();
                 }, 250);
               }}
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 flex-row w-full justify-between items-center cursor-pointer ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary hover:bg-gray-100`}
             >
               {menuItem.itemName}
-            </Button>
+              {notifications.notifications.filter(
+                (n) =>
+                  menuItem.itemName === 'Profile' &&
+                  n.senderUserId === authUser.user?.userId &&
+                  !n.isRead &&
+                  n.type === "friend_request"
+              ).length > 0 && (
+                <Container TwClassName="bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow ml-2">
+                  {
+                    notifications.notifications.filter(
+                      (n) =>
+                        menuItem.itemName === 'Profile' &&
+                        n.senderUserId === authUser.user?.userId &&
+                        !n.isRead &&
+                        n.type === "friend_request"
+                    ).length
+                  }
+                </Container>
+              )}
+            </Container>
           );
         } else {
           return (

@@ -112,18 +112,19 @@ const Auth: React.FC = () => {
                     profileImage: '',
                     userRole: 'User',
                     createdAt: new Date().toISOString(),
-                    trianglifyObject: randomizedTrianglifyBanner
+                    trianglifyObject: randomizedTrianglifyBanner,
+                    bio: '',
+                    gender: undefined,
+                    phone: '',
+                    addressLn1: '',
+                    addressLn2: '',
+                    addressCity: '',
+                    addressState: '',
+                    addressPostCode: ''
                 }));
                 
                 Cookies.set('authUser', JSON.stringify({
                     userId: result.userId,
-                    email: formValues.email,
-                    firstName: formValues.firstName,
-                    lastName: formValues.lastName,
-                    profileImage: '',
-                    userRole: 'User',
-                    createdAt: new Date().toISOString(),
-                    trianglifyObject: randomizedTrianglifyBanner
                 }), { expires: 1 });
 
                 dispatch(openAlert({
@@ -144,26 +145,31 @@ const Auth: React.FC = () => {
 
                 if (!result) throw new Error('Login failed');
 
+                if (result.userRole === 'Disabled') {
+                    throw new Error('This account has been disabled. Please contact an administrator.');
+                }
+                
                 dispatch(setAuthUser({
                     userId: result.userId,
                     email: result.email,
                     firstName: result.firstName,
                     lastName: result.lastName,
-                    profileImage: '',
+                    profileImage: result.profileImage,
                     userRole: result.userRole,
                     createdAt: result.createdAt,
-                    trianglifyObject: result.trianglifyObject
+                    trianglifyObject: result.trianglifyObject,
+                    bio: result.bio,
+                    gender: result.gender,
+                    phone: result.phone,
+                    addressLn1: result.addressLn1,
+                    addressLn2: result.addressLn2,
+                    addressCity: result.addressCity,
+                    addressState: result.addressState,
+                    addressPostCode: result.addressPostCode
                 }));
 
                 Cookies.set('authUser', JSON.stringify({
                     userId: result.userId,
-                    email: result.email,
-                    firstName: result.firstName,
-                    lastName: result.lastName,
-                    profileImage: '',
-                    userRole: result.userRole,
-                    createdAt: result.createdAt,
-                    trianglifyObject: result.trianglifyObject
                 }), { expires: 1 });
 
                 dispatch(setNotLoading())
@@ -194,7 +200,7 @@ const Auth: React.FC = () => {
 
     return (
         <Container
-            TwClassName="w-full h-full justify-center items-center"
+            TwClassName="w-full min-h-[calc(100vh-50px)] justify-center items-center"
         >
             <Container TwClassName='w-11/12 md:w-1/3 p-4 bg-white rounded-xl min-h-2/5 flex-col justify-between'>
                 <Text text={isSignup ? 'Create Account' : 'Login'} TwClassName="text-xl" />
