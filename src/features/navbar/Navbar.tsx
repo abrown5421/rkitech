@@ -13,12 +13,12 @@ const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const clientNavigation = useNavigationHook();
   const authUser = useAppSelector((state) => state.authUser);
+  const notifications = useAppSelector((state) => state.notifications);
   const pages = useAppSelector((state) => state.pages.pages);
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const menus = useAppSelector((state) => state.menus);
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
   const isLoginHidden = activePage === 'Auth';
-  const unseenFriendRequests = authUser.user?.friends?.filter(friend => friend.seen === false).length || 0;
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -91,6 +91,10 @@ const Navbar: React.FC = () => {
     );
   };
 
+  const unreadCount = notifications.notifications.filter(
+    (n) => n.senderUserId === authUser.user?.userId && !n.isRead
+  )?.length || 0;
+
   return (
     <Container
       TwClassName="h-[50px] justify-between items-center bg-white p-2 relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
@@ -143,11 +147,7 @@ const Navbar: React.FC = () => {
                 </Container>
               )}
 
-              {unseenFriendRequests > 0 && (
-                <div className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] min-w-[16px] h-[16px] px-[4px] rounded-full flex items-center justify-center">
-                  {unseenFriendRequests}
-                </div>
-              )}
+              
             </div>
           </Button>
         ) : (
@@ -172,7 +172,7 @@ const Navbar: React.FC = () => {
             cursor="pointer"
             onClick={() => handleDrawerOpen(`${getTimeOfDay()}, ${authUser.user?.firstName}`, 'loggedInMenu')}
           >
-            {authUser.user.profileImage ? (
+            {authUser?.user.profileImage ? (
               <Image
                 src={authUser.user.profileImage}
                 alt="User Avatar"
@@ -188,12 +188,13 @@ const Navbar: React.FC = () => {
                 />
               </Container>
             )}
-            
-            {unseenFriendRequests > 0 && (
-              <div className="absolute top-0.5 right-2.5 bg-error text-white text-[10px] min-w-[16px] h-[16px] px-[4px] rounded-full flex items-center justify-center">
-                {unseenFriendRequests}
-              </div>
+
+            {unreadCount > 0 && (
+              <Container TwClassName="absolute top-0 right-1.5 bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {unreadCount}
+              </Container>
             )}
+            
           </Button>
         ) : (
           <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
