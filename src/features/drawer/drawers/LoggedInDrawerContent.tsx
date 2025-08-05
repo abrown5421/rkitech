@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Container from '../../../shared/components/container/Container';
 import Text from '../../../shared/components/text/Text';
@@ -51,17 +52,19 @@ const LoggedInDrawerContent: React.FC = () => {
               {menuItem.itemName}
               {notifications.notifications.filter(
                 (n) =>
-                  n.userId === authUser.user?.userId &&
+                  menuItem.itemName === 'Profile' &&
+                  n.senderUserId === authUser.user?.userId &&
                   !n.isRead &&
-                  n.targetPageName === menuItem.itemName
+                  n.type === "friend_request"
               ).length > 0 && (
                 <Container TwClassName="bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow ml-2">
                   {
                     notifications.notifications.filter(
                       (n) =>
-                        n.userId === authUser.user?.userId &&
+                        menuItem.itemName === 'Profile' &&
+                        n.senderUserId === authUser.user?.userId &&
                         !n.isRead &&
-                        n.targetPageName === menuItem.itemName
+                        n.type === "friend_request"
                     ).length
                   }
                 </Container>
