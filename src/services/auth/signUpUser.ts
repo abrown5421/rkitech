@@ -1,8 +1,8 @@
-
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
-import type { AuthUser } from '../../features/auth/authUserTypes';
+import type { ClientAuthUser } from '../../client/features/auth/ClientAuthUserTypes';
+import type { TrianglifyBannerProps } from '../../shared/components/trianglifyBanner/trianglifyBannerTypes';
 
 export async function signUpUser(
   email: string,
@@ -10,7 +10,8 @@ export async function signUpUser(
   firstName: string,
   lastName: string,
   profileImage: string,
-): Promise<AuthUser | null> {
+  trianglifyObject: TrianglifyBannerProps
+): Promise<ClientAuthUser | null> {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const userId = userCredential.user.uid;
@@ -23,7 +24,9 @@ export async function signUpUser(
       email,
       userRole: 'User',
       createdAt,
-      profileImage
+      profileImage,
+      trianglifyObject,
+      friends: []
     });
 
     return {
@@ -33,7 +36,11 @@ export async function signUpUser(
       lastName,
       userRole: 'User',
       createdAt,
-      profileImage
+      profileImage,
+      trianglifyObject,
+      addressCity: '',
+      addressState: '',
+      addressPostCode: ''
     };
   } catch (error) {
     console.error('Signup failed:', error);

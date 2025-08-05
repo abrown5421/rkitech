@@ -1,22 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as LucideIcons from 'lucide-react';
 import type { LucideProps } from 'lucide-react';
 import clsx from 'clsx';
-import { getAnimationClasses } from '../../utils/useAnimation';
-import { paddingMap, marginMap } from '../../constants/spacingConstants';
-import { resolveDimension } from '../../constants/sizeConstants';
+import { getAnimationClasses } from '../../../client/utils/useAnimation';
 import type { IconProps } from './iconTypes';
 
 const Icon: React.FC<IconProps> = ({
   name,
   cursor,
-  color = 'text-gray-900',
-  padding = 'none',
-  margin = 'none',
-  width,
-  height,
   animation,
-  className,
+  TwClassName,
   onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -29,28 +22,11 @@ const Icon: React.FC<IconProps> = ({
   }
 
   const animationClasses = getAnimationClasses(animation, isHovered);
-  const resolvedWidth = resolveDimension(width, 'width');
-  const resolvedHeight = resolveDimension(height, 'height');
-
-  useEffect(()=>{console.log(resolvedWidth, resolvedHeight)}, [resolvedWidth, resolvedHeight])
-  
-  const tailwindWidthClass = typeof resolvedWidth === 'string' ? resolvedWidth : '';
-  const tailwindHeightClass = typeof resolvedHeight === 'string' ? resolvedHeight : '';
-
-  const inlineStyle = {
-    ...(typeof resolvedWidth === 'object' ? resolvedWidth : {}),
-    ...(typeof resolvedHeight === 'object' ? resolvedHeight : {}),
-  };
 
   const classes = clsx(
-    color,
-    paddingMap[padding],
-    marginMap[margin],
-    tailwindWidthClass,
-    tailwindHeightClass,
     animationClasses,
     `cursor-${cursor || 'pointer'}`,
-    className
+    TwClassName
   );
 
   return (
@@ -60,7 +36,7 @@ const Icon: React.FC<IconProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <ImportedIcon style={inlineStyle}/>
+      <ImportedIcon />
     </div>
   );
 };
