@@ -3,7 +3,7 @@ import Container from '../../../../shared/components/container/Container';
 import { useAppSelector } from '../../../../app/hooks';
 import { getDocumentById } from '../../../../services/database/readData';
 import type { Friend } from '../friendTypes';
-import type { AuthUser } from '../../auth/authUserTypes';
+import type { ClientAuthUser } from '../../auth/ClientAuthUserTypes';
 import { useParams } from 'react-router-dom';
 import Text from '../../../../shared/components/text/Text';
 import FriendCard, { type FriendStatus } from '../components/FriendCard';
@@ -12,7 +12,7 @@ import Pagination from '../../../../shared/components/pagination/Pagination';
 const FRIENDS_PER_PAGE = 6;
 
 type CombinedFriend = Friend & { source: FriendStatus };
-type FriendData = { friend: AuthUser; meta: CombinedFriend };
+type FriendData = { friend: ClientAuthUser; meta: CombinedFriend };
 
 const ProfileFriendRequestTab: React.FC = () => {
   const { userIdFromUrl } = useParams<{ userIdFromUrl: string }>();
@@ -54,7 +54,7 @@ const ProfileFriendRequestTab: React.FC = () => {
               ? friend.requesterId 
               : friend.requesteeId;
             
-            const user = await getDocumentById<AuthUser>('Users', friendId);
+            const user = await getDocumentById<ClientAuthUser>('Users', friendId);
             return user ? { friend: user, meta: friend } : null;
           } catch (error) {
             console.error('Error fetching friend data:', error);

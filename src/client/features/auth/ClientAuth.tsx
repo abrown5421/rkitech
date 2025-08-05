@@ -5,7 +5,7 @@ import { setLoading, setNotLoading } from '../../../app/globalSlices/loading/loa
 import { openAlert } from '../../../shared/features/alert/alertSlice';
 import { getRandomTrianglifyParams } from '../../../shared/components/trianglifyBanner/getRandomTrianglifyParams';
 import { signUpUser } from '../../../services/auth/signUpUser';
-import { setAuthUser } from './authUserSlice';
+import { setClientAuthUser } from './clientAuthUserSlice';
 import Cookies from 'js-cookie';
 import { signInUser } from '../../../services/auth/signInUser';
 import Container from '../../../shared/components/container/Container';
@@ -15,7 +15,7 @@ import Button from '../../../shared/components/button/Button';
 import Loader from '../../../shared/components/loader/Loader';
 import Icon from '../../../shared/components/icon/Icon';
 
-const Auth: React.FC = () => {
+const ClientAuth: React.FC = () => {
     const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
     const { loading, id } = useAppSelector((state) => state.loading);
@@ -104,7 +104,7 @@ const Auth: React.FC = () => {
                 );
                 if (!result) throw new Error('Failed to sign up');
     
-                dispatch(setAuthUser({
+                dispatch(setClientAuthUser({
                     userId: result.userId,
                     email: formValues.email,
                     firstName: formValues.firstName,
@@ -149,7 +149,7 @@ const Auth: React.FC = () => {
                     throw new Error('This account has been disabled. Please contact an administrator.');
                 }
                 
-                dispatch(setAuthUser({
+                dispatch(setClientAuthUser({
                     userId: result.userId,
                     email: result.email,
                     firstName: result.firstName,
@@ -297,4 +297,4 @@ const Auth: React.FC = () => {
     );
 };
 
-export default Auth;
+export default ClientAuth;

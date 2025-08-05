@@ -4,7 +4,7 @@ import alertReducer from '../shared/features/alert/alertSlice';
 import drawerReducer from '../shared/features/drawer/drawerSlice';
 import pageShellReducer from '../client/features/pages/pageShellSlice';
 import pageReducer from '../client/features/pages/pagesSlice';
-import authUserReducer from '../client/features/auth/authUserSlice';
+import authUserReducer from '../client/features/auth/clientAuthUserSlice';
 import tabReducer from '../shared/features/tabs/tabSlice';
 import friendsReducer from '../client/features/friends/myFriendSlice';
 import notificationReducer from '../client/features/notifications/notificationSlice';

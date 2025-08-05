@@ -1,4 +1,4 @@
-import type { AuthUser } from "../auth/authUserTypes";
+import type { ClientAuthUser } from "../auth/ClientAuthUserTypes";
 
 export interface Friend {
   id: string; 
@@ -17,5 +17,5 @@ export interface FriendState {
 }
 
 export interface FriendProfileModuleState {
-  profileUser: AuthUser
+  profileUser: ClientAuthUser
 }

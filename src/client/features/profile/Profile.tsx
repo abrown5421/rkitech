@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { AuthUser } from '../auth/authUserTypes';
+import type { ClientAuthUser } from '../auth/ClientAuthUserTypes';
 import { format } from 'date-fns';
 import FriendProfileModule from '../friends/FriendProfileModule';
 import { fetchProfileFriends } from '../../hooks/useTheirFriends';
@@ -33,7 +33,7 @@ const Profile: React.FC = () => {
   const { loading, id } = useAppSelector((state) => state.loading);
   const authUser = useAppSelector((state) => state.authUser.user);
   const isProfileLoading = loading && id === 'profile';
-  const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
+  const [profileUser, setProfileUser] = useState<ClientAuthUser | null>(null);
   const [activeProfileSection, setActiveProfileSection] = useState<string>('Main');
   const ownedProfile = authUser?.userId === userIdFromUrl;
 
@@ -58,7 +58,7 @@ const Profile: React.FC = () => {
         } else {
           const data = await getDocumentById('Users', userIdFromUrl);
           if (data) {
-            setProfileUser({ ...(data as AuthUser), userId: userIdFromUrl });
+            setProfileUser({ ...(data as ClientAuthUser), userId: userIdFromUrl });
           }     
         }
         

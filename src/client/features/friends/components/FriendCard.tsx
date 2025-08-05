@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import type { AuthUser } from '../../auth/authUserTypes';
+import type { ClientAuthUser } from '../../auth/ClientAuthUserTypes';
 import type { Friend } from '../friendTypes';
 import { useNavigationHook } from '../../../../hooks/useNavigationHook';
 import { useAppSelector } from '../../../../app/hooks';
@@ -18,7 +18,7 @@ import Loader from '../../../../shared/components/loader/Loader';
 export type FriendStatus = 'received' | 'sent' | 'accepted';
 
 export interface FriendCardProps {
-  friend: AuthUser;
+  friend: ClientAuthUser;
   meta: Friend & { source: FriendStatus };
   isLoading?: boolean;
   onAction?: (action: 'accept' | 'decline' | 'unfriend' | 'rescind', friendId: string) => void;
