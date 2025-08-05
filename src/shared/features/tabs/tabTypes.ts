@@ -1,4 +1,4 @@
-import type { AuthUser } from "../../../client/features/auth/authUserTypes";
+import type { ClientAuthUser } from "../../../client/features/auth/ClientAuthUserTypes";
 
 export interface TabItem {
   id: string;
@@ -24,5 +24,5 @@ export interface TabsState {
 }
 
 export interface ProfileTab {
-    profileUser: AuthUser;
+    profileUser: ClientAuthUser;
 }

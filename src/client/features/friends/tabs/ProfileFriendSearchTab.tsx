@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Container from "../../../../shared/components/container/Container";
 import Input from "../../../../shared/components/input/Input";
 import Icon from "../../../../shared/components/icon/Icon";
-import type { AuthUser } from '../../auth/authUserTypes';
+import type { ClientAuthUser } from '../../auth/ClientAuthUserTypes';
 import { searchUsers } from "../../../../services/database/readData";
 import Image from "../../../../shared/components/image/Image";
 import Text from "../../../../shared/components/text/Text";
@@ -11,7 +11,7 @@ import { useNavigationHook } from "../../../../hooks/useNavigationHook";
 const ProfileFriendSearchTab: React.FC = () => {
   const clientNavigation = useNavigationHook();
   const [searchValue, setSearchValue] = useState("");
-  const [results, setResults] = useState<AuthUser[]>([]);
+  const [results, setResults] = useState<ClientAuthUser[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {

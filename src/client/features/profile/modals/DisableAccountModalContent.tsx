@@ -10,7 +10,7 @@ import { setLoading, setNotLoading } from '../../../../app/globalSlices/loading/
 import { openAlert } from '../../../../shared/features/alert/alertSlice';
 import { useNavigationHook } from '../../../../hooks/useNavigationHook';
 import { updateDataInCollection } from '../../../../services/database/updateData';
-import { clearAuthUser } from '../../auth/authUserSlice';
+import { clearClientAuthUser } from '../../auth/clientAuthUserSlice';
 
 const DisableAccountModalContent: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -44,7 +44,7 @@ const DisableAccountModalContent: React.FC = () => {
       });
       
       Cookies.remove('authUser');
-      dispatch(clearAuthUser());
+      dispatch(clearClientAuthUser());
 
       dispatch(openAlert({
         alertOpen: true,

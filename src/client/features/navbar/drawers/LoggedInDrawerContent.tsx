@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Cookies from 'js-cookie';
-import { clearAuthUser } from '../../auth/authUserSlice';
+import { clearClientAuthUser } from '../../auth/clientAuthUserSlice';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { useNavigationHook } from '../../../../hooks/useNavigationHook';
 import Container from '../../../../shared/components/container/Container';
@@ -88,7 +88,7 @@ const LoggedInDrawerContent: React.FC = () => {
   const handleLogout = () => {
     dispatch(setLoading({ loading: true, id: 'logoutButton' }));
     Cookies.remove('authUser');
-    dispatch(clearAuthUser());
+    dispatch(clearClientAuthUser());
     dispatch(setNotLoading());
     clientNavigation('/login', 'Auth', 'authenticationPage')();
   };

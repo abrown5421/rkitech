@@ -15,8 +15,8 @@ import { deleteImageFromStorage } from "../../../../services/storage/deleteImage
 import Icon from "../../../../shared/components/icon/Icon";
 import type { ProfileTab } from "../../../../shared/features/tabs/tabTypes";
 import { openAlert } from "../../../../shared/features/alert/alertSlice";
-import type { AuthUser } from "../../auth/authUserTypes";
-import { setAuthUser } from "../../auth/authUserSlice";
+import type { ClientAuthUser } from "../../auth/ClientAuthUserTypes";
+import { setClientAuthUser } from "../../auth/clientAuthUserSlice";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\d{3}-\d{3}-\d{4}$/;
@@ -203,7 +203,7 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
     dispatch(setLoading({ loading: true, id: "profileSave" }));
     
     try {
-      const firestoreUpdate: Partial<AuthUser> = {
+      const firestoreUpdate: Partial<ClientAuthUser> = {
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,
@@ -240,8 +240,8 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
         await updateUserPassword(form.oldPassword, form.newPassword);
       }
 
-      const updatedUser: AuthUser = { ...authUser!, ...firestoreUpdate, userId: profileUser.userId };
-      dispatch(setAuthUser(updatedUser));
+      const updatedUser: ClientAuthUser = { ...authUser!, ...firestoreUpdate, userId: profileUser.userId };
+      dispatch(setClientAuthUser(updatedUser));
 
       let message = "Account update was successful!";
       if (emailChanged && nameChanged) {

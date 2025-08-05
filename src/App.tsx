@@ -18,11 +18,8 @@ const App: React.FC = () => {
   const initializeApp = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
   const pages = useAppSelector((state) => state.pages.pages);
-  const notif = useAppSelector((state) => state.notifications);
   const authUser = useAppSelector((state) => state.authUser);
   const [loadingSite, setLoadingSite] = React.useState(true);
-
-  useEffect(()=>{console.log(notif)}, [notif])
 
   useEffect(() => {
     const storedUser = Cookies.get("authUser");

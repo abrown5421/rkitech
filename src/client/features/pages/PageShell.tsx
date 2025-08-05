@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PageShellState } from './pageTypes';
-import Auth from '../auth/Auth';
+import Auth from '../auth/ClientAuth';
 import Home from '../home/Home';
 import Test from '../test/Test';
 import Profile from '../profile/Profile';

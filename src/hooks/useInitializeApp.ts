@@ -4,9 +4,9 @@ import { listenToCollection, listenToDocument, listenToQuery } from "../services
 import { setMenus } from "../client/features/menus/menusSlice";
 import Cookies from "js-cookie";
 import { buildQuery } from "../services/database/queryBuilder";
-import type { AuthUser } from "../client/features/auth/authUserTypes";
+import type { ClientAuthUser } from "../client/features/auth/ClientAuthUserTypes";
 import { setPages } from "../client/features/pages/pagesSlice";
-import { clearAuthUser, setAuthUser } from "../client/features/auth/authUserSlice";
+import { clearClientAuthUser, setClientAuthUser } from "../client/features/auth/clientAuthUserSlice";
 import type { Friend } from "../client/features/friends/friendTypes";
 import { setFriends } from "../client/features/friends/myFriendSlice";
 import type { Notification } from "../client/features/notifications/notificationTypes";
@@ -15,7 +15,7 @@ import { setNotifications } from "../client/features/notifications/notificationS
 export const useInitializeApp = () => {
   const dispatch = useAppDispatch();
 
-  const initializeApp = useCallback((parsedUser: AuthUser | null) => {
+  const initializeApp = useCallback((parsedUser: ClientAuthUser | null) => {
     const unsubscribers: (() => void)[] = [];
 
     unsubscribers.push(
@@ -41,10 +41,10 @@ export const useInitializeApp = () => {
     if (parsedUser) {
       const unsubscribeUser = listenToDocument("Users", parsedUser.userId, (data) => {
         if (data) {
-          dispatch(setAuthUser({ ...(data as AuthUser), userId: parsedUser.userId }));
+          dispatch(setClientAuthUser({ ...(data as ClientAuthUser), userId: parsedUser.userId }));
         } else {
           Cookies.remove("authUser");
-          dispatch(clearAuthUser());
+          dispatch(clearClientAuthUser());
         }
       });
       unsubscribers.push(unsubscribeUser);

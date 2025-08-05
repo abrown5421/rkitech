@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import type { Friend, FriendProfileModuleState } from "./friendTypes";
 import { useNavigationHook } from "../../../hooks/useNavigationHook";
 import { useAppSelector } from "../../../app/hooks";
-import type { AuthUser } from "../auth/authUserTypes";
+import type { ClientAuthUser } from "../auth/ClientAuthUserTypes";
 import { getDocumentById } from "../../../services/database/readData";
 import { useFriendActions } from "../../hooks/useFriendActions";
 import Container from "../../../shared/components/container/Container";
@@ -23,7 +23,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
   const [ownedProfile, setOwnedProfile] = useState<boolean>(true);
   const friendRemoval = loading && id === 'addFriend';
   const friendAddition = loading && id === 'remFriend';
-  const [randomFriends, setRandomFriends] = useState<AuthUser[]>([])
+  const [randomFriends, setRandomFriends] = useState<ClientAuthUser[]>([])
   
   function getRandomFriendIds(
     friends: Friend[],
@@ -45,7 +45,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
           fiveFriendIds.map((id) => getDocumentById("Users", id))
         );
         
-        const validFriends = friendDocs.filter((doc): doc is AuthUser => Boolean(doc));
+        const validFriends = friendDocs.filter((doc): doc is ClientAuthUser => Boolean(doc));
         
         setRandomFriends(validFriends);
       } catch (err) {

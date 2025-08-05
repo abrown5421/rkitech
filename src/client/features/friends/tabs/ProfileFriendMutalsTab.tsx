@@ -7,7 +7,7 @@ import Image from '../../../../shared/components/image/Image';
 import Text from '../../../../shared/components/text/Text';
 import Button from '../../../../shared/components/button/Button';
 import type { Friend } from '../friendTypes';
-import type { AuthUser } from '../../auth/authUserTypes';
+import type { ClientAuthUser } from '../../auth/ClientAuthUserTypes';
 
 const FRIENDS_PER_PAGE = 6;
 
@@ -17,7 +17,7 @@ const ProfileFriendMutalsTab: React.FC = () => {
   const profileFriends = useAppSelector((state) => state.theirFriends.friends) as Friend[];
   const authUser = useAppSelector((state) => state.authUser.user);
 
-  const [mutualFriendsData, setMutualFriendsData] = useState<AuthUser[]>([]);
+  const [mutualFriendsData, setMutualFriendsData] = useState<ClientAuthUser[]>([]);
   const [page, setPage] = useState(0);
 
   const getFriendId = (friend: Friend): string | undefined => {
@@ -56,11 +56,11 @@ const ProfileFriendMutalsTab: React.FC = () => {
 
       const results = await Promise.all(
         currentPageFriendIds.map(async (friendId) => {
-          return await getDocumentById<AuthUser>('Users', friendId);
+          return await getDocumentById<ClientAuthUser>('Users', friendId);
         })
       );
 
-      const filtered = results.filter((doc): doc is AuthUser => doc !== null);
+      const filtered = results.filter((doc): doc is ClientAuthUser => doc !== null);
       setMutualFriendsData(filtered);
     };
 

@@ -1,6 +1,6 @@
 import { doc, getDoc, collection, query, where, getDocs, Query } from 'firebase/firestore';
 import { db } from '../firebase';
-import type { AuthUser } from '../../features/auth/authUserTypes';
+import type { ClientAuthUser } from '../../features/auth/authUserTypes';
 
 export async function getDocumentById<T>(collectionName: string, docId: string): Promise<(T & { userId: string }) | null> {
   try {
@@ -70,7 +70,7 @@ export async function getEntireCollection(collectionName: string): Promise<any[]
   }
 }
 
-export async function searchUsers(input: string): Promise<AuthUser[]> {
+export async function searchUsers(input: string): Promise<ClientAuthUser[]> {
   if (!input.trim()) return [];
 
   const usersRef = collection(db, "Users");
@@ -78,9 +78,9 @@ export async function searchUsers(input: string): Promise<AuthUser[]> {
 
   const search = input.toLowerCase();
 
-  const results: AuthUser[] = [];
+  const results: ClientAuthUser[] = [];
   snapshot.forEach((doc) => {
-    const { userId, ...rest } = doc.data() as AuthUser;
+    const { userId, ...rest } = doc.data() as ClientAuthUser;
     const matches =
       rest.firstName?.toLowerCase().includes(search) ||
       rest.lastName?.toLowerCase().includes(search) ||
