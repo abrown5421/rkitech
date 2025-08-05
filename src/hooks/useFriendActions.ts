@@ -1,4 +1,3 @@
-
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { insertDataIntoCollection } from "../services/database/createData";
@@ -15,6 +14,11 @@ interface UseFriendActionsParams {
   isAcceptedRequest: boolean;
 }
 
+interface AlertConfig {
+  severity: 'success' | 'error';
+  message: string;
+}
+
 export function useFriendActions({
   userIdFromUrl,
   receivedRequestId,
@@ -25,93 +29,89 @@ export function useFriendActions({
   const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.authUser.user);
 
-  const acceptFriend = useCallback(async () => {
-    dispatch(setLoading({ loading: true, id: "addFriend" }));
+  const showAlert = useCallback((config: AlertConfig) => {
+    dispatch(
+      openAlert({
+        alertOpen: true,
+        alertSeverity: config.severity,
+        alertMessage: config.message,
+        alertAnimation: {
+          entranceAnimation: "animate__fadeInRight animate__faster",
+          exitAnimation: "animate__fadeOutRight animate__faster",
+          isEntering: true,
+        },
+      })
+    );
+  }, [dispatch]);
+
+  const executeWithLoading = useCallback(async (
+    loadingId: string,
+    operation: () => Promise<void>,
+    successMessage: string,
+    errorMessage: string
+  ) => {
+    dispatch(setLoading({ loading: true, id: loadingId }));
+    
     try {
-      if (!receivedRequestId) throw new Error("No received request ID");
-
-      await updateDataInCollection("Friends", receivedRequestId, {
-        status: "accepted",
-        acceptedAt: new Date().toISOString(),
-      });
-
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage: "You are now friends!",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      await operation();
+      showAlert({ severity: 'success', message: successMessage });
     } catch (error) {
-      console.error("Error accepting friend request:", error);
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Failed to accept friend request. Try again.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
+      console.error(`Error in ${loadingId}:`, error);
+      showAlert({ severity: 'error', message: errorMessage });
     } finally {
       dispatch(setNotLoading());
     }
-  }, [dispatch, receivedRequestId]);
+  }, [dispatch, showAlert]);
+
+  const acceptFriend = useCallback(async () => {
+    if (!receivedRequestId) {
+      showAlert({ severity: 'error', message: 'No received request ID found.' });
+      return;
+    }
+
+    await executeWithLoading(
+      'addFriend',
+      async () => {
+        await updateDataInCollection("Friends", receivedRequestId, {
+          status: "accepted",
+          acceptedAt: new Date().toISOString(),
+        });
+      },
+      'You are now friends!',
+      'Failed to accept friend request. Try again.'
+    );
+  }, [receivedRequestId, executeWithLoading, showAlert]);
 
   const removeFriend = useCallback(async () => {
-    dispatch(setLoading({ loading: true, id: "remFriend" }));
-    try {
-      const requestId = sentRequestId || receivedRequestId || acceptedRequestId;
-      if (!requestId) throw new Error("No request ID to remove");
-
-      await deleteDocument("Friends", requestId);
-
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage: isAcceptedRequest
-            ? "Friend removed successfully."
-            : "Friend request removed.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } catch (error) {
-      console.error("Error removing friend:", error);
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Failed to remove friend. Try again.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } finally {
-      dispatch(setNotLoading());
+    const requestId = sentRequestId || receivedRequestId || acceptedRequestId;
+    
+    if (!requestId) {
+      showAlert({ severity: 'error', message: 'No request ID found to remove.' });
+      return;
     }
-  }, [dispatch, sentRequestId, receivedRequestId, acceptedRequestId, isAcceptedRequest]);
+
+    const successMessage = isAcceptedRequest 
+      ? 'Friend removed successfully.' 
+      : 'Friend request removed.';
+
+    await executeWithLoading(
+      'remFriend',
+      async () => {
+        await deleteDocument("Friends", requestId);
+      },
+      successMessage,
+      'Failed to remove friend. Try again.'
+    );
+  }, [sentRequestId, receivedRequestId, acceptedRequestId, isAcceptedRequest, executeWithLoading, showAlert]);
 
   const addFriend = useCallback(async () => {
-    dispatch(setLoading({ loading: true, id: "addFriend" }));
+    if (!authUser?.userId) {
+      showAlert({ severity: 'error', message: 'User not authenticated.' });
+      return;
+    }
 
     const newRelationship = {
-      requesterId: authUser?.userId,
+      requesterId: authUser.userId,
       requesteeId: userIdFromUrl,
       status: "pending",
       seenByRequestee: false,
@@ -120,47 +120,33 @@ export function useFriendActions({
     };
 
     const requestNotif = {
-      userId: userIdFromUrl,
+      senderUserId: authUser.userId,
+      recieverUserId: userIdFromUrl,
       type: "friend_request",
       isRead: false,
       createdAt: new Date().toISOString(),
     };
 
-    try {
-      await insertDataIntoCollection("Notifications", requestNotif);
-      await insertDataIntoCollection("Friends", newRelationship);
- 
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "success",
-          alertMessage: "Friend request sent!",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } catch (error) {
-      console.error("Error sending friend request:", error);
-      dispatch(
-        openAlert({
-          alertOpen: true,
-          alertSeverity: "error",
-          alertMessage: "Failed to send friend request. Try again.",
-          alertAnimation: {
-            entranceAnimation: "animate__fadeInRight animate__faster",
-            exitAnimation: "animate__fadeOutRight animate__faster",
-            isEntering: true,
-          },
-        })
-      );
-    } finally {
-      dispatch(setNotLoading());
+    await executeWithLoading(
+      'addFriend',
+      async () => {
+        await Promise.all([
+          insertDataIntoCollection("Notifications", requestNotif),
+          insertDataIntoCollection("Friends", newRelationship)
+        ]);
+      },
+      'Friend request sent!',
+      'Failed to send friend request. Try again.'
+    );
+  }, [authUser?.userId, userIdFromUrl, executeWithLoading, showAlert]);
+
+  return { 
+    acceptFriend, 
+    removeFriend, 
+    addFriend,
+    isLoading: (id: string) => {
+      const loading = useAppSelector((state) => state.loading);
+      return loading.loading && loading.id === id;
     }
-  }, [dispatch, authUser?.userId, userIdFromUrl]);
-
-  return { acceptFriend, removeFriend, addFriend };
+  };
 }
-
