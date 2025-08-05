@@ -89,7 +89,8 @@ export const useInitializeApp = () => {
       const unsubscribeNotifications = listenToQuery(notificationsQuery, (data) => {
         const notifications = data.map((doc: any) => ({
           id: doc.id,
-          userId: doc.userId,
+          senderUserId: doc.senderUserId, 
+          recieverUserId: doc.recieverUserId, 
           type: doc.type,
           isRead: doc.isRead,
           createdAt: doc.createdAt,
