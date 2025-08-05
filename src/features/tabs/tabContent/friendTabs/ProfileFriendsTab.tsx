@@ -1,182 +1,134 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Container from '../../../../shared/components/container/Container';
 import { useAppSelector } from '../../../../app/hooks';
 import { getDocumentById } from '../../../../services/database/readData';
 import type { AuthUser } from '../../../auth/authUserTypes';
 import type { Friend } from '../../../friends/friendTypes';
 import { useParams } from 'react-router-dom';
-import Image from '../../../../shared/components/image/Image';
 import Text from '../../../../shared/components/text/Text';
-import Button from '../../../../shared/components/button/Button';
-import Loader from '../../../../shared/components/loader/Loader';
-import Icon from '../../../../shared/components/icon/Icon';
-import { format } from 'date-fns';
+import FriendCard, { type FriendStatus } from './components/FriendCard';
+import Pagination from '../../../../shared/components/pagination/Pagination';
 
 const FRIENDS_PER_PAGE = 6;
 
+type FriendData = { 
+  friend: AuthUser; 
+  meta: Friend & { source: FriendStatus } 
+};
+
 const ProfileFriendsTab: React.FC = () => {
-  const { userIdFromUrl } = useParams();
+  const { userIdFromUrl } = useParams<{ userIdFromUrl: string }>();
   const profileFriends = useAppSelector((state) => state.theirFriends.friends) as Friend[];
-  const {loading, id} = useAppSelector((state) => state.loading);
-  const friendRemoval = loading && id === 'remFriend';
+  const { loading, id } = useAppSelector((state) => state.loading);
   const authUser = useAppSelector((state) => state.authUser.user);
-  const [friendsData, setFriendsData] = useState<AuthUser[]>([]);
+  
+  const [friendsData, setFriendsData] = useState<FriendData[]>([]);
   const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const friendRemoval = loading && id === 'remFriend';
+  
+  const isOwnProfile = useMemo(() => 
+    authUser?.userId === userIdFromUrl, 
+    [authUser?.userId, userIdFromUrl]
+  );
 
   const totalPages = Math.ceil(profileFriends.length / FRIENDS_PER_PAGE);
 
-  useEffect(() => {
-    const fetchFriends = async () => {
-      const startIdx = page * FRIENDS_PER_PAGE;
+  const fetchFriendsData = async (pageNum: number) => {
+    if (!authUser || !userIdFromUrl || profileFriends.length === 0) {
+      setFriendsData([]);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const startIdx = pageNum * FRIENDS_PER_PAGE;
       const endIdx = startIdx + FRIENDS_PER_PAGE;
       const currentPageFriends = profileFriends.slice(startIdx, endIdx);
 
       const results = await Promise.all(
-        currentPageFriends.map(async (friend) => {
-          const friendId =
-            friend.requesteeId === userIdFromUrl
+        currentPageFriends.map(async (friend): Promise<FriendData | null> => {
+          try {
+            const friendId = friend.requesteeId === userIdFromUrl
               ? friend.requesterId
               : friend.requesteeId;
 
-          return await getDocumentById<AuthUser>('Users', friendId);
+            const user = await getDocumentById<AuthUser>('Users', friendId);
+            return user ? { 
+              friend: user, 
+              meta: { ...friend, source: 'accepted' as const } 
+            } : null;
+          } catch (error) {
+            console.error('Error fetching friend data:', error);
+            return null;
+          }
         })
       );
 
-      const filtered = results.filter((doc): doc is AuthUser => doc !== null);
-      setFriendsData(filtered);
-    };
-
-    if (authUser && profileFriends.length > 0) {
-      fetchFriends();
+      setFriendsData(results.filter(Boolean) as FriendData[]);
+    } catch (error) {
+      console.error('Error fetching friends data:', error);
+      setFriendsData([]);
+    } finally {
+      setIsLoading(false);
     }
-  }, [authUser, profileFriends, page, userIdFromUrl]);
-
-  const renderPageNumbers = () => {
-    const pages = [];
-    for (let i = 0; i < totalPages; i++) {
-      pages.push(
-        <button
-          key={i}
-          onClick={() => setPage(i)}
-          aria-current={page === i ? 'page' : undefined}
-          className={
-            page === i
-              ? 'z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md'
-              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md'
-          }
-        >
-          {i + 1}
-        </button>
-      );
-    }
-    return pages;
   };
 
+  useEffect(() => {
+    fetchFriendsData(page);
+  }, [authUser, profileFriends, page, userIdFromUrl]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleFriendAction = (action: string, friendId: string) => {
+    console.log(`Action ${action} performed on friend ${friendId}`);
+    // Optionally refresh data after action
+    // fetchFriendsData(page);
+  };
+
+  const getEmptyStateMessage = () => {
+    return isOwnProfile 
+      ? 'You do not currently have any friends'
+      : 'This user does not currently have any friends';
+  };
+
+  if (isLoading) {
+    return (
+      <Container TwClassName="flex-col items-center justify-center py-8">
+        <Text text="Loading friends..." TwClassName="text-center" />
+      </Container>
+    );
+  }
+
   return (
-    <Container TwClassName='flex-col'>
-      <Container TwClassName='flex-row gap-3 w-full flex-wrap'>
-        {friendsData.length > 0 && friendsData.map((friend) => (
-          <Container
+    <Container TwClassName="flex-col">
+      <Container TwClassName="flex-row gap-3 w-full flex-wrap">
+        {friendsData.map(({ friend, meta }) => (
+          <FriendCard
             key={friend.userId}
-            TwClassName="flex-col w-[calc(25%-0.5rem)] box-border border border-gray-300 rounded-xl p-4"
-          >
-            <Container
-                TwClassName="flex-col w-full items-center justify-center"
-            >
-              {friend.profileImage ? (
-                <Image
-                  src={friend.profileImage}
-                  alt="User Avatar"
-                  TwClassName="w-20 h-20 rounded-full border border-gray-300 cursor-pointer object-cover border-3 border-white"
-                />
-              ) : (
-                <Container
-                  TwClassName="-ml-1.5 rounded-full w-20 h-20 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
-                >
-                  <Text
-                    TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
-                    text={`${friend.firstName?.[0] || ''}${friend.lastName?.[0] || ''}`.toUpperCase()}
-                  />
-                </Container>
-              )}
-              <Text
-                TwClassName="text-black text-xl font-bold"
-                text={`${friend.firstName?.charAt(0).toUpperCase() || ''}${friend.firstName?.slice(1) || ''} ${friend.lastName?.charAt(0).toUpperCase() || ''}${friend.lastName?.slice(1) || ''}`}
-              />
-              <Text TwClassName="text-black text-md" text={friend.email} />
-              
-              <Button
-                TwClassName={
-                    "w-full relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
-                }>
-                <span className="absolute left-3">
-                    <Icon name="UserMinus" />
-                </span>
-                {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Unfriend'}
-              </Button>
-              
-              <Text
-                TwClassName="text-xs text-gray-500 mt-2"
-                text={`You've been friends with ${friend.firstName} since: ${format(
-                  new Date(friend.createdAt),
-                  "EEEE, MMMM do, yyyy"
-                )}`}
-              />
-              
-            </Container>              
-          </Container>
+            friend={friend}
+            meta={meta}
+            isLoading={friendRemoval}
+            onAction={handleFriendAction}
+          />
         ))}
       </Container>
+
       {friendsData.length > 0 ? (
-        <nav
-          className="flex items-center justify-center mt-6 space-x-2"
-          aria-label="Pagination"
-        >
-          <Button
-            onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-            disabled={page === 0}
-            TwClassName={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
-              page === 0 ? 'cursor-not-allowed opacity-50' : ''
-            }`}
-          >
-            <span className="sr-only">Previous</span>
-            <svg
-              className="h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </Button>
-
-          {renderPageNumbers()}
-
-          <Button
-            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
-            disabled={page >= totalPages - 1}
-            TwClassName={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
-              page >= totalPages - 1 ? 'cursor-not-allowed opacity-50' : ''
-            }`}
-          >
-            <span className="sr-only">Next</span>
-            <svg
-              className="h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Button>
-        </nav>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       ) : (
-        <Text text='You do not currently have any friends' />
+        <Text 
+          text={getEmptyStateMessage()} 
+          TwClassName="text-center w-full mt-6" 
+        />
       )}
     </Container>
   );
