@@ -1,4 +1,5 @@
 
+
 import React, { useEffect, useState } from 'react';
 import Container from '../../shared/components/container/Container';
 import { useParams } from 'react-router-dom';
@@ -31,6 +32,7 @@ const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
+  const notifications = useAppSelector((state) => state.notifications);
   const authUser = useAppSelector((state) => state.authUser.user);
   const isProfileLoading = loading && id === 'profile';
   const [profileUser, setProfileUser] = useState<AuthUser | null>(null);
@@ -274,6 +276,23 @@ const Profile: React.FC = () => {
                         <Icon name="ContactRound" />
                     </span>
                     Friends
+                    {notifications.notifications.filter(
+                      (n) =>
+                        n.senderUserId === authUser?.userId &&
+                        !n.isRead &&
+                        n.type === "friend_request"
+                    ).length > 0 && (
+                      <Container TwClassName="absolute -top-2 -right-2 bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow ml-2">
+                        {
+                          notifications.notifications.filter(
+                            (n) =>
+                              n.senderUserId === authUser?.userId &&
+                              !n.isRead &&
+                              n.type === "friend_request"
+                          ).length
+                        }
+                      </Container>
+                    )}
                 </Button>
                 {ownedProfile && (
                   <Button
