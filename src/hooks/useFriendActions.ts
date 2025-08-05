@@ -120,7 +120,8 @@ export function useFriendActions({
     };
 
     const requestNotif = {
-      userId: userIdFromUrl,
+      senderUserId: authUser.userId,
+      recieverUserId: userIdFromUrl,
       type: "friend_request",
       isRead: false,
       createdAt: new Date().toISOString(),
