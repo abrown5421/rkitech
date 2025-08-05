@@ -19,6 +19,7 @@ const ClientAuth: React.FC = () => {
     const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
     const { loading, id } = useAppSelector((state) => state.loading);
+    const authUser = useAppSelector((state) => state.authUser);
     const isLoading = loading && id === 'signInButton';
     
     const [isSignup, setIsSignup] = useState(false);
@@ -65,6 +66,10 @@ const ClientAuth: React.FC = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    if (authUser.user) {
+        dispatch(clientNavigation('/', 'Home', ''))
+    }
+    
     const handleSubmit = async () => {
         dispatch(setLoading({loading: true, id: 'signInButton'}));
         if (!validateForm()) {
@@ -138,7 +143,7 @@ const ClientAuth: React.FC = () => {
                     }
                 }));
                 dispatch(setNotLoading())
-                clientNavigation('/', 'Home', 'homePage')();
+                setTimeout(() => {clientNavigation('/', 'Home', 'homePage')();}, 100)
                 
             } else {
                 const result = await signInUser(formValues.email, formValues.password);
@@ -173,7 +178,7 @@ const ClientAuth: React.FC = () => {
                 }), { expires: 1 });
 
                 dispatch(setNotLoading())
-                clientNavigation('/', 'Home', 'homePage')();
+                setTimeout(() => {clientNavigation('/', 'Home', 'homePage')();}, 100)
             }
         } catch (err: any) {
             dispatch(openAlert({

@@ -1,7 +1,5 @@
 import React from 'react';
 import { format } from 'date-fns';
-import type { ClientAuthUser } from '../../auth/ClientAuthUserTypes';
-import type { Friend } from '../friendTypes';
 import { useNavigationHook } from '../../../../hooks/useNavigationHook';
 import { useAppSelector } from '../../../../app/hooks';
 import { useFriendActions } from '../../../hooks/useFriendActions';
@@ -14,30 +12,7 @@ import Text from '../../../../shared/components/text/Text';
 import Button from '../../../../shared/components/button/Button';
 import Icon from '../../../../shared/components/icon/Icon';
 import Loader from '../../../../shared/components/loader/Loader';
-
-export type FriendStatus = 'received' | 'sent' | 'accepted';
-
-export interface FriendCardProps {
-  friend: ClientAuthUser;
-  meta: Friend & { source: FriendStatus };
-  isLoading?: boolean;
-  onAction?: (action: 'accept' | 'decline' | 'unfriend' | 'rescind', friendId: string) => void;
-}
-
-interface ActionConfig {
-  primary?: {
-    label: string;
-    icon: string;
-    className: string;
-    action: () => void;
-  };
-  secondary?: {
-    label: string;
-    icon: string;
-    className: string;
-    action: () => void;
-  };
-}
+import type { ActionConfig, FriendCardProps } from '../friendTypes';
 
 const FriendCard: React.FC<FriendCardProps> = ({ 
   friend, 

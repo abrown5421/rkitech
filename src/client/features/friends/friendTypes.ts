@@ -19,3 +19,27 @@ export interface FriendState {
 export interface FriendProfileModuleState {
   profileUser: ClientAuthUser
 }
+
+export type FriendStatus = 'received' | 'sent' | 'accepted';
+
+export interface FriendCardProps {
+  friend: ClientAuthUser;
+  meta: Friend & { source: FriendStatus };
+  isLoading?: boolean;
+  onAction?: (action: 'accept' | 'decline' | 'unfriend' | 'rescind', friendId: string) => void;
+}
+
+export interface ActionConfig {
+  primary?: {
+    label: string;
+    icon: string;
+    className: string;
+    action: () => void;
+  };
+  secondary?: {
+    label: string;
+    icon: string;
+    className: string;
+    action: () => void;
+  };
+}

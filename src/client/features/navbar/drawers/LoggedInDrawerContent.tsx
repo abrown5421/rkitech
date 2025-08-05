@@ -87,10 +87,13 @@ const LoggedInDrawerContent: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(setLoading({ loading: true, id: 'logoutButton' }));
-    Cookies.remove('authUser');
-    dispatch(clearClientAuthUser());
-    dispatch(setNotLoading());
-    clientNavigation('/login', 'Auth', 'authenticationPage')();
+    dispatch(preCloseDrawer());
+    clientNavigation('/', 'Home', '')()
+    setTimeout(() => {
+      dispatch(setNotLoading())
+      Cookies.remove('authUser');
+      dispatch(clearClientAuthUser());
+    }, 500)
   };
 
   return (
