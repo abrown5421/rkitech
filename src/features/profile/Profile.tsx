@@ -254,7 +254,7 @@ const Profile: React.FC = () => {
                 {profileUser && <FriendProfileModule profileUser={profileUser} />}
                 
               </Container>
-              <Container TwClassName="flex-col p-4 md:p-8 relative">
+              <Container TwClassName="flex-col p-4 md:pr-8 md:pb-8 md:pl-8 md:pt-0 relative">
                 <Button
                   onClick={() => setActiveProfileSection('Main')}
                   TwClassName={
