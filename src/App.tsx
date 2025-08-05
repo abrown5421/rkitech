@@ -4,76 +4,104 @@ import Alert from './features/alert/Alert';
 import Drawer from './features/drawer/Drawer';
 import Navbar from './features/navbar/Navbar';
 import PageShell from './features/pages/PageShell';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { useNavigationHook } from './hooks/useNavigationHook';
-import Cookies from 'js-cookie';
-import { setAuthUser } from './features/auth/authUserSlice';
 import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
+import Container from './shared/components/container/Container';
+import { setPartOfActivePageShell } from './features/pages/pageShellSlice';
+import Cookies from 'js-cookie';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const clientNavigation = useNavigationHook();
-  const loadingSite = useInitializeApp();
+  const navigate = useNavigate();
+  const initializeApp = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
-  const pagesFromDb = useAppSelector((state) => state.pages);
+  const pages = useAppSelector((state) => state.pages.pages);
+  const notif = useAppSelector((state) => state.notifications);
+  const authUser = useAppSelector((state) => state.authUser);
+  const [loadingSite, setLoadingSite] = React.useState(true);
 
-  useEffect(()=>{console.log(pagesFromDb)}, [pagesFromDb])
+  useEffect(()=>{console.log(notif)}, [notif])
 
   useEffect(() => {
-    const storedUser = Cookies.get('authUser');
-    if (storedUser) {
-        try {
-            const parsedUser = JSON.parse(storedUser);
-            dispatch(setAuthUser(parsedUser));
-        } catch (e) {
-            console.error('Failed to parse user from cookie', e);
-            Cookies.remove('authUser'); 
-        }
-    }
-  }, [dispatch]);
+    const storedUser = Cookies.get("authUser");
+    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-  const pages = [
-    {pageName: 'Home', pageId:'homePage', pagePath: '/', pageBg: 'bg-white', pageEntranceAnimation: 'animate__fadeIn', pageExitAnimation: 'animate__fadeOut'},
-    {pageName: 'Auth', pageId:'authenticationPage', pagePath: '/login', pageBg: 'bg-transparent', pageEntranceAnimation: 'animate__fadeInUpBig', pageExitAnimation: 'animate__fadeOutDownBig'},
-    {pageName: 'Auth', pageId:'authenticationPage', pagePath: '/sign-up', pageBg: 'bg-transparent', pageEntranceAnimation: 'animate__fadeInUpBig', pageExitAnimation: 'animate__fadeOutDownBig'},
-  ];
+    const unsubscribe = initializeApp(parsedUser);
+    setLoadingSite(false);
+
+    return () => {
+      unsubscribe?.(); 
+    };
+  }, [authUser.user?.userId]);
 
   useEffect(()=>{
-    const getPage = pages.find((page) => page.pagePath === location.pathname);
-    if (getPage) {
-      clientNavigation(location.pathname, getPage?.pageName, getPage?.pageId)()
+    const homePage = pages.find((page) => page.pageName === 'Home');
+    const pathname = location.pathname.toLowerCase();
+    let pageRef = pages.find((page) => {
+      if (page.pageName === 'Profile' && pathname.startsWith('/profile')) {
+        return true;
+      }
+      return page.pagePath === pathname;
+    });
+    const pageNotFound = pages.find((page) => page.pageName === "Page Not Found");
+
+    if (location.pathname !== '/' && pageRef) {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageRef?.pageName }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageRef?.pageID }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+    } else if (location.pathname === '/' && homePage) {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: homePage?.pageName }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: homePage?.pageID }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+    } 
+
+    if ((location.pathname !== '/' && !pageRef && pageNotFound) || (location.pathname === '/profile' && pageNotFound)) {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageNotFound?.pageName }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageNotFound?.pageID }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+      navigate(pageNotFound?.pagePath);
     }
-  }, [])
+  }, [pages])
 
   return (
     
     <>  
       {!loadingSite ? (
-        <div className='w-screen h-screen z-30 relative bg-black'>
+        <Container TwClassName='flex-col w-screen h-screen z-30 relative bg-black'>
           <Navbar />
           <Routes>
-            {pages.map((page) => { 
+            {pages.map((page) => {
+              let routePath = page.pagePath;
+
+              if (page.pageName === 'Profile') {
+                routePath = '/profile/:userIdFromUrl';
+              }
+
               return (
-                <Route path={page.pagePath} element={
-                    <PageShell 
-                      activePageShellBgColor={page.pageBg} 
-                      activePageShellAnimation = {{
+                <Route
+                  key={page.pageID}
+                  path={routePath}  
+                  element={
+                    <PageShell
+                      activePageShellBgColor={page.pageBg}
+                      activePageShellAnimation={{
                         entranceAnimation: page.pageEntranceAnimation,
                         exitAnimation: page.pageExitAnimation,
                         isEntering: activePage.activePageShellIn,
                       }}
                     />
-                  } 
+                  }
                 />
-              )
+              );
             })}
           </Routes>
+          
           <Modal />
           <Alert />
           <Drawer />
-        </div>
+        </Container>
       ) : (
         <div className='w-screen h-screen z-30 relative bg-black flex justify-center items-center'>
           <Loader variant='bounce' color='bg-primary' />
