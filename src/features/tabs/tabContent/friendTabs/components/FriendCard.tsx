@@ -9,6 +9,10 @@ import Button from '../../../../../shared/components/button/Button';
 import Icon from '../../../../../shared/components/icon/Icon';
 import Loader from '../../../../../shared/components/loader/Loader';
 import { format } from 'date-fns';
+import { useAppSelector } from '../../../../../app/hooks';
+import { buildQuery } from '../../../../../services/database/queryBuilder';
+import { deleteDocument } from '../../../../../services/database/deleteData';
+import { getDocumentsByQuery } from '../../../../../services/database/readData';
 
 export type FriendStatus = 'received' | 'sent' | 'accepted';
 
@@ -40,6 +44,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
   isLoading = false,
   onAction 
 }) => {
+  const authUser = useAppSelector((state) => state.authUser.user)
   const {
     acceptFriend,
     removeFriend,
@@ -51,6 +56,26 @@ const FriendCard: React.FC<FriendCardProps> = ({
     isAcceptedRequest: meta.source === 'accepted',
   });
 
+  const handleRescindNotifDelete = async (friendId: string) => {
+    if (!authUser?.userId) return;
+
+    const notificationsQuery = buildQuery("Notifications", [
+      ["senderUserId", "==", authUser.userId],
+      ["recieverUserId", "==", friendId],
+    ]);
+
+    console.log(notificationsQuery)
+    const notifications = await getDocumentsByQuery(notificationsQuery);
+
+    if (!notifications) return;
+
+    await Promise.all(
+      notifications.map(n => deleteDocument("Notifications", n.id))
+    );
+
+    console.log(`Deleted ${notifications.length} notification(s).`);
+  };
+
   const handleAction = async (actionType: 'accept' | 'decline' | 'unfriend' | 'rescind') => {
     onAction?.(actionType, friend.userId);
     
@@ -60,7 +85,10 @@ const FriendCard: React.FC<FriendCardProps> = ({
         break;
       case 'decline':
       case 'unfriend':
+        await removeFriend();
+        break;
       case 'rescind':
+        handleRescindNotifDelete(friend.userId)
         await removeFriend();
         break;
     }
