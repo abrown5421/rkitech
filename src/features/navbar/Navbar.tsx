@@ -92,7 +92,7 @@ const Navbar: React.FC = () => {
   };
 
   const unreadCount = notifications.notifications.filter(
-    (n) => n.userId === authUser.user?.userId && !n.isRead
+    (n) => n.senderUserId === authUser.user?.userId && !n.isRead
   )?.length || 0;
 
   return (
