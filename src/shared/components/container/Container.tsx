@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import type { ContainerProps } from './containerTypes';
-import { getAnimationClasses } from '../../utils/useAnimation';
+import { getAnimationClasses } from '../../../client/utils/useAnimation';
 
 const Container: React.FC<ContainerProps> = ({
   children,

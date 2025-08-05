@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import type { ButtonProps } from './buttonTypes';
-import { getAnimationClasses } from '../../utils/useAnimation';
+import { getAnimationClasses } from '../../../client/utils/useAnimation';
 
 const Button: React.FC<ButtonProps> = ({
   children,

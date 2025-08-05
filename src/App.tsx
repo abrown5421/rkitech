@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import Modal from './features/modal/Modal';
-import Alert from './features/alert/Alert';
-import Drawer from './features/drawer/Drawer';
-import Navbar from './features/navbar/Navbar';
-import PageShell from './features/pages/PageShell';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
 import Container from './shared/components/container/Container';
-import { setPartOfActivePageShell } from './features/pages/pageShellSlice';
 import Cookies from 'js-cookie';
+import { setPartOfActivePageShell } from './client/features/pages/pageShellSlice';
+import Navbar from './client/features/navbar/Navbar';
+import PageShell from './client/features/pages/PageShell';
+import Modal from './shared/features/modal/Modal';
+import Alert from './shared/features/alert/Alert';
+import Drawer from './shared/features/drawer/Drawer';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -1,16 +1,16 @@
 import { useCallback } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { listenToCollection, listenToDocument, listenToQuery } from "../services/database/listenForData";
-import { setPages } from "../features/pages/pagesSlice";
-import { setMenus } from "../app/globalSlices/menus/menusSlice";
+import { setMenus } from "../client/features/menus/menusSlice";
 import Cookies from "js-cookie";
-import { clearAuthUser, setAuthUser } from "../features/auth/authUserSlice";
-import type { AuthUser } from "../features/auth/authUserTypes";
-import type { Friend } from "../features/friends/friendTypes";
-import { setFriends } from "../features/friends/friendSlice";
-import { setNotifications } from "../features/notifications/notificationSlice";
-import type { Notification } from "../features/notifications/notificationTypes";
 import { buildQuery } from "../services/database/queryBuilder";
+import type { AuthUser } from "../client/features/auth/authUserTypes";
+import { setPages } from "../client/features/pages/pagesSlice";
+import { clearAuthUser, setAuthUser } from "../client/features/auth/authUserSlice";
+import type { Friend } from "../client/features/friends/friendTypes";
+import { setFriends } from "../client/features/friends/myFriendSlice";
+import type { Notification } from "../client/features/notifications/notificationTypes";
+import { setNotifications } from "../client/features/notifications/notificationSlice";
 
 export const useInitializeApp = () => {
   const dispatch = useAppDispatch();

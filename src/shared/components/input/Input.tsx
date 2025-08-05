@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import clsx from "clsx";
 import type { InputProps } from "./inputTypes";
-import { getAnimationClasses } from "../../utils/useAnimation";
+import { getAnimationClasses } from "../../../client/utils/useAnimation";
 
 const Input: React.FC<InputProps> = ({
   label,

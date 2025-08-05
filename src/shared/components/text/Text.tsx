@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import type { TextProps } from './textTypes';
-import { getAnimationClasses } from '../../utils/useAnimation';
+import { getAnimationClasses } from '../../../client/utils/useAnimation';
 
 const Text: React.FC<TextProps> = ({
   text,
