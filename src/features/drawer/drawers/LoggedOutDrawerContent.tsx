@@ -28,10 +28,8 @@ const LoggedOutDrawerContent: React.FC = () => {
           return (
             <Button
               key={menuItem.itemId}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}
               cursor="pointer"
-              color={activePage === menuItem.itemName ? 'primary' : 'black'}
               onClick={() => {
                 setTimeout(() => {
                   clientNavigation(page.pagePath, page.pageName, page.pageID)();
@@ -45,10 +43,8 @@ const LoggedOutDrawerContent: React.FC = () => {
           return (
             <Button
               key={menuItem.itemName}
-              className="pt-3 pr-0 pb-3 pl-0"
-              variant="ghost"
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
               cursor="pointer"
-              color="black"
               onClick={() => window.open(menuItem.itemLink, '_blank')}
             >
               {menuItem.itemName}
@@ -58,20 +54,18 @@ const LoggedOutDrawerContent: React.FC = () => {
       });
 
   return (
-    <Container flexDirection="col" height="h-full" width="w-full" justifyContent="between">
-      <Container flexDirection="col" height="h-full" width="w-full" alignItems="start">
+    <Container TwClassName="flex-col h-full w-full justify-between">
+      <Container TwClassName="flex-col h-full w-full items-start">
         {renderMenuItems(primaryMenu?.menuItems || [])}
       </Container>
 
       {!isLoginHidden && (
         <Button
-          width="w-full"
-          padding="sm"
-          color="primary"
+          TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" 
           cursor="pointer"
           onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
         >
-          {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" color="white" />}
+          {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" TwClassName="text-white" />}
         </Button>)}
     </Container>
   );

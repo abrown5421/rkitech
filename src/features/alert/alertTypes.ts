@@ -3,8 +3,8 @@ import type { EntranceExitAnimation } from '../../shared/types/animationTypes';
 export type Severity = 'success' | 'error' | 'warning' | 'info' | 'primary' | 'secondary';
 
 export interface AlertProps {
-  open: boolean;
-  severity: Severity;
-  message: string;
-  animation: EntranceExitAnimation;
+  alertOpen: boolean;
+  alertSeverity: Severity;
+  alertMessage: string;
+  alertAnimation: EntranceExitAnimation;
 }

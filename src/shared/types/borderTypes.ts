@@ -1,1 +1,0 @@
-export type Border = 'none' | 'default' | 'thick' | 'dashed';
