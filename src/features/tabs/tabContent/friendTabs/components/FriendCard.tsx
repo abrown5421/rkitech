@@ -13,6 +13,7 @@ import { useAppSelector } from '../../../../../app/hooks';
 import { buildQuery } from '../../../../../services/database/queryBuilder';
 import { deleteDocument } from '../../../../../services/database/deleteData';
 import { getDocumentsByQuery } from '../../../../../services/database/readData';
+import { useNavigationHook } from '../../../../../hooks/useNavigationHook';
 
 export type FriendStatus = 'received' | 'sent' | 'accepted';
 
@@ -44,6 +45,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
   isLoading = false,
   onAction 
 }) => {
+  const clientNavigation = useNavigationHook();
   const authUser = useAppSelector((state) => state.authUser.user)
   const {
     acceptFriend,
@@ -210,8 +212,9 @@ const FriendCard: React.FC<FriendCardProps> = ({
 
   return (
     <Container
+      onClick={() => clientNavigation(`/profile/${friend.userId}`, 'Profile', '')()}
       key={friend.userId}
-      TwClassName="flex-col w-[calc(25%-0.5rem)] box-border border border-gray-300 rounded-xl p-4"
+      TwClassName="flex-col w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.5rem)] box-border border border-gray-300 rounded-xl p-4"
     >
       <Container TwClassName="flex-col w-full items-center justify-center">
         {renderAvatar()}
