@@ -1,13 +1,13 @@
 import React from 'react';
 import Container from '../../../shared/components/container/Container';
 
-const Dashboard: React.FC = () => {
+const AdminDashboard: React.FC = () => {
 
     return (
         <Container TwClassName='min-h-[calc(100vh-50px)] p-4'>
-          Dashboard
+          AdminDashboard
         </Container>
     );
 };
 
-export default Dashboard;
+export default AdminDashboard;
