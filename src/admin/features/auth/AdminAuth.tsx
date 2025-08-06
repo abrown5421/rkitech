@@ -17,7 +17,7 @@ const AdminAuth: React.FC = () => {
     const dispatch = useAppDispatch();
     const adminNavigation = useNavigationHook();
     const { loading, id } = useAppSelector((state) => state.loading);
-    const authUser = useAppSelector((state) => state.authUser);
+    const adminAuthUser = useAppSelector((state) => state.adminAuthUser);
     const isLoading = loading && id === 'signInButton';
     
     const [isSignup, setIsSignup] = useState(false);
@@ -63,11 +63,11 @@ const AdminAuth: React.FC = () => {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-
-    if (authUser.user) {
-        dispatch(adminNavigation('/admin', 'Admin', ''))
-    }
     
+    if (adminAuthUser.user) {
+        dispatch(adminNavigation('/admin/dashboard', 'AdminDash', ''))
+    }
+
     const handleSubmit = async () => {
         dispatch(setLoading({loading: true, id: 'signInButton'}));
         if (!validateForm()) {
@@ -97,7 +97,7 @@ const AdminAuth: React.FC = () => {
             if (result.userRole === 'User') {
                 throw new Error('An error occurred. Please try again.');
             }
-
+            
             dispatch(setAdminAuthUser({
                 userId: result.userId,
                 email: result.email,
@@ -121,8 +121,8 @@ const AdminAuth: React.FC = () => {
                 userId: result.userId,
             }), { expires: 1 });
 
+            dispatch(adminNavigation('/admin/dashboard', 'AdminDash', ''))
             dispatch(setNotLoading())
-            setTimeout(() => {dispatch(adminNavigation('/admin', 'Admin', ''))}, 100)
             
         } catch (err: any) {
             dispatch(openAlert({
