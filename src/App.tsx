@@ -11,6 +11,7 @@ import PageShell from './shared/features/pages/PageShell';
 import Modal from './shared/features/modal/Modal';
 import Alert from './shared/features/alert/Alert';
 import Drawer from './shared/features/drawer/Drawer';
+import AdminNavbar from './admin/features/navbar/AdminNavbar';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +22,7 @@ const App: React.FC = () => {
   const pages = useAppSelector((state) => state.pages.pages);
   const authUser = useAppSelector((state) => state.authUser);
   const [loadingSite, setLoadingSite] = React.useState(true);
-
+  
   useEffect(() => {
     const storedClientUser = Cookies.get("authUser");
     const parsedClientUser = storedClientUser ? JSON.parse(storedClientUser) : null;
@@ -42,14 +43,14 @@ const App: React.FC = () => {
     const pathname = location.pathname.toLowerCase();
     if (pathname.startsWith('/admin/dashboard')) {
       dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'AdminDash' }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: '' }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: 'adminPage' }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
       return
     };
 
     if (pathname.startsWith('/admin')) {
       dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'Admin' }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: '' }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: 'adminPage' }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
       return
     };
@@ -85,7 +86,7 @@ const App: React.FC = () => {
     <>  
       {!loadingSite ? (
         <Container TwClassName='flex-col w-screen h-screen z-30 relative bg-black'>
-          <Navbar />
+          {(activePage.activePageShellId === 'adminPage' || adminAuthUser.user) ? <AdminNavbar /> : <Navbar />}
           <Routes>
             <Route
               path="/admin"
