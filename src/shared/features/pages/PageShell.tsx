@@ -1,14 +1,14 @@
 import React from 'react';
 import type { PageShellState } from './pageTypes';
-import Auth from '../auth/ClientAuth';
-import Home from '../home/Home';
-import Test from '../test/Test';
-import Profile from '../profile/Profile';
-import Dashboard from '../dashboard/Dashboard';
-import Footer from '../footer/Footer';
-import PageNotFound from '../pageNotFound/PageNotFound';
-import PrivacyPolicy from '../privacyPolicy/PrivacyPolicy';
-import TermsOfService from '../termsOfService/TermsOfService';
+import Auth from '../../../client/features/auth/ClientAuth';
+import Home from '../../../client/features/home/Home';
+import Test from '../../../client/features/test/Test';
+import Profile from '../../../client/features/profile/Profile';
+import Dashboard from '../../../client/features/dashboard/Dashboard';
+import Footer from '../../../client/features/footer/Footer';
+import PageNotFound from '../../../client/features/pageNotFound/PageNotFound';
+import PrivacyPolicy from '../../../client/features/privacyPolicy/PrivacyPolicy';
+import TermsOfService from '../../../client/features/termsOfService/TermsOfService';
 import { useAppSelector } from '../../../app/hooks';
 import Container from '../../../shared/components/container/Container';
 
