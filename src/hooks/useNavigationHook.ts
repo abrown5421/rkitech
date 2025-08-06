@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../app/hooks";
 import { closeDrawer } from "../shared/features/drawer/drawerSlice";
-import { setPartOfActivePageShell } from "../client/features/pages/pageShellSlice";
+import { setPartOfActivePageShell } from "../shared/features/pages/pageShellSlice";
 
 export const useNavigationHook = () => {
   const dispatch = useAppDispatch();
