@@ -65,7 +65,7 @@ const AdminAuth: React.FC = () => {
     };
     
     if (adminAuthUser.user) {
-        dispatch(adminNavigation('/admin/dashboard', 'AdminDash', ''))
+        dispatch(adminNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
     }
 
     const handleSubmit = async () => {
@@ -121,7 +121,7 @@ const AdminAuth: React.FC = () => {
                 userId: result.userId,
             }), { expires: 1 });
 
-            dispatch(adminNavigation('/admin/dashboard', 'AdminDash', ''))
+            dispatch(adminNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
             dispatch(setNotLoading())
             
         } catch (err: any) {
