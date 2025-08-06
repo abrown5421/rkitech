@@ -2,11 +2,11 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Container from '../../../../shared/components/container/Container';
 import { useAppSelector } from '../../../../app/hooks';
 import { getDocumentById } from '../../../../services/database/readData';
-import type { Friend } from '../friendTypes';
+import type { Friend, FriendStatus } from '../friendTypes';
 import type { ClientAuthUser } from '../../auth/ClientAuthUserTypes';
 import { useParams } from 'react-router-dom';
 import Text from '../../../../shared/components/text/Text';
-import FriendCard, { type FriendStatus } from '../components/FriendCard';
+import FriendCard from '../components/FriendCard';
 import Pagination from '../../../../shared/components/pagination/Pagination';
 
 const FRIENDS_PER_PAGE = 6;

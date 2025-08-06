@@ -5,7 +5,7 @@ import { setMenus } from "../client/features/menus/menusSlice";
 import Cookies from "js-cookie";
 import { buildQuery } from "../services/database/queryBuilder";
 import type { ClientAuthUser } from "../client/features/auth/ClientAuthUserTypes";
-import { setPages } from "../client/features/pages/pagesSlice";
+import { setPages } from "../shared/features/pages/pagesSlice";
 import { clearClientAuthUser, setClientAuthUser } from "../client/features/auth/clientAuthUserSlice";
 import type { Friend } from "../client/features/friends/friendTypes";
 import { setFriends } from "../client/features/friends/myFriendSlice";
