@@ -23,6 +23,8 @@ const App: React.FC = () => {
   const authUser = useAppSelector((state) => state.authUser);
   const [loadingSite, setLoadingSite] = React.useState(true);
   
+  useEffect(()=>{console.log(activePage)}, [activePage])
+
   useEffect(() => {
     const storedClientUser = Cookies.get("authUser");
     const parsedClientUser = storedClientUser ? JSON.parse(storedClientUser) : null;
@@ -86,7 +88,7 @@ const App: React.FC = () => {
     <>  
       {!loadingSite ? (
         <Container TwClassName='flex-col w-screen h-screen z-30 relative bg-black'>
-          {(activePage.activePageShellId === 'adminPage' || adminAuthUser.user) ? <AdminNavbar /> : <Navbar />}
+          {(activePage.activePageShellId === 'adminPage') ? <AdminNavbar /> : <Navbar />}
           <Routes>
             <Route
               path="/admin"
