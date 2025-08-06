@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import type { PageShellState } from './pageTypes';
 import Auth from '../../../client/features/auth/ClientAuth';
@@ -11,6 +13,8 @@ import PrivacyPolicy from '../../../client/features/privacyPolicy/PrivacyPolicy'
 import TermsOfService from '../../../client/features/termsOfService/TermsOfService';
 import { useAppSelector } from '../../../app/hooks';
 import Container from '../../../shared/components/container/Container';
+import AdminAuth from '../../../admin/features/auth/AdminAuth';
+import AdminDashboard from '../../../admin/features/dashboard/Dashboard';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -21,6 +25,7 @@ const PageShell: React.FC<PageShellState> = ({
     }
 }) => {
     const activePage = useAppSelector((state) => state.pageShell);
+    const adminAuthUser = useAppSelector((state) => state.adminAuthUser);
 
     return (
         <Container             
@@ -39,6 +44,9 @@ const PageShell: React.FC<PageShellState> = ({
                 {activePage.activePageShellName === 'Page Not Found' && <PageNotFound />}
                 {activePage.activePageShellName === 'Privacy Policy' && <PrivacyPolicy />}
                 {activePage.activePageShellName === 'Terms Of Service' && <TermsOfService />}
+
+                {/* all of your admin pages should have a conditional render statement below. If there is not one that admin page will not show */}
+                {activePage.activePageShellName === 'Admin' && (adminAuthUser.user ? <AdminDashboard /> : <AdminAuth />)}
             </Container>
             <Footer />
         </Container>
