@@ -1,3 +1,4 @@
+
 import { useCallback } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { listenToCollection, listenToDocument, listenToQuery } from "../services/database/listenForData";
@@ -132,3 +133,4 @@ export const useInitializeApp = () => {
 
   return initializeApp;
 };
+
