@@ -22,23 +22,31 @@ const App: React.FC = () => {
   const authUser = useAppSelector((state) => state.authUser);
   const [loadingSite, setLoadingSite] = React.useState(true);
 
-  useEffect(()=>{console.log(activePage, adminAuthUser)}, [activePage, adminAuthUser])
-
   useEffect(() => {
-    const storedUser = Cookies.get("authUser");
-    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+    const storedClientUser = Cookies.get("authUser");
+    const parsedClientUser = storedClientUser ? JSON.parse(storedClientUser) : null;
 
-    const unsubscribe = initializeApp(parsedUser);
+    const storedAdminUser = Cookies.get("adminAuthUser");
+    const parsedAdminUser = storedAdminUser ? JSON.parse(storedAdminUser) : null;
+
+    const unsubscribe = initializeApp(parsedClientUser, parsedAdminUser);
     setLoadingSite(false);
 
     return () => {
-      unsubscribe?.(); 
+      unsubscribe?.();
     };
-  }, [authUser.user?.userId]);
+  }, [authUser.user?.userId, adminAuthUser.user?.userId]);
 
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');
     const pathname = location.pathname.toLowerCase();
+    if (pathname.startsWith('/admin/dashboard')) {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'AdminDash' }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: '' }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+      return
+    };
+
     if (pathname.startsWith('/admin')) {
       dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'Admin' }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: '' }));
@@ -83,7 +91,20 @@ const App: React.FC = () => {
               path="/admin"
               element={
                 <PageShell
-                  activePageShellBgColor={adminAuthUser.user ? 'bg-white' : 'bg-black'}
+                  activePageShellBgColor='bg-black'
+                  activePageShellAnimation={{
+                    entranceAnimation: 'animate__fadeInUpBig',
+                    exitAnimation: 'animate__fadeOutDownBig',
+                    isEntering: activePage.activePageShellIn,
+                  }}
+                />
+              }
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <PageShell
+                  activePageShellBgColor='bg-white'
                   activePageShellAnimation={{
                     entranceAnimation: 'animate__fadeIn',
                     exitAnimation: 'animate__fadeOut',

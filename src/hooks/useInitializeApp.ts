@@ -11,11 +11,14 @@ import type { Friend } from "../client/features/friends/friendTypes";
 import { setFriends } from "../client/features/friends/myFriendSlice";
 import type { Notification } from "../client/features/notifications/notificationTypes";
 import { setNotifications } from "../client/features/notifications/notificationSlice";
+import { clearAdminAuthUser, setAdminAuthUser } from "../admin/features/auth/adminAuthUserSlice";
+import type { AdminAuthUser } from "../admin/features/auth/adminAuthUserTypes";
 
 export const useInitializeApp = () => {
   const dispatch = useAppDispatch();
 
-  const initializeApp = useCallback((parsedUser: ClientAuthUser | null) => {
+  const initializeApp = useCallback(
+    (clientUser: ClientAuthUser | null, adminUser: AdminAuthUser | null) => {
     const unsubscribers: (() => void)[] = [];
 
     unsubscribers.push(
@@ -38,10 +41,10 @@ export const useInitializeApp = () => {
       })
     );
 
-    if (parsedUser) {
-      const unsubscribeUser = listenToDocument("Users", parsedUser.userId, (data) => {
+    if (clientUser) {
+      const unsubscribeUser = listenToDocument("Users", clientUser.userId, (data) => {
         if (data) {
-          dispatch(setClientAuthUser({ ...(data as ClientAuthUser), userId: parsedUser.userId }));
+          dispatch(setClientAuthUser({ ...(data as ClientAuthUser), userId: clientUser.userId }));
         } else {
           Cookies.remove("authUser");
           dispatch(clearClientAuthUser());
@@ -49,8 +52,8 @@ export const useInitializeApp = () => {
       });
       unsubscribers.push(unsubscribeUser);
 
-      const requesterQuery = buildQuery("Friends", [["requesterId", "==", parsedUser.userId]]);
-      const requesteeQuery = buildQuery("Friends", [["requesteeId", "==", parsedUser.userId]]);
+      const requesterQuery = buildQuery("Friends", [["requesterId", "==", clientUser.userId]]);
+      const requesteeQuery = buildQuery("Friends", [["requesteeId", "==", clientUser.userId]]);
 
       let requesterFriends: Friend[] = [];
       let requesteeFriends: Friend[] = [];
@@ -62,10 +65,10 @@ export const useInitializeApp = () => {
           setFriends({
             friends: merged.filter((f) => f.status === "accepted"),
             requests: merged.filter(
-              (f) => f.status === "pending" && f.requesteeId === parsedUser.userId
+              (f) => f.status === "pending" && f.requesteeId === clientUser.userId
             ),
             sentRequests: merged.filter(
-              (f) => f.status === "pending" && f.requesterId === parsedUser.userId
+              (f) => f.status === "pending" && f.requesterId === clientUser.userId
             ),
           })
         );
@@ -82,7 +85,7 @@ export const useInitializeApp = () => {
       });
 
       const notificationsQuery = buildQuery("Notifications", [
-        ["userId", "==", parsedUser.userId],
+        ["userId", "==", clientUser.userId],
         ["isRead", "==", false],
       ]);
 
@@ -101,6 +104,25 @@ export const useInitializeApp = () => {
       });
 
       unsubscribers.push(unsubscribeRequester, unsubscribeRequestee, unsubscribeNotifications);
+    }
+
+    if (adminUser) {
+      const unsubscribeAdminUser = listenToDocument(
+        "Users",
+        adminUser.userId,
+        (data) => {
+          if (data) {
+            dispatch(
+              setAdminAuthUser({ ...(data as AdminAuthUser), userId: adminUser.userId })
+            );
+          } else {
+            Cookies.remove("adminAuthUser");
+            dispatch(clearAdminAuthUser());
+          }
+        }
+      );
+      unsubscribers.push(unsubscribeAdminUser);
+
     }
 
     return () => {

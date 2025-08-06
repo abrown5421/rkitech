@@ -25,7 +25,6 @@ const PageShell: React.FC<PageShellState> = ({
     }
 }) => {
     const activePage = useAppSelector((state) => state.pageShell);
-    const adminAuthUser = useAppSelector((state) => state.adminAuthUser);
 
     return (
         <Container             
@@ -46,7 +45,8 @@ const PageShell: React.FC<PageShellState> = ({
                 {activePage.activePageShellName === 'Terms Of Service' && <TermsOfService />}
 
                 {/* all of your admin pages should have a conditional render statement below. If there is not one that admin page will not show */}
-                {activePage.activePageShellName === 'Admin' && (adminAuthUser.user ? <AdminDashboard /> : <AdminAuth />)}
+                {activePage.activePageShellName === 'Admin' && <AdminAuth />}
+                {activePage.activePageShellName === 'AdminDash' && <AdminDashboard />}
             </Container>
             <Footer />
         </Container>
