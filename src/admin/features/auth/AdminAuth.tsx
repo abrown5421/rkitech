@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigationHook } from '../../../hooks/useNavigationHook';
 import { setLoading, setNotLoading } from '../../../app/globalSlices/loading/loadingSlice';
 import { openAlert } from '../../../shared/features/alert/alertSlice';
-import { setClientAuthUser } from './adminAuthUserSlice';
+import { setAdminAuthUser } from './adminAuthUserSlice';
 import Cookies from 'js-cookie';
 import { signInUser } from '../../../services/auth/signInUser';
 import Container from '../../../shared/components/container/Container';
@@ -13,9 +13,9 @@ import Button from '../../../shared/components/button/Button';
 import Loader from '../../../shared/components/loader/Loader';
 import Icon from '../../../shared/components/icon/Icon';
 
-const ClientAuth: React.FC = () => {
+const AdminAuth: React.FC = () => {
     const dispatch = useAppDispatch();
-    const clientNavigation = useNavigationHook();
+    const adminNavigation = useNavigationHook();
     const { loading, id } = useAppSelector((state) => state.loading);
     const authUser = useAppSelector((state) => state.authUser);
     const isLoading = loading && id === 'signInButton';
@@ -65,7 +65,7 @@ const ClientAuth: React.FC = () => {
     };
 
     if (authUser.user) {
-        dispatch(clientNavigation('/', 'Home', ''))
+        dispatch(adminNavigation('/', 'Home', ''))
     }
     
     const handleSubmit = async () => {
@@ -98,7 +98,7 @@ const ClientAuth: React.FC = () => {
                 throw new Error('An error occurred. Please try again.');
             }
 
-            dispatch(setClientAuthUser({
+            dispatch(setAdminAuthUser({
                 userId: result.userId,
                 email: result.email,
                 firstName: result.firstName,
@@ -122,7 +122,7 @@ const ClientAuth: React.FC = () => {
             }), { expires: 1 });
 
             dispatch(setNotLoading())
-            setTimeout(() => {clientNavigation('/', 'Home', 'homePage')();}, 100)
+            setTimeout(() => {adminNavigation('/', 'Home', 'homePage')();}, 100)
             
         } catch (err: any) {
             dispatch(openAlert({
@@ -190,4 +190,4 @@ const ClientAuth: React.FC = () => {
     );
 };
 
-export default ClientAuth;
+export default AdminAuth;
