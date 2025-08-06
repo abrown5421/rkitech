@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { ClientAuthUser, ClientAuthUserState } from './adminAuthUserTypes';
+import type { AdminAuthUser, AdminAuthUserState } from './adminAuthUserTypes';
 
-const initialState: ClientAuthUserState = {
+const initialState: AdminAuthUserState = {
   user: null,
 };
 
@@ -10,14 +10,14 @@ const authUserSlice = createSlice({
   name: 'authUser',
   initialState,
   reducers: {
-    setClientAuthUser(state, action: PayloadAction<ClientAuthUser>) {
+    setAdminAuthUser(state, action: PayloadAction<AdminAuthUser>) {
       state.user = action.payload;
     },
-    clearClientAuthUser(state) {
+    clearAdminAuthUser(state) {
       state.user = null;
     },
   },
 });
 
-export const { setClientAuthUser, clearClientAuthUser } = authUserSlice.actions;
+export const { setAdminAuthUser, clearAdminAuthUser } = authUserSlice.actions;
 export default authUserSlice.reducer;

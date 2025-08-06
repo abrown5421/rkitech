@@ -1,6 +1,6 @@
 import type { TrianglifyBannerProps } from "../../../shared/components/trianglifyBanner/trianglifyBannerTypes";
 
-export interface ClientAuthUser {
+export interface AdminAuthUser {
     userId: string;
     email: string;
     firstName: string;
@@ -19,6 +19,6 @@ export interface ClientAuthUser {
     addressPostCode: string;
 }
 
-export interface ClientAuthUserState {
-    user: ClientAuthUser | null;
+export interface AdminAuthUserState {
+    user: AdminAuthUser | null;
 }
