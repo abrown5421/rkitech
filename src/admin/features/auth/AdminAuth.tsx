@@ -65,7 +65,7 @@ const AdminAuth: React.FC = () => {
     };
 
     if (authUser.user) {
-        dispatch(adminNavigation('/', 'Home', ''))
+        dispatch(adminNavigation('/admin', 'Admin', ''))
     }
     
     const handleSubmit = async () => {
@@ -117,12 +117,12 @@ const AdminAuth: React.FC = () => {
                 addressPostCode: result.addressPostCode
             }));
 
-            Cookies.set('authUser', JSON.stringify({
+            Cookies.set('adminAuthUser', JSON.stringify({
                 userId: result.userId,
             }), { expires: 1 });
 
             dispatch(setNotLoading())
-            setTimeout(() => {adminNavigation('/', 'Home', 'homePage')();}, 100)
+            setTimeout(() => {dispatch(adminNavigation('/admin', 'Admin', ''))}, 100)
             
         } catch (err: any) {
             dispatch(openAlert({

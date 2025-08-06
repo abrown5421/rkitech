@@ -17,9 +17,12 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const initializeApp = useInitializeApp();
   const activePage = useAppSelector((state) => state.pageShell);
+  const adminAuthUser = useAppSelector((state) => state.adminAuthUser);
   const pages = useAppSelector((state) => state.pages.pages);
   const authUser = useAppSelector((state) => state.authUser);
   const [loadingSite, setLoadingSite] = React.useState(true);
+
+  useEffect(()=>{console.log(activePage, adminAuthUser)}, [activePage, adminAuthUser])
 
   useEffect(() => {
     const storedUser = Cookies.get("authUser");
@@ -36,6 +39,13 @@ const App: React.FC = () => {
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');
     const pathname = location.pathname.toLowerCase();
+    if (pathname.startsWith('/admin')) {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'Admin' }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: '' }));
+      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
+      return
+    };
+
     let pageRef = pages.find((page) => {
       if (page.pageName === 'Profile' && pathname.startsWith('/profile')) {
         return true;
@@ -69,6 +79,19 @@ const App: React.FC = () => {
         <Container TwClassName='flex-col w-screen h-screen z-30 relative bg-black'>
           <Navbar />
           <Routes>
+            <Route
+              path="/admin"
+              element={
+                <PageShell
+                  activePageShellBgColor={adminAuthUser.user ? 'bg-white' : 'bg-black'}
+                  activePageShellAnimation={{
+                    entranceAnimation: 'animate__fadeIn',
+                    exitAnimation: 'animate__fadeOut',
+                    isEntering: activePage.activePageShellIn,
+                  }}
+                />
+              }
+            />
             {pages.map((page) => {
               let routePath = page.pagePath;
 
