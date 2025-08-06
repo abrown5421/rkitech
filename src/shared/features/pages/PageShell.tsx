@@ -14,7 +14,7 @@ import TermsOfService from '../../../client/features/termsOfService/TermsOfServi
 import { useAppSelector } from '../../../app/hooks';
 import Container from '../../../shared/components/container/Container';
 import AdminAuth from '../../../admin/features/auth/AdminAuth';
-import AdminDashboard from '../../../admin/features/dashboard/Dashboard';
+import AdminDashboard from '../../../admin/features/dashboard/AdminDashboard';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
