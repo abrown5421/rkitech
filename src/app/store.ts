@@ -11,6 +11,7 @@ import notificationReducer from '../client/features/notifications/notificationSl
 import theirFriendsReducer from '../client/features/friends/theirFriendSlice';
 import loadingReducer from './globalSlices/loading/loadingSlice';
 import menuReducer from '../client/features/menus/menusSlice';
+import adminAuthUserReducer from '../admin/features/auth/adminAuthUserSlice';
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     friends: friendsReducer,
     theirFriends: theirFriendsReducer,
     notifications: notificationReducer,
+    adminAuthUser: adminAuthUserReducer,
   },
 });
 
