@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigationHook } from '../../../hooks/useNavigationHook';
@@ -8,6 +9,7 @@ import Image from '../../../shared/components/image/Image';
 import Text from '../../../shared/components/text/Text';
 import { getTimeOfDay } from '../../../shared/utils/getTimeOfDay';
 import Icon from '../../../shared/components/icon/Icon';
+import type { DrawerContentType } from '../../../shared/features/drawer/drawerTypes';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -76,7 +78,7 @@ const Navbar: React.FC = () => {
         );
       });
       
-  const handleDrawerOpen = (title: string, contentType: 'loggedInMenu' | 'loggedOutMenu') => {
+  const handleDrawerOpen = (title: string, contentType: DrawerContentType) => {
     dispatch(
       openDrawer({
         title,
