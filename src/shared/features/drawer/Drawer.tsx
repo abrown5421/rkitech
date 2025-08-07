@@ -65,7 +65,7 @@ const Drawer: React.FC = () => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <Icon name="X" cursor="pointer" TwClassName="absolute top-4 right-4" onClick={handleClose} />
+        <Icon color="text-gray-900" name="X" cursor="pointer" TwClassName="absolute top-4 right-4" onClick={handleClose} />
         <div className="flex flex-col w-full">
           {drawer.drawertitle && <Text text={drawer.drawertitle} TwClassName="text-xl font-bold" />}
           {drawer.drawerContentType && drawerContentRegistry[drawer.drawerContentType]}

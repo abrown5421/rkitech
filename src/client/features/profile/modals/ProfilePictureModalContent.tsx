@@ -146,7 +146,7 @@ const ProfilePictureModalContent: React.FC = () => {
       >
         {!previewURL ? (
           <Container TwClassName="flex flex-col items-center text-gray-500">
-            <Icon name="Camera" TwClassName="w-10 h-10 mb-2" />
+            <Icon color="text-gray-900" name="Camera" TwClassName="w-10 h-10 mb-2" />
             <span className="text-sm">Click or drag image to upload</span>
           </Container>
         ) : (
@@ -172,7 +172,7 @@ const ProfilePictureModalContent: React.FC = () => {
             onClick={handleDeleteProfilePicture}
           >
             {isProfilePicDeleting ? (
-              <Loader variant="spinner" color="bg-white" />
+              <Loader variant="spinner" color="bg-white-500" />
             ) : (
               <>Delete Picture</>
             )}
@@ -185,7 +185,7 @@ const ProfilePictureModalContent: React.FC = () => {
         disabled={!selectedFile}
       >
         {isProfilePicUploading ? (
-            <Loader variant="spinner" color="bg-white" />
+            <Loader variant="spinner" color="bg-white-500" />
         ) : (
             <>Upload</>
         )}

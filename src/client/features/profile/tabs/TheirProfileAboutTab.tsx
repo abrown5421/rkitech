@@ -21,13 +21,13 @@ export const TheirProfileAboutTab: React.FC<ProfileTab> = ({
           <Text TwClassName="text-black text-xl font-bold" text="Contact Info" />
           <Container TwClassName="flex-row gap-3 items-start">
             <Container TwClassName="w-6 flex justify-center">
-              <Icon name="Mail" />
+              <Icon color="text-gray-900" name="Mail" />
             </Container>
             <Text TwClassName="text-black text-md text-left" text={profileUser.email} />
           </Container>
           <Container TwClassName="flex-row gap-3 items-start">
             <Container TwClassName="w-6 flex justify-center">
-              <Icon name="Phone" />
+              <Icon color="text-gray-900" name="Phone" />
             </Container>
             <Text
               TwClassName="text-black text-md text-left"
@@ -36,7 +36,7 @@ export const TheirProfileAboutTab: React.FC<ProfileTab> = ({
           </Container>
           <Container TwClassName="flex-row gap-3 items-start">
             <Container TwClassName="w-6 flex justify-center">
-              <Icon name="House" />
+              <Icon color="text-gray-900" name="House" />
             </Container>
             <Text TwClassName="text-black text-md text-left" text={fullAddress} />
           </Container>

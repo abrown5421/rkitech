@@ -23,7 +23,7 @@ const Sidebar: React.FC = () => {
                     "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
-                    <Icon name="Gauge" />
+                    <Icon color="text-gray-900" name="Gauge" />
                 </span>
                 Dashboard
             </Button>
@@ -33,7 +33,7 @@ const Sidebar: React.FC = () => {
                     "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
-                    <Icon name="NotepadText" />
+                    <Icon color="text-gray-900" name="NotepadText" />
                 </span>
                 Pages
             </Button>

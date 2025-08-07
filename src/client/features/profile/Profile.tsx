@@ -161,7 +161,7 @@ const Profile: React.FC = () => {
     <Container TwClassName='min-h-[calc(100vh-50px)] w-full flex-col'>
       {isProfileLoading ? (
         <Container TwClassName="h-full w-full flex-col justify-center items-center">
-          <Loader variant="spinner" color="bg-primary" />
+          <Loader variant="spinner" color="bg-amber-500" />
         </Container>
       ) : profileUser ? (
         <Container TwClassName='relative flex-col'>
@@ -181,7 +181,7 @@ const Profile: React.FC = () => {
                 TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
                 onClick={handleProfileBannerEditModal}
               >
-                <Icon
+                <Icon color="text-gray-900"
                   name='Edit'
                   
                 />
@@ -204,7 +204,7 @@ const Profile: React.FC = () => {
                       TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
                       onClick={handleProfilePictureEditModal}
                     >
-                      <Icon
+                      <Icon color="text-gray-900"
                         name='Camera'
                         
                       />
@@ -261,7 +261,7 @@ const Profile: React.FC = () => {
                       "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
                   }>
                     <span className="absolute left-3">
-                        <Icon name="House" />
+                        <Icon color="text-gray-900" name="House" />
                     </span>
                     Home
                 </Button>
@@ -271,7 +271,7 @@ const Profile: React.FC = () => {
                       "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
                   }>
                     <span className="absolute left-3">
-                        <Icon name="ContactRound" />
+                        <Icon color="text-gray-900" name="ContactRound" />
                     </span>
                     Friends
                 </Button>
@@ -282,7 +282,7 @@ const Profile: React.FC = () => {
                         "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
                     }>
                       <span className="absolute left-3">
-                          <Icon name="User" />
+                          <Icon color="text-gray-900" name="User" />
                       </span>
                       Profile
                   </Button>
