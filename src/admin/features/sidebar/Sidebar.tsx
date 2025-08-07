@@ -1,8 +1,11 @@
 import React from 'react';
 import Container from '../../../shared/components/container/Container';
+import Button from '../../../shared/components/button/Button';
+import Icon from '../../../shared/components/icon/Icon';
+import { useNavigationHook } from '../../../hooks/useNavigationHook';
 
 const Sidebar: React.FC = () => {
-
+    const clientNavigation = useNavigationHook();
      return (
          <Container 
             animation={{
@@ -14,7 +17,26 @@ const Sidebar: React.FC = () => {
             }} 
             TwClassName='flex-col bg-black text-white p-4 flex-2'
         >
-            sidebar
+            <Button
+                onClick={() => clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage')()}
+                TwClassName={
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                }>
+                <span className="absolute left-3">
+                    <Icon name="Gauge" />
+                </span>
+                Dashboard
+            </Button>
+            <Button
+                onClick={() => clientNavigation('/admin/pages', 'AdminPages', 'adminPage')()}
+                TwClassName={
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                }>
+                <span className="absolute left-3">
+                    <Icon name="NotepadText" />
+                </span>
+                Pages
+            </Button>
          </Container>
      );
 };
