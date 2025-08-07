@@ -13,9 +13,8 @@ import PrivacyPolicy from '../../../client/features/privacyPolicy/PrivacyPolicy'
 import TermsOfService from '../../../client/features/termsOfService/TermsOfService';
 import { useAppSelector } from '../../../app/hooks';
 import Container from '../../../shared/components/container/Container';
-import AdminAuth from '../../../admin/features/auth/AdminAuth';
-import AdminDashboard from '../../../admin/features/dashboard/AdminDashboard';
 import Sidebar from '../../../admin/features/sidebar/Sidebar';
+import AdminRoutes from '../../../admin/features/adminPages/AdminRoutes';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -28,30 +27,34 @@ const PageShell: React.FC<PageShellState> = ({
     const activePage = useAppSelector((state) => state.pageShell);
 
     return (
-        <Container             
-            TwClassName={`${activePageShellBgColor} flex-col h-[calc(100vh-50px)] flex flex-col overflow-scroll`}
-            animation={{
-                entranceExit: activePageShellAnimation,
-            }}
-        >
-            <Container TwClassName="flex-row">
-                {/* all of your static pages should have a conditional render statement below. If there is not one that static page will not show */}
-                {activePage.activePageShellName === 'Home' && <Home />}
-                {activePage.activePageShellName === 'Auth' && <Auth />}
-                {activePage.activePageShellName === 'Test' && <Test />}
-                {activePage.activePageShellName === 'Profile' && <Profile />}
-                {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
-                {activePage.activePageShellName === 'Page Not Found' && <PageNotFound />}
-                {activePage.activePageShellName === 'Privacy Policy' && <PrivacyPolicy />}
-                {activePage.activePageShellName === 'Terms Of Service' && <TermsOfService />}
-
-                {/* all of your admin pages should have a conditional render statement below. If there is not one that admin page will not show */}
-                {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && <Sidebar />}
-                {activePage.activePageShellName === 'Admin' && <AdminAuth />}
-                {activePage.activePageShellName === 'AdminDash' && <AdminDashboard />}
+        <Container TwClassName="flex-row">
+            {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (
+                <Sidebar />
+            )}
+            <Container
+                TwClassName={`${activePageShellBgColor} flex-col flex-10 h-[calc(100vh-50px)] overflow-scroll`}
+                animation={{ entranceExit: activePageShellAnimation }}
+            >
+                
+                {activePage.activePageShellId === 'adminPage' ? (
+                    <AdminRoutes />                
+                ) : (
+                    <Container TwClassName="flex-col flex-1">
+                        <Container TwClassName="flex-col flex-1">
+                            {activePage.activePageShellName === 'Home' && <Home />}
+                            {activePage.activePageShellName === 'Auth' && <Auth />}
+                            {activePage.activePageShellName === 'Test' && <Test />}
+                            {activePage.activePageShellName === 'Profile' && <Profile />}
+                            {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
+                            {activePage.activePageShellName === 'Page Not Found' && <PageNotFound />}
+                            {activePage.activePageShellName === 'Privacy Policy' && <PrivacyPolicy />}
+                            {activePage.activePageShellName === 'Terms Of Service' && <TermsOfService />}
+                        </Container>
+                        <Footer />
+                    </Container>
+                )}
+                
             </Container>
-            {(activePage.activePageShellId !== 'adminPage') && <Footer />}
-            
         </Container>
     );
 };
