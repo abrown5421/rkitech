@@ -104,30 +104,33 @@ const App: React.FC = () => {
                 />
               }
             />
-            {pages.map((page) => {
-              let routePath = page.pagePath;
+            {pages
+              .filter((page) => page.pageActive)
+              .map((page) => {
+                let routePath = page.pagePath;
 
-              if (page.pageName === 'Profile') {
-                routePath = '/profile/:userIdFromUrl';
+                if (page.pageName === 'Profile') {
+                  routePath = '/profile/:userIdFromUrl';
+                }
+
+                return (
+                  <Route
+                    key={page.pageID}
+                    path={routePath}  
+                    element={
+                      <PageShell
+                        activePageShellBgColor={page.pageBg}
+                        activePageShellAnimation={{
+                          entranceAnimation: page.pageEntranceAnimation,
+                          exitAnimation: page.pageExitAnimation,
+                          isEntering: activePage.activePageShellIn,
+                        }}
+                      />
+                    }
+                  />
+                );
               }
-
-              return (
-                <Route
-                  key={page.pageID}
-                  path={routePath}  
-                  element={
-                    <PageShell
-                      activePageShellBgColor={page.pageBg}
-                      activePageShellAnimation={{
-                        entranceAnimation: page.pageEntranceAnimation,
-                        exitAnimation: page.pageExitAnimation,
-                        isEntering: activePage.activePageShellIn,
-                      }}
-                    />
-                  }
-                />
-              );
-            })}
+            )}
           </Routes>
           
           <Modal />
