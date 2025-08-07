@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import type { CheckboxProps } from "./checkboxTypes";
-import { getAnimationClasses } from "../../utils/useAnimation";
+import { getAnimationClasses } from "../../../client/utils/useAnimation";
 
 const Checkbox: React.FC<CheckboxProps> = ({
   label,
