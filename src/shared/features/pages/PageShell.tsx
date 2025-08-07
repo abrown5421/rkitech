@@ -14,7 +14,7 @@ import TermsOfService from '../../../client/features/termsOfService/TermsOfServi
 import { useAppSelector } from '../../../app/hooks';
 import Container from '../../../shared/components/container/Container';
 import Sidebar from '../../../admin/features/sidebar/Sidebar';
-import AdminRoutes from '../../../admin/features/adminPages/AdminRoutes';
+import AdminRoutes from '../../../admin/features/adminRoutes/AdminRoutes';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
