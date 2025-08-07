@@ -3,7 +3,7 @@ import * as LucideIcons from 'lucide-react';
 
 export type IconProps = {
   name: keyof typeof LucideIcons;
-  cursor?: string; 
+  color?: string; 
   animation?: AnimationProps;
   TwClassName?: string;
   onClick?: () => void;

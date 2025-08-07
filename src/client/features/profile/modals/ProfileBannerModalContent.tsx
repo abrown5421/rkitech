@@ -293,7 +293,7 @@ const ProfileBannerModalContent: React.FC<ProfileBannerModalContentProps> = ({
         >
           {!formData.auxImage ? (
             <div className="flex flex-col items-center text-gray-500">
-              <Icon name="Camera" TwClassName="w-10 h-10 mb-2" />
+              <Icon color="text-gray-900" name="Camera" TwClassName="w-10 h-10 mb-2" />
               <span className="text-sm">Click or drag image to upload</span>
             </div>
           ) : (
@@ -320,14 +320,14 @@ const ProfileBannerModalContent: React.FC<ProfileBannerModalContentProps> = ({
             TwClassName="flex-1 mt-2 p-2 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error"
             onClick={handleDeleteBannerImage}
           >
-            {isProfileBanDeleting ? <Loader variant="spinner" color="bg-white" /> : <>Delete Banner</>}
+            {isProfileBanDeleting ? <Loader variant="spinner" color="bg-white-500" /> : <>Delete Banner</>}
           </Button>
         )}
         <Button
           onClick={handleBannerUploadAndSave}
           TwClassName="flex-1 mt-2 p-2 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary"
         >
-          {isProfileBanUploading ? <Loader variant="spinner" color="bg-white" /> : <>Save</>}
+          {isProfileBanUploading ? <Loader variant="spinner" color="bg-white-500" /> : <>Save</>}
         </Button>
       </Container>
       

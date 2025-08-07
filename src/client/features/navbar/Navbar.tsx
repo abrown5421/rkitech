@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
             cursor="pointer"
             onClick={() => handleDrawerOpen(getTimeOfDay(), 'loggedOutMenu')}
           >
-            <Icon name="Menu" />
+            <Icon color="text-gray-900" name="Menu" />
           </Button>
         )}
       </Container>

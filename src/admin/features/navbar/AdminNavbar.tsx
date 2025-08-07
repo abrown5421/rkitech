@@ -106,7 +106,7 @@ const AdminNavbar: React.FC = () => {
                   onClick={handleLogout}
                 >
                   {isLoading ? (
-                    <Loader variant="spinner" color="bg-white" />
+                    <Loader variant="spinner" color="bg-white-500" />
                   ) : (
                     <Text text="Logout" />
                   )}

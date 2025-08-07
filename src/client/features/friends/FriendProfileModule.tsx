@@ -122,9 +122,9 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
                 : "relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
             }>
               <span className="absolute left-3">
-                  <Icon name="UserMinus" />
+                  <Icon color="text-gray-900" name="UserMinus" />
               </span>
-              {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Rescind'}
+              {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Rescind'}
             </Button>
           }
           {isRecievedRequest && 
@@ -134,18 +134,18 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
                     "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
                 }>
                   <span className="absolute left-3">
-                      <Icon name="UserMinus" />
+                      <Icon color="text-gray-900" name="UserMinus" />
                   </span>
-                  {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Decline'}
+                  {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Decline'}
                 </Button>
                 <Button
                   onClick={acceptFriend} TwClassName={
                       "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
                   }>
                     <span className="absolute left-3">
-                        <Icon name="UserPlus" />
+                        <Icon color="text-gray-900" name="UserPlus" />
                     </span>
-                    {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Accept'}
+                    {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Accept'}
                 </Button>
               
               {receivedRequest && validReceivedCreatedAt && profileUser?.firstName && (
@@ -167,9 +167,9 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
                 : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-black border border-gray-300 hover:bg-transparent flex justify-center items-center"
             }>
               <span className="absolute left-3">
-                  <Icon name="UserPlus" />
+                  <Icon color="text-gray-900" name="UserPlus" />
               </span>
-              {friendAddition ? <Loader variant="spinner" color="bg-primary" /> : (!isSentRequest ? 'Add Friend' : 'Pending')}
+              {friendAddition ? <Loader variant="spinner" color="bg-white-500" /> : (!isSentRequest ? 'Add Friend' : 'Pending')}
             </Button>
           }
           {sentRequest && validSentCreatedAt && profileUser?.firstName && (
@@ -188,9 +188,9 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
                   "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
               }>
                 <span className="absolute left-3">
-                    <Icon name="UserMinus" />
+                    <Icon color="text-gray-900" name="UserMinus" />
                 </span>
-                {friendRemoval ? <Loader variant="spinner" color="bg-primary" /> : 'Unfriend'}
+                {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Unfriend'}
               </Button>
               {acceptedRequest && profileUser?.firstName && (
                 <Text

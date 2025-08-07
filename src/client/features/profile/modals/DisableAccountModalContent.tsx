@@ -97,7 +97,7 @@ const DisableAccountModalContent: React.FC = () => {
             TwClassName="min-w-[100px] mt-2 p-2 bg-warning rounded-xl text-white border-1 border-warning hover:bg-transparent hover:text-warning flex-1"
           >
             {isProfilePicDeleting ? (
-              <Loader variant="spinner" color="bg-white" />
+              <Loader variant="spinner" color="bg-white-500" />
             ) : (
               <>Disable</>
             )}

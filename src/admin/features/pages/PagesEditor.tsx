@@ -106,8 +106,8 @@ const PagesEditor: React.FC = () => {
             onClick={() => deletePage(page.pageID, page.pageName)}
           >
             {isDeleting(page.pageID)
-              ? <Loader variant="spinner" color="bg-primary" />
-              : <Icon TwClassName="color-error" name="Trash" />
+              ? <Loader variant="spinner" color="text-amber-500" />
+              : <Icon color="text-red-500" name="Trash" />
             }
           </Button>
         </Container>

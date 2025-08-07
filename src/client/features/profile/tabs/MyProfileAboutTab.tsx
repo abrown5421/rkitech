@@ -283,12 +283,12 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
                 onClick={(e) => { e.stopPropagation(); handleDeleteProfilePicture(); }}
                 TwClassName="absolute top-2 right-2 cursor-pointer z-50 rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2"
               >
-                <Icon name="Trash" />
+                <Icon color="text-gray-900" name="Trash" />
               </Container>
             )}
             {!previewURL ? (
               <Container TwClassName="flex flex-col items-center text-gray-500">
-                <Icon name="Camera" TwClassName="w-10 h-10 mb-2" />
+                <Icon color="text-gray-900" name="Camera" TwClassName="w-10 h-10 mb-2" />
                 <span className="text-sm">Click or drag image to upload</span>
               </Container>
             ) : (
@@ -431,14 +431,14 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
           onClick={handleRestore}
           disabled={isProfileRestoring}
         >
-          {isProfileRestoring ? <Loader variant="spinner" color="bg-primary" /> : "Restore Changes"}
+          {isProfileRestoring ? <Loader variant="spinner" color="bg-amber-500" /> : "Restore Changes"}
         </Button>
         <Button
           TwClassName="p-2 bg-primary rounded-xl text-white border-1 min-w-[150px] border-primary hover:bg-transparent hover:text-primary"
           onClick={handleSave}
           disabled={isProfileSaving || (emailChanged && !form.password)}
         >
-          {isProfileSaving ? <Loader variant="spinner" color="bg-primary" /> : "Save Changes"}
+          {isProfileSaving ? <Loader variant="spinner" color="bg-amber-500" /> : "Save Changes"}
         </Button>
       </Container>
     </>
