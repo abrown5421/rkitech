@@ -19,6 +19,7 @@ export interface Page {
   pageEntranceAnimation: string;
   pageExitAnimation: string;
   pageRenderMethod: string;
+  pageActive: boolean;
 }
 
 export interface PagesState {
