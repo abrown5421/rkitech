@@ -50,7 +50,8 @@ const PageShell: React.FC<PageShellState> = ({
                 {activePage.activePageShellName === 'Admin' && <AdminAuth />}
                 {activePage.activePageShellName === 'AdminDash' && <AdminDashboard />}
             </Container>
-            <Footer />
+            {(activePage.activePageShellId !== 'adminPage') && <Footer />}
+            
         </Container>
     );
 };
