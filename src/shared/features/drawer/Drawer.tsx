@@ -7,7 +7,6 @@ import Icon from '../../../shared/components/icon/Icon';
 import Text from '../../../shared/components/text/Text';
 import LoggedInDrawerContent from '../../../client/features/navbar/drawers/LoggedInDrawerContent';
 import LoggedOutDrawerContent from '../../../client/features/navbar/drawers/LoggedOutDrawerContent';
-import LoggedInAdminDrawerContent from '../../../admin/features/navbar/drawers/LoggedInAdminDrawerContent';
 
 const Drawer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,8 +33,7 @@ const Drawer: React.FC = () => {
 
   const drawerContentRegistry: Record<string, JSX.Element> = {
     loggedInMenu: <LoggedInDrawerContent />,
-    loggedOutMenu: <LoggedOutDrawerContent />,
-    loggedInAdminMenu: <LoggedInAdminDrawerContent />
+    loggedOutMenu: <LoggedOutDrawerContent />
   };
 
   return (
