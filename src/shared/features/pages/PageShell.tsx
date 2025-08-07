@@ -15,6 +15,7 @@ import { useAppSelector } from '../../../app/hooks';
 import Container from '../../../shared/components/container/Container';
 import AdminAuth from '../../../admin/features/auth/AdminAuth';
 import AdminDashboard from '../../../admin/features/dashboard/AdminDashboard';
+import Sidebar from '../../../admin/features/sidebar/Sidebar';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -33,7 +34,7 @@ const PageShell: React.FC<PageShellState> = ({
                 entranceExit: activePageShellAnimation,
             }}
         >
-            <Container TwClassName="">
+            <Container TwClassName="flex-row">
                 {/* all of your static pages should have a conditional render statement below. If there is not one that static page will not show */}
                 {activePage.activePageShellName === 'Home' && <Home />}
                 {activePage.activePageShellName === 'Auth' && <Auth />}
@@ -45,6 +46,7 @@ const PageShell: React.FC<PageShellState> = ({
                 {activePage.activePageShellName === 'Terms Of Service' && <TermsOfService />}
 
                 {/* all of your admin pages should have a conditional render statement below. If there is not one that admin page will not show */}
+                {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && <Sidebar />}
                 {activePage.activePageShellName === 'Admin' && <AdminAuth />}
                 {activePage.activePageShellName === 'AdminDash' && <AdminDashboard />}
             </Container>
