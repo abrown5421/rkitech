@@ -43,15 +43,16 @@ const App: React.FC = () => {
   useEffect(()=>{
     const homePage = pages.find((page) => page.pageName === 'Home');
     const pathname = location.pathname.toLowerCase();
-    if (pathname.startsWith('/admin/dashboard')) {
-      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'AdminDash' }));
+
+    if (pathname === '/admin') {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'Admin'}));
       dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: 'adminPage' }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
       return
     };
 
-    if (pathname.startsWith('/admin')) {
-      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'Admin' }));
+    if (pathname.startsWith('/admin/')) {
+      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'AdminDash'}));
       dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: 'adminPage' }));
       dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
       return
@@ -91,26 +92,13 @@ const App: React.FC = () => {
           {(activePage.activePageShellId === 'adminPage') ? <AdminNavbar /> : <Navbar />}
           <Routes>
             <Route
-              path="/admin"
+              path="/admin/*"
               element={
                 <PageShell
-                  activePageShellBgColor='bg-black'
+                  activePageShellBgColor={activePage.activePageShellName === 'Admin' ? "bg-black" : "bg-white"}
                   activePageShellAnimation={{
                     entranceAnimation: 'animate__fadeInUpBig',
                     exitAnimation: 'animate__fadeOutDownBig',
-                    isEntering: activePage.activePageShellIn,
-                  }}
-                />
-              }
-            />
-            <Route
-              path="/admin/dashboard"
-              element={
-                <PageShell
-                  activePageShellBgColor='bg-white'
-                  activePageShellAnimation={{
-                    entranceAnimation: 'animate__fadeIn',
-                    exitAnimation: 'animate__fadeOut',
                     isEntering: activePage.activePageShellIn,
                   }}
                 />
