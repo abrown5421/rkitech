@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import Container from '../../../shared/components/container/Container';
 import Image from '../../../shared/components/image/Image';
 import Text from '../../../shared/components/text/Text';
@@ -18,7 +19,6 @@ const AdminNavbar: React.FC = () => {
   const tod = getTimeOfDay();
   const greeting = `${tod} ${authAdminUser.user?.firstName || ''}`;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const { loading, id } = useAppSelector((state) => state.loading);
   const isLoading = loading && id === 'logoutButton';
 
@@ -31,16 +31,6 @@ const AdminNavbar: React.FC = () => {
       dispatch(clearAdminAuthUser());
     }, 500);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   return (
     <Container
@@ -70,8 +60,16 @@ const AdminNavbar: React.FC = () => {
         }}
       >
         {authAdminUser?.user && (
-          <div className="relative" ref={dropdownRef}>
-            <Button TwClassName="p-2" cursor="pointer" onClick={() => setDropdownOpen(!dropdownOpen)}>
+          <div
+            tabIndex={0}
+            onBlur={() => setTimeout(() => setDropdownOpen(false), 100)}
+            className="relative focus:outline-none"
+          >
+            <Button
+              TwClassName="p-2"
+              cursor="pointer"
+              onClick={() => setDropdownOpen((prev) => !prev)}
+            >
               {authAdminUser?.user.profileImage ? (
                 <Image
                   src={authAdminUser.user.profileImage}
@@ -90,31 +88,31 @@ const AdminNavbar: React.FC = () => {
               )}
             </Button>
 
-            
-            <Container 
+            {dropdownOpen && (
+              <Container
                 animation={{
-                    entranceExit: {
-                        entranceAnimation: 'animate__fadeIn animate__faster',
-                        exitAnimation: 'animate__fadeOut animate__faster',
-                        isEntering: dropdownOpen,
-                    },
-                }} 
-                TwClassName="absolute flex-col right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-300 z-50 p-4 space-y-4"
-                >
+                  entranceExit: {
+                    entranceAnimation: 'animate__fadeIn animate__faster',
+                    exitAnimation: 'animate__fadeOut animate__faster',
+                    isEntering: true,
+                  },
+                }}
+                TwClassName="absolute flex-col z-40 right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-300 z-50 p-4 space-y-4"
+              >
                 <Text text={greeting} TwClassName="text-lg font-semibold text-gray-700" />
                 <Button
-                    TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary"
-                    cursor="pointer"
-                    onClick={handleLogout}
+                  TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary"
+                  cursor="pointer"
+                  onClick={handleLogout}
                 >
-                    {isLoading ? (
+                  {isLoading ? (
                     <Loader variant="spinner" color="bg-white" />
-                    ) : (
+                  ) : (
                     <Text text="Logout" />
-                    )}
+                  )}
                 </Button>
-            </Container>
-            
+              </Container>
+            )}
           </div>
         )}
       </Container>
