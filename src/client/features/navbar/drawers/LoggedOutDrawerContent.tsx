@@ -24,7 +24,7 @@ const LoggedOutDrawerContent: React.FC = () => {
       .map((menuItem) => {
         if (menuItem.itemType === 'page') {
           const page = pages.find((p) => p.pageID === menuItem.itemId);
-          if (!page) return null;
+          if (!page || !page.pageActive) return null;
           return (
             <Button
               key={menuItem.itemId}
