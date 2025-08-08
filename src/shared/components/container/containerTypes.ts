@@ -11,4 +11,5 @@ export interface ContainerProps {
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   animation?: AnimationProps;
   TwClassName?: string;
+  style?: React.CSSProperties;
 }
