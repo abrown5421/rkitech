@@ -121,7 +121,7 @@ const AdminAuth: React.FC = () => {
                 userId: result.userId,
             }), { expires: 1 });
 
-            dispatch(clientNavigation('/admin/dashboard', 'AdminDash', ''))
+            dispatch(clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
             dispatch(setNotLoading())
             
         } catch (err: any) {
