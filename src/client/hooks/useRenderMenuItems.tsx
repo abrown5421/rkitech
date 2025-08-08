@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import type { Page } from '../shared/features/pages/pageTypes';
-import type { Notification } from '../client/features/notifications/notificationTypes';
-import type { ClientAuthUser } from '../client/features/auth/ClientAuthUserTypes';
-import { useAppDispatch } from '../app/hooks';
-import { preCloseDrawer } from '../shared/features/drawer/drawerSlice';
-import Container from '../shared/components/container/Container';
-import Button from '../shared/components/button/Button';
+import type { Page } from '../../shared/features/pages/pageTypes';
+import type { ClientAuthUser } from '../features/auth/ClientAuthUserTypes';
+import type { Notification } from '../features/notifications/notificationTypes';
+import { useAppDispatch } from '../../app/hooks';
+import { preCloseDrawer } from '../../shared/features/drawer/drawerSlice';
+import Container from '../../shared/components/container/Container';
+import Button from '../../shared/components/button/Button';
 
 interface RenderMenuItemsProps {
   menuItems: any[];
