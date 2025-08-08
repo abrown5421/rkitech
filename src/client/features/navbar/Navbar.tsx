@@ -1,4 +1,5 @@
 
+
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigationHook } from '../../../hooks/useNavigationHook';
@@ -60,7 +61,7 @@ const Navbar: React.FC = () => {
                 }, 250);
               }}
             >
-              {menuItem.itemName}
+              {page.pageName}
             </Button>
           );
         }
@@ -202,7 +203,7 @@ const Navbar: React.FC = () => {
           <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
             <Button
               cursor="pointer"
-              TwClassName={`p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
+              TwClassName={`pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
               onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
             >
               <Text text="Login" />

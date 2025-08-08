@@ -20,6 +20,7 @@ export interface Page {
   pageExitAnimation: string;
   pageRenderMethod: string;
   pageActive: boolean;
+  componentKey: string
 }
 
 export interface PagesState {

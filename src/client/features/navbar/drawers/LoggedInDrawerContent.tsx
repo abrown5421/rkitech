@@ -49,7 +49,7 @@ const LoggedInDrawerContent: React.FC = () => {
               }}
               TwClassName={`pt-3 pr-0 pb-3 pl-0 flex-row w-full justify-between items-center cursor-pointer ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary hover:bg-gray-100`}
             >
-              {menuItem.itemName}
+              {page.pageName}
               {notifications.notifications.filter(
                 (n) =>
                   menuItem.itemName === 'Profile' &&

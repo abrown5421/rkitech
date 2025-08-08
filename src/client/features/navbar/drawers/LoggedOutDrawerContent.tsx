@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigationHook } from '../../../../hooks/useNavigationHook';
 import { useAppSelector } from '../../../../app/hooks';
@@ -36,7 +37,7 @@ const LoggedOutDrawerContent: React.FC = () => {
                 }, 250);
               }}
             >
-              {menuItem.itemName}
+              {page.pageName}
             </Button>
           );
         } else {

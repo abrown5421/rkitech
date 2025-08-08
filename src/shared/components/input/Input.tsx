@@ -46,11 +46,14 @@ const Input: React.FC<InputProps> = ({
   const paddingRight = endAdornment ? "pr-10" : "pr-3";
 
   const baseInputClasses = clsx(
-    "peer w-full bg-transparent text-base placeholder-transparent focus:outline-none",
+    "peer w-full text-base placeholder-transparent focus:outline-none",
     paddingLeft,
     paddingRight,
     multiline ? "resize-none" : "h-12",
-    rows === "fill" ? "flex-grow" : null
+    rows === "fill" ? "flex-grow" : null,
+    rest.disabled
+      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+      : "bg-transparent text-black"
   );
 
   return (
@@ -62,8 +65,12 @@ const Input: React.FC<InputProps> = ({
       <div
         className={clsx(
           "relative flex border rounded-md transition-colors duration-200",
-          error ? "border-red-500" : "border-gray-300",
-          focused ? "ring-2 ring-primary border-primary" : "ring-0",
+          rest.disabled
+            ? "border-gray-200 bg-gray-100"
+            : error
+              ? "border-red-500"
+              : "border-gray-300",
+          focused && !rest.disabled ? "ring-2 ring-primary border-primary" : "ring-0",
           rows === "fill" ? "h-full" : "items-center",
         )}
       >
@@ -101,9 +108,14 @@ const Input: React.FC<InputProps> = ({
               "absolute left-3 transition-all duration-200 bg-white px-1",
               startAdornment && "left-10",
               (focused || hasValue)
-                ? "text-xs -top-2.5 text-primary"
-                : "text-base top-3 text-gray-500"
+                ? rest.disabled
+                  ? "text-xs -top-2.5 text-gray-400"
+                  : "text-xs -top-2.5 text-primary"
+                : rest.disabled
+                  ? "text-base top-3 text-gray-400"
+                  : "text-base top-3 text-gray-500"
             )}
+
           >
             {label}
           </label>
