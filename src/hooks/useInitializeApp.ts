@@ -18,9 +18,20 @@ import type { AdminAuthUser } from "../admin/features/auth/adminAuthUserTypes";
 export const useInitializeApp = () => {
   const dispatch = useAppDispatch();
 
-  const initializeApp = useCallback(
-    (clientUser: ClientAuthUser | null, adminUser: AdminAuthUser | null) => {
+  const initializeApp = useCallback((
+    clientUser: ClientAuthUser | null,
+    adminUser: AdminAuthUser | null,
+    onReady?: () => void
+  ) => {
     const unsubscribers: (() => void)[] = [];
+    let isInitialDataLoaded = false;
+
+    const checkReady = () => {
+      if (!isInitialDataLoaded && onReady) {
+        isInitialDataLoaded = true;
+        onReady();
+      }
+    };
 
     unsubscribers.push(
       listenToCollection("Pages", (data) => {
@@ -29,6 +40,7 @@ export const useInitializeApp = () => {
           ...rest,
         }));
         dispatch(setPages(pagesWithDocId));
+        checkReady();
       })
     );
 
@@ -39,8 +51,10 @@ export const useInitializeApp = () => {
           ...rest,
         }));
         dispatch(setMenus(menusWithDocId));
+        checkReady();
       })
     );
+
 
     if (clientUser) {
       const unsubscribeUser = listenToDocument("Users", clientUser.userId, (data) => {

@@ -10,6 +10,7 @@ import Button from '../../../../shared/components/button/Button';
 import { setLoading, setNotLoading } from '../../../../app/globalSlices/loading/loadingSlice';
 import Loader from '../../../../shared/components/loader/Loader';
 import Text from '../../../../shared/components/text/Text';
+import { useRenderMenuItems } from '../../../../hooks/useRenderMenuItems';
 
 const LoggedInDrawerContent: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,64 +27,26 @@ const LoggedInDrawerContent: React.FC = () => {
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
   const profileMenu = menus.menus.find((menu) => menu.menuName === 'Profile Menu');
 
-  const renderMenuItems = (menuItems: any[]) =>
-    menuItems
-      ?.slice()
-      .sort((a, b) => a.itemOrder - b.itemOrder)
-      .map((menuItem) => {
-        if (menuItem.itemType === 'page') {
-          const page = pages.find((p) => p.pageID === menuItem.itemId);
-          if (!page || !page.pageActive) return null;
-          return (
-            <Container 
-              onClick={() => {
-                dispatch(preCloseDrawer());
-                setTimeout(() => {
-                  let targetPath = page.pagePath;
-                  if (page.pageName === 'Profile') {
-                    const userId = authUser.user?.userId;
-                    targetPath = `/profile/${userId}`;
-                  }
-                  clientNavigation(targetPath, page.pageName, page.pageID)();
-                }, 250);
-              }}
-              TwClassName={`pt-3 pr-0 pb-3 pl-0 flex-row w-full justify-between items-center cursor-pointer ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary hover:bg-gray-100`}
-            >
-              {page.pageName}
-              {notifications.notifications.filter(
-                (n) =>
-                  menuItem.itemName === 'Profile' &&
-                  n.senderUserId === authUser.user?.userId &&
-                  !n.isRead &&
-                  n.type === "friend_request"
-              ).length > 0 && (
-                <Container TwClassName="bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow ml-2">
-                  {
-                    notifications.notifications.filter(
-                      (n) =>
-                        menuItem.itemName === 'Profile' &&
-                        n.senderUserId === authUser.user?.userId &&
-                        !n.isRead &&
-                        n.type === "friend_request"
-                    ).length
-                  }
-                </Container>
-              )}
-            </Container>
-          );
-        } else {
-          return (
-            <Button
-              key={menuItem.itemName}
-              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
-              cursor="pointer"
-              onClick={() => window.open(menuItem.itemLink, '_blank')}
-            >
-              {menuItem.itemName}
-            </Button>
-          );
-        }
-      });
+  const renderPrimaryMenuItems = useRenderMenuItems({
+    menuItems: primaryMenu?.menuItems || [],
+    pages,
+    activePage,
+    authUser: authUser.user,
+    notifications: notifications.notifications,
+    onNavigate: (path, name, id) => clientNavigation(path, name, id)(),
+    extraOptions: { isLoggedIn: true },
+  });
+
+  const renderProfileMenuItems = useRenderMenuItems({
+    menuItems: profileMenu?.menuItems || [],
+    pages,
+    activePage,
+    authUser: authUser.user,
+    notifications: notifications.notifications,
+    onNavigate: (path, name, id) => clientNavigation(path, name, id)(),
+    extraOptions: { isLoggedIn: true },
+    withAnimation: false
+  });
 
   const handleLogout = () => {
     dispatch(setLoading({ loading: true, id: 'logoutButton' }));
@@ -100,11 +63,11 @@ const LoggedInDrawerContent: React.FC = () => {
     <Container TwClassName="flex-col h-full w-full justify-between">
       <Container TwClassName="flex-col h-full w-full items-start">
         <Container TwClassName="flex-col w-full items-start md:hidden">
-          {renderMenuItems(primaryMenu?.menuItems || [])}
+          {renderPrimaryMenuItems}
           <hr className="w-full border-gray-300 my-2" />
         </Container>
 
-        {renderMenuItems(profileMenu?.menuItems || [])}
+        {renderProfileMenuItems}
       </Container>
 
       <Button TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" cursor="pointer" onClick={handleLogout}>

@@ -32,8 +32,9 @@ const App: React.FC = () => {
     const storedAdminUser = Cookies.get("adminAuthUser");
     const parsedAdminUser = storedAdminUser ? JSON.parse(storedAdminUser) : null;
 
-    const unsubscribe = initializeApp(parsedClientUser, parsedAdminUser);
-    setLoadingSite(false);
+    const unsubscribe = initializeApp(parsedClientUser, parsedAdminUser, () => {
+      setLoadingSite(false);
+    });
 
     return () => {
       unsubscribe?.();
@@ -41,7 +42,7 @@ const App: React.FC = () => {
   }, [authUser.user?.userId, adminAuthUser.user?.userId]);
 
   useEffect(()=>{
-    const homePage = pages.find((page) => page.pageName === 'Home');
+    const homePage = pages.find((page) => page.pagePath === '/');
     const pathname = location.pathname.toLowerCase();
 
     if (pathname === '/admin') {
