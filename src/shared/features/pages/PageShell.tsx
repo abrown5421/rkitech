@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import type { PageShellState } from './pageTypes';
 import Auth from '../../../client/features/auth/ClientAuth';
 import Home from '../../../client/features/home/Home';
-import Test from '../../../client/features/test/Test';
 import Profile from '../../../client/features/profile/Profile';
 import Dashboard from '../../../client/features/dashboard/Dashboard';
 import Footer from '../../../client/features/footer/Footer';
@@ -54,7 +53,6 @@ const PageShell: React.FC<PageShellState> = ({
                             {localPageRef === 'HomeComp' && <Home />}
                             {localPageRef === 'LoginComp' && <Auth />}
                             {localPageRef === 'SignUpComp' && <Auth />}
-                            {localPageRef === 'TestComp' && <Test />}
                             {localPageRef === 'ProfileComp' && <Profile />}
                             {localPageRef === 'DashboardComp' && <Dashboard />}
                             {localPageRef === 'PageNotFoundComp' && <PageNotFound />}
