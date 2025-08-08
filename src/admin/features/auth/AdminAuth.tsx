@@ -65,7 +65,7 @@ const AdminAuth: React.FC = () => {
     };
     
     if (adminAuthUser.user) {
-        dispatch(clientNavigation('/admin/dashboard', 'AdminDash', ''))
+        dispatch(clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
     }
 
     const handleSubmit = async () => {
