@@ -15,7 +15,7 @@ import Icon from '../../../shared/components/icon/Icon';
 
 const AdminAuth: React.FC = () => {
     const dispatch = useAppDispatch();
-    const adminNavigation = useNavigationHook();
+    const clientNavigation = useNavigationHook();
     const { loading, id } = useAppSelector((state) => state.loading);
     const adminAuthUser = useAppSelector((state) => state.adminAuthUser);
     const isLoading = loading && id === 'signInButton';
@@ -65,7 +65,11 @@ const AdminAuth: React.FC = () => {
     };
     
     if (adminAuthUser.user) {
-        dispatch(adminNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
+<<<<<<< HEAD
+        dispatch(clientNavigation('/admin/dashboard', 'AdminDash', ''))
+=======
+        dispatch(clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
+>>>>>>> e5d6fe4034a7bea303ace06e4cd6625ef83796df
     }
 
     const handleSubmit = async () => {
@@ -121,7 +125,11 @@ const AdminAuth: React.FC = () => {
                 userId: result.userId,
             }), { expires: 1 });
 
-            dispatch(adminNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
+<<<<<<< HEAD
+            dispatch(clientNavigation('/admin/dashboard', 'AdminDash', ''))
+=======
+            dispatch(clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
+>>>>>>> e5d6fe4034a7bea303ace06e4cd6625ef83796df
             dispatch(setNotLoading())
             
         } catch (err: any) {
