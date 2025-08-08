@@ -65,7 +65,7 @@ const AdminAuth: React.FC = () => {
     };
     
     if (adminAuthUser.user) {
-        dispatch(clientNavigation('/admin/dashboard', 'AdminDash', ''))
+        dispatch(clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage'))
     }
 
     const handleSubmit = async () => {
@@ -173,7 +173,7 @@ const AdminAuth: React.FC = () => {
                     helperText={errors.password}
                     TwClassName='mt-3'
                     endAdornment={
-                        <Icon
+                        <Icon color="text-gray-900"
                             TwClassName="relative z-50 cursor-pointer"
                             name={showPassword ? 'EyeOff' : 'Eye'}
                             onClick={() => setShowPassword((prev) => !prev)}
