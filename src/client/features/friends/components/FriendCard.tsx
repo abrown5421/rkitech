@@ -173,10 +173,10 @@ const FriendCard: React.FC<FriendCardProps> = ({
         disabled={isLoading}
       >
         <span className="absolute left-3">
-          <Icon name={config.icon as any} />
+          <Icon color="text-gray-900" name={config.icon as any} />
         </span>
         {isLoading ? (
-          <Loader variant="spinner" color="bg-primary" />
+          <Loader variant="spinner" color="bg-amber-500" />
         ) : (
           config.label
         )}

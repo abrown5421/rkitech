@@ -42,7 +42,7 @@ const ProfileSettingsTab: React.FC = () => {
                     onClick={handleAccountDisable}
                     disabled={isAccountDisabling}
                 >
-                    {isAccountDisabling ? <Loader variant="spinner" color="bg-primary" /> : "Disable Account"}
+                    {isAccountDisabling ? <Loader variant="spinner" color="bg-amber-500" /> : "Disable Account"}
                 </Button>
             </Container>
         </Container>
@@ -58,7 +58,7 @@ const ProfileSettingsTab: React.FC = () => {
                     onClick={handleAccountDelete}
                     disabled={isAccountDeleting}
                 >
-                    {isAccountDeleting ? <Loader variant="spinner" color="bg-primary" /> : "Delete Account"}
+                    {isAccountDeleting ? <Loader variant="spinner" color="bg-amber-500" /> : "Delete Account"}
                 </Button>
             </Container>
         </Container>

@@ -135,7 +135,7 @@ const DeleteAccountModalContent: React.FC = () => {
             TwClassName="min-w-[100px] mt-2 p-2 bg-error rounded-xl text-white border-1 border-error hover:bg-transparent hover:text-error flex-1"
           >
             {isProfilePicDeleting ? (
-              <Loader variant="spinner" color="bg-white" />
+              <Loader variant="spinner" color="bg-white-500" />
             ) : (
               <>Delete</>
             )}

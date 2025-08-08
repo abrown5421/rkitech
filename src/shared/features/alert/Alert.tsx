@@ -57,7 +57,7 @@ const Alert: React.FC = () => {
         },
       }}
     >
-      <Icon
+      <Icon color="text-gray-900"
         name="X"
         cursor="pointer"
         TwClassName="absolute top-4 right-4"

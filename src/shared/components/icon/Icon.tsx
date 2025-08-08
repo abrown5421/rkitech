@@ -4,10 +4,11 @@ import type { LucideProps } from 'lucide-react';
 import clsx from 'clsx';
 import { getAnimationClasses } from '../../../client/utils/useAnimation';
 import type { IconProps } from './iconTypes';
+import { tailwindToHex } from '../../utils/tailwindToHex';
 
 const Icon: React.FC<IconProps> = ({
   name,
-  cursor,
+  color,       
   animation,
   TwClassName,
   onClick,
@@ -21,13 +22,21 @@ const Icon: React.FC<IconProps> = ({
     return null;
   }
 
+  const colorRegex = /^text-([a-z]+)-(\d{3})$/i;
+  let strokeColor = undefined;
+
+  if (color) {
+    const match = color.match(colorRegex);
+    if (match) {
+      const [, colorName, intensityStr] = match;
+      const intensity = parseInt(intensityStr, 10);
+      strokeColor = tailwindToHex(colorName, intensity);
+    }
+  }
+
   const animationClasses = getAnimationClasses(animation, isHovered);
 
-  const classes = clsx(
-    animationClasses,
-    `cursor-${cursor || 'pointer'}`,
-    TwClassName
-  );
+  const classes = clsx(animationClasses, TwClassName);
 
   return (
     <div
@@ -36,7 +45,8 @@ const Icon: React.FC<IconProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <ImportedIcon />
+      {/* Pass stroke color as prop */}
+      <ImportedIcon stroke={strokeColor} />
     </div>
   );
 };
