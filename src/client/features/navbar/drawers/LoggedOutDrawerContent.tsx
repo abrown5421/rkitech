@@ -6,6 +6,7 @@ import Button from '../../../../shared/components/button/Button';
 import Container from '../../../../shared/components/container/Container';
 import Loader from '../../../../shared/components/loader/Loader';
 import Text from '../../../../shared/components/text/Text';
+import { useRenderMenuItems } from '../../../../hooks/useRenderMenuItems';
 
 const LoggedOutDrawerContent: React.FC = () => {
   const clientNavigation = useNavigationHook();
@@ -18,46 +19,20 @@ const LoggedOutDrawerContent: React.FC = () => {
 
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
 
-  const renderMenuItems = (menuItems: any[]) =>
-    menuItems
-      ?.slice()
-      .sort((a, b) => a.itemOrder - b.itemOrder)
-      .map((menuItem) => {
-        if (menuItem.itemType === 'page') {
-          const page = pages.find((p) => p.pageID === menuItem.itemId);
-          if (!page || !page.pageActive) return null;
-          return (
-            <Button
-              key={menuItem.itemId}
-              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}
-              cursor="pointer"
-              onClick={() => {
-                setTimeout(() => {
-                  clientNavigation(page.pagePath, page.pageName, page.pageID)();
-                }, 250);
-              }}
-            >
-              {page.pageName}
-            </Button>
-          );
-        } else {
-          return (
-            <Button
-              key={menuItem.itemName}
-              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary`}
-              cursor="pointer"
-              onClick={() => window.open(menuItem.itemLink, '_blank')}
-            >
-              {menuItem.itemName}
-            </Button>
-          );
-        }
-      });
+  const renderMenuItems = useRenderMenuItems({
+    menuItems: primaryMenu?.menuItems || [],
+    pages,
+    activePage,
+    onNavigate: (path, name, id) => {
+      clientNavigation(path, name, id)();
+    },
+    withAnimation: false
+  });
 
   return (
     <Container TwClassName="flex-col h-full w-full justify-between">
       <Container TwClassName="flex-col h-full w-full items-start">
-        {renderMenuItems(primaryMenu?.menuItems || [])}
+        {renderMenuItems}
       </Container>
 
       {!isLoginHidden && (

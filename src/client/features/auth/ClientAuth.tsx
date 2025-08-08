@@ -20,7 +20,10 @@ const ClientAuth: React.FC = () => {
     const clientNavigation = useNavigationHook();
     const { loading, id } = useAppSelector((state) => state.loading);
     const authUser = useAppSelector((state) => state.authUser);
+    const pages = useAppSelector((state) => state.pages.pages);
     const isLoading = loading && id === 'signInButton';
+    const loginComp = pages.find((page) => page.componentKey === 'LoginComp')
+    const signUpComp = pages.find((page) => page.componentKey === 'SignUpComp')
     
     const [isSignup, setIsSignup] = useState(false);
     const [formValues, setFormValues] = useState({
@@ -250,7 +253,7 @@ const ClientAuth: React.FC = () => {
                     helperText={errors.password}
                     TwClassName='mt-3'
                     endAdornment={
-                        <Icon color="text-gray-900"
+                        <Icon
                             TwClassName="relative z-50 cursor-pointer"
                             name={showPassword ? 'EyeOff' : 'Eye'}
                             onClick={() => setShowPassword((prev) => !prev)}
@@ -278,8 +281,8 @@ const ClientAuth: React.FC = () => {
                     TwClassName="text-sm text-black hover:underline"
                     onClick={() => {
                         isSignup
-                            ? clientNavigation('/login', 'Auth', 'authenticationPage')()
-                            : clientNavigation('/sign-up', 'Auth', 'authenticationPage')()
+                            ? clientNavigation('/login', 'Auth', loginComp?.pageID ?? '')()
+                            : clientNavigation('/sign-up', 'Auth', signUpComp?.pageID ?? '')()
                         setErrors({});
                         setTimeout(() => {
                             setFormValues({

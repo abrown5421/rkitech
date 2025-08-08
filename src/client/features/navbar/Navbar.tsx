@@ -11,6 +11,7 @@ import Text from '../../../shared/components/text/Text';
 import { getTimeOfDay } from '../../../shared/utils/getTimeOfDay';
 import Icon from '../../../shared/components/icon/Icon';
 import type { DrawerContentType } from '../../../shared/features/drawer/drawerTypes';
+import { useRenderMenuItems } from '../../../hooks/useRenderMenuItems';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +22,7 @@ const Navbar: React.FC = () => {
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const menus = useAppSelector((state) => state.menus);
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
+  const authComp = pages.find((page) => page.componentKey === 'LoginComp')
   const isLoginHidden = activePage === 'Auth';
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -31,54 +33,24 @@ const Navbar: React.FC = () => {
 
   const shouldShowLogin = mounted && !isLoginHidden;
 
-  const renderMenuItems = (menuItems: any[]) =>
-    menuItems
-      ?.slice()
-      .sort((a, b) => a.itemOrder - b.itemOrder)
-      .map((menuItem, index) => {
-        const totalItems = menuItems.length;
-        const delay = `${(totalItems - index) * 200}ms`;
-        const animationClass = "animate__animated animate__fadeIn";
-
-        if (menuItem.itemType === 'page') {
-          const page = pages.find((p) => p.pageID === menuItem.itemId);
-          if (!page || !page.pageActive) return null;
-          return (
-            <Button
-              key={menuItem.itemId}
-              TwClassName={`pt-3 pr-0 pb-3 pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary ${animationClass}`}
-              style={{ animationDelay: delay }}
-              cursor="pointer"
-              onClick={() => {
-                dispatch(preCloseDrawer());
-                setTimeout(() => {
-                  let targetPath = page.pagePath;
-                  if (page.pageName === 'Profile') {
-                    const userId = authUser.user?.userId;
-                    targetPath = `/profile/${userId}`;
-                  }
-                  clientNavigation(targetPath, page.pageName, page.pageID)();
-                }, 250);
-              }}
-            >
-              {page.pageName}
-            </Button>
-          );
-        }
-
-        return (
-          <Button
-            key={menuItem.itemName}
-            TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary ${animationClass}`}
-            cursor="pointer"
-            style={{ animationDelay: delay }}
-            onClick={() => window.open(menuItem.itemLink, '_blank')}
-          >
-            {menuItem.itemName}
-          </Button>
-        );
-      });
+  const renderMenuItems = useRenderMenuItems({
+    menuItems: primaryMenu?.menuItems || [],
+    pages,
+    activePage,
+    authUser: authUser.user,
+    onNavigate: (path, name, id) => {
+      dispatch(preCloseDrawer());
       
+        let targetPath = path;
+        if (name === 'Profile') {
+          const userId = authUser.user?.userId;
+          targetPath = `/profile/${userId}`;
+        }
+        clientNavigation(targetPath, name, id)();
+    },
+    withAnimation: true
+  });
+
   const handleDrawerOpen = (title: string, contentType: DrawerContentType) => {
     dispatch(
       openDrawer({
@@ -167,7 +139,7 @@ const Navbar: React.FC = () => {
       <Container
         TwClassName="items-center gap-5 hidden md:flex"
       >
-        {renderMenuItems(primaryMenu?.menuItems || [])}
+        {renderMenuItems}
 
         {authUser?.user ? (
           <Button
@@ -204,7 +176,7 @@ const Navbar: React.FC = () => {
             <Button
               cursor="pointer"
               TwClassName={`pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
-              onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
+              onClick={() => clientNavigation('/login', 'Auth', authComp?.pageID ?? '')()}
             >
               <Text text="Login" />
             </Button>

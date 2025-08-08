@@ -26,7 +26,7 @@ const PageShell: React.FC<PageShellState> = ({
 }) => {
     const activePage = useAppSelector((state) => state.pageShell);
     const pages = useAppSelector((state) => state.pages);
-    const [localPageRef, setLocalPageRef] = useState<string | undefined>(undefined);
+    const [localPageRef, setLocalPageRef] = useState<string | undefined>('HomeComp');
 
     useEffect(()=>{
         if (activePage.activePageShellId !== 'adminPage') {
@@ -52,7 +52,8 @@ const PageShell: React.FC<PageShellState> = ({
                     <Container TwClassName="flex-col flex-1">
                         <Container TwClassName="flex-col flex-1">
                             {localPageRef === 'HomeComp' && <Home />}
-                            {localPageRef === 'AuthComp' && <Auth />}
+                            {localPageRef === 'LoginComp' && <Auth />}
+                            {localPageRef === 'SignUpComp' && <Auth />}
                             {localPageRef === 'TestComp' && <Test />}
                             {localPageRef === 'ProfileComp' && <Profile />}
                             {localPageRef === 'DashboardComp' && <Dashboard />}
