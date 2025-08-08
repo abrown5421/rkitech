@@ -1,10 +1,7 @@
-
-
 import React, { useEffect, useState } from 'react';
 import type { PageShellState } from './pageTypes';
 import Auth from '../../../client/features/auth/ClientAuth';
 import Home from '../../../client/features/home/Home';
-import Test from '../../../client/features/test/Test';
 import Profile from '../../../client/features/profile/Profile';
 import Dashboard from '../../../client/features/dashboard/Dashboard';
 import Footer from '../../../client/features/footer/Footer';
@@ -15,6 +12,7 @@ import { useAppSelector } from '../../../app/hooks';
 import Container from '../../../shared/components/container/Container';
 import Sidebar from '../../../admin/features/sidebar/Sidebar';
 import AdminRoutes from '../../../admin/features/adminRoutes/AdminRoutes';
+import Blog from '../../../client/features/blog/Blog';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -54,7 +52,7 @@ const PageShell: React.FC<PageShellState> = ({
                             {localPageRef === 'HomeComp' && <Home />}
                             {localPageRef === 'LoginComp' && <Auth />}
                             {localPageRef === 'SignUpComp' && <Auth />}
-                            {localPageRef === 'TestComp' && <Test />}
+                            {localPageRef === 'BlogComp' && <Blog />}
                             {localPageRef === 'ProfileComp' && <Profile />}
                             {localPageRef === 'DashboardComp' && <Dashboard />}
                             {localPageRef === 'PageNotFoundComp' && <PageNotFound />}

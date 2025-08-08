@@ -10,7 +10,7 @@ import Button from '../../../../shared/components/button/Button';
 import { setLoading, setNotLoading } from '../../../../app/globalSlices/loading/loadingSlice';
 import Loader from '../../../../shared/components/loader/Loader';
 import Text from '../../../../shared/components/text/Text';
-import { useRenderMenuItems } from '../../../../hooks/useRenderMenuItems';
+import { useRenderMenuItems } from '../../../hooks/useRenderMenuItems';
 
 const LoggedInDrawerContent: React.FC = () => {
   const dispatch = useAppDispatch();

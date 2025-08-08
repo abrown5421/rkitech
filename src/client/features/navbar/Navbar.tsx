@@ -11,7 +11,7 @@ import Text from '../../../shared/components/text/Text';
 import { getTimeOfDay } from '../../../shared/utils/getTimeOfDay';
 import Icon from '../../../shared/components/icon/Icon';
 import type { DrawerContentType } from '../../../shared/features/drawer/drawerTypes';
-import { useRenderMenuItems } from '../../../hooks/useRenderMenuItems';
+import { useRenderMenuItems } from '../../hooks/useRenderMenuItems';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();

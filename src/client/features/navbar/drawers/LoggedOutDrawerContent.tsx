@@ -6,7 +6,7 @@ import Button from '../../../../shared/components/button/Button';
 import Container from '../../../../shared/components/container/Container';
 import Loader from '../../../../shared/components/loader/Loader';
 import Text from '../../../../shared/components/text/Text';
-import { useRenderMenuItems } from '../../../../hooks/useRenderMenuItems';
+import { useRenderMenuItems } from '../../../hooks/useRenderMenuItems';
 
 const LoggedOutDrawerContent: React.FC = () => {
   const clientNavigation = useNavigationHook();
