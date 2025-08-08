@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
                                     }}
                                 >
-                                    {menuItem.itemName}
+                                    {page.pageName}
                                 </Button>
                             );
                         } else {

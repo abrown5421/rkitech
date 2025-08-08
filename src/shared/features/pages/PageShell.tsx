@@ -1,6 +1,6 @@
 
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { PageShellState } from './pageTypes';
 import Auth from '../../../client/features/auth/ClientAuth';
 import Home from '../../../client/features/home/Home';
@@ -25,7 +25,17 @@ const PageShell: React.FC<PageShellState> = ({
     }
 }) => {
     const activePage = useAppSelector((state) => state.pageShell);
+    const pages = useAppSelector((state) => state.pages);
+    const [localPageRef, setLocalPageRef] = useState<string | undefined>(undefined);
 
+    useEffect(()=>{
+        if (activePage.activePageShellId !== 'adminPage') {
+            const findRef = pages.pages.find((page) => page.pageID === activePage.activePageShellId)
+            
+            setLocalPageRef(findRef?.componentKey)
+        }
+    }, [activePage])
+    
     return (
         <Container TwClassName="flex-row">
             {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (
@@ -41,14 +51,14 @@ const PageShell: React.FC<PageShellState> = ({
                 ) : (
                     <Container TwClassName="flex-col flex-1">
                         <Container TwClassName="flex-col flex-1">
-                            {activePage.activePageShellName === 'Home' && <Home />}
-                            {activePage.activePageShellName === 'Auth' && <Auth />}
-                            {activePage.activePageShellName === 'Test' && <Test />}
-                            {activePage.activePageShellName === 'Profile' && <Profile />}
-                            {activePage.activePageShellName === 'Dashboard' && <Dashboard />}
-                            {activePage.activePageShellName === 'Page Not Found' && <PageNotFound />}
-                            {activePage.activePageShellName === 'Privacy Policy' && <PrivacyPolicy />}
-                            {activePage.activePageShellName === 'Terms Of Service' && <TermsOfService />}
+                            {localPageRef === 'HomeComp' && <Home />}
+                            {localPageRef === 'AuthComp' && <Auth />}
+                            {localPageRef === 'TestComp' && <Test />}
+                            {localPageRef === 'ProfileComp' && <Profile />}
+                            {localPageRef === 'DashboardComp' && <Dashboard />}
+                            {localPageRef === 'PageNotFoundComp' && <PageNotFound />}
+                            {localPageRef === 'PrivacyPolicyComp' && <PrivacyPolicy />}
+                            {localPageRef === 'TermsOfServiceComp' && <TermsOfService />}
                         </Container>
                         <Footer />
                     </Container>

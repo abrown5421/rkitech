@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigationHook } from '../../../../hooks/useNavigationHook';
 import { useAppSelector } from '../../../../app/hooks';
@@ -36,7 +37,7 @@ const LoggedOutDrawerContent: React.FC = () => {
                 }, 250);
               }}
             >
-              {menuItem.itemName}
+              {page.pageName}
             </Button>
           );
         } else {
@@ -65,7 +66,7 @@ const LoggedOutDrawerContent: React.FC = () => {
           cursor="pointer"
           onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
         >
-          {isLoading ? <Loader variant="spinner" color="bg-white" /> : <Text text="Login" TwClassName="text-white" />}
+          {isLoading ? <Loader variant="spinner" color="bg-white-500" /> : <Text text="Login" TwClassName="text-white" />}
         </Button>)}
     </Container>
   );
