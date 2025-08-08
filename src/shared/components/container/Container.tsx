@@ -8,6 +8,7 @@ const Container: React.FC<ContainerProps> = ({
   onClick,
   animation,
   TwClassName,
+  style,
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const animationClasses = getAnimationClasses(animation, isHovered);
@@ -23,6 +24,7 @@ const Container: React.FC<ContainerProps> = ({
     <div 
       className={classes} 
       onClick={onClick}
+      style={style}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
