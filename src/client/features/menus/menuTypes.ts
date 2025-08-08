@@ -16,6 +16,7 @@ export type MenuItem =
 
 export interface Menu {
   menuName: string;
+  menuEnv: string;
   menuItems: MenuItem[];
 }
 
