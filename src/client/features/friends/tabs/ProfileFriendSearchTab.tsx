@@ -42,7 +42,7 @@ const ProfileFriendSearchTab: React.FC = () => {
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         endAdornment={
-          <Icon
+          <Icon color="text-gray-900"
             name="Search"
             cursor="pointer"
             TwClassName="text-gray-500 hover:text-gray-700"
