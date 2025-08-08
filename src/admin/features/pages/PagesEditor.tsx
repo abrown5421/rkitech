@@ -202,7 +202,7 @@ const PagesEditor: React.FC = () => {
     const isProtected = isPermanent;
 
     return (
-      <Container TwClassName='flex-col'>
+      <Container TwClassName='flex-col border-gray-200 shadow border-1 rounded-xl p-4'>
         <Container
           key={page.pageID}
           TwClassName="rounded-md flex-row gap-4 items-center"
@@ -233,22 +233,9 @@ const PagesEditor: React.FC = () => {
             <option value="dynamic">Dynamic</option>
           </Select>
 
-          <Checkbox
-            checked={page.pageActive}
-            disabled={isProtected || isToggling(page.pageID)}
-            onChange={(e) =>
-              handleFieldChange(index, 'pageActive', e.target.checked, page.pageID, page.pageName)
-            }
-          />
-          {isToggling(page.pageID) && (
-            <Container TwClassName="flex items-center justify-center bg-white/50 rounded">
-              <Loader variant="spinner" color="text-amber-500" />
-            </Container>
-          )}
-
-          <Text text={page.pageActive ? "Active" : "Inactive"} />
+          
         </Container>
-        <Container TwClassName='flex-row gap-4 mt-1 ml-1 mb-1'>
+        <Container TwClassName='flex-row items-center gap-4 mt-4 ml-1'>
           <Button
             onClick={() => clientNavigation(page.pagePath, page.pageName, page.pageID)()}
             TwClassName='pt-0 pr-3 pb-0 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center'
@@ -268,6 +255,20 @@ const PagesEditor: React.FC = () => {
           >
             Delete
           </Button> )}
+          <Checkbox
+            checked={page.pageActive}
+            disabled={isProtected || isToggling(page.pageID)}
+            onChange={(e) =>
+              handleFieldChange(index, 'pageActive', e.target.checked, page.pageID, page.pageName)
+            }
+          />
+          {isToggling(page.pageID) && (
+            <Container TwClassName="flex items-center justify-center bg-white/50 rounded">
+              <Loader variant="spinner" color="text-amber-500" />
+            </Container>
+          )}
+
+          <Text text={page.pageActive ? "Active" : "Inactive"} />
         </Container>
       </Container>
     );
