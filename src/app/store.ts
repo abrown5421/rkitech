@@ -14,6 +14,7 @@ import menuReducer from '../client/features/menus/menusSlice';
 import adminAuthUserReducer from '../admin/features/auth/adminAuthUserSlice';
 import blogReducer from '../client/features/blog/blogSlice';
 import staffReducer from '../client/features/staff/staffSlice';
+import galleryReducer from '../client/features/gallery/gallerySlice';
 
 export const store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ export const store = configureStore({
     notifications: notificationReducer,
     blog: blogReducer,
     staff: staffReducer,
+    gallery: galleryReducer,
     adminAuthUser: adminAuthUserReducer,
   },
 });

@@ -16,6 +16,7 @@ import { clearAdminAuthUser, setAdminAuthUser } from "../admin/features/auth/adm
 import type { AdminAuthUser } from "../admin/features/auth/adminAuthUserTypes";
 import { setBlogPosts } from "../client/features/blog/blogSlice";
 import { setStaff } from "../client/features/staff/staffSlice";
+import { setGalleryPosts } from "../client/features/gallery/gallerySlice";
 
 export const useInitializeApp = () => {
   const dispatch = useAppDispatch();
@@ -75,6 +76,17 @@ export const useInitializeApp = () => {
           ...rest,
         }));
         dispatch(setStaff(staffWithDocId));
+        checkReady();
+      })
+    );
+
+    unsubscribers.push(
+      listenToCollection("Gallery", (data) => {
+        const galleryWithDocId = data.map(({ id, ...rest }) => ({
+          galleryPostID: id,
+          ...rest,
+        }));
+        dispatch(setGalleryPosts(galleryWithDocId));
         checkReady();
       })
     );

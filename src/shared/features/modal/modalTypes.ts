@@ -1,6 +1,6 @@
 import type { EntranceExitAnimation } from "../../types/animationTypes";
 
-export type ModalContentType = 'confirm' | 'deleteAccount' | 'disableAccount' | 'editProfilePic' | 'editProfileBanner' | 'newBlogPost' | 'form' | null;
+export type ModalContentType = 'confirm' | 'deleteAccount' | 'disableAccount' | 'editProfilePic' | 'editProfileBanner' | 'newBlogPost' | 'form' | 'galleryImageModal' | null;
 
 export interface ModalState {
   modalOpen: boolean;
@@ -33,4 +33,9 @@ export interface ProfileBannerModalContentProps {
     cellSize: number;
     variance: number;
   }) => void;
+}
+
+export interface GalleryImageModalContentProps {
+  imageDecription: string,
+  imageUrl: string,
 }
