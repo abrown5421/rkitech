@@ -44,7 +44,6 @@ const ProfileFriendSearchTab: React.FC = () => {
         endAdornment={
           <Icon color="text-gray-900"
             name="Search"
-            cursor="pointer"
             TwClassName="text-gray-500 hover:text-gray-700"
             onClick={() => searchUsers(searchValue).then(setResults)}
           />

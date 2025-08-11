@@ -13,6 +13,7 @@ import loadingReducer from './globalSlices/loading/loadingSlice';
 import menuReducer from '../client/features/menus/menusSlice';
 import adminAuthUserReducer from '../admin/features/auth/adminAuthUserSlice';
 import blogReducer from '../client/features/blog/blogSlice';
+import staffReducer from '../client/features/staff/staffSlice';
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
     theirFriends: theirFriendsReducer,
     notifications: notificationReducer,
     blog: blogReducer,
+    staff: staffReducer,
     adminAuthUser: adminAuthUserReducer,
   },
 });

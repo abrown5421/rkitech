@@ -15,6 +15,7 @@ import AdminRoutes from '../../../admin/features/adminRoutes/AdminRoutes';
 import Blog from '../../../client/features/blog/Blog';
 import BlogPost from '../../../client/features/blog/BlogPost';
 import Loader from '../../components/loader/Loader';
+import Staff from '../../../client/features/staff/Staff';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -55,6 +56,7 @@ const PageShell: React.FC<PageShellState> = ({
                             {localPageRef === 'LoginComp' && <Auth />}
                             {localPageRef === 'SignUpComp' && <Auth />}
                             {localPageRef === 'BlogComp' && <Blog />}
+                            {localPageRef === 'StaffComp' && <Staff />}
                             {localPageRef === 'blogPostComp' && <BlogPost />}
                             {localPageRef === 'ProfileComp' && <Profile />}
                             {localPageRef === 'DashboardComp' && <Dashboard />}
