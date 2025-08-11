@@ -9,7 +9,7 @@ import Loader from '../../../shared/components/loader/Loader';
 import TrianglifyBanner from '../../../shared/components/trianglifyBanner/TrianglifyBanner';
 import Text from '../../../shared/components/text/Text';
 import { format } from 'date-fns';
-import PageContentRenderer from '../../../shared/features/pages/pageContentRenderer';
+import PageContentRenderer from '../../../shared/features/pages/PageContentRenderer';
 
 const BlogPost: React.FC = () => {
     const { blogPostIdFromUrl } = useParams();
