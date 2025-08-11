@@ -203,6 +203,7 @@ const PagesEditor: React.FC = () => {
 
     return (
       <Container TwClassName='flex-col border-gray-200 shadow border-1 rounded-xl p-4'>
+        
         <Container
           key={page.pageID}
           TwClassName="rounded-md flex-row gap-4 items-center"
@@ -280,7 +281,7 @@ const PagesEditor: React.FC = () => {
         <>
           <Text
             text="Permanent Pages"
-            TwClassName="text-xl  text-gray-700 border-b border-gray-300 pb-2 font-primary"
+            TwClassName="text-xl text-black border-b border-gray-300 pb-2 font-primary"
           />
           <Text
             text="These pages are protected and cannot be deleted or renamed but they can have different render methods."
@@ -296,7 +297,7 @@ const PagesEditor: React.FC = () => {
         <>
           <Text
             text="Non-Permanent Pages"
-            TwClassName="text-xl  text-gray-700 border-b border-gray-300 pb-2 mt-6 font-primary"
+            TwClassName="text-xl  text-black border-b border-gray-300 pb-2 mt-6 font-primary"
           />
           <Text
             text="These pages can be edited and deleted"
