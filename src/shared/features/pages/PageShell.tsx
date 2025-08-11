@@ -16,6 +16,7 @@ import Blog from '../../../client/features/blog/Blog';
 import BlogPost from '../../../client/features/blog/BlogPost';
 import Loader from '../../components/loader/Loader';
 import Staff from '../../../client/features/staff/Staff';
+import Gallery from '../../../client/features/gallery/Gallery';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -57,6 +58,7 @@ const PageShell: React.FC<PageShellState> = ({
                             {localPageRef === 'SignUpComp' && <Auth />}
                             {localPageRef === 'BlogComp' && <Blog />}
                             {localPageRef === 'StaffComp' && <Staff />}
+                            {localPageRef === 'GalleryComp' && <Gallery />}
                             {localPageRef === 'blogPostComp' && <BlogPost />}
                             {localPageRef === 'ProfileComp' && <Profile />}
                             {localPageRef === 'DashboardComp' && <Dashboard />}

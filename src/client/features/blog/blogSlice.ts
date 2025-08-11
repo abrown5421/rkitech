@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Blog, BlogPost } from './blogTypes';
 
-
 const initialState: Blog = {
   blogPosts: [],
 };

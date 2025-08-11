@@ -10,6 +10,7 @@ import Container from '../../components/container/Container';
 import Icon from '../../components/icon/Icon';
 import Text from '../../components/text/Text';
 import NewBlogPost from '../../../admin/features/blog/modals/NewBlogPost';
+import GalleryImageModal from '../../../client/features/gallery/modals/GalleryImageModal';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -38,6 +39,13 @@ const Modal: React.FC = () => {
         return (
           <NewBlogPost />
         );
+      case 'galleryImageModal': 
+        return (
+          <GalleryImageModal 
+            imageDecription={modal.modalProps?.imageDecription}
+            imageUrl={modal.modalProps?.imageUrl}
+          />
+        )
       case 'editProfilePic':
         return (
           <ProfilePictureModalContent />
@@ -74,7 +82,7 @@ const Modal: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        TwClassName={clsx('w-4/5 md:w-1/3 p-4 flex-col bg-white rounded-2xl', isVisible ? 'z-50' : 'z-0')}
+        TwClassName={clsx('p-4 flex-col bg-white rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
             entranceAnimation: modal.modalAnimation.entranceAnimation,
@@ -85,7 +93,7 @@ const Modal: React.FC = () => {
         onClick={(e) => e.stopPropagation()}
       >
         <Icon color="text-gray-900" name="X" TwClassName="absolute top-4 right-4" onClick={handleClose} />
-        <Text text={modal.modalTitle} TwClassName="text-2x mb-4" />
+        <Text text={modal.modalTitle} TwClassName="text-black font-primary text-xl mb-5" />
         {renderModalContent()}
       </Container>
     </Container>
