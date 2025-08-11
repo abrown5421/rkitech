@@ -15,6 +15,7 @@ import { setNotifications } from "../client/features/notifications/notificationS
 import { clearAdminAuthUser, setAdminAuthUser } from "../admin/features/auth/adminAuthUserSlice";
 import type { AdminAuthUser } from "../admin/features/auth/adminAuthUserTypes";
 import { setBlogPosts } from "../client/features/blog/blogSlice";
+import { setStaff } from "../client/features/staff/staffSlice";
 
 export const useInitializeApp = () => {
   const dispatch = useAppDispatch();
@@ -63,6 +64,17 @@ export const useInitializeApp = () => {
           ...rest,
         }));
         dispatch(setBlogPosts(blogWithDocId));
+        checkReady();
+      })
+    );
+
+    unsubscribers.push(
+      listenToCollection("Staff", (data) => {
+        const staffWithDocId = data.map(({ id, ...rest }) => ({
+          staffPostID: id,
+          ...rest,
+        }));
+        dispatch(setStaff(staffWithDocId));
         checkReady();
       })
     );
