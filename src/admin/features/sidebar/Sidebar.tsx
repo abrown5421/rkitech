@@ -38,7 +38,7 @@ const Sidebar: React.FC = () => {
                 Pages
             </Button>
             <Button
-                onClick={() => clientNavigation('/admin/menus', 'AdminMenes', 'adminPage')()}
+                onClick={() => clientNavigation('/admin/menus', 'AdminMenues', 'adminPage')()}
                 TwClassName={
                     "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
@@ -46,6 +46,16 @@ const Sidebar: React.FC = () => {
                     <Icon color="text-gray-900" name="Menu" />
                 </span>
                 Menus
+            </Button>
+            <Button
+                onClick={() => clientNavigation('/admin/blog', 'AdminBlog', 'adminPage')()}
+                TwClassName={
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                }>
+                <span className="absolute left-3">
+                    <Icon color="text-gray-900" name="Feather" />
+                </span>
+                Blog
             </Button>
          </Container>
      );

@@ -18,19 +18,17 @@ const Blog: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>('All Posts');
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
     const categories = ['All Posts', ...Array.from(new Set(blogPosts.map(post => post.postCategory)))];
+    const activePosts = blogPosts.filter(post => post.postActive);
+
     const filteredPosts = selectedCategory === 'All Posts' 
-        ? blogPosts 
-        : blogPosts.filter(post => post.postCategory === selectedCategory);
+        ? activePosts
+        : activePosts.filter(post => post.postCategory === selectedCategory);
 
     const sortedPosts = [...filteredPosts].sort((a, b) => {
         const dateA = new Date(a.postDate).getTime();
         const dateB = new Date(b.postDate).getTime();
 
-        if (sortOrder === 'newest') {
-            return dateB - dateA;
-        } else {
-            return dateA - dateB;
-        }
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
 
     const postsPerPage = 9;
@@ -80,7 +78,7 @@ const Blog: React.FC = () => {
                 ))}
                 
             </Container>
-            <Container TwClassName='flex-row h-full items-between justify-between flex-wrap w-full md:w-4/5 lg:w-2/3 mx-auto gap-4'>
+            <Container TwClassName='flex-row h-full items-between flex-wrap w-full md:w-4/5 lg:w-2/3 mx-auto gap-4'>
                 {paginatedPosts.map((post) => (
                     <Container
                         key={post.blogPostID}

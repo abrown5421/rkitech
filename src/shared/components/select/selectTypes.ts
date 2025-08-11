@@ -10,4 +10,5 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   children?: ReactNode;
+  creatable?: boolean,
 }
