@@ -63,8 +63,12 @@ const App: React.FC = () => {
       if (page.pageName === 'Profile' && pathname.startsWith('/profile')) {
         return true;
       }
+      if (page.pageName === 'Blog Post' && pathname.startsWith('/blog-post')) {
+        return true;
+      }
       return page.pagePath === pathname;
     });
+
     const pageNotFound = pages.find((page) => page.pageName === "Page Not Found");
 
     if (location.pathname !== '/' && pageRef) {
@@ -114,6 +118,10 @@ const App: React.FC = () => {
                   routePath = '/profile/:userIdFromUrl';
                 }
 
+                if (page.pageName === 'Blog Post') {
+                  routePath = '/blog-post/:blogPostIdFromUrl';
+                }
+                
                 return (
                   <Route
                     key={page.pageID}

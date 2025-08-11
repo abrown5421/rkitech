@@ -13,6 +13,7 @@ import Container from '../../../shared/components/container/Container';
 import Sidebar from '../../../admin/features/sidebar/Sidebar';
 import AdminRoutes from '../../../admin/features/adminRoutes/AdminRoutes';
 import Blog from '../../../client/features/blog/Blog';
+import BlogPost from '../../../client/features/blog/BlogPost';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -53,6 +54,7 @@ const PageShell: React.FC<PageShellState> = ({
                             {localPageRef === 'LoginComp' && <Auth />}
                             {localPageRef === 'SignUpComp' && <Auth />}
                             {localPageRef === 'BlogComp' && <Blog />}
+                            {localPageRef === 'blogPostComp' && <BlogPost />}
                             {localPageRef === 'ProfileComp' && <Profile />}
                             {localPageRef === 'DashboardComp' && <Dashboard />}
                             {localPageRef === 'PageNotFoundComp' && <PageNotFound />}
