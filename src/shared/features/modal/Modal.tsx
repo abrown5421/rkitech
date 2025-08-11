@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import Container from '../../components/container/Container';
 import Icon from '../../components/icon/Icon';
 import Text from '../../components/text/Text';
+import NewBlogPost from '../../../admin/features/blog/modals/NewBlogPost';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -33,6 +34,10 @@ const Modal: React.FC = () => {
 
   const renderModalContent = () => {
     switch (modal.modalType) {
+      case 'newBlogPost':
+        return (
+          <NewBlogPost />
+        );
       case 'editProfilePic':
         return (
           <ProfilePictureModalContent />
@@ -79,7 +84,7 @@ const Modal: React.FC = () => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <Icon color="text-gray-900" name="X" cursor="pointer" TwClassName="absolute top-4 right-4" onClick={handleClose} />
+        <Icon color="text-gray-900" name="X" TwClassName="absolute top-4 right-4" onClick={handleClose} />
         <Text text={modal.modalTitle} TwClassName="text-2x mb-4" />
         {renderModalContent()}
       </Container>

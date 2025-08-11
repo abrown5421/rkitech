@@ -12,6 +12,8 @@ import { setLoading, setNotLoading } from '../../../app/globalSlices/loading/loa
 import { openAlert } from '../../../shared/features/alert/alertSlice';
 import { updateDataInCollection } from '../../../services/database/updateData';
 import { deleteDocument } from '../../../services/database/deleteData';
+import Icon from '../../../shared/components/icon/Icon';
+import { openModal } from '../../../shared/features/modal/modalSlice';
 
 const BlogEditor: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -22,7 +24,6 @@ const BlogEditor: React.FC = () => {
     const [localPosts, setLocalPosts] = useState(postsFromStore);
     const [originalPosts, setOriginalPosts] = useState(postsFromStore);
 
-    // Get unique categories from existing posts
     const categories = [...new Set(postsFromStore.map(post => post.postCategory).filter(Boolean))];
 
     const isLoading = (type: string, postId?: string) =>
@@ -142,8 +143,34 @@ const BlogEditor: React.FC = () => {
         updatePostField(postId, 'postCategory', newCategory);
     };
 
+    const handleNewBlogPostModal = () => {
+        dispatch(
+            openModal({
+                title: 'New Blog Post',
+                modalType: 'newBlogPost',
+            })
+        );
+    };
+
     return (
         <Container TwClassName="min-h-[calc(100vh-50px)] p-4 flex-col gap-4">
+            <Container TwClassName='flex-row justify-between'>
+                <Container TwClassName='flex-col flex-10'>
+                    <Text text="Edit Blog Posts" TwClassName='text-black font-primary text-xl' />
+                </Container>
+                <Container TwClassName='flex-col flex-2 h-full justify-center'>
+                    <Button
+                        onClick={handleNewBlogPostModal}
+                        TwClassName="relative pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border border-primary hover:text-primary hover:bg-transparent flex justify-center items-center"
+                    >
+                        <span className="absolute left-3">
+                            <Icon color="text-gray-100" name="Plus" />
+                        </span>
+                        Add Post
+                    </Button>
+                </Container>
+            </Container>
+            
             {localPosts.map(post => (
                 <Container key={post.blogPostID} TwClassName="flex-col border-gray-200 shadow border-1 rounded-xl p-4">
                     <Container TwClassName="rounded-md flex-row gap-4 items-center">

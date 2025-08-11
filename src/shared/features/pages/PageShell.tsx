@@ -14,6 +14,7 @@ import Sidebar from '../../../admin/features/sidebar/Sidebar';
 import AdminRoutes from '../../../admin/features/adminRoutes/AdminRoutes';
 import Blog from '../../../client/features/blog/Blog';
 import BlogPost from '../../../client/features/blog/BlogPost';
+import Loader from '../../components/loader/Loader';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -40,11 +41,11 @@ const PageShell: React.FC<PageShellState> = ({
             {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (
                 <Sidebar />
             )}
+            
             <Container
                 TwClassName={`${activePageShellBgColor} flex-col flex-10 h-[calc(100vh-50px)] overflow-scroll`}
                 animation={{ entranceExit: activePageShellAnimation }}
             >
-                
                 {activePage.activePageShellId === 'adminPage' ? (
                     <AdminRoutes />                
                 ) : (
@@ -64,7 +65,23 @@ const PageShell: React.FC<PageShellState> = ({
                         <Footer />
                     </Container>
                 )}
-                
+            </Container>
+            
+            <Container TwClassName='absolute top-[50px] w-full h-[calc(100vh-50px)] pl-4 pr-4 -z-10' 
+                animation={{
+                    entranceExit: {
+                        entranceAnimation: 'animate__fadeIn animate_faster',
+                        exitAnimation: 'animate__fadeOut animate_faster',
+                        isEntering: !activePage.activePageShellIn,
+                    },
+                }}
+            >
+                <Container TwClassName='flex-col flex-2 bg-transparent'>
+                    &nbsp;
+                </Container>
+                <Container TwClassName='flex-col flex-10 justify-center items-center pl-4 pr-4 h-full w-full'>
+                    <Loader variant='spinner' color='text-amber-500' />
+                </Container>
             </Container>
         </Container>
     );
