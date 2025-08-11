@@ -4,6 +4,7 @@ import AdminAuth from '../auth/AdminAuth';
 import AdminDashboard from '../dashboard/AdminDashboard';
 import PagesEditor from '../pages/PagesEditor';
 import MenuEditor from '../menus/MenuEditor';
+import BlogEditor from '../blog/BlogEditor';
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const AdminRoutes: React.FC = () => {
       <Route path="dashboard" element={<AdminDashboard />} />
       <Route path="pages" element={<PagesEditor />} />
       <Route path="menus" element={<MenuEditor />} />
+      <Route path="blog" element={<BlogEditor />} />
     </Routes>
   );
 };
