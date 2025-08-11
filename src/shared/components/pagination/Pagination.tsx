@@ -1,20 +1,13 @@
 import React from 'react';
 import Button from '../button/Button';
-
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  maxVisiblePages?: number;
-  className?: string;
-}
+import type { PaginationProps } from './paginationTypes';
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
   maxVisiblePages = 5,
-  className = '',
+  TwClassName = '',
 }) => {
   if (totalPages <= 1) return null;
 
@@ -45,7 +38,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <nav 
-      className={`flex items-center justify-center mt-6 space-x-2 ${className}`} 
+      className={`flex items-center justify-center mt-6 space-x-2 ${TwClassName}`} 
       aria-label="Pagination"
     >
       <Button

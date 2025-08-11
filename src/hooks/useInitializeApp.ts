@@ -59,7 +59,7 @@ export const useInitializeApp = () => {
     unsubscribers.push(
       listenToCollection("Blog", (data) => {
         const blogWithDocId = data.map(({ id, ...rest }) => ({
-          menuID: id,
+          blogPostID: id,
           ...rest,
         }));
         dispatch(setBlogPosts(blogWithDocId));

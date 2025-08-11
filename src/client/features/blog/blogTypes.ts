@@ -1,8 +1,17 @@
 import type { TrianglifyBannerProps } from "../../../shared/components/trianglifyBanner/trianglifyBannerTypes";
 
+export interface BlogPostComponent {
+  type: string;
+  props?: {
+    [key: string]: any; 
+    children?: BlogPostComponent[]; 
+  };
+}
+
 export interface BlogPost {
+    blogPostID: string;
     postAuthor: string;
-    postBody: string;
+    content: BlogPostComponent[]; 
     postSynopsis: string;
     postCategory: string;
     postDate: string;
