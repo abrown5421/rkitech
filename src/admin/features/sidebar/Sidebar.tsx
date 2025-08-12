@@ -57,6 +57,16 @@ const Sidebar: React.FC = () => {
                 </span>
                 Blog
             </Button>
+            <Button
+                onClick={() => clientNavigation('/admin/gallery', 'AdminGallery', 'adminPage')()}
+                TwClassName={
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
+                }>
+                <span className="absolute left-3">
+                    <Icon color="text-gray-900" name="Camera" />
+                </span>
+                Gallery
+            </Button>
          </Container>
      );
 };
