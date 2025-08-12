@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useState } from 'react'; 
 import Container from '../../../shared/components/container/Container';
 import Pagination from '../../../shared/components/pagination/Pagination';
 import Text from '../../../shared/components/text/Text';
@@ -10,18 +10,15 @@ const Gallery: React.FC = () => {
     const dispatch = useAppDispatch();
     const gallery = useAppSelector((state) => state.gallery.gallery);
     const [currentPage, setCurrentPage] = useState(0);
+    const activeGallery = gallery.filter((image) => image.imageActive !== false);
 
     const postsPerPage = 9;
-    const totalPages = Math.ceil(gallery.length / postsPerPage);
+    const totalPages = Math.ceil(activeGallery.length / postsPerPage);
 
-    const paginatedGallery = gallery.slice(
+    const paginatedGallery = activeGallery.slice(
         currentPage * postsPerPage,
         currentPage * postsPerPage + postsPerPage
     );
-
-    useEffect(() => {
-        console.log(gallery);
-    }, [gallery]);
 
     const handleOpenModal = (imageTitle: string, imageDesc: string, imageUrl: string) => {
         dispatch(openModal({

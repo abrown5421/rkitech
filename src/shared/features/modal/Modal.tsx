@@ -11,6 +11,8 @@ import Icon from '../../components/icon/Icon';
 import Text from '../../components/text/Text';
 import NewBlogPost from '../../../admin/features/blog/modals/NewBlogPost';
 import GalleryImageModal from '../../../client/features/gallery/modals/GalleryImageModal';
+import ImageUploadModal from '../../../admin/features/gallery/modals/ImageUploadModal';
+import NewImageModal from '../../../admin/features/gallery/modals/NewImageModal';
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -35,6 +37,20 @@ const Modal: React.FC = () => {
 
   const renderModalContent = () => {
     switch (modal.modalType) {
+      case 'newImageModal': 
+        return (
+          <NewImageModal />
+        )
+      case 'imageUploadModal':
+        return (
+          <ImageUploadModal
+            imageUrl={modal.modalProps?.imageUrl}
+            imageName={modal.modalProps?.imageName}
+            imageDescription={modal.modalProps?.imageDescription}
+            imageUpload={modal.modalProps?.imageUpload}
+            imagePostId={modal.modalProps?.galleryPostID} 
+          />
+        )
       case 'newBlogPost':
         return (
           <NewBlogPost />

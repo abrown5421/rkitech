@@ -1,4 +1,7 @@
 export interface GalleryImage {
+    galleryPostID: string;
+    imageActive: boolean;
+    imageUpload: boolean;
     imageDate: string;
     imageName: string;
     imageDescription: string;

@@ -14,6 +14,7 @@ import { updateDataInCollection } from '../../../services/database/updateData';
 import { deleteDocument } from '../../../services/database/deleteData';
 import Icon from '../../../shared/components/icon/Icon';
 import { openModal } from '../../../shared/features/modal/modalSlice';
+import Pagination from '../../../shared/components/pagination/Pagination';
 
 const BlogEditor: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -23,8 +24,17 @@ const BlogEditor: React.FC = () => {
 
     const [localPosts, setLocalPosts] = useState(postsFromStore);
     const [originalPosts, setOriginalPosts] = useState(postsFromStore);
+    const [currentPage, setCurrentPage] = useState(0);
 
     const categories = [...new Set(postsFromStore.map(post => post.postCategory).filter(Boolean))];
+
+    const postsPerPage = 10;
+    const totalPages = Math.ceil(localPosts.length / postsPerPage);
+
+    const paginatedPosts = localPosts.slice(
+        currentPage * postsPerPage,
+        currentPage * postsPerPage + postsPerPage
+    );
 
     const isLoading = (type: string, postId?: string) =>
         loading && id === `${type}${postId ? '-' + postId : ''}`;
@@ -171,7 +181,7 @@ const BlogEditor: React.FC = () => {
                 </Container>
             </Container>
             
-            {localPosts.map(post => (
+            {paginatedPosts.map(post => (
                 <Container key={post.blogPostID} TwClassName="flex-col border-gray-200 shadow border-1 rounded-xl p-4">
                     <Container TwClassName="rounded-md flex-row gap-4 items-center">
                         <Input
@@ -244,6 +254,13 @@ const BlogEditor: React.FC = () => {
                     </Button>
                 </Container>
             )}
+            {totalPages >= 1 && <div className='pb-4' />}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+                TwClassName='pb-4'
+            />            
         </Container>
     );
 };
