@@ -15,9 +15,11 @@ import adminAuthUserReducer from '../admin/features/auth/adminAuthUserSlice';
 import blogReducer from '../client/features/blog/blogSlice';
 import staffReducer from '../client/features/staff/staffSlice';
 import galleryReducer from '../client/features/gallery/gallerySlice';
+import homePageIdReducer from './globalSlices/homePageId/homePageIdSlice';
 
 export const store = configureStore({
   reducer: {
+    homePageId: homePageIdReducer,
     modal: modalReducer,
     alert: alertReducer,
     drawer: drawerReducer,

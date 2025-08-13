@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { openAlert } from '../../shared/features/alert/alertSlice';
 import { setLoading, setNotLoading } from '../../app/globalSlices/loading/loadingSlice';
+import { openModal } from '../../shared/features/modal/modalSlice';
 import { updateDataInCollection } from '../../services/database/updateData';
 import { deleteDocument } from '../../services/database/deleteData';
 
@@ -11,6 +12,8 @@ interface GenericEditorConfig<T> {
   sortField: keyof T;
   trackingFields: (keyof T)[];
   postsPerPage?: number;
+  deleteConfirmationTitle?: string;
+  deleteConfirmationMessage?: (item: T) => string;
 }
 
 export function useGenericEditor<T extends Record<string, any>>(
@@ -19,6 +22,7 @@ export function useGenericEditor<T extends Record<string, any>>(
 ) {
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
+  const modalAction = useAppSelector((state) => state.modal.modalActionFire);
   
   const [localItems, setLocalItems] = useState<T[]>(items);
   const [originalItems, setOriginalItems] = useState<T[]>(items);
@@ -58,6 +62,15 @@ export function useGenericEditor<T extends Record<string, any>>(
     setLocalItems(sorted);
     setOriginalItems(sorted);
   }, [items, config.sortField]);
+
+  // Handle modal actions for deletion
+  useEffect(() => {
+    if (!modalAction.modalActionFire) return;
+
+    if (modalAction.modalActionId === 'deleteItem' && modalAction.idToDelete) {
+      handleDeleteConfirmed(modalAction.idToDelete);
+    }
+  }, [modalAction]);
 
   const showAlert = (severity: 'success' | 'error', message: string) => {
     dispatch(openAlert({
@@ -149,7 +162,31 @@ export function useGenericEditor<T extends Record<string, any>>(
     );
   };
 
+  // Open confirmation modal for deletion
   const handleDelete = (itemId: string) => {
+    const item = localItems.find(item => item[config.itemIdField] === itemId);
+    if (!item) return;
+
+    const defaultTitle = config.deleteConfirmationTitle || 'Delete Item?';
+    const defaultMessage = `Are you sure you want to delete this item? This action cannot be undone.`;
+    const message = config.deleteConfirmationMessage 
+      ? config.deleteConfirmationMessage(item)
+      : defaultMessage;
+
+    dispatch(openModal({
+      title: defaultTitle,
+      modalType: "confirmOrDeny",
+      modalMessage: message,
+      modalProps: { 
+        actionId: "deleteItem",
+        idToDelete: itemId,
+        requiresAuth: false 
+      }
+    }));
+  };
+
+  // Actually perform the deletion after confirmation
+  const handleDeleteConfirmed = (itemId: string) => {
     handleDbAction(
       async () => {
         await deleteDocument(config.collectionName, itemId);
@@ -178,7 +215,7 @@ export function useGenericEditor<T extends Record<string, any>>(
     updateItemField,
     handleToggleActive,
     handleSave,
-    handleDelete,
+    handleDelete, 
     resetChanges,
     setCurrentPage,
   };

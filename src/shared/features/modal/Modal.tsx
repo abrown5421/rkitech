@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { closeModal, preCloseModal } from './modalSlice';
-import ProfilePictureModalContent from '../../../client/features/profile/modals/ProfilePictureModalContent';
-import ProfileBannerModalContent from '../../../client/features/profile/modals/ProfileBannerModalContent';
-import DeleteAccountModalContent from '../../../client/features/profile/modals/DeleteAccountModalContent';
-import DisableAccountModalContent from '../../../client/features/profile/modals/DisableAccountModalContent';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import Container from '../../components/container/Container';
 import Icon from '../../components/icon/Icon';
 import Text from '../../components/text/Text';
-import NewBlogPost from '../../../admin/features/blog/modals/NewBlogPost';
-import GalleryImageModal from '../../../client/features/gallery/modals/GalleryImageModal';
-import ImageUploadModal from '../../../admin/features/gallery/modals/ImageUploadModal';
-import NewImageModal from '../../../admin/features/gallery/modals/NewImageModal';
+import ConfirmOrDenyModal from './sharedModals/ConfirmOrDenyModal';
+import TrianglifyModal from './sharedModals/TrianglifyModal';
+
+const MODAL_COMPONENTS: Record<string, React.FC<any>> = {
+  confirmOrDeny: ConfirmOrDenyModal,
+  trianglify: TrianglifyModal,
+};
 
 const Modal: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
@@ -35,55 +34,7 @@ const Modal: React.FC = () => {
   const handleClose = () => dispatch(preCloseModal());
   if (!isVisible && !modal.modalOpen) return null;
 
-  const renderModalContent = () => {
-    switch (modal.modalType) {
-      case 'newImageModal': 
-        return (
-          <NewImageModal />
-        )
-      case 'imageUploadModal':
-        return (
-          <ImageUploadModal
-            imageUrl={modal.modalProps?.imageUrl}
-            imageName={modal.modalProps?.imageName}
-            imageDescription={modal.modalProps?.imageDescription}
-            imageUpload={modal.modalProps?.imageUpload}
-            imagePostId={modal.modalProps?.galleryPostID} 
-          />
-        )
-      case 'newBlogPost':
-        return (
-          <NewBlogPost />
-        );
-      case 'galleryImageModal': 
-        return (
-          <GalleryImageModal 
-            imageDecription={modal.modalProps?.imageDecription}
-            imageUrl={modal.modalProps?.imageUrl}
-          />
-        )
-      case 'editProfilePic':
-        return (
-          <ProfilePictureModalContent />
-        );
-      case 'editProfileBanner':
-        return (
-          <ProfileBannerModalContent 
-            yColors={modal.modalProps?.yColors}
-            xColors={modal.modalProps?.xColors}
-            auxImage={modal.modalProps?.auxImage}
-            cellSize={modal.modalProps?.cellSize}
-            variance={modal.modalProps?.variance}
-          />
-        )
-      case 'deleteAccount':
-        return <DeleteAccountModalContent />;
-      case 'disableAccount':
-        return <DisableAccountModalContent />;
-      default:
-        return null;
-    }
-  };
+  const SpecificModal = MODAL_COMPONENTS[modal.modalType];
 
   return (
     <Container
@@ -98,7 +49,7 @@ const Modal: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        TwClassName={clsx('p-4 flex-col bg-white rounded-2xl', isVisible ? 'z-50' : 'z-0')}
+        TwClassName={clsx('p-4 min-w-150 max-w-1/3 flex-col bg-white rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
             entranceAnimation: modal.modalAnimation.entranceAnimation,
@@ -110,7 +61,8 @@ const Modal: React.FC = () => {
       >
         <Icon color="text-gray-900" name="X" TwClassName="absolute top-4 right-4" onClick={handleClose} />
         <Text text={modal.modalTitle} TwClassName="text-black font-primary text-xl mb-5" />
-        {renderModalContent()}
+        <Text text={modal.modalMessage} TwClassName="text-black" />
+        {SpecificModal && <SpecificModal />}
       </Container>
     </Container>
   );

@@ -28,6 +28,9 @@ const BlogEditor: React.FC = () => {
         sortField: 'postTitle' as keyof BlogPost,
         trackingFields: ['postTitle', 'postCategory', 'postSynopsis'] as (keyof BlogPost)[],
         postsPerPage: 10,
+        deleteConfirmationTitle: 'Delete Blog Post?',
+        deleteConfirmationMessage: (item: BlogPost) => 
+            `Are you sure you want to delete the blog post "${item.postTitle}"? This action cannot be undone and will permanently remove the post and all its content.`,
     };
 
     const {

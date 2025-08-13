@@ -76,7 +76,7 @@ const PageShell: React.FC<PageShellState> = ({
                     entranceExit: {
                         entranceAnimation: 'animate__fadeIn animate_faster',
                         exitAnimation: 'animate__fadeOut animate_faster',
-                        isEntering: !activePage.activePageShellIn,
+                        isEntering: !activePage.activePageShellIn && activePage.activePageShellId === 'adminPage',
                     },
                 }}
             >

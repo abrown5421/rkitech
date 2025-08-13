@@ -51,6 +51,9 @@ const StaffEditor: React.FC = () => {
         sortField: 'staffOrder' as keyof StaffMemberPlusUser,
         trackingFields: ['firstName', 'lastName', 'profileImage', 'userRole', 'bio', 'staffTitle', 'staffOrder', 'staffActive' ] as (keyof StaffMemberPlusUser)[],
         postsPerPage: 10,
+        deleteConfirmationTitle: 'Delete Staff Member?',
+        deleteConfirmationMessage: (item: StaffMemberPlusUser) => 
+            `Are you sure you want to delete staff member "${item.firstName} ${item.lastName}" (${item.staffTitle})? This will permanently remove them from the staff directory and cannot be undone.`,
     };
 
     const {
