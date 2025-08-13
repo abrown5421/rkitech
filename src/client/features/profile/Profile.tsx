@@ -26,11 +26,14 @@ import Tabs from '../../../shared/features/tabs/Tabs';
 import MyProfileAboutTab from './tabs/MyProfileAboutTab';
 import { TheirProfileAboutTab } from './tabs/TheirProfileAboutTab';
 import ProfileSettingsTab from './tabs/ProfileSettingsTab';
+import { openAlert } from '../../../shared/features/alert/alertSlice';
+import { updateDataInCollection } from '../../../services/database/updateData';
 
 const Profile: React.FC = () => {
   const { userIdFromUrl } = useParams();
   const dispatch = useAppDispatch();
   const { loading, id } = useAppSelector((state) => state.loading);
+  const modalAction = useAppSelector((state) => state.modal.modalActionFire);
   const authUser = useAppSelector((state) => state.authUser.user);
   const isProfileLoading = loading && id === 'profile';
   const [profileUser, setProfileUser] = useState<ClientAuthUser | null>(null);
@@ -72,6 +75,35 @@ const Profile: React.FC = () => {
     fetchProfileData();
   }, [userIdFromUrl, authUser, dispatch]);
 
+  useEffect(() => {
+    if (!modalAction.modalActionFire || !authUser) return;
+
+    const runAction = async () => {
+      if (modalAction.modalActionId === 'trianglifySave') {
+        const trianglifyData = modalAction.trianglifyData; 
+        await updateDataInCollection("Users", authUser.userId, {
+          trianglifyObject: trianglifyData,
+        });
+
+        dispatch(openAlert({
+          alertOpen: true,
+          alertSeverity: 'success',
+          alertMessage: 'Profile banner was uploaded successfully!',
+          alertAnimation: {
+            entranceAnimation: 'animate__fadeInRight animate__faster',
+            exitAnimation: 'animate__fadeOutRight animate__faster',
+            isEntering: true,
+          }
+        }));
+
+      } else if (modalAction.modalActionId === 'trianglifyCancel') {
+        console.log('User canceled trianglify modal');
+      }
+    };
+
+    runAction();
+  }, [modalAction]);
+
   const handleProfilePictureEditModal = () => {
     if (!profileUser) return;
 
@@ -83,24 +115,20 @@ const Profile: React.FC = () => {
     );
   };
 
-  const handleProfileBannerEditModal = () => {
-    if (!profileUser) return;
-
-    dispatch(
-      openModal({
-        title: 'Edit Profile',
-        modalType: 'editProfileBanner',
-        modalProps: {
-          yColors: profileUser.trianglifyObject.yColors,
-          xColors: profileUser.trianglifyObject.xColors,
-          auxImage: profileUser.trianglifyObject.auxImage,
-          cellSize: profileUser.trianglifyObject.cellSize,
-          variance: profileUser.trianglifyObject.variance
-        },
-      })
-    );
-
-  }
+  const openTrianglifyModal = () => {
+    dispatch(openModal({
+      title: 'Customize Banner',
+      modalType: 'trianglify',
+      modalMessage: '',
+      modalProps: {
+        yColors: profileUser?.trianglifyObject.yColors,
+        xColors: profileUser?.trianglifyObject.xColors,
+        cellSize: profileUser?.trianglifyObject.cellSize,
+        variance: profileUser?.trianglifyObject.variance,
+        auxImage: profileUser?.trianglifyObject.auxImage
+      }
+    }));
+  };
 
   const mainTabData: TabItem[] = [
     {
@@ -179,7 +207,7 @@ const Profile: React.FC = () => {
               <Button
                 cursor='pointer' 
                 TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-                onClick={handleProfileBannerEditModal}
+                onClick={openTrianglifyModal}
               >
                 <Icon color="text-gray-900"
                   name='Edit'

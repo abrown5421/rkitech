@@ -12,6 +12,7 @@ import Modal from './shared/features/modal/Modal';
 import Alert from './shared/features/alert/Alert';
 import Drawer from './shared/features/drawer/Drawer';
 import AdminNavbar from './admin/features/navbar/AdminNavbar';
+import { setHomePageId } from './app/globalSlices/homePageId/homePageIdSlice';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,8 +23,6 @@ const App: React.FC = () => {
   const pages = useAppSelector((state) => state.pages.pages);
   const authUser = useAppSelector((state) => state.authUser);
   const [loadingSite, setLoadingSite] = React.useState(true);
-  
-  useEffect(()=>{console.log(activePage)}, [activePage])
 
   useEffect(() => {
     const storedClientUser = Cookies.get("authUser");
@@ -44,7 +43,11 @@ const App: React.FC = () => {
   useEffect(()=>{
     const homePage = pages.find((page) => page.pagePath === '/');
     const pathname = location.pathname.toLowerCase();
-
+    
+    if (homePage?.pageID) {
+      dispatch(setHomePageId({ id: homePage?.pageID ?? '' }));
+    }
+    
     if (pathname === '/admin') {
       dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'Admin'}));
       dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: 'adminPage' }));

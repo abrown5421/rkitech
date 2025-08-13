@@ -19,6 +19,9 @@ const GalleryEditor: React.FC = () => {
         sortField: 'imageName' as keyof GalleryImage,
         trackingFields: ['imageName', 'imageDescription', 'imageUrl'] as (keyof GalleryImage)[],
         postsPerPage: 5,
+        deleteConfirmationTitle: 'Delete Gallery Image?',
+        deleteConfirmationMessage: (item: GalleryImage) => 
+            `Are you sure you want to delete the gallery image "${item.imageName}"? This will permanently remove the image from your gallery and cannot be undone.`,
     };
 
     const {

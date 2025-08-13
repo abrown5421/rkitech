@@ -20,6 +20,7 @@ const ClientAuth: React.FC = () => {
     const clientNavigation = useNavigationHook();
     const { loading, id } = useAppSelector((state) => state.loading);
     const authUser = useAppSelector((state) => state.authUser);
+    const homePageId = useAppSelector((state) => state.homePageId);
     const pages = useAppSelector((state) => state.pages.pages);
     const isLoading = loading && id === 'signInButton';
     const loginComp = pages.find((page) => page.componentKey === 'LoginComp')
@@ -70,7 +71,7 @@ const ClientAuth: React.FC = () => {
     };
 
     if (authUser.user) {
-        dispatch(clientNavigation('/', 'Home', ''))
+        dispatch(clientNavigation('/', 'Home', homePageId.id))
     }
     
     const handleSubmit = async () => {
@@ -146,7 +147,7 @@ const ClientAuth: React.FC = () => {
                     }
                 }));
                 dispatch(setNotLoading())
-                setTimeout(() => {clientNavigation('/', 'Home', 'homePage')();}, 100)
+                setTimeout(() => {clientNavigation('/', 'Home', homePageId.id)();}, 100)
                 
             } else {
                 const result = await signInUser(formValues.email, formValues.password);
@@ -181,7 +182,7 @@ const ClientAuth: React.FC = () => {
                 }), { expires: 1 });
 
                 dispatch(setNotLoading())
-                setTimeout(() => {clientNavigation('/', 'Home', 'homePage')();}, 100)
+                setTimeout(() => {clientNavigation('/', 'Home', homePageId.id)();}, 100)
             }
         } catch (err: any) {
             dispatch(openAlert({

@@ -8,7 +8,6 @@ import Checkbox from '../../../shared/components/checkbox/Checkbox';
 import Pagination from '../../../shared/components/pagination/Pagination';
 import { useAppDispatch } from '../../../app/hooks';
 import { openModal } from '../../../shared/features/modal/modalSlice';
-import type { ModalContentType } from '../../../shared/features/modal/modalTypes';
 
 export interface EditorField {
   key: string;
@@ -35,7 +34,7 @@ interface GenericEditorProps<T> {
   addButtonText?: string;
   addButtonModal?: {
     title: string;
-    modalType: ModalContentType;
+    modalType: string;
     modalProps?: any;
   };
   currentPage: number;
@@ -173,6 +172,7 @@ function GenericEditor<T extends Record<string, any>>({
                         key={index}
                         onClick={() => action.onClick(item)} 
                         TwClassName={action.className}
+                        disabled={actionIsLoading}
                     >
                         {actionIsLoading ? (
                         <Loader variant='spinner' color="text-gray-100" />
