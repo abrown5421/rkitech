@@ -12,4 +12,6 @@ export interface ContainerProps {
   animation?: AnimationProps;
   TwClassName?: string;
   style?: React.CSSProperties;
+  hovered?: boolean;
+  onHoverChange?: (hover: boolean) => void;
 }

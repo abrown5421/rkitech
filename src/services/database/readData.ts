@@ -1,6 +1,6 @@
 import { doc, getDoc, collection, query, where, getDocs, Query } from 'firebase/firestore';
 import { db } from '../firebase';
-import type { ClientAuthUser } from '../../features/auth/authUserTypes';
+import type { ClientAuthUser } from '../../client/features/auth/ClientAuthUserTypes'; 
 
 export async function getDocumentById<T>(collectionName: string, docId: string): Promise<(T & { userId: string }) | null> {
   try {

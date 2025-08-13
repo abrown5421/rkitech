@@ -9,24 +9,39 @@ const Container: React.FC<ContainerProps> = ({
   animation,
   TwClassName,
   style,
+  hovered, 
+  onHoverChange,
 }) => {
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [internalHovered, setInternalHovered] = useState(false);
+  const isControlled = hovered !== undefined;
+  const isHovered = isControlled ? hovered : internalHovered;
+
   const animationClasses = getAnimationClasses(animation, isHovered);
   const classString = Array.isArray(TwClassName) ? TwClassName.join(' ') : TwClassName || '';
-  
+
   const classes = clsx(
     'flex',
     classString,
-    animationClasses,
+    animationClasses
   );
 
+  const handleMouseEnter = () => {
+    if (!isControlled) setInternalHovered(true);
+    onHoverChange?.(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!isControlled) setInternalHovered(false);
+    onHoverChange?.(false);
+  };
+
   return (
-    <div 
-      className={classes} 
+    <div
+      className={classes}
       onClick={onClick}
       style={style}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {children}
     </div>

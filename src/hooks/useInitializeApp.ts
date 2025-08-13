@@ -72,7 +72,7 @@ export const useInitializeApp = () => {
     unsubscribers.push(
       listenToCollection("Staff", (data) => {
         const staffWithDocId = data.map(({ id, ...rest }) => ({
-          staffPostID: id,
+          staffPersonID: id,
           ...rest,
         }));
         dispatch(setStaff(staffWithDocId));

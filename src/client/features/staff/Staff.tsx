@@ -10,7 +10,8 @@ import TrianglifyBanner from '../../../shared/components/trianglifyBanner/Triang
 const Staff: React.FC = () => {
     const staff = useAppSelector((state) => state.staff.staff);
     const [staffWithData, setStaffWithData] = useState<StaffMemberPlusUser[]>([]);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
 
     useEffect(() => {
         const getStaffInfoFromUserTable = async () => {
@@ -24,8 +25,9 @@ const Staff: React.FC = () => {
                     staff.map(async (staffMember) => {
                         const userData = await getDocumentById('Users', staffMember.staffUserId);
                         return {
-                            ...staffMember, 
-                            ...userData,
+                        ...staffMember,
+                        ...userData,
+                        userId: staffMember.staffUserId, 
                         };
                     })
                 );
@@ -38,13 +40,12 @@ const Staff: React.FC = () => {
 
         getStaffInfoFromUserTable();
     }, [staff]);
-    
-    useEffect(()=>{console.log(staffWithData)}, [staffWithData])
 
     const staffPerPage = 9;
     const totalPages = Math.ceil(staffWithData.length / staffPerPage);
+    const sortedStaff = [...staffWithData].sort((a, b) => a.staffOrder - b.staffOrder);
 
-    const paginatedStaff = staffWithData.slice(
+    const paginatedStaff = sortedStaff.slice(
         currentPage * staffPerPage,
         currentPage * staffPerPage + staffPerPage
     );
@@ -58,6 +59,21 @@ const Staff: React.FC = () => {
                         key={staff.userId}
                         TwClassName="flex flex-col relative border border-gray-200 shadow rounded w-full lg:w-[calc(50%-0.5rem)] xl:w-[calc(33%-0.5rem)]"
                     >
+                        <Container 
+                            animation={{
+                                entranceExit: {
+                                entranceAnimation: 'animate__fadeIn animate__faster',
+                                exitAnimation: 'animate__fadeOut animate__faster',
+                                isEntering: hoveredCardId === staff.userId,
+                                }
+                            }}
+                            hovered={hoveredCardId === staff.userId}
+                            onHoverChange={(hover) => setHoveredCardId(hover ? staff.userId : null)}
+                            TwClassName='flex-col absolute top-0 bottom-0 right-0 z-50 left-0 bg-gray-900/80 items-center p-4'
+                            >
+                            <Text text={staff.firstName + ' ' + staff.lastName} TwClassName='text-white text-xl font-primary mb-4' />
+                            {staff.bio && <Text text={staff.bio} TwClassName='text-white' />}
+                            </Container>
                         <TrianglifyBanner
                             xColors={staff.trianglifyObject?.xColors ?? ['#000000', '#FFFFFF']}
                             yColors={staff.trianglifyObject?.yColors ?? ['#000000', '#FFFFFF']}

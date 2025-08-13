@@ -113,9 +113,18 @@ export function useGenericEditor<T extends Record<string, any>>(
     );
   };
 
-  const handleSave = (getChangedFields: (local: T, original: T) => Partial<T>) => {
+  const handleSave = (
+    getChangedFields: (local: T, original: T) => Partial<T>,
+    customSave?: (changedItems: T[], originalItems: T[]) => Promise<void>
+  ) => {
     handleDbAction(
       async () => {
+        if (customSave) {
+          await customSave(localItems, originalItems);
+          setOriginalItems(localItems);
+          return;
+        }
+
         const changedItems = localItems.filter((localItem, i) => {
           const original = originalItems[i];
           const changes = getChangedFields(localItem, original);
