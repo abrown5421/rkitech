@@ -176,7 +176,7 @@ const ProfileBannerModalContent: React.FC<ProfileBannerModalContentProps> = ({
   };
 
   return (
-    <Container TwClassName="flex flex-col gap-4">
+    <Container TwClassName="flex flex-col gap-4 min-w-150">
       <div className="flex gap-2">
         <Button
           TwClassName={`py-1 px-3 rounded-full text-sm ${

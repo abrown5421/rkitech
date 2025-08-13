@@ -131,7 +131,7 @@ const ProfilePictureModalContent: React.FC = () => {
   };
 
   return (
-    <Container TwClassName="flex-col h-full justify-between gap-4">
+    <Container TwClassName="flex-col h-full justify-between gap-4 min-w-150">
       <div
         className={`border-2 ${
           isDragging ? 'border-primary bg-blue-50' : 'border-dashed border-gray-400'

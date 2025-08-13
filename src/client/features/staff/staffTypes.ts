@@ -1,17 +1,19 @@
 import type { TrianglifyBannerProps } from "../../../shared/components/trianglifyBanner/trianglifyBannerTypes";
 
 export interface StaffMember {
+    staffOrder: number;
     staffTitle: string;
     staffUserId: string;
+    staffActive: boolean;
 }
 
 export interface StaffMemberPlusUser {
-    userId?: string;
+    userId: string;
     email?: string;
     firstName?: string;
     lastName?: string;
     profileImage?: string;
-    userRole?: 'User' | 'Admin' | string;
+    userRole?: 'User' | 'Writer' | 'Editor' | 'Developer' | string;
     createdAt?: string; 
     trianglifyObject?: TrianglifyBannerProps;
     bio?: string;
@@ -23,6 +25,8 @@ export interface StaffMemberPlusUser {
     addressState?: string;
     addressPostCode?: string;
     staffTitle: string;
+    staffOrder: number;
+    staffActive: boolean;
 }
 
 export interface Staff {
