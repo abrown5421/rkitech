@@ -57,9 +57,9 @@ const PictureUploadModal: React.FC = () => {
 
     let resultUrl = '';
 
-    // if (authUser.profileImage) {
-    //     await deleteImageFromStorage(authUser.profileImage)
-    // }
+    if (authUser.profileImage) {
+        await deleteImageFromStorage(authUser.profileImage)
+    }
 
     if (activeTab === "url") {
       if (!urlInput.trim()) {
