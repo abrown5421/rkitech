@@ -7,10 +7,12 @@ import Icon from '../../components/icon/Icon';
 import Text from '../../components/text/Text';
 import ConfirmOrDenyModal from './sharedModals/ConfirmOrDenyModal';
 import TrianglifyModal from './sharedModals/TrianglifyModal';
+import PictureUploadModal from './sharedModals/PictureUploadModal';
 
 const MODAL_COMPONENTS: Record<string, React.FC<any>> = {
   confirmOrDeny: ConfirmOrDenyModal,
   trianglify: TrianglifyModal,
+  pictureUpload: PictureUploadModal, 
 };
 
 const Modal: React.FC = () => {
