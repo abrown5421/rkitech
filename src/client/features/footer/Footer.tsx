@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from '../../../shared/components/container/Container';
 import Image from '../../../shared/components/image/Image';
 import Text from '../../../shared/components/text/Text';
@@ -19,6 +19,8 @@ const Footer: React.FC = () => {
 
     const currentYear = new Date().getFullYear();
 
+    useEffect(()=>{console.log(primaryMenu)}, [primaryMenu])
+
     return (
         <Container
             TwClassName='flex-col justify-between items-start bg-white relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]'
@@ -34,6 +36,41 @@ const Footer: React.FC = () => {
                     ?.slice()
                     .sort((a, b) => a.itemOrder - b.itemOrder)
                     .map((menuItem) => {
+                        if (menuItem.itemType === 'dropdown') {
+                            return menuItem.itemChildren?.slice()
+                                .sort((a, b) => a.itemOrder - b.itemOrder)
+                                .map((subMenuItem) => {
+                                    if (subMenuItem.itemType === 'page') {
+                                        const page = pages.find((p) => p.pageID === subMenuItem.itemId);
+                                        if (!page || !page.pageActive) return null;
+                                        return (
+                                            <Button
+                                                key={subMenuItem.itemId}
+                                                TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 ${activePage === subMenuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}
+                                                onClick={() => {
+                                                    dispatch(preCloseModal());
+                                                    setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
+                                                }}
+                                            >
+                                                {page.pageName}
+                                            </Button>
+                                        );
+                                    } 
+                                    if (subMenuItem.itemType === 'link') {
+                                        return (
+                                            <Button
+                                                key={subMenuItem.itemName}
+                                                TwClassName="p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 text-black hover:text-primary"
+                                                cursor="pointer"
+                                                onClick={() => window.open(subMenuItem.itemLink, '_blank')}
+                                            >
+                                                {subMenuItem.itemName}
+                                            </Button>
+                                        );
+                                    }
+                                    return null;
+                                });
+                        }
                         if (menuItem.itemType === 'page') {
                             const page = pages.find((p) => p.pageID === menuItem.itemId);
                             if (!page || !page.pageActive) return null;
@@ -49,7 +86,8 @@ const Footer: React.FC = () => {
                                     {page.pageName}
                                 </Button>
                             );
-                        } else {
+                        } 
+                        if (menuItem.itemType === 'link')  {
                             return (
                                 <Button
                                     key={menuItem.itemName}
@@ -89,7 +127,8 @@ const Footer: React.FC = () => {
                                    {menuItem.itemName}
                                 </Button>
                             );
-                        } else {
+                        } 
+                        if (menuItem.itemType === 'link') {
                             return (
                                 <Button
                                     key={menuItem.itemName}

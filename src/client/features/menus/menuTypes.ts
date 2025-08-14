@@ -8,6 +8,13 @@ export type MenuItem =
       itemOrder: number;
     }
   | {
+      itemType: 'dropdown';
+      itemName: string;
+      itemId: string; 
+      itemOrder: number;
+      itemChildren: MenuItem[];
+    }
+  | {
       itemType: 'link';
       itemName: string;
       itemLink: string; 
