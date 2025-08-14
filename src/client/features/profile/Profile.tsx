@@ -78,7 +78,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (!modalAction.modalActionFire || !authUser) return;
 
-    const runAction = async () => {
+    const runTrianglifyAction = async () => {
       if (modalAction.modalActionId === 'trianglifySave') {
         const trianglifyData = modalAction.trianglifyData; 
         await updateDataInCollection("Users", authUser.userId, {
@@ -100,19 +100,43 @@ const Profile: React.FC = () => {
         console.log('User canceled trianglify modal');
       }
     };
+    
+    const runPfpAction = async () => {
+      if (modalAction.modalActionId === 'pictureUpload') {
 
-    runAction();
+        await updateDataInCollection("Users", authUser.userId, {
+          profileImage: modalAction.imageUrl,
+        });
+
+        dispatch(openAlert({
+          alertOpen: true,
+          alertSeverity: 'success',
+          alertMessage: 'Profile banner was uploaded successfully!',
+          alertAnimation: {
+            entranceAnimation: 'animate__fadeInRight animate__faster',
+            exitAnimation: 'animate__fadeOutRight animate__faster',
+            isEntering: true,
+          }
+        }));
+
+      } else if (modalAction.modalActionId === 'trianglifyCancel') {
+        console.log('User canceled profile upload modal');
+      }
+    };
+
+    runTrianglifyAction();
+    runPfpAction();
   }, [modalAction]);
 
-  const handleProfilePictureEditModal = () => {
-    if (!profileUser) return;
-
-    dispatch(
-      openModal({
-        title: 'Edit Profile Picture',
-        modalType: 'editProfilePic',
-      })
-    );
+  const openProfilePictureModal = () => {
+    dispatch(openModal({
+      title: 'Add A Profile Picture',
+      modalType: 'pictureUpload',
+      modalMessage: '',
+      modalProps: {
+        existingImage: profileUser?.profileImage,
+      }
+    }));
   };
 
   const openTrianglifyModal = () => {
@@ -230,7 +254,7 @@ const Profile: React.FC = () => {
                     <Button
                       cursor='pointer' 
                       TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
-                      onClick={handleProfilePictureEditModal}
+                      onClick={openProfilePictureModal}
                     >
                       <Icon color="text-gray-900"
                         name='Camera'

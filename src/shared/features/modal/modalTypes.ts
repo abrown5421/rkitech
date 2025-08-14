@@ -1,15 +1,5 @@
+import type { TrianglifyBannerProps } from "../../components/trianglifyBanner/trianglifyBannerTypes";
 import type { EntranceExitAnimation } from "../../types/animationTypes";
-
-export type TrianglifyBannerProps = {
-  xColors: [string, string];
-  yColors: [string, string];
-  width: number | string; 
-  height: number | string;
-  variance?: number;
-  cellSize?: number;
-  auxImage?: string; 
-  TwClassName?: string; 
-};
 
 export interface ModalActionObject {
   modalActionFire: boolean;
@@ -17,6 +7,7 @@ export interface ModalActionObject {
   password?: string;
   idToDelete?: string;
   trianglifyData?: TrianglifyBannerProps; 
+  imageUrl?: string; 
 }
 
 export interface ModalState {
@@ -26,5 +17,11 @@ export interface ModalState {
   modalMessage: string;
   modalAnimation: EntranceExitAnimation;
   modalActionFire: ModalActionObject;
-  modalProps?: Record<string, any>;
+  modalProps?: {
+    actionId?: string;
+    idToDelete?: string;
+    requiresAuth?: boolean;
+    existingImage?: string;
+    [key: string]: any;
+  };
 }

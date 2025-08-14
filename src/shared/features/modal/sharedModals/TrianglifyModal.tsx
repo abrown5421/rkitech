@@ -6,15 +6,18 @@ import Icon from "../../../components/icon/Icon";
 import TrianglifyBanner from "../../../components/trianglifyBanner/TrianglifyBanner";
 import { fireModalAction, preCloseModal } from "../modalSlice";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import type { TrianglifyBannerProps } from "../modalTypes";
-import { setNotLoading } from "../../../../app/globalSlices/loading/loadingSlice";
+import { setLoading, setNotLoading } from "../../../../app/globalSlices/loading/loadingSlice";
 import { uploadProfileImage } from "../../../../services/storage/uploadImage";
 import { deleteImageFromStorage } from "../../../../services/storage/deleteImage";
+import type { TrianglifyBannerProps } from "../../../components/trianglifyBanner/trianglifyBannerTypes";
+import Loader from "../../../components/loader/Loader";
 
 const TrianglifyModal: React.FC = () => {
   const dispatch = useAppDispatch();
   const modalProps = useAppSelector((state) => state.modal.modalProps);
   const authUser = useAppSelector((state) => state.authUser.user);
+  const { loading, id } = useAppSelector((state) => state.loading);
+  const savingPfb = loading && id === 'savingPfb';
   
   const initialValues: TrianglifyBannerProps = {
     yColors: modalProps?.yColors || ["#ffffff", "#cccccc"],
@@ -54,6 +57,7 @@ const TrianglifyModal: React.FC = () => {
   };
 
   const handleSave = async () => {
+    dispatch(setLoading({ loading: true, id: 'savingPfb' }));
     if (!authUser?.userId) return;
 
     if (authUser.trianglifyObject.auxImage) {
@@ -244,7 +248,7 @@ const TrianglifyModal: React.FC = () => {
           onClick={handleSave}
           TwClassName="min-w-[100px] py-1 px-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary flex-1"
         >
-          Save
+          {savingPfb ? <Loader variant="spinner" color="text-gray-50" /> : <>Save</>}
         </Button>
       </Container>
     </Container>
