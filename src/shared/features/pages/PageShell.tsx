@@ -37,7 +37,7 @@ const PageShell: React.FC<PageShellState> = ({
             setLocalPageRef(findRef?.componentKey)
         }
     }, [activePage])
-    
+
     return (
         <Container TwClassName="flex-row">
             {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (

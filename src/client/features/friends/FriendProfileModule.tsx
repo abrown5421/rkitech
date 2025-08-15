@@ -20,6 +20,8 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
   const authUser = useAppSelector((state) => state.authUser.user);
   const friends = useAppSelector((state) => state.friends);
   const {loading, id} = useAppSelector((state) => state.loading);
+  const pages = useAppSelector((state) => state.pages.pages)
+  const profilePage = pages.find((page) => page.componentKey === 'ProfileComp')
   const [ownedProfile, setOwnedProfile] = useState<boolean>(true);
   const friendRemoval = loading && id === 'addFriend';
   const friendAddition = loading && id === 'remFriend';
@@ -216,7 +218,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
           />
           <Container TwClassName="flex-row">
             {randomFriends.map((friend) => (
-              <Container onClick={() => clientNavigation(`/profile/${friend.userId}`, 'Profile', '')()}>
+              <Container onClick={() => clientNavigation(`${profilePage?.pagePath ?? ''}/${friend.userId}`, 'Profile', profilePage?.pageID ?? '')()}>
                 {friend.profileImage ? (
                   <Image
                     key={friend.userId}

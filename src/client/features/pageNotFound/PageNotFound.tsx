@@ -3,9 +3,12 @@ import { useNavigationHook } from '../../../hooks/useNavigationHook';
 import Container from '../../../shared/components/container/Container';
 import Text from '../../../shared/components/text/Text';
 import Button from '../../../shared/components/button/Button';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 
 const PageNotFound: React.FC = () => {
     const clientNavigation = useNavigationHook();
+    const dispatch = useAppDispatch();
+    const homePageId = useAppSelector((state) => state.homePageId);
 
     return (
 
@@ -14,7 +17,7 @@ const PageNotFound: React.FC = () => {
             <Text text="Sorry, the page you are looking for doesn't exist." TwClassName="text-2xl text-black" />
             <Button
                 TwClassName="mt-6 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary"
-                onClick={() => clientNavigation('/', 'Home', 'homePage')()}
+                onClick={() => dispatch(clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.id))}
             >
                 Go Home
             </Button>

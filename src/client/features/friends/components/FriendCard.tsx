@@ -22,6 +22,8 @@ const FriendCard: React.FC<FriendCardProps> = ({
 }) => {
   const clientNavigation = useNavigationHook();
   const authUser = useAppSelector((state) => state.authUser.user)
+  const pages = useAppSelector((state) => state.pages.pages)
+  const profilePage = pages.find((page) => page.componentKey === 'ProfileComp')
   const {
     acceptFriend,
     removeFriend,
@@ -190,7 +192,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
 
   return (
     <Container
-      onClick={() => clientNavigation(`/profile/${friend.userId}`, 'Profile', '')()}
+      onClick={() => clientNavigation(`${profilePage?.pagePath ?? ''}/${friend.userId}`, 'Profile', profilePage?.pageID ?? '')()}
       key={friend.userId}
       TwClassName="flex-col w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.5rem)] box-border border border-gray-300 rounded-xl p-4"
     >

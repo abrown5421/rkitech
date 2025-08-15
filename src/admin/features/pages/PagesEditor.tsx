@@ -187,16 +187,6 @@ const PagesEditor: React.FC = () => {
       dispatch(setNotLoading());
     }
   };
-  
-  const permanentPages = localPages.filter((page) => 
-    page.pageName === 'Home' || page.pageName === 'Page Not Found'
-  );
-  
-  const nonPermanentPages = localPages.filter((page) => 
-    page.pageName !== 'Auth' && 
-    page.pageName !== 'Home' && 
-    page.pageName !== 'Page Not Found'
-  );
 
   const renderPageRow = (page: any, index: number, isPermanent: boolean) => {
     const isProtected = isPermanent;
@@ -277,39 +267,21 @@ const PagesEditor: React.FC = () => {
 
   return (
     <Container TwClassName="min-h-[calc(100vh-50px)] p-4 flex-col gap-4">
-      {permanentPages.length > 0 && (
-        <>
-          <Text
-            text="Permanent Pages"
-            TwClassName="text-xl text-black border-b border-gray-300 pb-2 font-primary"
-          />
-          <Text
-            text="These pages are protected and cannot be deleted or renamed but they can have different render methods."
-            TwClassName="text-sm text-gray-500 -mt-2 mb-2"
-          />
-          {permanentPages.map((page) => 
-            renderPageRow(page, localPages.indexOf(page), true)
-          )}
-        </>
-      )}
 
-      {nonPermanentPages.length > 0 && (
+      {localPages.length > 0 && (
         <>
           <Text
-            text="Non-Permanent Pages"
-            TwClassName="text-xl  text-black border-b border-gray-300 pb-2 mt-6 font-primary"
+            text="Pages"
+            TwClassName='text-black font-primary text-xl' 
           />
-          <Text
-            text="These pages can be edited and deleted"
-            TwClassName="text-sm text-gray-500 -mt-2 mb-2"
-          />
-          {nonPermanentPages.map((page) => 
+          
+          {localPages.map((page) => 
             renderPageRow(page, localPages.indexOf(page), false)
           )}
         </>
       )}
 
-      {nonPermanentPages.length === 0 && permanentPages.length === 0 && (
+      {localPages.length === 0 && (
         <Container TwClassName='flex-row justify-center items-center w-full h-full'>
           <Loader
             variant="spinner"

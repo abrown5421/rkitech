@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigationHook } from '../../../hooks/useNavigationHook';
 import { setLoading, setNotLoading } from '../../../app/globalSlices/loading/loadingSlice';
@@ -20,7 +20,7 @@ const AdminAuth: React.FC = () => {
     const adminAuthUser = useAppSelector((state) => state.adminAuthUser);
     const isLoading = loading && id === 'signInButton';
     
-    const [isSignup, setIsSignup] = useState(false);
+    
     const [formValues, setFormValues] = useState({
         firstName: '',
         lastName: '',
@@ -39,11 +39,6 @@ const AdminAuth: React.FC = () => {
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
-        if (isSignup) {
-            if (!formValues.firstName.trim()) newErrors.firstName = 'First name is required';
-            if (!formValues.lastName.trim()) newErrors.lastName = 'Last name is required';
-        }
-
         if (!formValues.email.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(formValues.email)) {
@@ -54,10 +49,6 @@ const AdminAuth: React.FC = () => {
             newErrors.password = 'Password is required';
         } else if (formValues.password.length < 6) {
             newErrors.password = 'Password must be at least 6 characters';
-        }
-
-        if (isSignup && formValues.confirmPassword !== formValues.password) {
-            newErrors.confirmPassword = 'Passwords do not match';
         }
 
         setErrors(newErrors);
@@ -74,7 +65,7 @@ const AdminAuth: React.FC = () => {
             dispatch(openAlert({
                 alertOpen: true,
                 alertSeverity: 'error',
-                alertMessage: `Please fix the errors in the ${isSignup ? 'sign up' : 'login'} form.`,
+                alertMessage: `Please fix the errors in the login form.`,
                 alertAnimation: {
                     entranceAnimation: 'animate__fadeInRight animate__faster',
                     exitAnimation: 'animate__fadeOutRight animate__faster',
@@ -139,14 +130,6 @@ const AdminAuth: React.FC = () => {
         }
     };
     
-    useEffect(()=>{
-        if (location.pathname === '/sign-up') {
-            setIsSignup(true)
-        } else {
-            setIsSignup(false)
-        }
-    }, [])
-
     return (
         <Container
             TwClassName="w-full min-h-[calc(100vh-50px)] justify-center items-center"

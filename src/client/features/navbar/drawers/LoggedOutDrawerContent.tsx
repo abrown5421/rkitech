@@ -12,6 +12,7 @@ const LoggedOutDrawerContent: React.FC = () => {
   const clientNavigation = useNavigationHook();
   const menus = useAppSelector((state) => state.menus);
   const pages = useAppSelector((state) => state.pages.pages);
+  const authComp = pages.find((page) => page.componentKey === 'LoginComp')
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const { loading, id } = useAppSelector((state) => state.loading);
   const isLoading = loading && id === 'logoutButton';
@@ -39,7 +40,7 @@ const LoggedOutDrawerContent: React.FC = () => {
         <Button
           TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" 
           cursor="pointer"
-          onClick={() => clientNavigation('/login', 'Auth', 'authenticationPage')()}
+          onClick={() => clientNavigation(authComp?.pagePath ?? '', 'Auth', authComp?.pageID ?? '')()}
         >
           {isLoading ? <Loader variant="spinner" color="bg-white-500" /> : <Text text="Login" TwClassName="text-white" />}
         </Button>)}

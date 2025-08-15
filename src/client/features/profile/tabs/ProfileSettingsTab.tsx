@@ -51,7 +51,7 @@ const ProfileSettingsTab: React.FC = () => {
         await deleteAuthenticatedAccount(password || '', authUser.userId);
         showAlert('Account deleted successfully!', 'success');
       }
-      clientNavigation('/', 'Home', homePageId.id)();
+      clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.id)();
       Cookies.remove('authUser');
       dispatch(clearClientAuthUser());
     } catch (error) {

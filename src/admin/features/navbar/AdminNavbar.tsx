@@ -16,6 +16,7 @@ const AdminNavbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const clientNavigation = useNavigationHook();
   const authAdminUser = useAppSelector((state) => state.adminAuthUser);
+  const homePageId = useAppSelector((state) => state.homePageId);
   const tod = getTimeOfDay();
   const greeting = `${tod} ${authAdminUser.user?.firstName || ''}`;
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -24,7 +25,7 @@ const AdminNavbar: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(setLoading({ loading: true, id: 'logoutButton' }));
-    clientNavigation('/', 'Home', '')();
+    clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.homePageObj?.pageID ?? '')();
     setTimeout(() => {
       dispatch(setNotLoading());
       Cookies.remove('adminAuthUser');

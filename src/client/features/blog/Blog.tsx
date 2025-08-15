@@ -82,7 +82,7 @@ const Blog: React.FC = () => {
                 {paginatedPosts.map((post) => (
                     <Container
                         key={post.blogPostID}
-                        onClick={() => clientNavigation(`/blog-post/${post.blogPostID}`, 'BlogPost', blogPage?.pageID ?? '')()}
+                        onClick={() => clientNavigation(`${blogPage?.pagePath.toLowerCase() ?? ''}/${post.blogPostID}`, 'BlogPost', blogPage?.pageID ?? '')()}
                         TwClassName="flex flex-col relative border border-gray-200 shadow rounded w-full lg:w-[calc(50%-0.5rem)] xl:w-[calc(33%-0.5rem)]"
                     >
                         <Container TwClassName='absolute top-0 right-0 text-black bg-gray-200/80 pr-4 pl-4 pt-1 pb-1 m-2 rounded-full z-50'>

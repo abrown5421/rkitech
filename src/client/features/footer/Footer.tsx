@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Container from '../../../shared/components/container/Container';
 import Image from '../../../shared/components/image/Image';
 import Text from '../../../shared/components/text/Text';
@@ -18,8 +18,6 @@ const Footer: React.FC = () => {
     const auxilaryMenu = menus.menus.find((menu) => menu.menuName === 'Auxilary Menu');
 
     const currentYear = new Date().getFullYear();
-
-    useEffect(()=>{console.log(primaryMenu)}, [primaryMenu])
 
     return (
         <Container

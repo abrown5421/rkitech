@@ -1,160 +1,141 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { useInitializeApp } from './hooks/useInitializeApp';
 import Loader from './shared/components/loader/Loader';
 import Container from './shared/components/container/Container';
-import Cookies from 'js-cookie';
-import { setPartOfActivePageShell } from './shared/features/pages/pageShellSlice';
 import Navbar from './client/features/navbar/Navbar';
+import AdminNavbar from './admin/features/navbar/AdminNavbar';
 import PageShell from './shared/features/pages/PageShell';
 import Modal from './shared/features/modal/Modal';
 import Alert from './shared/features/alert/Alert';
 import Drawer from './shared/features/drawer/Drawer';
-import AdminNavbar from './admin/features/navbar/AdminNavbar';
-import { setHomePageId } from './app/globalSlices/homePageId/homePageIdSlice';
+
+import { setPartOfActivePageShell } from './shared/features/pages/pageShellSlice';
+import { setHomePageId, setHomePageObj } from './app/globalSlices/homePageId/homePageIdSlice';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const initializeApp = useInitializeApp();
-  const activePage = useAppSelector((state) => state.pageShell);
-  const adminAuthUser = useAppSelector((state) => state.adminAuthUser);
-  const pages = useAppSelector((state) => state.pages.pages);
-  const authUser = useAppSelector((state) => state.authUser);
-  const [loadingSite, setLoadingSite] = React.useState(true);
+  const activePage = useAppSelector((s) => s.pageShell);
+  const adminAuthUser = useAppSelector((s) => s.adminAuthUser);
+  const pages = useAppSelector((s) => s.pages.pages);
+  const authUser = useAppSelector((s) => s.authUser);
+
+  const [loadingSite, setLoadingSite] = useState(true);
+
+  const setShell = (name: string, id: string) => {
+    dispatch(setPartOfActivePageShell({ key: 'activePageShellName', value: name }));
+    dispatch(setPartOfActivePageShell({ key: 'activePageShellId', value: id }));
+    dispatch(setPartOfActivePageShell({ key: 'activePageShellIn', value: true }));
+  };
+
+  useEffect(()=>{console.log(activePage)}, [activePage])
 
   useEffect(() => {
-    const storedClientUser = Cookies.get("authUser");
-    const parsedClientUser = storedClientUser ? JSON.parse(storedClientUser) : null;
-
-    const storedAdminUser = Cookies.get("adminAuthUser");
-    const parsedAdminUser = storedAdminUser ? JSON.parse(storedAdminUser) : null;
-
-    const unsubscribe = initializeApp(parsedClientUser, parsedAdminUser, () => {
-      setLoadingSite(false);
-    });
-
-    return () => {
-      unsubscribe?.();
+    const parseCookie = (key: string) => {
+      const val = Cookies.get(key);
+      return val ? JSON.parse(val) : null;
     };
+
+    const unsubscribe = initializeApp(
+      parseCookie('authUser'),
+      parseCookie('adminAuthUser'),
+      () => setLoadingSite(false)
+    );
+
+    return () => unsubscribe?.();
   }, [authUser.user?.userId, adminAuthUser.user?.userId]);
 
-  useEffect(()=>{
-    const homePage = pages.find((page) => page.pagePath === '/');
+  useEffect(() => {
+    if (!pages.length) return;
+
+    const homePage = pages.find((p) => p.componentKey === 'HomeComp');
+    const profilePage = pages.find((p) => p.componentKey === 'ProfileComp');
+    const blogPostPage = pages.find((p) => p.componentKey === 'blogPostComp');
+    const notFoundPage = pages.find((p) => p.componentKey === 'PageNotFoundComp');
+
     const pathname = location.pathname.toLowerCase();
-    
+
     if (homePage?.pageID) {
-      dispatch(setHomePageId({ id: homePage?.pageID ?? '' }));
+      dispatch(setHomePageId(homePage.pageID));
+      dispatch(setHomePageObj(homePage));
     }
-    
-    if (pathname === '/admin') {
-      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'Admin'}));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: 'adminPage' }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
-      return
-    };
 
-    if (pathname.startsWith('/admin/')) {
-      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: 'AdminDash'}));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: 'adminPage' }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
-      return
-    };
+    if (pathname === '/admin') return setShell('Admin', 'adminPage');
+    if (pathname.startsWith('/admin/')) return setShell('AdminDash', 'adminPage');
 
-    let pageRef = pages.find((page) => {
-      if (page.pageName === 'Profile' && pathname.startsWith('/profile')) {
-        return true;
-      }
-      if (page.pageName === 'Blog Post' && pathname.startsWith('/blog-post')) {
-        return true;
-      }
-      return page.pagePath === pathname;
+    if (pathname === homePage?.pagePath) return setShell(homePage.pageName, homePage.pageID);
+
+    const pageRef = pages.find((p) => {
+      if (p.componentKey === 'ProfileComp' && pathname.startsWith(profilePage?.pagePath ?? '')) return true;
+      if (p.componentKey === 'blogPostComp' && pathname.startsWith(blogPostPage?.pagePath ?? '')) return true;
+      return p.pagePath === pathname;
     });
 
-    const pageNotFound = pages.find((page) => page.pageName === "Page Not Found");
+    if (pathname !== homePage?.pagePath && pageRef) return setShell(pageRef.pageName, pageRef.pageID);
 
-    if (location.pathname !== '/' && pageRef) {
-      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageRef?.pageName }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageRef?.pageID }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
-    } else if (location.pathname === '/' && homePage) {
-      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: homePage?.pageName }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: homePage?.pageID }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
-    } 
-
-    if ((location.pathname !== '/' && !pageRef && pageNotFound) || (location.pathname === '/profile' && pageNotFound)) {
-      dispatch(setPartOfActivePageShell({ key: "activePageShellName", value: pageNotFound?.pageName }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellId", value: pageNotFound?.pageID }));
-      dispatch(setPartOfActivePageShell({ key: "activePageShellIn", value: true }));
-      navigate(pageNotFound?.pagePath);
+    if (pathname !== homePage?.pagePath && !pageRef && notFoundPage) {
+      setShell(notFoundPage.pageName ?? '', notFoundPage.pageID ?? '');
+      navigate(notFoundPage.pagePath ?? '');
     }
-  }, [pages])
+  }, [pages]);
 
-  return (
-    
-    <>  
-      {!loadingSite ? (
-        <Container TwClassName='flex-col w-screen h-screen z-30 relative bg-black'>
-          {(activePage.activePageShellId === 'adminPage') ? <AdminNavbar /> : <Navbar />}
-          <Routes>
-            <Route
-              path="/admin/*"
-              element={
-                <PageShell
-                  activePageShellBgColor={activePage.activePageShellName === 'Admin' ? "bg-black" : "bg-white"}
-                  activePageShellAnimation={{
-                    entranceAnimation: 'animate__fadeInUpBig',
-                    exitAnimation: 'animate__fadeOutDownBig',
-                    isEntering: activePage.activePageShellIn,
-                  }}
-                />
-              }
+  return !loadingSite ? (
+    <Container TwClassName="flex-col w-screen h-screen z-30 relative bg-black">
+      {activePage.activePageShellId === 'adminPage' ? <AdminNavbar /> : <Navbar />}
+
+      <Routes>
+        <Route
+          path="/admin/*"
+          element={
+            <PageShell
+              activePageShellBgColor={activePage.activePageShellName === 'Admin' ? 'bg-black' : 'bg-white'}
+              activePageShellAnimation={{
+                entranceAnimation: 'animate__fadeInUpBig',
+                exitAnimation: 'animate__fadeOutDownBig',
+                isEntering: activePage.activePageShellIn,
+              }}
             />
-            {pages
-              .filter((page) => page.pageActive)
-              .map((page) => {
-                let routePath = page.pagePath;
+          }
+        />
 
-                if (page.pageName === 'Profile') {
-                  routePath = '/profile/:userIdFromUrl';
-                }
-
-                if (page.pageName === 'Blog Post') {
-                  routePath = '/blog-post/:blogPostIdFromUrl';
-                }
-                
-                return (
-                  <Route
-                    key={page.pageID}
-                    path={routePath}  
-                    element={
-                      <PageShell
-                        activePageShellBgColor={page.pageBg}
-                        activePageShellAnimation={{
-                          entranceAnimation: page.pageEntranceAnimation,
-                          exitAnimation: page.pageExitAnimation,
-                          isEntering: activePage.activePageShellIn,
-                        }}
-                      />
-                    }
+        {pages
+          .filter((p) => p.pageActive)
+          .map((p) => {
+            let routePath = p.pagePath;
+            if (p.componentKey === 'ProfileComp') routePath = `${p.pagePath}/:userIdFromUrl`;
+            if (p.componentKey === 'blogPostComp') routePath = `${p.pagePath}/:blogPostIdFromUrl`;
+            console.log(routePath)
+            return (
+              <Route
+                key={p.pageID}
+                path={routePath}
+                element={
+                  <PageShell
+                    activePageShellBgColor={p.pageBg}
+                    activePageShellAnimation={{
+                      entranceAnimation: p.pageEntranceAnimation,
+                      exitAnimation: p.pageExitAnimation,
+                      isEntering: activePage.activePageShellIn,
+                    }}
                   />
-                );
-              }
-            )}
-          </Routes>
-          
-          <Modal />
-          <Alert />
-          <Drawer />
-        </Container>
-      ) : (
-        <div className='w-screen h-screen z-30 relative bg-black flex justify-center items-center'>
-          <Loader variant='bounce' color='bg-primary' />
-        </div>
-      )}
-    </>    
+                }
+              />
+            );
+          })}
+      </Routes>
+
+      <Modal />
+      <Alert />
+      <Drawer />
+    </Container>
+  ) : (
+    <div className="w-screen h-screen z-30 relative bg-black flex justify-center items-center">
+      <Loader variant="bounce" color="bg-primary" />
+    </div>
   );
 };
 

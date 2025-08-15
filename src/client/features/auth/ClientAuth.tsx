@@ -22,6 +22,7 @@ const ClientAuth: React.FC = () => {
     const authUser = useAppSelector((state) => state.authUser);
     const homePageId = useAppSelector((state) => state.homePageId);
     const pages = useAppSelector((state) => state.pages.pages);
+    const signUpPage = pages.find((page) => page.componentKey === 'SignUpComp')
     const isLoading = loading && id === 'signInButton';
     const loginComp = pages.find((page) => page.componentKey === 'LoginComp')
     const signUpComp = pages.find((page) => page.componentKey === 'SignUpComp')
@@ -71,7 +72,7 @@ const ClientAuth: React.FC = () => {
     };
 
     if (authUser.user) {
-        dispatch(clientNavigation('/', 'Home', homePageId.id))
+        dispatch(clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.id))
     }
     
     const handleSubmit = async () => {
@@ -147,7 +148,7 @@ const ClientAuth: React.FC = () => {
                     }
                 }));
                 dispatch(setNotLoading())
-                setTimeout(() => {clientNavigation('/', 'Home', homePageId.id)();}, 100)
+                setTimeout(() => {clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.id)();}, 100)
                 
             } else {
                 const result = await signInUser(formValues.email, formValues.password);
@@ -182,7 +183,7 @@ const ClientAuth: React.FC = () => {
                 }), { expires: 1 });
 
                 dispatch(setNotLoading())
-                setTimeout(() => {clientNavigation('/', 'Home', homePageId.id)();}, 100)
+                setTimeout(() => {clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.id)();}, 100)
             }
         } catch (err: any) {
             dispatch(openAlert({
@@ -200,7 +201,7 @@ const ClientAuth: React.FC = () => {
     };
     
     useEffect(()=>{
-        if (location.pathname === '/sign-up') {
+        if (location.pathname === signUpPage?.pagePath) {
             setIsSignup(true)
         } else {
             setIsSignup(false)
@@ -282,8 +283,8 @@ const ClientAuth: React.FC = () => {
                     TwClassName="text-sm text-black hover:underline"
                     onClick={() => {
                         isSignup
-                            ? clientNavigation('/login', 'Auth', loginComp?.pageID ?? '')()
-                            : clientNavigation('/sign-up', 'Auth', signUpComp?.pageID ?? '')()
+                            ? clientNavigation(loginComp?.pagePath ?? '', 'Auth', loginComp?.pageID ?? '')()
+                            : clientNavigation(signUpComp?.pagePath ?? '', 'Auth', signUpComp?.pageID ?? '')()
                         setErrors({});
                         setTimeout(() => {
                             setFormValues({
