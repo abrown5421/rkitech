@@ -19,6 +19,7 @@ const Navbar: React.FC = () => {
   const authUser = useAppSelector((state) => state.authUser);
   const notifications = useAppSelector((state) => state.notifications);
   const pages = useAppSelector((state) => state.pages.pages);
+  const profilePage = pages.find((page) => page.componentKey === 'ProfileComp')
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const menus = useAppSelector((state) => state.menus);
   const primaryMenu = menus.menus.find((menu) => menu.menuName === 'Primary Menu');
@@ -44,7 +45,7 @@ const Navbar: React.FC = () => {
         let targetPath = path;
         if (name === 'Profile') {
           const userId = authUser.user?.userId;
-          targetPath = `/profile/${userId}`;
+          targetPath = `${profilePage?.pagePath}/${userId}`;
         }
         clientNavigation(targetPath, name, id)();
     },
@@ -176,7 +177,7 @@ const Navbar: React.FC = () => {
             <Button
               cursor="pointer"
               TwClassName={`pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
-              onClick={() => clientNavigation('/login', 'Auth', authComp?.pageID ?? '')()}
+              onClick={() => clientNavigation(authComp?.pagePath ?? '', 'Auth', authComp?.pageID ?? '')()}
             >
               <Text text="Login" />
             </Button>

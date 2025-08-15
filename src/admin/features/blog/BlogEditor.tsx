@@ -19,6 +19,8 @@ interface BlogPost {
 const BlogEditor: React.FC = () => {
     const clientNavigation = useNavigationHook();
     const postsFromStore = useAppSelector((state) => state.blog.blogPosts);
+    const pages = useAppSelector((state) => state.pages.pages)
+    const blogPage = pages.find((page) => page.componentKey === 'blogPostComp')
     
     const categories = [...new Set(postsFromStore.map(post => post.postCategory).filter(Boolean))];
 
@@ -93,7 +95,7 @@ const BlogEditor: React.FC = () => {
         {
             label: 'View',
             className: "pt-0 pr-3 pb-0 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary",
-            onClick: (item) => clientNavigation(`/blog-post/${item.blogPostID}`, 'BlogPost', item.blogPostID)(),
+            onClick: (item) => clientNavigation(`${blogPage?.pagePath.toLowerCase() ?? ''}/${item.blogPostID}`, 'BlogPost', item.blogPostID)(),
         },
         {
             label: 'Edit',

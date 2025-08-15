@@ -7,9 +7,12 @@ import { searchUsers } from "../../../../services/database/readData";
 import Image from "../../../../shared/components/image/Image";
 import Text from "../../../../shared/components/text/Text";
 import { useNavigationHook } from "../../../../hooks/useNavigationHook";
+import { useAppSelector } from "../../../../app/hooks";
 
 const ProfileFriendSearchTab: React.FC = () => {
   const clientNavigation = useNavigationHook();
+  const pages = useAppSelector((state) => state.pages.pages)
+  const profilePage = pages.find((page) => page.componentKey === 'ProfileComp')
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState<ClientAuthUser[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -57,7 +60,7 @@ const ProfileFriendSearchTab: React.FC = () => {
           <Container
             key={user.userId}
             TwClassName="flex-row items-start gap-3 border-b border-gray-300 m-0 pt-2 pb-2 hover:bg-gray-100"
-            onClick={() => clientNavigation(`/profile/${user.userId}`, 'Profile', '')()}
+            onClick={() => clientNavigation(`${profilePage?.pagePath ?? ''}/${user.userId}`, 'Profile', profilePage?.pageID ?? '')()}
           >
             <Container TwClassName="flex-col justify-center">
               {user.profileImage ? (

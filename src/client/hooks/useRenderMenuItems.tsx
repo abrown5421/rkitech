@@ -50,7 +50,7 @@ export const useRenderMenuItems = ({
         const page = pages.find((p) => p.pageID === menuItem.itemId);
         if (!page || !page.pageActive) return null;
 
-        const isProfilePage = page.pageName === 'Profile';
+        const isProfilePage = page.componentKey === 'ProfileComp';
         const userId = authUser?.userId || '';
 
         const friendRequestCount = isProfilePage && extraOptions?.isLoggedIn && notifications
@@ -66,7 +66,7 @@ export const useRenderMenuItems = ({
           dispatch(preCloseDrawer());
           setTimeout(() => {
             let targetPath = page.pagePath;
-            if (isProfilePage) targetPath = `/profile/${userId}`;
+            if (isProfilePage) targetPath = `${page.pagePath}/${userId}`;
             onNavigate(targetPath, page.pageName, page.pageID);
           }, 250);
         };

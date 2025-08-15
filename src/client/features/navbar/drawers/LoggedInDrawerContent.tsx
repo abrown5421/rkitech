@@ -18,6 +18,7 @@ const LoggedInDrawerContent: React.FC = () => {
 
   const menus = useAppSelector((state) => state.menus);
   const pages = useAppSelector((state) => state.pages.pages);
+  const homePageId = useAppSelector((state) => state.homePageId);
   const notifications = useAppSelector((state) => state.notifications);
   const activePage = useAppSelector((state) => state.pageShell.activePageShellName);
   const authUser = useAppSelector((state) => state.authUser);
@@ -51,7 +52,7 @@ const LoggedInDrawerContent: React.FC = () => {
   const handleLogout = () => {
     dispatch(setLoading({ loading: true, id: 'logoutButton' }));
     dispatch(preCloseDrawer());
-    clientNavigation('/', 'Home', '')()
+    clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.id ?? '')()
     setTimeout(() => {
       dispatch(setNotLoading())
       Cookies.remove('authUser');
