@@ -15,18 +15,20 @@ import Loader from "../../../components/loader/Loader";
 const TrianglifyModal: React.FC = () => {
   const dispatch = useAppDispatch();
   const modalProps = useAppSelector((state) => state.modal.modalProps);
-  const authUser = useAppSelector((state) => state.authUser.user);
   const { loading, id } = useAppSelector((state) => state.loading);
   const savingPfb = loading && id === 'savingPfb';
-  
+  const RecordIdToUpdate = modalProps?.RecordIdToUpdate || '';
+  const uploadDir = modalProps?.uploadDir || '';
+  const existingImage = modalProps?.existingImage || '';
+
   const initialValues: TrianglifyBannerProps = {
     yColors: modalProps?.yColors || ["#ffffff", "#cccccc"],
     xColors: modalProps?.xColors || ["#000000", "#333333"],
     auxImage: modalProps?.auxImage || undefined,
     cellSize: modalProps?.cellSize || 50,
     variance: modalProps?.variance || 0.5,
-    width: "w-full",
-    height: 250,
+    width: modalProps?.width || "w-full",
+    height: modalProps?.height || 250,
   };
 
   const [activeTab, setActiveTab] = useState<"trianglify" | "image">(
@@ -58,16 +60,16 @@ const TrianglifyModal: React.FC = () => {
 
   const handleSave = async () => {
     dispatch(setLoading({ loading: true, id: 'savingPfb' }));
-    if (!authUser?.userId) return;
+    if (!RecordIdToUpdate) return;
 
-    if (authUser.trianglifyObject.auxImage) {
-        await deleteImageFromStorage(authUser.trianglifyObject.auxImage)
+    if (existingImage) {
+        await deleteImageFromStorage(existingImage)
     }
 
     let imageUrl;
     if (activeTab === "image") {
         if (selectedFile) {
-            imageUrl = await uploadProfileImage(selectedFile, authUser?.userId, 'profileBannerImages');
+            imageUrl = await uploadProfileImage(selectedFile, RecordIdToUpdate, uploadDir);
         } else {
             alert('No image uploaded.')
         }        
@@ -80,7 +82,7 @@ const TrianglifyModal: React.FC = () => {
     dispatch(fireModalAction({
       modalActionFire: true,
       modalActionId: 'trianglifySave',
-      trianglifyData: resultData,
+      trianglifyData: activeTab === "trianglify" ? resultData : imageUrl,
     }));
 
     

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import type { GalleryImage } from '../../../client/features/gallery/galleryTypes';
 import { useGenericEditor } from '../../hooks/useGenericEditor';
@@ -8,11 +8,43 @@ import Container from '../../../shared/components/container/Container';
 import Input from '../../../shared/components/input/Input';
 import Image from '../../../shared/components/image/Image';
 import GenericEditor from '../../components/genericEditor/GenericEditor';
+import { updateDataInCollection } from '../../../services/database/updateData';
+import { openAlert } from '../../../shared/features/alert/alertSlice';
 
 const GalleryEditor: React.FC = () => {
     const dispatch = useAppDispatch();
     const gallery = useAppSelector((state) => state.gallery.gallery);
+    const modalAction = useAppSelector((state) => state.modal.modalActionFire);
+    const modalProps = useAppSelector(state => state.modal.modalProps);
+    const RecordIdToUpdate = modalProps?.RecordIdToUpdate || '';
     
+    useEffect(()=>{
+        const runPfpAction = async () => {
+            if (modalAction.modalActionId === 'pictureUpload') {
+
+                await updateDataInCollection("Gallery", RecordIdToUpdate, {
+                    imageUrl: modalAction.imageUrl,
+                });
+
+                dispatch(openAlert({
+                        alertOpen: true,
+                        alertSeverity: 'success',
+                        alertMessage: 'Profile picture was uploaded successfully!',
+                        alertAnimation: {
+                        entranceAnimation: 'animate__fadeInRight animate__faster',
+                        exitAnimation: 'animate__fadeOutRight animate__faster',
+                        isEntering: true,
+                    }
+                }));
+
+            } else if (modalAction.modalActionId === 'trianglifyCancel') {
+                console.log('User canceled profile upload modal');
+            }
+        }
+
+        runPfpAction();
+    }, [modalAction]);
+
     const editorConfig = {
         collectionName: 'Gallery',
         itemIdField: 'galleryPostID' as keyof GalleryImage,
@@ -42,8 +74,13 @@ const GalleryEditor: React.FC = () => {
         dispatch(
             openModal({
                 title: 'Change Gallery Image',
-                modalType: 'imageUploadModal',
-                modalProps: post 
+                modalType: 'pictureUpload',
+                modalMessage: '',
+                modalProps: {
+                    existingImage: post.imageUrl,
+                    RecordIdToUpdate: post.galleryPostID,
+                    uploadDir: 'Gallery'
+                }
             })
         );
     };

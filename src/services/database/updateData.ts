@@ -16,6 +16,24 @@ export async function updateDataInCollection(
   }
 }
 
+export async function updateTrianglifyAuxImage(
+  collectionName: string,
+  docId: string,
+  auxImageValue: string
+): Promise<void> {
+  try {
+    const docRef = doc(db, collectionName, docId);
+    await updateDoc(docRef, {
+      "trianglifyObject.auxImage": auxImageValue
+    });
+
+    console.log(`auxImage updated successfully for document ${docId}.`);
+  } catch (error) {
+    console.error(`Error updating auxImage for document ${docId}:`, error);
+    throw error;
+  }
+}
+
 export async function appendToArrayInCollection(
   collectionName: string,
   docId: string,

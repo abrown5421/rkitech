@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Container from '../../../shared/components/container/Container';
-import { useAppSelector } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import type { StaffMemberPlusUser } from '../../../client/features/staff/staffTypes';
 import { getDocumentById, getDocumentsByQuery } from '../../../services/database/readData';
 import { useGenericEditor } from '../../hooks/useGenericEditor';
@@ -9,12 +9,16 @@ import Input from '../../../shared/components/input/Input';
 import Select from '../../../shared/components/select/Select';
 import { updateDataInCollection } from '../../../services/database/updateData';
 import { buildQuery } from '../../../services/database/queryBuilder';
+import { openModal } from '../../../shared/features/modal/modalSlice';
+import { openAlert } from '../../../shared/features/alert/alertSlice';
 
 const StaffEditor: React.FC = () => {
+    const dispatch = useAppDispatch();
     const staff = useAppSelector((state) => state.staff.staff);
+    const modalAction = useAppSelector((state) => state.modal.modalActionFire);
+    const modalProps = useAppSelector(state => state.modal.modalProps);
+    const RecordIdToUpdate = modalProps?.RecordIdToUpdate || '';
     const [staffWithData, setStaffWithData] = useState<StaffMemberPlusUser[]>([]);
-    
-    useEffect(()=>{console.log(staffWithData)}, [staffWithData])
     
     useEffect(() => {
         const getStaffInfoFromUserTable = async () => {
@@ -44,7 +48,42 @@ const StaffEditor: React.FC = () => {
         getStaffInfoFromUserTable();
     }, [staff]);
 
+    useEffect(()=>{
+        const runTrianglifyAction = async () => {
+            if (modalAction.modalActionId === 'trianglifySave') {
+            const trianglifyData = modalAction.trianglifyData; 
+            
+            if (typeof trianglifyData === 'string') {
+                await updateDataInCollection("Users", RecordIdToUpdate, {
+                    profileImage: trianglifyData,
+                });
+            } else {
+                await updateDataInCollection("Users", RecordIdToUpdate, {
+                    trianglifyObject: trianglifyData,
+                    profileImage: '',
+                });
+            }
+            
     
+            dispatch(openAlert({
+                alertOpen: true,
+                alertSeverity: 'success',
+                alertMessage: 'Profile banner was uploaded successfully!',
+                alertAnimation: {
+                entranceAnimation: 'animate__fadeInRight animate__faster',
+                exitAnimation: 'animate__fadeOutRight animate__faster',
+                isEntering: true,
+                }
+            }));
+    
+            } else if (modalAction.modalActionId === 'trianglifyCancel') {
+                console.log('User canceled trianglify modal');
+            }
+        };
+
+        runTrianglifyAction();
+    }, [modalAction]);
+
     const editorConfig = {
         collectionName: 'Staff',
         itemIdField: 'userId' as keyof StaffMemberPlusUser,
@@ -69,8 +108,26 @@ const StaffEditor: React.FC = () => {
         resetChanges,
         setCurrentPage,
     } = useGenericEditor(staffWithData, editorConfig);
-    
-    
+
+    const openTrianglifyModal = (staffMember: StaffMemberPlusUser) => {
+        dispatch(openModal({
+                title: 'Customize Banner',
+                modalType: 'trianglify',
+                modalMessage: '',
+                modalProps: {
+                yColors: staffMember.trianglifyObject?.yColors,
+                xColors: staffMember.trianglifyObject?.xColors,
+                cellSize: staffMember.trianglifyObject?.cellSize,
+                variance: staffMember.trianglifyObject?.variance,
+                width: staffMember.trianglifyObject?.width,
+                height: staffMember.trianglifyObject?.height,
+                auxImage: staffMember.profileImage,
+                existingImage: staffMember.profileImage,
+                RecordIdToUpdate: staffMember.userId,
+                uploadDir: 'profileImages'
+            }
+        }));
+    };
         const fields: EditorField[] = [
         {
             key: 'imageName',
@@ -121,6 +178,7 @@ const StaffEditor: React.FC = () => {
                             TwClassName="flex-grow"
                             label="Profile Image"
                             value={item.profileImage}
+                            onClick={() => openTrianglifyModal(item)}
                             onChange={(e) => updateField('profileImage', e.target.value)}
                         />
                     </Container>

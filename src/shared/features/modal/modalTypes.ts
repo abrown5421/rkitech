@@ -6,7 +6,7 @@ export interface ModalActionObject {
   modalActionId: string;
   password?: string;
   idToDelete?: string;
-  trianglifyData?: TrianglifyBannerProps; 
+  trianglifyData?: TrianglifyBannerProps | string; 
   imageUrl?: string; 
 }
 
@@ -22,6 +22,8 @@ export interface ModalState {
     idToDelete?: string;
     requiresAuth?: boolean;
     existingImage?: string;
+    RecordIdToUpdate?: string;
+    uploadDir: string;
     [key: string]: any;
   };
 }

@@ -6,7 +6,7 @@ import Button from '../../../components/button/Button';
 import Input from '../../../components/input/Input';
 import Icon from '../../../components/icon/Icon';
 import { setLoading, setNotLoading } from '../../../../app/globalSlices/loading/loadingSlice';
-import { uploadProfileImage } from '../../../../services/storage/uploadImage';
+import { uploadImage, uploadProfileImage } from '../../../../services/storage/uploadImage';
 import Image from '../../../components/image/Image';
 import Loader from '../../../components/loader/Loader';
 import { deleteImageFromStorage } from '../../../../services/storage/deleteImage';
@@ -14,12 +14,12 @@ import { deleteImageFromStorage } from '../../../../services/storage/deleteImage
 const PictureUploadModal: React.FC = () => {
   const dispatch = useAppDispatch();
   const modalProps = useAppSelector(state => state.modal.modalProps);
-  const authUser = useAppSelector((state) => state.authUser.user);
   const { loading, id } = useAppSelector((state) => state.loading);
   const savingPfp = loading && id === 'savingPfp';
   const actionId = modalProps?.actionId || 'pictureUpload';
   const existingImage = modalProps?.existingImage || '';
-
+  const RecordIdToUpdate = modalProps?.RecordIdToUpdate || '';
+  const uploadDir = modalProps?.uploadDir || '';
   const [activeTab, setActiveTab] = useState<"url" | "upload">("url");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [urlInput, setUrlInput] = useState<string>(existingImage);
@@ -50,22 +50,14 @@ const PictureUploadModal: React.FC = () => {
 
   const handleSave = async () => {
     dispatch(setLoading({ loading: true, id: 'savingPfp' }));
-    if (!authUser?.userId) {
-      alert('User not authenticated.');
-      return;
-    }
 
     let resultUrl = '';
 
-    if (authUser.profileImage) {
-        await deleteImageFromStorage(authUser.profileImage)
+    if (existingImage && activeTab === "upload") {
+        await deleteImageFromStorage(existingImage)
     }
 
     if (activeTab === "url") {
-      if (!urlInput.trim()) {
-        alert('Please enter a valid URL.');
-        return;
-      }
       resultUrl = urlInput.trim();
     } else if (activeTab === "upload") {
       if (!selectedFile) {
@@ -73,7 +65,12 @@ const PictureUploadModal: React.FC = () => {
         return;
       }
       try {
-        resultUrl = await uploadProfileImage(selectedFile, authUser.userId, 'profileImages');
+        if (RecordIdToUpdate !== '') {
+          resultUrl = await uploadProfileImage(selectedFile, RecordIdToUpdate, uploadDir);
+        } else {
+          resultUrl = await uploadImage(selectedFile, uploadDir);
+        }
+        
       } catch (error) {
         alert('Failed to upload image. Please try again.');
         return;

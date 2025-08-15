@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from '../../../shared/components/container/Container';
-import { useAppSelector } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigationHook } from '../../../hooks/useNavigationHook';
 import { useGenericEditor } from '../../hooks/useGenericEditor';
 import type { EditorAction, EditorField } from '../../components/genericEditor/GenericEditor';
 import Input from '../../../shared/components/input/Input';
 import Select from '../../../shared/components/select/Select';
 import GenericEditor from '../../components/genericEditor/GenericEditor';
-
-interface BlogPost {
-    blogPostID: string;
-    postTitle: string;
-    postCategory: string;
-    postSynopsis: string;
-    postActive: boolean;
-}
+import { updateDataInCollection, updateTrianglifyAuxImage } from '../../../services/database/updateData';
+import { openAlert } from '../../../shared/features/alert/alertSlice';
+import { openModal } from '../../../shared/features/modal/modalSlice';
+import type { BlogPost } from '../../../client/features/blog/blogTypes';
 
 const BlogEditor: React.FC = () => {
+    const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
     const postsFromStore = useAppSelector((state) => state.blog.blogPosts);
     const pages = useAppSelector((state) => state.pages.pages)
+    const modalAction = useAppSelector((state) => state.modal.modalActionFire);
+    const modalProps = useAppSelector(state => state.modal.modalProps);
+    const RecordIdToUpdate = modalProps?.RecordIdToUpdate || '';
     const blogPage = pages.find((page) => page.componentKey === 'blogPostComp')
     
     const categories = [...new Set(postsFromStore.map(post => post.postCategory).filter(Boolean))];
@@ -33,6 +33,61 @@ const BlogEditor: React.FC = () => {
         deleteConfirmationTitle: 'Delete Blog Post?',
         deleteConfirmationMessage: (item: BlogPost) => 
             `Are you sure you want to delete the blog post "${item.postTitle}"? This action cannot be undone and will permanently remove the post and all its content.`,
+    };
+
+    
+    useEffect(()=>{
+        const runTrianglifyAction = async () => {
+            if (modalAction.modalActionId === 'trianglifySave') {
+            const trianglifyData = modalAction.trianglifyData; 
+            
+            if (typeof trianglifyData === 'string') {
+                await updateTrianglifyAuxImage("Blog", RecordIdToUpdate, trianglifyData);
+            } else {
+                await updateDataInCollection("Blog", RecordIdToUpdate, {
+                    trianglifyObject: trianglifyData,
+                });
+            }
+            
+    
+            dispatch(openAlert({
+                alertOpen: true,
+                alertSeverity: 'success',
+                alertMessage: 'Profile banner was uploaded successfully!',
+                alertAnimation: {
+                entranceAnimation: 'animate__fadeInRight animate__faster',
+                exitAnimation: 'animate__fadeOutRight animate__faster',
+                isEntering: true,
+                }
+            }));
+    
+            } else if (modalAction.modalActionId === 'trianglifyCancel') {
+                console.log('User canceled trianglify modal');
+            }
+        };
+
+        runTrianglifyAction();
+    }, [modalAction]);
+
+    
+    const openTrianglifyModal = (post: BlogPost) => {
+        dispatch(openModal({
+                title: 'Customize Banner',
+                modalType: 'trianglify',
+                modalMessage: '',
+                modalProps: {
+                yColors: post.trianglifyObject.yColors,
+                xColors: post.trianglifyObject?.xColors,
+                cellSize: post.trianglifyObject?.cellSize,
+                variance: post.trianglifyObject?.variance,
+                width: post.trianglifyObject?.width,
+                height: post.trianglifyObject?.height,
+                auxImage: post.trianglifyObject.auxImage,
+                existingImage: post.trianglifyObject.auxImage,
+                RecordIdToUpdate: post.blogPostID,
+                uploadDir: 'blogHeaders'
+            }
+        }));
     };
 
     const {
@@ -81,12 +136,21 @@ const BlogEditor: React.FC = () => {
             label: 'Post Synopsis',
             type: 'text',
             render: (item, updateField) => (
+                <Container TwClassName="rounded-md flex-row gap-4 items-center">
                 <Input
-                    TwClassName="flex-grow mt-4"
+                    TwClassName="flex-grow"
                     label="Post Synopsis"
                     value={item.postSynopsis}
                     onChange={(e) => updateField('postSynopsis', e.target.value)}
                 />
+                <Input
+                    TwClassName="flex-grow"
+                    label="Header Image"
+                    value={item.profileImage}
+                    onClick={() => openTrianglifyModal(item)}
+                    onChange={(e) => updateField('profileImage', e.target.value)}
+                />
+                </Container>
             )
         },
     ];

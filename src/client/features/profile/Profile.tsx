@@ -111,7 +111,7 @@ const Profile: React.FC = () => {
         dispatch(openAlert({
           alertOpen: true,
           alertSeverity: 'success',
-          alertMessage: 'Profile banner was uploaded successfully!',
+          alertMessage: 'Profile picture was uploaded successfully!',
           alertAnimation: {
             entranceAnimation: 'animate__fadeInRight animate__faster',
             exitAnimation: 'animate__fadeOutRight animate__faster',
@@ -135,6 +135,7 @@ const Profile: React.FC = () => {
       modalMessage: '',
       modalProps: {
         existingImage: profileUser?.profileImage,
+        uploadDir: 'profileImages'
       }
     }));
   };
@@ -149,7 +150,12 @@ const Profile: React.FC = () => {
         xColors: profileUser?.trianglifyObject.xColors,
         cellSize: profileUser?.trianglifyObject.cellSize,
         variance: profileUser?.trianglifyObject.variance,
-        auxImage: profileUser?.trianglifyObject.auxImage
+        width: profileUser?.trianglifyObject.width,
+        height: profileUser?.trianglifyObject.height,
+        auxImage: profileUser?.trianglifyObject.auxImage,
+        existingImage: profileUser?.trianglifyObject.auxImage,
+        RecordIdToUpdate: profileUser?.userId,
+        uploadDir: 'profileBannerImages'
       }
     }));
   };
