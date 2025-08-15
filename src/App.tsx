@@ -32,8 +32,6 @@ const App: React.FC = () => {
     dispatch(setPartOfActivePageShell({ key: 'activePageShellIn', value: true }));
   };
 
-  useEffect(()=>{console.log(activePage)}, [activePage])
-
   useEffect(() => {
     const parseCookie = (key: string) => {
       const val = Cookies.get(key);
@@ -108,7 +106,7 @@ const App: React.FC = () => {
             let routePath = p.pagePath;
             if (p.componentKey === 'ProfileComp') routePath = `${p.pagePath}/:userIdFromUrl`;
             if (p.componentKey === 'blogPostComp') routePath = `${p.pagePath}/:blogPostIdFromUrl`;
-            console.log(routePath)
+            
             return (
               <Route
                 key={p.pageID}
