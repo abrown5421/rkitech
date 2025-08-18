@@ -8,6 +8,7 @@ import Image from "../../../../shared/components/image/Image";
 import Text from "../../../../shared/components/text/Text";
 import { useNavigationHook } from "../../../../hooks/useNavigationHook";
 import { useAppSelector } from "../../../../app/hooks";
+import Loader from "../../../../shared/components/loader/Loader";
 
 const ProfileFriendSearchTab: React.FC = () => {
   const clientNavigation = useNavigationHook();
@@ -53,7 +54,7 @@ const ProfileFriendSearchTab: React.FC = () => {
         }
       />
 
-      {isSearching && <p className="text-gray-400">Searching...</p>}
+      {isSearching && <Loader variant="spinner" color="text-amber-500"/>}
 
       <Container TwClassName="flex flex-col space-y-2 cursor-pointer">
         {results.map((user) => (

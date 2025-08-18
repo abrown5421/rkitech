@@ -70,15 +70,18 @@ export async function getEntireCollection(collectionName: string): Promise<any[]
   }
 }
 
-export async function searchUsers(input: string): Promise<ClientAuthUser[]> {
+export async function searchUsers(
+  input: string,
+  limit?: number 
+): Promise<ClientAuthUser[]> {
   if (!input.trim()) return [];
 
   const usersRef = collection(db, "Users");
   const snapshot = await getDocs(usersRef);
 
   const search = input.toLowerCase();
-
   const results: ClientAuthUser[] = [];
+
   snapshot.forEach((doc) => {
     const { userId, ...rest } = doc.data() as ClientAuthUser;
     const matches =
@@ -89,10 +92,10 @@ export async function searchUsers(input: string): Promise<ClientAuthUser[]> {
     if (matches) {
       results.push({ userId: doc.id, ...rest });
     }
-  }); 
-
-  return results;
+  });
+  return limit ? results.slice(0, limit) : results;
 }
+
 
 export async function getDocumentsByQuery(queryObj: Query): Promise<any[] | null> {
   try {

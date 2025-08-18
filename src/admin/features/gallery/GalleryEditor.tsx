@@ -1,175 +1,239 @@
-import React, { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import type { GalleryImage } from '../../../client/features/gallery/galleryTypes';
-import { useGenericEditor } from '../../hooks/useGenericEditor';
-import { openModal } from '../../../shared/features/modal/modalSlice';
-import type { EditorField } from '../../components/genericEditor/GenericEditor';
-import Container from '../../../shared/components/container/Container';
-import Input from '../../../shared/components/input/Input';
-import Image from '../../../shared/components/image/Image';
-import GenericEditor from '../../components/genericEditor/GenericEditor';
-import { updateDataInCollection } from '../../../services/database/updateData';
-import { openAlert } from '../../../shared/features/alert/alertSlice';
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import type { GalleryImage } from "../../../client/features/gallery/galleryTypes";
+import { useGenericEditor } from "../../hooks/useGenericEditor";
+import { openModal } from "../../../shared/features/modal/modalSlice";
+import type { EditorField } from "../../components/genericEditor/GenericEditor";
+import Container from "../../../shared/components/container/Container";
+import Input from "../../../shared/components/input/Input";
+import Image from "../../../shared/components/image/Image";
+import GenericEditor from "../../components/genericEditor/GenericEditor";
+import { updateDataInCollection } from "../../../services/database/updateData";
+import { openAlert } from "../../../shared/features/alert/alertSlice";
+import { insertDataIntoCollection } from "../../../services/database/createData";
 
 const GalleryEditor: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const gallery = useAppSelector((state) => state.gallery.gallery);
-    const modalAction = useAppSelector((state) => state.modal.modalActionFire);
-    const modalProps = useAppSelector(state => state.modal.modalProps);
-    const RecordIdToUpdate = modalProps?.RecordIdToUpdate || '';
-    
-    useEffect(()=>{
-        const runPfpAction = async () => {
-            if (modalAction.modalActionId === 'pictureUpload') {
+  const dispatch = useAppDispatch();
+  const gallery = useAppSelector((state) => state.gallery.gallery);
+  const modalAction = useAppSelector((state) => state.modal.modalActionFire);
+  const modalProps = useAppSelector((state) => state.modal.modalProps);
+  const RecordIdToUpdate = modalProps?.RecordIdToUpdate || "";
 
-                await updateDataInCollection("Gallery", RecordIdToUpdate, {
-                    imageUrl: modalAction.imageUrl,
-                });
+  useEffect(() => {
+    const runPfpAction = async () => {
+      if (modalAction.modalActionId === "pictureUpload") {
+        await updateDataInCollection("Gallery", RecordIdToUpdate, {
+          imageUrl: modalAction.imageUrl,
+        });
 
-                dispatch(openAlert({
-                        alertOpen: true,
-                        alertSeverity: 'success',
-                        alertMessage: 'Profile picture was uploaded successfully!',
-                        alertAnimation: {
-                        entranceAnimation: 'animate__fadeInRight animate__faster',
-                        exitAnimation: 'animate__fadeOutRight animate__faster',
-                        isEntering: true,
-                    }
-                }));
-
-            } else if (modalAction.modalActionId === 'trianglifyCancel') {
-                console.log('User canceled profile upload modal');
-            }
-        }
-
-        runPfpAction();
-    }, [modalAction]);
-
-    const editorConfig = {
-        collectionName: 'Gallery',
-        itemIdField: 'galleryPostID' as keyof GalleryImage,
-        sortField: 'imageName' as keyof GalleryImage,
-        trackingFields: ['imageName', 'imageDescription', 'imageUrl'] as (keyof GalleryImage)[],
-        postsPerPage: 5,
-        deleteConfirmationTitle: 'Delete Gallery Image?',
-        deleteConfirmationMessage: (item: GalleryImage) => 
-            `Are you sure you want to delete the gallery image "${item.imageName}"? This will permanently remove the image from your gallery and cannot be undone.`,
-    };
-
-    const {
-        paginatedItems,
-        currentPage,
-        totalPages,
-        hasChanges,
-        isLoading,
-        updateItemField,
-        handleToggleActive,
-        handleSave,
-        handleDelete,
-        resetChanges,
-        setCurrentPage,
-    } = useGenericEditor(gallery, editorConfig);
-
-    const handleUploadModal = (post: GalleryImage) => {
         dispatch(
-            openModal({
-                title: 'Change Gallery Image',
-                modalType: 'pictureUpload',
-                modalMessage: '',
-                modalProps: {
-                    existingImage: post.imageUrl,
-                    RecordIdToUpdate: post.galleryPostID,
-                    uploadDir: 'Gallery'
-                }
-            })
+          openAlert({
+            alertOpen: true,
+            alertSeverity: "success",
+            alertMessage: "Profile picture was uploaded successfully!",
+            alertAnimation: {
+              entranceAnimation: "animate__fadeInRight animate__faster",
+              exitAnimation: "animate__fadeOutRight animate__faster",
+              isEntering: true,
+            },
+          })
         );
+      } else if (modalAction.modalActionId === "trianglifyCancel") {
+        console.log("User canceled profile upload modal");
+      }
     };
 
-    const fields: EditorField[] = [
-        {
-            key: 'imageName',
-            label: 'Post Name',
-            type: 'text',
-            render: (item, updateField) => (
-                <Container TwClassName="rounded-md flex-row gap-4 items-center">
-                    <Input
-                        TwClassName="flex-grow"
-                        label="Post Name"
-                        value={item.imageName}
-                        onChange={(e) => updateField('imageName', e.target.value)}
-                    />
-                    <Input
-                        TwClassName="flex-grow"
-                        label="Post Source"
-                        value={item.imageUrl}
-                        onClick={() => handleUploadModal(item)}
-                    />
-                </Container>
-            )
-        },
-        {
-            key: 'imageDescription',
-            label: 'Post Description',
-            type: 'text',
-            render: (item, updateField) => (
-                <Input
-                    TwClassName="flex-grow mt-4"
-                    label="Post Description"
-                    value={item.imageDescription}
-                    onChange={(e) => updateField('imageDescription', e.target.value)}
-                />
-            )
-        },
-    ];
+    const runNewGalleryPost = async () => {
+      if (modalAction.modalActionId === "newGalleryPost") {
+        const formData = modalAction.formData;
+        const newGalleryPost = {
+          imageActive: false,
+          imageName: formData?.imageName,
+          imageDescription: formData?.imageDescription,
+          imageDate: new Date().toISOString(),
+          imageUrl: formData?.imageUrl
+        };
 
-    const getChangedFields = (local: GalleryImage, original: GalleryImage) => {
-        const changes: Partial<GalleryImage> = {};
-        if (local.imageName !== original.imageName) changes.imageName = local.imageName;
-        if (local.imageDescription !== original.imageDescription) changes.imageDescription = local.imageDescription;
-        if (local.imageUrl !== original.imageUrl) changes.imageUrl = local.imageUrl;
-        return changes;
+        await insertDataIntoCollection('Gallery', newGalleryPost)
+
+        dispatch(
+          openAlert({
+            alertOpen: true,
+            alertSeverity: "success",
+            alertMessage: "New gallery post was saved successfully!",
+            alertAnimation: {
+              entranceAnimation: "animate__fadeInRight animate__faster",
+              exitAnimation: "animate__fadeOutRight animate__faster",
+              isEntering: true,
+            },
+          })
+        );
+      } else if (modalAction.modalActionId === "newGalleryPostCancel") {
+        console.log("User canceled gallery post creation");
+      }
     };
+    runPfpAction();
+    runNewGalleryPost();
+  }, [modalAction]);
 
-    const renderCustomContent = (item: GalleryImage) => (
-        <Container TwClassName='flex-row gap-4 mb-4'>
-            <Container TwClassName='flex-col'>
-                <Image 
-                    src={item.imageUrl}
-                    alt={item.imageDescription}
-                    TwClassName='w-[200px] h-[200px] object-cover object-center rounded-md'
-                />
-            </Container>
-            <Container TwClassName='flex-col flex-grow'>
-                &nbsp;
-            </Container>
+  const editorConfig = {
+    collectionName: "Gallery",
+    itemIdField: "galleryPostID" as keyof GalleryImage,
+    sortField: "imageName" as keyof GalleryImage,
+    trackingFields: [
+      "imageName",
+      "imageDescription",
+      "imageUrl",
+    ] as (keyof GalleryImage)[],
+    postsPerPage: 5,
+    deleteConfirmationTitle: "Delete Gallery Image?",
+    deleteConfirmationMessage: (item: GalleryImage) =>
+      `Are you sure you want to delete the gallery image "${item.imageName}"? This will permanently remove the image from your gallery and cannot be undone.`,
+  };
+
+  const {
+    paginatedItems,
+    currentPage,
+    totalPages,
+    hasChanges,
+    isLoading,
+    updateItemField,
+    handleToggleActive,
+    handleSave,
+    handleDelete,
+    resetChanges,
+    setCurrentPage,
+  } = useGenericEditor(gallery, editorConfig);
+
+  const handleUploadModal = (post: GalleryImage) => {
+    dispatch(
+      openModal({
+        title: "Change Gallery Image",
+        modalType: "pictureUpload",
+        modalMessage: "",
+        modalProps: {
+          existingImage: post.imageUrl,
+          RecordIdToUpdate: post.galleryPostID,
+          uploadDir: "Gallery",
+        },
+      })
+    );
+  };
+
+  const fields: EditorField[] = [
+    {
+      key: "imageName",
+      label: "Post Name",
+      type: "text",
+      render: (item, updateField) => (
+        <Container TwClassName="rounded-md flex-row gap-4 items-center">
+          <Input
+            TwClassName="flex-grow"
+            label="Post Name"
+            value={item.imageName}
+            onChange={(e) => updateField("imageName", e.target.value)}
+          />
+          <Input
+            TwClassName="flex-grow"
+            label="Post Source"
+            value={item.imageUrl}
+            onClick={() => handleUploadModal(item)}
+          />
         </Container>
-    );
-
-    return (
-        <GenericEditor
-            title="Edit Gallery Posts"
-            items={paginatedItems}
-            fields={fields}
-            addButtonText="Add Post"
-            addButtonModal={{
-                title: 'New Gallery Image',
-                modalType: 'newImageModal',
-            }}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            hasChanges={hasChanges}
-            isLoading={isLoading}
-            onPageChange={setCurrentPage}
-            onFieldUpdate={updateItemField}
-            onSave={() => handleSave(getChangedFields)}
-            onReset={resetChanges}
-            onToggleActive={handleToggleActive}
-            onDelete={handleDelete}
-            getItemId={(item) => item.galleryPostID}
-            getItemActiveStatus={(item) => item.imageActive}
-            renderCustomContent={renderCustomContent}
+      ),
+    },
+    {
+      key: "imageDescription",
+      label: "Post Description",
+      type: "text",
+      render: (item, updateField) => (
+        <Input
+          TwClassName="flex-grow mt-4"
+          label="Post Description"
+          value={item.imageDescription}
+          onChange={(e) => updateField("imageDescription", e.target.value)}
         />
-    );
+      ),
+    },
+  ];
+
+  const newGalleryPostConfig = [
+    {
+      type: "imageinput",
+      name: "Image",
+      nameId: "imageUrl",
+      required: true,
+      placeholder: "Drag and drop image here",
+    },
+    {
+      type: "input",
+      name: "Image Name",
+      nameId: "imageName",
+      required: true,
+      placeholder: "Enter image name",
+    },
+    {
+      type: "textarea",
+      name: "Image Description",
+      nameId: "imageDescription",
+      required: false,
+      rows: 4,
+      placeholder: "Enter image description",
+    },
+  ];
+
+  const getChangedFields = (local: GalleryImage, original: GalleryImage) => {
+    const changes: Partial<GalleryImage> = {};
+    if (local.imageName !== original.imageName)
+      changes.imageName = local.imageName;
+    if (local.imageDescription !== original.imageDescription)
+      changes.imageDescription = local.imageDescription;
+    if (local.imageUrl !== original.imageUrl) changes.imageUrl = local.imageUrl;
+    return changes;
+  };
+
+  const renderCustomContent = (item: GalleryImage) => (
+    <Container TwClassName="flex-row gap-4 mb-4">
+      <Container TwClassName="flex-col">
+        <Image
+          src={item.imageUrl}
+          alt={item.imageDescription}
+          TwClassName="w-[200px] h-[200px] object-cover object-center rounded-md"
+        />
+      </Container>
+      <Container TwClassName="flex-col flex-grow">&nbsp;</Container>
+    </Container>
+  );
+
+  return (
+    <GenericEditor
+      title="Edit Gallery Posts"
+      items={paginatedItems}
+      fields={fields}
+      addButtonText="Add Post"
+      addButtonModal={{
+        title: "Create New Gallery Post",
+        modalType: "dynamicForm",
+        modalProps: {
+          config: newGalleryPostConfig,
+          actionId: "newGalleryPost",
+        },
+      }}
+      currentPage={currentPage}
+      totalPages={totalPages}
+      hasChanges={hasChanges}
+      isLoading={isLoading}
+      onPageChange={setCurrentPage}
+      onFieldUpdate={updateItemField}
+      onSave={() => handleSave(getChangedFields)}
+      onReset={resetChanges}
+      onToggleActive={handleToggleActive}
+      onDelete={handleDelete}
+      getItemId={(item) => item.galleryPostID}
+      getItemActiveStatus={(item) => item.imageActive}
+      renderCustomContent={renderCustomContent}
+    />
+  );
 };
 
 export default GalleryEditor;

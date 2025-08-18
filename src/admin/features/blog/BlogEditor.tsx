@@ -11,10 +11,13 @@ import { updateDataInCollection, updateTrianglifyAuxImage } from '../../../servi
 import { openAlert } from '../../../shared/features/alert/alertSlice';
 import { openModal } from '../../../shared/features/modal/modalSlice';
 import type { BlogPost } from '../../../client/features/blog/blogTypes';
+import { getRandomTrianglifyParams } from '../../../shared/components/trianglifyBanner/getRandomTrianglifyParams';
+import { insertDataIntoCollection } from '../../../services/database/createData';
 
 const BlogEditor: React.FC = () => {
     const dispatch = useAppDispatch();
     const clientNavigation = useNavigationHook();
+    const adminAuth = useAppSelector((state) => state.adminAuthUser.user);
     const postsFromStore = useAppSelector((state) => state.blog.blogPosts);
     const pages = useAppSelector((state) => state.pages.pages)
     const modalAction = useAppSelector((state) => state.modal.modalActionFire);
@@ -66,7 +69,65 @@ const BlogEditor: React.FC = () => {
             }
         };
 
+        const runNewBlogPost = async () => {
+            if (modalAction.modalActionId === 'newBlogPost') {
+                const formData = modalAction.formData;
+                const triBan = getRandomTrianglifyParams();
+                const randomizedTrianglifyBanner = {
+                    xColors: triBan.xColor,
+                    yColors: triBan.yColor,
+                    width: 'w-full',
+                    height: 250,
+                    variance: triBan.variance,
+                    cellSize: triBan.cellSize
+                }
+
+                const postContent = {
+                    "type": "Container",
+                    "props": {
+                        "TwClassName": "flex-col"
+                    },
+                    "children": [
+                        {
+                            "type": "Text",
+                            "props": {
+                                "text": "Begin writing your new blog post here.",
+                                "TwClassName": "text-black mb-5"
+                            }
+                        }
+                    ]
+                }
+
+                const newBlogPost = {
+                    postActive: false,
+                    postAuthor: formData?.author,
+                    postCategory: formData?.postCategory,
+                    content: postContent,
+                    postDate: new Date().toISOString(),
+                    postSynopsis: formData?.postSynopsis,
+                    postTitle: formData?.postTitle,
+                    trianglifyObject: randomizedTrianglifyBanner,
+                }
+
+                await insertDataIntoCollection('Blog', newBlogPost)
+
+                dispatch(openAlert({
+                        alertOpen: true,
+                        alertSeverity: 'success',
+                        alertMessage: 'New blog post was saved successfully!',
+                        alertAnimation: {
+                        entranceAnimation: 'animate__fadeInRight animate__faster',
+                        exitAnimation: 'animate__fadeOutRight animate__faster',
+                        isEntering: true,
+                    }
+                }));
+            } else if (modalAction.modalActionId === 'newBlogPostCancel') {
+                console.log('User canceled blog post creation');
+            }
+        
+        };
         runTrianglifyAction();
+        runNewBlogPost();
     }, [modalAction]);
 
     
@@ -170,6 +231,20 @@ const BlogEditor: React.FC = () => {
         },
     ];
 
+    const newBlogPostConfig = [
+        { type: 'input', name: 'Post Title', nameId: 'postTitle', required: true, placeholder: 'Enter post title...' },
+        { 
+            type: 'select', 
+            name: 'Post Category', 
+            nameId: 'postCategory',
+            required: true, 
+            creatable: true,
+            options: categories
+        },
+        { type: 'textarea', name: 'Post Summary', nameId: 'postSynopsis', required: false, rows: 4, placeholder: 'Brief summary...' },
+        { type: 'input', name: 'Author', nameId: 'author', required: true, defaultValue: adminAuth?.firstName + ' ' + adminAuth?.lastName }
+    ];
+
     const getChangedFields = (local: BlogPost, original: BlogPost) => {
         const changes: Partial<BlogPost> = {};
         if (local.postTitle !== original.postTitle) changes.postTitle = local.postTitle;
@@ -186,8 +261,12 @@ const BlogEditor: React.FC = () => {
             actions={actions}
             addButtonText="Add Post"
             addButtonModal={{
-                title: 'New Blog Post',
-                modalType: 'newBlogPost',
+                title: 'Create New Blog Post',
+                modalType: 'dynamicForm',
+                modalProps: {
+                    config: newBlogPostConfig,
+                    actionId: 'newBlogPost'
+                }
             }}
             currentPage={currentPage}
             totalPages={totalPages}

@@ -7,7 +7,22 @@ export interface ModalActionObject {
   password?: string;
   idToDelete?: string;
   trianglifyData?: TrianglifyBannerProps | string; 
-  imageUrl?: string; 
+  imageUrl?: string;
+  formData?: Record<string, string | File>;  
+}
+
+export interface FormFieldConfig {
+  type: 'input' | 'select' | 'textarea' | 'usersearch' | 'imageinput';
+  name: string;
+  nameId: string;
+  required?: boolean;
+  creatable?: boolean;
+  placeholder?: string;
+  inputType?: string;
+  step: number;
+  options?: string[] | { value: string; label: string }[];
+  rows?: number;
+  defaultValue?: string;
 }
 
 export interface ModalState {
@@ -23,7 +38,9 @@ export interface ModalState {
     requiresAuth?: boolean;
     existingImage?: string;
     RecordIdToUpdate?: string;
-    uploadDir: string;
+    uploadDir?: string;
+    config?: FormFieldConfig[]; 
+    existingData?: Record<string, string>; 
     [key: string]: any;
   };
 }
