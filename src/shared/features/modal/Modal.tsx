@@ -8,11 +8,13 @@ import Text from '../../components/text/Text';
 import ConfirmOrDenyModal from './sharedModals/ConfirmOrDenyModal';
 import TrianglifyModal from './sharedModals/TrianglifyModal';
 import PictureUploadModal from './sharedModals/PictureUploadModal';
+import DynamicFormModal from './sharedModals/DynamicFormModal';
 
 const MODAL_COMPONENTS: Record<string, React.FC<any>> = {
   confirmOrDeny: ConfirmOrDenyModal,
   trianglify: TrianglifyModal,
-  pictureUpload: PictureUploadModal, 
+  pictureUpload: PictureUploadModal,
+  dynamicForm: DynamicFormModal, 
 };
 
 const Modal: React.FC = () => {

@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Container from '../../../shared/components/container/Container';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import type { StaffMemberPlusUser } from '../../../client/features/staff/staffTypes';
-import { getDocumentById, getDocumentsByQuery } from '../../../services/database/readData';
+import { getDocumentById } from '../../../services/database/readData';
 import { useGenericEditor } from '../../hooks/useGenericEditor';
 import GenericEditor, { type EditorField } from '../../components/genericEditor/GenericEditor';
 import Input from '../../../shared/components/input/Input';
 import Select from '../../../shared/components/select/Select';
 import { updateDataInCollection } from '../../../services/database/updateData';
-import { buildQuery } from '../../../services/database/queryBuilder';
 import { openModal } from '../../../shared/features/modal/modalSlice';
 import { openAlert } from '../../../shared/features/alert/alertSlice';
+import { insertDataIntoCollection } from '../../../services/database/createData';
 
 const StaffEditor: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -34,6 +34,7 @@ const StaffEditor: React.FC = () => {
                         return {
                         ...staffMember,
                         ...userData,
+                        staffDocumentId: staffMember.staffPersonID, 
                         userId: staffMember.staffUserId, 
                         };
                     })
@@ -81,12 +82,43 @@ const StaffEditor: React.FC = () => {
             }
         };
 
+        const runNewStaffPost = async () => {
+            if (modalAction.modalActionId === 'newStaffPost') {
+                const formData = modalAction.formData;
+
+                const newStaffPost = {
+                    staffActive: false,
+                    staffOrder: formData?.staffOrder,
+                    staffTitle: formData?.staffTitle,
+                    staffUserId: formData?.staffUserId, 
+                }
+
+                await insertDataIntoCollection('Staff', newStaffPost)
+
+                dispatch(openAlert({
+                        alertOpen: true,
+                        alertSeverity: 'success',
+                        alertMessage: 'New staff member post was saved successfully!',
+                        alertAnimation: {
+                        entranceAnimation: 'animate__fadeInRight animate__faster',
+                        exitAnimation: 'animate__fadeOutRight animate__faster',
+                        isEntering: true,
+                    }
+                }));
+            } else if (modalAction.modalActionId === 'newStaffPostCancel') {
+                console.log('User canceled staff member post creation');
+            }
+        
+        };
+
+        runNewStaffPost();
         runTrianglifyAction();
     }, [modalAction]);
 
     const editorConfig = {
         collectionName: 'Staff',
-        itemIdField: 'userId' as keyof StaffMemberPlusUser,
+        // Use the Staff document ID, not the user ID
+        itemIdField: 'staffDocumentId' as keyof StaffMemberPlusUser,
         sortField: 'staffOrder' as keyof StaffMemberPlusUser,
         trackingFields: ['firstName', 'lastName', 'profileImage', 'userRole', 'bio', 'staffTitle', 'staffOrder', 'staffActive' ] as (keyof StaffMemberPlusUser)[],
         postsPerPage: 10,
@@ -230,27 +262,30 @@ const StaffEditor: React.FC = () => {
             if (local.bio !== original.bio) userChanges.bio = local.bio;
             if (local.profileImage !== original.profileImage) userChanges.profileImage = local.profileImage;
 
-            return { id: local.userId, staffChanges, userChanges };
+            return { 
+                staffDocumentId: local.staffDocumentId, 
+                userId: local.userId, 
+                staffChanges, 
+                userChanges 
+            };
         });
 
-        await Promise.all(changesByCollection.map(async ({ id, staffChanges, userChanges }) => {
+        await Promise.all(changesByCollection.map(async ({ staffDocumentId, userId, staffChanges, userChanges }) => {
             if (Object.keys(staffChanges).length > 0) {
-            
-                const notificationsQuery = buildQuery("Staff", [
-                  ["staffUserId", "==", id]
-                ]);
-            
-                const notifications = await getDocumentsByQuery(notificationsQuery);
-                if (notifications) {
-                    await updateDataInCollection('Staff', notifications[0].id, staffChanges);
-                }
+                await updateDataInCollection('Staff', staffDocumentId, staffChanges);
             }
             if (Object.keys(userChanges).length > 0) {
-                await updateDataInCollection('Users', id, userChanges);
+                await updateDataInCollection('Users', userId, userChanges);
             }
         }));
     };
 
+    const newStaffPostConfig = [
+        { type: 'input', name: 'Staff Member Title', nameId: 'staffTitle', required: true, placeholder: 'Enter staff title...' },
+        { type: 'input', name: 'Staff Member Order', nameId: 'staffOrder', required: true, placeholder: 'Enter staff order...', inputType: 'number', step: 1 },
+        { type: 'usersearch', name: 'Search For A User', nameId: 'staffUserId', required: true, placeholder: 'Search for a user account...' },
+    ];
+    
     return (
         <GenericEditor
             title="Edit Staff Members"
@@ -258,8 +293,12 @@ const StaffEditor: React.FC = () => {
             fields={fields}
             addButtonText="Add Post"
             addButtonModal={{
-                title: 'New Staff Image',
-                modalType: 'newImageModal',
+                title: 'Create New Staff Member',
+                modalType: 'dynamicForm',
+                modalProps: {
+                    config: newStaffPostConfig,
+                    actionId: 'newStaffPost'
+                }
             }}
             currentPage={currentPage}
             totalPages={totalPages}
@@ -271,7 +310,7 @@ const StaffEditor: React.FC = () => {
             onReset={resetChanges}
             onToggleActive={handleToggleActive}
             onDelete={handleDelete}
-            getItemId={(item) => item.userId}
+            getItemId={(item) => item.staffDocumentId}
             getItemActiveStatus={(item) => item.staffActive}
         />
     );

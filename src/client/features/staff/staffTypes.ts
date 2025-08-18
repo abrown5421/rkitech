@@ -5,6 +5,7 @@ export interface StaffMember {
     staffTitle: string;
     staffUserId: string;
     staffActive: boolean;
+    staffPersonID: string;
 }
 
 export interface StaffMemberPlusUser {
@@ -27,6 +28,7 @@ export interface StaffMemberPlusUser {
     staffTitle: string;
     staffOrder: number;
     staffActive: boolean;
+    staffDocumentId: string;
 }
 
 export interface Staff {

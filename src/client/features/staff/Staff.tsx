@@ -27,12 +27,15 @@ const Staff: React.FC = () => {
                         return {
                         ...staffMember,
                         ...userData,
+                        staffDocumentId: staffMember.staffPersonID, 
                         userId: staffMember.staffUserId, 
                         };
                     })
                 );
 
-                setStaffWithData(combinedStaffData); 
+                const activeStaff = combinedStaffData.filter(member => member.staffActive);
+
+                setStaffWithData(activeStaff);
             } catch (err) {
                 console.error("Error fetching staff info:", err);
             }
