@@ -235,6 +235,7 @@ const PagesEditor: React.FC = () => {
           </Button>
           {page.pageRenderMethod === 'dynamic' && (
             <Button
+              onClick={() => clientNavigation(`/admin/page/${page.componentKey}`, 'AdminPage', 'adminPage')()}
               TwClassName='pt-0 pr-3 pb-0 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent hover:text-black flex justify-center items-center'
             >
               Edit
