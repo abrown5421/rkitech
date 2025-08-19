@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
-import type { PageShellState } from './pageTypes';
+import type { PageShellState, PagesShellSubState } from './pageTypes';
 import Auth from '../../../client/features/auth/ClientAuth';
 import Home from '../../../client/features/home/Home';
 import Profile from '../../../client/features/profile/Profile';
@@ -17,6 +18,7 @@ import BlogPost from '../../../client/features/blog/BlogPost';
 import Loader from '../../components/loader/Loader';
 import Staff from '../../../client/features/staff/Staff';
 import Gallery from '../../../client/features/gallery/Gallery';
+import PageContentRenderer from './PageContentRenderer';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -28,15 +30,25 @@ const PageShell: React.FC<PageShellState> = ({
 }) => {
     const activePage = useAppSelector((state) => state.pageShell);
     const pages = useAppSelector((state) => state.pages);
-    const [localPageRef, setLocalPageRef] = useState<string | undefined>('HomeComp');
+    const [localPage, setLocalPage] = useState<PagesShellSubState | undefined>({
+        localPageRef: 'HomeComp',
+        localPageType: 'static',
+        localPageContent: []
+    });
 
     useEffect(()=>{
         if (activePage.activePageShellId !== 'adminPage') {
             const findRef = pages.pages.find((page) => page.pageID === activePage.activePageShellId)
             
-            setLocalPageRef(findRef?.componentKey)
+            setLocalPage({
+                localPageRef: findRef?.componentKey,
+                localPageType: (findRef?.pageRenderMethod as 'static' | 'dynamic') ?? 'static',
+                localPageContent: findRef?.content
+            })
         }
     }, [activePage])
+
+    useEffect(()=>{console.log(localPage)}, [localPage])
 
     return (
         <Container TwClassName="flex-row">
@@ -52,20 +64,25 @@ const PageShell: React.FC<PageShellState> = ({
                     <AdminRoutes />                
                 ) : (
                     <Container TwClassName="flex-col flex-1">
-                        <Container TwClassName="flex-col flex-1">
-                            {localPageRef === 'HomeComp' && <Home />}
-                            {localPageRef === 'LoginComp' && <Auth />}
-                            {localPageRef === 'SignUpComp' && <Auth />}
-                            {localPageRef === 'BlogComp' && <Blog />}
-                            {localPageRef === 'StaffComp' && <Staff />}
-                            {localPageRef === 'GalleryComp' && <Gallery />}
-                            {localPageRef === 'blogPostComp' && <BlogPost />}
-                            {localPageRef === 'ProfileComp' && <Profile />}
-                            {localPageRef === 'DashboardComp' && <Dashboard />}
-                            {localPageRef === 'PageNotFoundComp' && <PageNotFound />}
-                            {localPageRef === 'PrivacyPolicyComp' && <PrivacyPolicy />}
-                            {localPageRef === 'TermsOfServiceComp' && <TermsOfService />}
-                        </Container>
+                        
+                        {localPage?.localPageType === 'static' ? (
+                            <Container TwClassName="flex-col flex-1">
+                                {localPage?.localPageRef === 'HomeComp' && <Home />}
+                                {localPage?.localPageRef === 'LoginComp' && <Auth />}
+                                {localPage?.localPageRef === 'SignUpComp' && <Auth />}
+                                {localPage?.localPageRef === 'BlogComp' && <Blog />}
+                                {localPage?.localPageRef === 'StaffComp' && <Staff />}
+                                {localPage?.localPageRef === 'GalleryComp' && <Gallery />}
+                                {localPage?.localPageRef === 'blogPostComp' && <BlogPost />}
+                                {localPage?.localPageRef === 'ProfileComp' && <Profile />}
+                                {localPage?.localPageRef === 'DashboardComp' && <Dashboard />}
+                                {localPage?.localPageRef === 'PageNotFoundComp' && <PageNotFound />}
+                                {localPage?.localPageRef === 'PrivacyPolicyComp' && <PrivacyPolicy />}
+                                {localPage?.localPageRef === 'TermsOfServiceComp' && <TermsOfService />}
+                            </Container>
+                        ) : (
+                            <PageContentRenderer content={localPage?.localPageContent} />
+                        )}
                         <Footer />
                     </Container>
                 )}

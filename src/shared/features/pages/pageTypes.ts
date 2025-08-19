@@ -1,3 +1,4 @@
+
 import type { EntranceExitAnimation } from "../../../shared/types/animationTypes";
 
 export interface ActivePageShellState {
@@ -20,10 +21,25 @@ export interface Page {
   pageExitAnimation: string;
   pageRenderMethod: string;
   pageActive: boolean;
-  componentKey: string
+  componentKey: string;
+  content: LocalPageComponent[] | [];
 }
 
 export interface PagesState {
   pages: Page[];
   activePageId: string | null;
+}
+
+export interface LocalPageComponent {
+  type: string;
+  props?: {
+    [key: string]: any; 
+    children?: LocalPageComponent[]; 
+  };
+}
+
+export interface PagesShellSubState {
+  localPageRef: string | undefined;
+  localPageType: 'static' | 'dynamic';
+  localPageContent: LocalPageComponent[] | [] | undefined;
 }
