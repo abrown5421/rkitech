@@ -188,6 +188,7 @@ const StaffEditor: React.FC = () => {
                         >
                             <option value='Writer'>Writer</option>
                             <option value='Editor'>Editor</option>
+                            <option value='Editor'>Admin</option>
                             <option value='Developer'>Developer</option>
                         </Select>
                     </Container>
