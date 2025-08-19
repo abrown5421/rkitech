@@ -48,8 +48,6 @@ const PageShell: React.FC<PageShellState> = ({
         }
     }, [activePage])
 
-    useEffect(()=>{console.log(localPage)}, [localPage])
-
     return (
         <Container TwClassName="flex-row">
             {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (
