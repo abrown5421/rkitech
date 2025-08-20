@@ -5,6 +5,7 @@ import Button from "../../components/button/Button";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { useNavigationHook } from "../../../hooks/useNavigationHook";
 import List from "../../components/list/List";
+import { parseTwClassName } from "../../utils/parseTwClassName";
 
 const componentMap: Record<string, React.FC<any>> = {
   Text,
@@ -61,6 +62,10 @@ const PageContentRenderer = ({ content }: { content: any }) => {
 
   const normalizedProps = { ...props };
   
+  if (normalizedProps.TwClassName) {
+    normalizedProps.TwClassName = parseTwClassName(normalizedProps.TwClassName);
+  }
+
   if (normalizedProps.onClick) {
     normalizedProps.onClick = processOnClickHandler(normalizedProps.onClick);
   }

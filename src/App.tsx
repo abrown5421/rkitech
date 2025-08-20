@@ -90,7 +90,7 @@ const App: React.FC = () => {
           path="/admin/*"
           element={
             <PageShell
-              activePageShellBgColor={activePage.activePageShellName === 'Admin' ? 'bg-black' : 'bg-white'}
+              activePageShellBgColor={(activePage.activePageShellName === 'Admin' || activePage.activePageShellName === 'AdminPage') ? 'bg-black' : 'bg-white'}
               activePageShellAnimation={{
                 entranceAnimation: 'animate__fadeInUpBig',
                 exitAnimation: 'animate__fadeOutDownBig',

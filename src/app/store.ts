@@ -16,6 +16,7 @@ import blogReducer from '../client/features/blog/blogSlice';
 import staffReducer from '../client/features/staff/staffSlice';
 import galleryReducer from '../client/features/gallery/gallerySlice';
 import homePageIdReducer from './globalSlices/homePageId/homePageIdSlice';
+import pageEditorReducer from '../admin/features/page/pageEditorSlice';
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +37,7 @@ export const store = configureStore({
     staff: staffReducer,
     gallery: galleryReducer,
     adminAuthUser: adminAuthUserReducer,
+    pageEditor: pageEditorReducer
   },
 });
 

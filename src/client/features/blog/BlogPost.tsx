@@ -18,10 +18,11 @@ const BlogPost: React.FC = () => {
     const isBlogLoading = loading && id === 'profile';
     const [localPost, setLocalPost] = useState<BlogPostType>()
 
+    useEffect(()=>{console.log(localPost)}, [localPost])
+
     useEffect(() => {
         const getBlogPost = async () => {
             if (!blogPostIdFromUrl) return;
-
             dispatch(setLoading({ loading: true, id: 'blogPost' }));
             try {
                 const getPost = await getDocumentById<BlogPostType>('Blog', blogPostIdFromUrl);

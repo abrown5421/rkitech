@@ -12,6 +12,7 @@ import { setLoading, setNotLoading } from '../../../app/globalSlices/loading/loa
 import Text from '../../../shared/components/text/Text';
 import { updateDataInCollection } from '../../../services/database/updateData';
 import { useNavigationHook } from '../../../hooks/useNavigationHook';
+import { setLocalPageState } from '../page/pageEditorSlice';
 
 const PagesEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -235,7 +236,14 @@ const PagesEditor: React.FC = () => {
           </Button>
           {page.pageRenderMethod === 'dynamic' && (
             <Button
-              onClick={() => clientNavigation(`/admin/page/${page.componentKey}`, 'AdminPage', 'adminPage')()}
+              onClick={() => {
+                dispatch(setLocalPageState({
+                  localPageCompKey: page.componentKey,
+                  localPageObjectFromDb: page,
+                  activeEditorComponent: undefined,
+                  activeEditorUUID: undefined,
+                }));
+                clientNavigation(`/admin/page/${page.componentKey}`, 'AdminPage', 'adminPage')()}}
               TwClassName='pt-0 pr-3 pb-0 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent hover:text-black flex justify-center items-center'
             >
               Edit
