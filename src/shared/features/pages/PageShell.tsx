@@ -19,6 +19,7 @@ import Loader from '../../components/loader/Loader';
 import Staff from '../../../client/features/staff/Staff';
 import Gallery from '../../../client/features/gallery/Gallery';
 import PageContentRenderer from './PageContentRenderer';
+import PageEditor from '../../../admin/features/page/PageEditor';
 
 const PageShell: React.FC<PageShellState> = ({
     activePageShellBgColor = 'bg-white', 
@@ -50,8 +51,14 @@ const PageShell: React.FC<PageShellState> = ({
 
     return (
         <Container TwClassName="flex-row">
-            {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && activePage.activePageShellName !== 'AdminPage' && (
-                <Sidebar />
+            {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (
+                <>
+                {activePage.activePageShellName !== 'AdminPage' ? (
+                    <Sidebar />
+                ) : (
+                    <PageEditor />
+                )}
+                </>
             )}
             
             <Container
@@ -64,7 +71,7 @@ const PageShell: React.FC<PageShellState> = ({
                     <Container TwClassName="flex-col flex-1">
                         
                         {localPage?.localPageType === 'static' ? (
-                            <Container TwClassName="flex-col flex-1">
+                            <Container TwClassName="flex-col flex-1 min-h-[calc(100vh-50px)]">
                                 {localPage?.localPageRef === 'HomeComp' && <Home />}
                                 {localPage?.localPageRef === 'LoginComp' && <Auth />}
                                 {localPage?.localPageRef === 'SignUpComp' && <Auth />}
@@ -79,7 +86,9 @@ const PageShell: React.FC<PageShellState> = ({
                                 {localPage?.localPageRef === 'TermsOfServiceComp' && <TermsOfService />}
                             </Container>
                         ) : (
-                            <PageContentRenderer content={localPage?.localPageContent} />
+                            <Container TwClassName="flex-col flex-1 min-h-[calc(100vh-50px)]">
+                                <PageContentRenderer content={localPage?.localPageContent} />
+                            </Container>
                         )}
                         <Footer />
                     </Container>

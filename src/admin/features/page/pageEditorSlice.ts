@@ -10,6 +10,7 @@ const initialState: PageEditorProps = {
   activePrefix: undefined,
   activeEditorComponent: undefined,
   activeEditorUUID: undefined,
+  enterExit: true,
 };
 
 const localPageSlice = createSlice({
@@ -24,6 +25,9 @@ const localPageSlice = createSlice({
     },
     setLocalPageItemUUID(state: PageEditorProps, action: PayloadAction<string>) {
       state.localItemUUID = action.payload;
+    },
+    setEnterExit(state: PageEditorProps, action: PayloadAction<boolean>) {
+      state.enterExit = action.payload;
     },
     setLocalPageObject(state: PageEditorProps, action: PayloadAction<Page>) {
       state.localPageObjectFromDb = action.payload;
@@ -71,6 +75,7 @@ export const {
   setLocalPageState,
   setLocalPageCompKey,
   setLocalPageObject,
+  setEnterExit,
   unsetLocalPageObject,
   setActivePrefix,
   unsetActivePrefix,
