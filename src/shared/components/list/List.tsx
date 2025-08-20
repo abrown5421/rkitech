@@ -8,6 +8,7 @@ const List: React.FC<ListProps> = ({
   listType,
   animation,
   TwClassName = '',
+  ...rest
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const animationClasses = getAnimationClasses(animation, isHovered);
@@ -22,6 +23,7 @@ const List: React.FC<ListProps> = ({
   return (
     <div 
       className={classes}
+      {...rest}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

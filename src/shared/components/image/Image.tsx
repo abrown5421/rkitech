@@ -10,6 +10,7 @@ const Image: React.FC<ImageProps> = ({
   height,
   animation,
   TwClassName = "",
+  ...rest
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const animationClasses = getAnimationClasses(animation, isHovered);
@@ -31,6 +32,7 @@ const Image: React.FC<ImageProps> = ({
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      {...rest}
     />
   );
 };

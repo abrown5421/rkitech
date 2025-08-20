@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { useNavigationHook } from "../../../hooks/useNavigationHook";
 import List from "../../components/list/List";
 import { parseTwClassName } from "../../utils/parseTwClassName";
+import { setActiveEditorComponent, setActiveEditorUUID } from "../../../admin/features/page/pageEditorSlice";
+import type { PageEditorProps } from "../../../admin/features/page/pageEditorTypes";
 
 const componentMap: Record<string, React.FC<any>> = {
   Text,
@@ -14,7 +16,7 @@ const componentMap: Record<string, React.FC<any>> = {
   List
 };
 
-const PageContentRenderer = ({ content }: { content: any }) => {
+const PageContentRenderer = ({ content, cmsMode }: { content: any; cmsMode?: boolean }) => {
   const clientNavigation = useNavigationHook();
   const dispatch = useAppDispatch();
   const pages = useAppSelector((state) => state.pages.pages);
@@ -27,6 +29,13 @@ const PageContentRenderer = ({ content }: { content: any }) => {
       console.warn(`No page found with componentKey: ${componentKey}`);
     }
   };
+
+  const processCmsClickHandler = (UUID: string, type: string) => {
+    dispatch(setActiveEditorUUID(UUID));
+    if (['Container','Text','Image','Icon','Button','List','TrianglifyBanner'].includes(type)) {
+      dispatch(setActiveEditorComponent(type as PageEditorProps['activeEditorComponent']));
+    }
+  }
 
   const processOnClickHandler = (onClick: any) => {
     if (!onClick || typeof onClick !== 'object') {
@@ -46,13 +55,13 @@ const PageContentRenderer = ({ content }: { content: any }) => {
     return (
       <>
         {content.map((child, index) => (
-          <PageContentRenderer key={index} content={child} />
+          <PageContentRenderer key={index} content={child} cmsMode={cmsMode} />
         ))}
       </>
     );
   }
 
-  const { type, props = {}, children: nodeChildren } = content;
+  const { type, props = {}, children: nodeChildren, UUID } = content;
 
   const Component = componentMap[type];
   if (!Component) {
@@ -70,6 +79,13 @@ const PageContentRenderer = ({ content }: { content: any }) => {
     normalizedProps.onClick = processOnClickHandler(normalizedProps.onClick);
   }
 
+  if (UUID && type && cmsMode) {
+    normalizedProps.onClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      processCmsClickHandler(UUID, type);
+    };
+  }
+
   let renderedChildren = null;
   const childrenToRender = Array.isArray(props.children) 
     ? props.children 
@@ -79,7 +95,7 @@ const PageContentRenderer = ({ content }: { content: any }) => {
 
   if (childrenToRender) {
     renderedChildren = childrenToRender.map((child: any, i: number) => (
-      <PageContentRenderer key={i} content={child} />
+      <PageContentRenderer key={i} content={child} cmsMode={cmsMode} />
     ));
   }
 

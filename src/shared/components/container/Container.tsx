@@ -11,6 +11,7 @@ const Container: React.FC<ContainerProps> = ({
   style,
   hovered, 
   onHoverChange,
+  ...rest
 }) => {
   const [internalHovered, setInternalHovered] = useState(false);
   const isControlled = hovered !== undefined;
@@ -42,6 +43,7 @@ const Container: React.FC<ContainerProps> = ({
       style={style}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      {...rest}
     >
       {children}
     </div>
