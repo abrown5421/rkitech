@@ -7,7 +7,7 @@ import MenuEditor from '../menus/MenuEditor';
 import BlogEditor from '../blog/BlogEditor';
 import GalleryEditor from '../gallery/GalleryEditor';
 import StaffEditor from '../staff/StaffEditor';
-import PageEditor from '../pageEditor/PageEditor';
+import PageEditor from '../page/PageEditor';
 
 const AdminRoutes: React.FC = () => {
   return (

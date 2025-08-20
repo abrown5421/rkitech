@@ -50,7 +50,7 @@ const PageShell: React.FC<PageShellState> = ({
 
     return (
         <Container TwClassName="flex-row">
-            {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (
+            {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && activePage.activePageShellName !== 'AdminPage' && (
                 <Sidebar />
             )}
             

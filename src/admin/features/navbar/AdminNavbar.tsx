@@ -100,7 +100,12 @@ const AdminNavbar: React.FC = () => {
                 }}
                 TwClassName="absolute flex-col z-40 right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-300 z-50 p-4 space-y-4"
               >
-                <Text text={greeting} TwClassName="text-lg font-semibold text-gray-700" />
+                <Text text={greeting} TwClassName="text-lg font-semibold text-gray-900" />
+                <Button
+                  TwClassName='justify-start font-normal text-gray-900 hover:text-primary cursor-pointer'
+                >
+                  <Text text='Dashboard' />
+                </Button>
                 <Button
                   TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary"
                   cursor="pointer"
