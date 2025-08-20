@@ -11,6 +11,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
   cellSize = 75,
   auxImage,
   TwClassName = "",
+  ...rest
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,6 +55,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
             typeof height === "string" ? height : ""
           }`}
           style={wrapperStyles}
+          {...rest}
         />
       ) : (
         <div
@@ -62,6 +64,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({
             typeof height === "string" ? height : ""
           } ${TwClassName}`}
           style={wrapperStyles}
+          {...rest}
         />
       )}
       

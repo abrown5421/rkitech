@@ -9,6 +9,7 @@ const Text: React.FC<TextProps> = ({
   text,
   animation,
   TwClassName = '',
+  ...rest
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const animationClasses = getAnimationClasses(animation, isHovered);
@@ -23,6 +24,7 @@ const Text: React.FC<TextProps> = ({
   return (
     <div 
       className={classes}
+      {...rest}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

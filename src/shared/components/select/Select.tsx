@@ -32,7 +32,6 @@ const Select: React.FC<SelectProps> = ({
 
   const hasValue = value !== undefined && value !== null && String(value).length > 0;
 
-  // Extract options from children
   useEffect(() => {
     if (creatable && children) {
       const options: Array<{value: string, label: string}> = [];
@@ -49,14 +48,12 @@ const Select: React.FC<SelectProps> = ({
     }
   }, [children, creatable]);
 
-  // Update input value when prop value changes
   useEffect(() => {
     if (creatable) {
       setInputValue(String(value || ''));
     }
   }, [value, creatable]);
 
-  // Filter options based on input
   useEffect(() => {
     if (creatable && children) {
       const options: Array<{value: string, label: string}> = [];
@@ -74,7 +71,6 @@ const Select: React.FC<SelectProps> = ({
     }
   }, [inputValue, children, creatable]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -103,7 +99,6 @@ const Select: React.FC<SelectProps> = ({
     const newValue = e.target.value;
     setInputValue(newValue);
     
-    // Create a proper synthetic event for the onChange prop
     const syntheticEvent = {
       target: {
         value: newValue,
@@ -130,7 +125,6 @@ const Select: React.FC<SelectProps> = ({
     setInputValue(optionLabel);
     setShowDropdown(false);
     
-    // Create a proper synthetic event for the onChange prop
     const syntheticEvent = {
       target: {
         value: optionValue,
@@ -157,7 +151,6 @@ const Select: React.FC<SelectProps> = ({
     if (creatable) {
       setShowDropdown(true);
     }
-    // Call the original onClick handler if it exists and is for input elements
     const originalOnClick = rest.onClick as React.MouseEventHandler<HTMLInputElement> | undefined;
     originalOnClick?.(e);
   };
@@ -166,7 +159,6 @@ const Select: React.FC<SelectProps> = ({
   const paddingRight = endAdornment ? "pr-10" : "pr-3";
 
   if (creatable) {
-    // Extract props that are safe for input elements
     const { onClick, ...inputSafeProps } = rest;
     
     return (
@@ -266,7 +258,6 @@ const Select: React.FC<SelectProps> = ({
     );
   }
 
-  // Original select implementation for non-creatable mode
   return (
     <div
       className={clsx("relative w-full", TwClassName, animationClasses)}

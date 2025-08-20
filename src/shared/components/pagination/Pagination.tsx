@@ -8,6 +8,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   maxVisiblePages = 5,
   TwClassName = '',
+  ...rest
 }) => {
   if (totalPages <= 1) return null;
 
@@ -44,6 +45,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <Button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!canGoPrevious}
+        {...rest}
         TwClassName={`
           relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50
           ${!canGoPrevious ? disabledButtonClass : ''}
