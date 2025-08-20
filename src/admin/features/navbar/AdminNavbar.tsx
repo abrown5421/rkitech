@@ -102,6 +102,7 @@ const AdminNavbar: React.FC = () => {
               >
                 <Text text={greeting} TwClassName="text-lg font-semibold text-gray-900" />
                 <Button
+                onClick={() => clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage')()}
                   TwClassName='justify-start font-normal text-gray-900 hover:text-primary cursor-pointer'
                 >
                   <Text text='Dashboard' />
