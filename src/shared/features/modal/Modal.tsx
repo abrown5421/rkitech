@@ -53,7 +53,7 @@ const Modal: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        TwClassName={clsx('p-4 min-w-150 max-w-1/3 flex-col bg-white rounded-2xl', isVisible ? 'z-50' : 'z-0')}
+        TwClassName={clsx('p-4 min-w-150 max-w-1/3 flex-col bg-gray-50 rounded-2xl', isVisible ? 'z-50' : 'z-0')}
         animation={{
           entranceExit: {
             entranceAnimation: modal.modalAnimation.entranceAnimation,
@@ -64,8 +64,8 @@ const Modal: React.FC = () => {
         onClick={(e) => e.stopPropagation()}
       >
         <Icon color="text-gray-900" name="X" TwClassName="absolute top-4 right-4" onClick={handleClose} />
-        <Text text={modal.modalTitle} TwClassName="text-black font-primary text-xl mb-5" />
-        <Text text={modal.modalMessage} TwClassName="text-black" />
+        <Text text={modal.modalTitle} TwClassName="text-gray-900 font-primary text-xl mb-5" />
+        <Text text={modal.modalMessage} TwClassName="text-gray-900" />
         {SpecificModal && <SpecificModal />}
       </Container>
     </Container>

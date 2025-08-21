@@ -8,4 +8,5 @@ export interface ColorPickerProps {
   prefix?: "text-" | "bg-" | "border-";
   value?: string;
   onChange?: (value: string) => void;
+  TwClassName?: string;
 }

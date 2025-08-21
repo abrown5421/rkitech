@@ -32,7 +32,6 @@ const Select: React.FC<SelectProps> = ({
 
   const hasValue = value !== undefined && value !== null && String(value).length > 0;
 
-  // Extract options from children
   useEffect(() => {
     if (creatable && children) {
       const options: Array<{value: string, label: string}> = [];
@@ -49,14 +48,12 @@ const Select: React.FC<SelectProps> = ({
     }
   }, [children, creatable]);
 
-  // Update input value when prop value changes
   useEffect(() => {
     if (creatable) {
       setInputValue(String(value || ''));
     }
   }, [value, creatable]);
 
-  // Filter options based on input
   useEffect(() => {
     if (creatable && children) {
       const options: Array<{value: string, label: string}> = [];
@@ -74,7 +71,6 @@ const Select: React.FC<SelectProps> = ({
     }
   }, [inputValue, children, creatable]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -103,7 +99,6 @@ const Select: React.FC<SelectProps> = ({
     const newValue = e.target.value;
     setInputValue(newValue);
     
-    // Create a proper synthetic event for the onChange prop
     const syntheticEvent = {
       target: {
         value: newValue,
@@ -130,7 +125,6 @@ const Select: React.FC<SelectProps> = ({
     setInputValue(optionLabel);
     setShowDropdown(false);
     
-    // Create a proper synthetic event for the onChange prop
     const syntheticEvent = {
       target: {
         value: optionValue,
@@ -157,7 +151,6 @@ const Select: React.FC<SelectProps> = ({
     if (creatable) {
       setShowDropdown(true);
     }
-    // Call the original onClick handler if it exists and is for input elements
     const originalOnClick = rest.onClick as React.MouseEventHandler<HTMLInputElement> | undefined;
     originalOnClick?.(e);
   };
@@ -166,7 +159,6 @@ const Select: React.FC<SelectProps> = ({
   const paddingRight = endAdornment ? "pr-10" : "pr-3";
 
   if (creatable) {
-    // Extract props that are safe for input elements
     const { onClick, ...inputSafeProps } = rest;
     
     return (
@@ -193,7 +185,7 @@ const Select: React.FC<SelectProps> = ({
             ref={inputRef}
             type="text"
             className={clsx(
-              "peer w-full h-12 bg-transparent text-base text-black placeholder-transparent focus:outline-none",
+              "peer w-full h-12 bg-transparent text-base text-gray-900 placeholder-transparent focus:outline-none",
               paddingLeft,
               paddingRight,
             )}
@@ -208,10 +200,10 @@ const Select: React.FC<SelectProps> = ({
           {label && (
             <label
               className={clsx(
-                "absolute left-3 transition-all duration-200 bg-white px-1 pointer-events-none",
+                "absolute left-3 transition-all duration-200 bg-gray-50 px-1 pointer-events-none",
                 startAdornment && "left-10",
                 (focused || hasValue)
-                  ? "text-xs -top-2.5 text-primary"
+                  ? "text-xs -top-2.5 text-amber-500"
                   : "text-base top-3 text-gray-500"
               )}
             >
@@ -233,12 +225,12 @@ const Select: React.FC<SelectProps> = ({
         </div>
 
         {showDropdown && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          <div className="absolute z-10 w-full mt-1 bg-gray-50 border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (
                 <div
                   key={index}
-                  className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-black"
+                  className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
                   onClick={() => handleOptionSelect(option.value, option.label)}
                 >
                   {option.label}
@@ -246,7 +238,7 @@ const Select: React.FC<SelectProps> = ({
               ))
             ) : inputValue.trim() ? (
               <div
-                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-black italic"
+                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-gray-900 italic"
                 onClick={() => handleOptionSelect(inputValue, inputValue)}
               >
                 Create "{inputValue}"
@@ -266,7 +258,6 @@ const Select: React.FC<SelectProps> = ({
     );
   }
 
-  // Original select implementation for non-creatable mode
   return (
     <div
       className={clsx("relative w-full", TwClassName, animationClasses)}
@@ -290,7 +281,7 @@ const Select: React.FC<SelectProps> = ({
         <select
           ref={selectRef}
           className={clsx(
-            "peer w-full h-12 bg-transparent text-base text-black placeholder-transparent focus:outline-none appearance-none",
+            "peer w-full h-12 bg-transparent text-base text-gray-900 placeholder-transparent focus:outline-none appearance-none",
             paddingLeft,
             paddingRight,
           )}
@@ -306,10 +297,10 @@ const Select: React.FC<SelectProps> = ({
         {label && (
           <label
             className={clsx(
-              "absolute left-3 transition-all duration-200 bg-white px-1 pointer-events-none",
+              "absolute left-3 transition-all duration-200 bg-gray-50 px-1 pointer-events-none",
               startAdornment && "left-10",
               (focused || hasValue)
-                ? "text-xs -top-2.5 text-primary"
+                ? "text-xs -top-2.5 text-amber-500"
                 : "text-base top-3 text-gray-500"
             )}
           >

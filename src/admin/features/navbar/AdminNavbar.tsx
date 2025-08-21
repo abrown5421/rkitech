@@ -35,7 +35,7 @@ const AdminNavbar: React.FC = () => {
 
   return (
     <Container
-      TwClassName="h-[50px] justify-between items-center bg-white p-2 relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
+      TwClassName="h-[50px] justify-between items-center bg-gray-50 p-2 relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
     >
       <Container
         TwClassName="items-center"
@@ -48,7 +48,7 @@ const AdminNavbar: React.FC = () => {
         }}
       >
         <Image src="../../../public/assets/images/logo.png" height={50} alt="Rkitech" />
-        <Text text="Rkitech" TwClassName="text-xl font-primary text-black" />
+        <Text text="Rkitech" TwClassName="text-xl font-primary text-gray-900" />
       </Container>
 
       <Container
@@ -80,9 +80,9 @@ const AdminNavbar: React.FC = () => {
                   TwClassName="rounded-full border border-gray-300 cursor-pointer object-cover"
                 />
               ) : (
-                <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                <Container TwClassName="rounded-full w-10 h-10 bg-gray-900 cursor-pointer flex justify-center items-center">
                   <Text
-                    TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                    TwClassName="text-gray-50 w-full text-sm font-semibold leading-[2.5rem] text-center"
                     text={`${authAdminUser.user.firstName?.[0] || ''}${authAdminUser.user.lastName?.[0] || ''}`.toUpperCase()}
                   />
                 </Container>
@@ -98,22 +98,22 @@ const AdminNavbar: React.FC = () => {
                     isEntering: true,
                   },
                 }}
-                TwClassName="absolute flex-col z-40 right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-300 z-50 p-4 space-y-4"
+                TwClassName="absolute flex-col z-40 right-0 mt-2 w-64 bg-gray-50 rounded-lg shadow-lg border border-gray-300 z-50 p-4 space-y-4"
               >
                 <Text text={greeting} TwClassName="text-lg font-semibold text-gray-900" />
                 <Button
                 onClick={() => clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage')()}
-                  TwClassName='justify-start font-normal text-gray-900 hover:text-primary cursor-pointer'
+                  TwClassName='justify-start font-normal text-gray-900 hover:text-amber-500 cursor-pointer'
                 >
                   <Text text='Dashboard' />
                 </Button>
                 <Button
-                  TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary"
+                  TwClassName="w-full p-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500"
                   cursor="pointer"
                   onClick={handleLogout}
                 >
                   {isLoading ? (
-                    <Loader variant="spinner" color="bg-white-500" />
+                    <Loader variant="spinner" color="bg-gray-50-500" />
                   ) : (
                     <Text text="Logout" />
                   )}

@@ -236,7 +236,7 @@ const Profile: React.FC = () => {
             <Container TwClassName='absolute top-[200px] right-[5px]'>
               <Button
                 cursor='pointer' 
-                TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+                TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-amber-500 hover:bg-gray-400 hover:border-primary p-2'
                 onClick={openTrianglifyModal}
               >
                 <Icon color="text-gray-900"
@@ -259,7 +259,7 @@ const Profile: React.FC = () => {
                   <Container TwClassName='absolute bottom-8 right-8'>
                     <Button
                       cursor='pointer' 
-                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2'
+                      TwClassName='rounded-full border-1 bg-gray-200 border-gray-200 hover:text-amber-500 hover:bg-gray-400 hover:border-primary p-2'
                       onClick={openProfilePictureModal}
                     >
                       <Icon color="text-gray-900"
@@ -279,10 +279,10 @@ const Profile: React.FC = () => {
                   />
                 ) : (
                   <Container
-                    TwClassName="w-[160px] h-[160px] rounded-full bg-black cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
+                    TwClassName="w-[160px] h-[160px] rounded-full bg-gray-900 cursor-pointer flex justify-center items-center border-4 border-white shadow-lg"
                   >
                     <Text
-                      TwClassName="text-white font-primary text-4xl w-full flex justify-center items-center"
+                      TwClassName="text-gray-50 font-primary text-4xl w-full flex justify-center items-center"
                       text={`${profileUser.firstName?.[0] || ''}${profileUser.lastName?.[0] || ''}`.toUpperCase()}
                     />
                   </Container>
@@ -295,10 +295,10 @@ const Profile: React.FC = () => {
 
               <Container TwClassName="flex-col p-4 md:p-8 relative">                
                 <Text
-                  TwClassName="text-black text-xl font-bold"
+                  TwClassName="text-gray-900 text-xl font-bold"
                   text={`${profileUser.firstName?.charAt(0).toUpperCase() || ''}${profileUser.firstName?.slice(1) || ''} ${profileUser.lastName?.charAt(0).toUpperCase() || ''}${profileUser.lastName?.slice(1) || ''}`}
                 />
-                <Text TwClassName="text-black text-md" text={profileUser.email} />
+                <Text TwClassName="text-gray-900 text-md" text={profileUser.email} />
                 <Text
                   text={`Member since: ${format(profileUser.createdAt, 'EEEE, MMMM do, yyyy')}`}
                   TwClassName="text-xs text-gray-500"
@@ -306,7 +306,7 @@ const Profile: React.FC = () => {
                 {profileUser.bio && (
                   <Text
                     text={profileUser.bio}
-                    TwClassName="text-md text-black mt-3"
+                    TwClassName="text-md text-gray-900 mt-3"
                   />
                 )}   
                 {profileUser && <FriendProfileModule profileUser={profileUser} />}
@@ -316,7 +316,7 @@ const Profile: React.FC = () => {
                 <Button
                   onClick={() => setActiveProfileSection('Main')}
                   TwClassName={
-                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:bg-transparent flex justify-center items-center"
                   }>
                     <span className="absolute left-3">
                         <Icon color="text-gray-900" name="House" />
@@ -326,7 +326,7 @@ const Profile: React.FC = () => {
                 <Button
                   onClick={() => setActiveProfileSection('Friends')}
                   TwClassName={
-                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:bg-transparent flex justify-center items-center"
                   }>
                     <span className="absolute left-3">
                         <Icon color="text-gray-900" name="ContactRound" />
@@ -337,7 +337,7 @@ const Profile: React.FC = () => {
                   <Button
                     onClick={() => setActiveProfileSection('Profile')}
                     TwClassName={
-                        "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center"
+                        "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:bg-transparent flex justify-center items-center"
                     }>
                       <span className="absolute left-3">
                           <Icon color="text-gray-900" name="User" />
@@ -379,7 +379,7 @@ const Profile: React.FC = () => {
         >
           <Text
             text="We are sorry there is no profile with that user ID."
-            TwClassName="text-xl text-black"
+            TwClassName="text-xl text-gray-900"
           />
         </Container>
       )}

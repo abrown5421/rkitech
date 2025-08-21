@@ -47,7 +47,7 @@ const Blog: React.FC = () => {
 
     return (
         <Container TwClassName='min-h-[calc(100vh-50px)] p-4 flex-col'>
-            <Text text="Rkitech Blog" TwClassName='text-black font-primary text-4xl mb-5 w-full md:w-4/5 lg:w-2/3 mx-auto' />
+            <Text text="Rkitech Blog" TwClassName='text-gray-900 font-primary text-4xl mb-5 w-full md:w-4/5 lg:w-2/3 mx-auto' />
             <Container TwClassName='flex-row flex-wrap w-full md:w-4/5 lg:w-2/3 mx-auto my-4 gap-4'>
                 <Select
                     label="Sort"
@@ -66,7 +66,7 @@ const Blog: React.FC = () => {
                     <Button
                         key={category}
                         TwClassName={`px-4 py-1 rounded-full ${
-                            selectedCategory === category ? 'bg-primary text-white' : 'bg-white text-black border border-primary'
+                            selectedCategory === category ? 'bg-amber-500 text-gray-50' : 'bg-gray-50 text-gray-900 border border-primary'
                         }`}
                         onClick={() => {
                             setSelectedCategory(category);
@@ -85,7 +85,7 @@ const Blog: React.FC = () => {
                         onClick={() => clientNavigation(`${blogPage?.pagePath.toLowerCase() ?? ''}/${post.blogPostID}`, 'BlogPost', blogPage?.pageID ?? '')()}
                         TwClassName="flex flex-col relative border border-gray-200 shadow rounded w-full lg:w-[calc(50%-0.5rem)] xl:w-[calc(33%-0.5rem)]"
                     >
-                        <Container TwClassName='absolute top-0 right-0 text-black bg-gray-200/80 pr-4 pl-4 pt-1 pb-1 m-2 rounded-full z-50'>
+                        <Container TwClassName='absolute top-0 right-0 text-gray-900 bg-gray-200/80 pr-4 pl-4 pt-1 pb-1 m-2 rounded-full z-50'>
                             {post.postCategory}
                         </Container>
                         <TrianglifyBanner
@@ -99,13 +99,13 @@ const Blog: React.FC = () => {
                         />
                         <Container TwClassName="flex flex-col flex-grow p-4 justify-between">
                             <Container TwClassName="flex flex-col flex-grow">
-                                <Text text={post.postTitle} TwClassName="text-xl font-primary text-black mb-4" />
+                                <Text text={post.postTitle} TwClassName="text-xl font-primary text-gray-900 mb-4" />
                                 <Text text={post.postSynopsis} />
                             </Container>
                             
 
                             <Container TwClassName="flex-row justify-between border-t border-gray-200 pt-2 mt-4">
-                                <Text text={post.postAuthor} TwClassName="text-primary text-xs" />
+                                <Text text={post.postAuthor} TwClassName="text-amber-500 text-xs" />
                                 <Text
                                     text={format(new Date(post.postDate), 'EEEE, MMMM do, yyyy')}
                                     TwClassName="text-gray-500 text-xs"

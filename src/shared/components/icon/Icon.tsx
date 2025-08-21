@@ -12,6 +12,7 @@ const Icon: React.FC<IconProps> = ({
   animation,
   TwClassName,
   onClick,
+  ...rest
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -44,6 +45,7 @@ const Icon: React.FC<IconProps> = ({
       className={classes}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      {...rest}
     >
       {/* Pass stroke color as prop */}
       <ImportedIcon stroke={strokeColor} />

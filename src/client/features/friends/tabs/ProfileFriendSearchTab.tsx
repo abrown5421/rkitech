@@ -74,10 +74,10 @@ const ProfileFriendSearchTab: React.FC = () => {
                 />
               ) : (
                 <Container
-                  TwClassName="-ml-1.5 rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
+                  TwClassName="-ml-1.5 rounded-full w-10 h-10 bg-gray-900 cursor-pointer flex justify-center items-center border-3 border-white"
                 >
                   <Text
-                    TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                    TwClassName="text-gray-50 w-full text-sm font-semibold leading-[2.5rem] text-center"
                     text={`${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase()}
                   />
                 </Container>

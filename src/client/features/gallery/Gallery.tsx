@@ -35,7 +35,7 @@ const Gallery: React.FC = () => {
         <Container TwClassName="min-h-[calc(100vh-50px)] p-4 flex-col">
             <Text 
                 text="Our Gallery" 
-                TwClassName="text-black font-primary text-4xl mb-5 w-full md:w-4/5 lg:w-2/3 mx-auto" 
+                TwClassName="text-gray-900 font-primary text-4xl mb-5 w-full md:w-4/5 lg:w-2/3 mx-auto" 
             />
 
             <Container

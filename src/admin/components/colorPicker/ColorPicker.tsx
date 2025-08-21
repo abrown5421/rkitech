@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Container from '../../../shared/components/container/Container';
 import Input from '../../../shared/components/input/Input';
 import type { TailwindColor, ColorPickerProps } from "./colorPickerTypes";
+import { tailwindToHex } from "../../../shared/utils/tailwindToHex";
 
 const COLORS: TailwindColor[] = [
   'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald',
@@ -12,7 +13,8 @@ const COLORS: TailwindColor[] = [
 
 const INTENSITIES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
-const ColorPicker: React.FC<ColorPickerProps> = ({ label = 'Pick a color', prefix = "bg-", value = "", onChange }) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({ label = 'Pick a color', prefix = "bg-", value = "", onChange, TwClassName = '' }) => {
+  const classString = Array.isArray(TwClassName) ? TwClassName.join(' ') : TwClassName || '';
   const [open, setOpen] = useState(false);
   const [baseColor, setBaseColor] = useState<string>("blue");
   const [intensity, setIntensity] = useState<number>(500);
@@ -21,6 +23,13 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label = 'Pick a color', prefi
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const colorClass = `${prefix}${baseColor}-${intensity}${opacity < 100 ? `/${opacity}` : ""}`;
+
+  function hexToRgba(hex: string, alpha: number) {
+    const r = parseInt(hex.substring(1, 3), 16);
+    const g = parseInt(hex.substring(3, 5), 16);
+    const b = parseInt(hex.substring(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
 
   useEffect(() => {
     if (!value) return;
@@ -48,7 +57,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label = 'Pick a color', prefi
   }, []);
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div className={clsx("relative", classString)} ref={wrapperRef}>
       <Input
         label={label}
         value={colorClass}
@@ -57,8 +66,8 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label = 'Pick a color', prefi
       />
 
       {open && (
-        <Container TwClassName="flex-col absolute z-50 mt-2 p-4 bg-white border rounded-lg shadow-lg w-64">
-          <Container TwClassName="grid grid-cols-5 gap-2 mb-4">
+        <Container TwClassName="flex-col absolute z-50 mt-2 p-4 bg-gray-50 border rounded-lg shadow-lg">
+          <Container TwClassName="flex-row flex-wrap gap-2 mb-4">
             {COLORS.map(color => (
               <button
                 key={color}
@@ -74,40 +83,62 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label = 'Pick a color', prefi
               />
 
             ))}
+            <button
+              key="none"
+              className={clsx(
+                "w-8 h-8 rounded-full border-2 flex items-center justify-center",
+                value === "transparent" ? "border-black" : "border-gray-200",
+                "bg-white"
+              )}
+              onClick={() => {
+                setBaseColor("");
+                setIntensity(500);
+                setOpacity(100);
+                onChange?.(prefix + "transparent");
+              }}
+            >
+              ✕
+            </button>
           </Container>
 
-          <Container TwClassName="mb-2">
+          <Container TwClassName="flex-col mb-2">
             <label className="block text-sm mb-1">Intensity: {intensity}</label>
-            <Input
-                type="range"
-                min={0}
-                max={INTENSITIES.length - 1}
-                step={1}
-                value={INTENSITIES.indexOf(intensity)}
-                onChange={(e) => {
-                    const index = Number(e.target.value);
-                    const newIntensity = INTENSITIES[index];
-                    setIntensity(newIntensity);
-                    onChange?.(`${prefix}${baseColor}-${newIntensity}${opacity < 100 ? `/${opacity}` : ""}`);
-                }}
-                TwClassName="w-full"
+            <input
+              type="range"
+              min={0}
+              max={INTENSITIES.length - 1}
+              step={1}
+              value={INTENSITIES.indexOf(intensity)}
+              onChange={(e) => {
+                const index = Number(e.target.value);
+                const newIntensity = INTENSITIES[index];
+                setIntensity(newIntensity);
+                onChange?.(`${prefix}${baseColor}-${newIntensity}${opacity < 100 ? `/${opacity}` : ""}`);
+              }}
+              style={{
+                background: `linear-gradient(to right, ${INTENSITIES.map(i => tailwindToHex(baseColor, i)).join(', ')})`
+              }}
+              className="h-2 rounded-lg appearance-none"
             />
           </Container>
 
-          <Container>
+          <Container TwClassName="flex-col">
             <label className="block text-sm mb-1">Opacity: {opacity}%</label>
-            <Input
-                type="range"
-                min={0}
-                max={100}
-                step={5}
-                value={opacity}
-                onChange={(e) => {
-                    const newOpacity = Number(e.target.value);
-                    setOpacity(newOpacity);
-                    onChange?.(`${prefix}${baseColor}-${intensity}${newOpacity < 100 ? `/${newOpacity}` : ""}`);
-                }}
-                TwClassName="w-full"
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={5}
+              value={opacity}
+              onChange={(e) => {
+                const newOpacity = Number(e.target.value);
+                setOpacity(newOpacity);
+                onChange?.(`${prefix}${baseColor}-${intensity}${newOpacity < 100 ? `/${newOpacity}` : ""}`);
+              }}
+              style={{
+                background: `linear-gradient(to right, ${hexToRgba(tailwindToHex(baseColor, intensity), 0.1)}, ${hexToRgba(tailwindToHex(baseColor, intensity), 1)})`
+              }}
+              className="h-2 rounded-lg appearance-none"
             />
           </Container>
         </Container>

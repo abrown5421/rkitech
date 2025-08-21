@@ -21,13 +21,13 @@ const Footer: React.FC = () => {
 
     return (
         <Container
-            TwClassName='flex-col justify-between items-start bg-white relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]'
+            TwClassName='flex-col justify-between items-start bg-gray-50 relative pt-4 pr-2 pb-4 pl-2 z-40 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]'
         >
             <Container
                 TwClassName="items-center block md:hidden"
             >
                 <Image src="../../../public/assets/images/logo.png" height={50} alt="Rkitech" />
-                <Text text="Rkitech" TwClassName="text-xl font-primary text-black" />
+                <Text text="Rkitech" TwClassName="text-xl font-primary text-gray-900" />
             </Container>
             <Container TwClassName='w-full items-start flex-col md:flex-row gap-0 md:gap-5'>
                 {primaryMenu?.menuItems
@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
                                         return (
                                             <Button
                                                 key={subMenuItem.itemId}
-                                                TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 ${activePage === subMenuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}
+                                                TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 ${activePage === subMenuItem.itemName ? 'text-amber-500' : 'text-gray-900'} hover:text-amber-500`}
                                                 onClick={() => {
                                                     dispatch(preCloseModal());
                                                     setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
@@ -58,7 +58,7 @@ const Footer: React.FC = () => {
                                         return (
                                             <Button
                                                 key={subMenuItem.itemName}
-                                                TwClassName="p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 text-black hover:text-primary"
+                                                TwClassName="p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 text-gray-900 hover:text-amber-500"
                                                 cursor="pointer"
                                                 onClick={() => window.open(subMenuItem.itemLink, '_blank')}
                                             >
@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemId}
-                                    TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
+                                    TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 ${activePage === menuItem.itemName ? 'text-amber-500' : 'text-gray-900'} hover:text-amber-500`}                                    
                                     onClick={() => {
                                         dispatch(preCloseModal());
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemName}
-                                    TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 text-black hover:text-primary`}
+                                    TwClassName={`p-2 md:pt-3 md:pr-0 md:pb-3 md:pl-0 text-gray-900 hover:text-amber-500`}
                                     cursor="pointer"
                                     onClick={() => window.open(menuItem.itemLink, '_blank')}
                                 >
@@ -115,7 +115,7 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemId}
-                                    TwClassName={`p-2 md:pt-4 md:pr-0 md:pb-3 md:pl-0 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-primary' : 'text-black'} hover:text-primary`}                                    
+                                    TwClassName={`p-2 md:pt-4 md:pr-0 md:pb-3 md:pl-0 text-sm text-gray-500 ${activePage === menuItem.itemName ? 'text-amber-500' : 'text-gray-900'} hover:text-amber-500`}                                    
                                     onClick={() => {
                                         dispatch(preCloseDrawer());
                                         setTimeout(() => clientNavigation(page.pagePath, page.pageName, page.pageID)(), 250);
@@ -130,7 +130,7 @@ const Footer: React.FC = () => {
                             return (
                                 <Button
                                     key={menuItem.itemName}
-                                    TwClassName={`pt-4 pr-0 pb-3 pl-0 text-sm text-gray-500 text-black hover:text-primary`}
+                                    TwClassName={`pt-4 pr-0 pb-3 pl-0 text-sm text-gray-500 text-gray-900 hover:text-amber-500`}
                                     cursor="pointer"
                                     onClick={() => window.open(menuItem.itemLink, '_blank')}
                                 >
