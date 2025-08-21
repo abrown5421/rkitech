@@ -13,10 +13,10 @@ const PageNotFound: React.FC = () => {
     return (
 
         <Container TwClassName='min-h-[calc(100vh-50px)] p-4 flex-col justify-center items-center h-full w-full'>
-            <Text text="404" TwClassName="text-9xl text-primary font-primary font-bold" />
-            <Text text="Sorry, the page you are looking for doesn't exist." TwClassName="text-2xl text-black" />
+            <Text text="404" TwClassName="text-9xl text-amber-500 font-primary font-bold" />
+            <Text text="Sorry, the page you are looking for doesn't exist." TwClassName="text-2xl text-gray-900" />
             <Button
-                TwClassName="mt-6 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary"
+                TwClassName="mt-6 p-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500"
                 onClick={() => dispatch(clientNavigation(homePageId.homePageObj?.pagePath ?? '', 'Home', homePageId.id))}
             >
                 Go Home

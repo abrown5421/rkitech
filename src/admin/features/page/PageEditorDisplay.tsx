@@ -8,7 +8,7 @@ const PageEditorDisplay: React.FC = () => {
 
     return (
       <Container TwClassName='flex-col box-border m-4 flex-10 h-[calc(100vh-50px)] overflow-scroll'>
-        <Container TwClassName='flex-row text-white mb-4'>buttons</Container>
+        <Container TwClassName='flex-row text-gray-50 mb-4'>buttons</Container>
         <Container
           TwClassName={`${localPage?.localPageObjectFromDb?.pageBg} flex-col flex-grow`}
           animation={{ entranceExit: {

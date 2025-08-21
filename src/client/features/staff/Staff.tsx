@@ -55,7 +55,7 @@ const Staff: React.FC = () => {
 
     return (
         <Container TwClassName='min-h-[calc(100vh-50px)] p-4 flex-col'>
-            <Text text="Our Staff" TwClassName='text-black font-primary text-4xl mb-5 w-full md:w-4/5 lg:w-2/3 mx-auto' />
+            <Text text="Our Staff" TwClassName='text-gray-900 font-primary text-4xl mb-5 w-full md:w-4/5 lg:w-2/3 mx-auto' />
             <Container TwClassName='flex-row h-full items-between flex-wrap w-full md:w-4/5 lg:w-2/3 mx-auto gap-4'>
                 {paginatedStaff.map((staff) => (
                     <Container
@@ -74,8 +74,8 @@ const Staff: React.FC = () => {
                             onHoverChange={(hover) => setHoveredCardId(hover ? staff.userId : null)}
                             TwClassName='flex-col absolute top-0 bottom-0 right-0 z-50 left-0 bg-gray-900/80 items-center p-4'
                             >
-                            <Text text={staff.firstName + ' ' + staff.lastName} TwClassName='text-white text-xl font-primary mb-4' />
-                            {staff.bio && <Text text={staff.bio} TwClassName='text-white' />}
+                            <Text text={staff.firstName + ' ' + staff.lastName} TwClassName='text-gray-50 text-xl font-primary mb-4' />
+                            {staff.bio && <Text text={staff.bio} TwClassName='text-gray-50' />}
                             </Container>
                         <TrianglifyBanner
                             xColors={staff.trianglifyObject?.xColors ?? ['#000000', '#FFFFFF']}
@@ -88,7 +88,7 @@ const Staff: React.FC = () => {
                         />
                         <Container TwClassName="flex flex-col flex-grow p-4 justify-between">
                             <Container TwClassName="flex flex-col flex-grow">
-                                <Text text={staff.firstName + ' ' + staff.lastName} TwClassName="text-xl font-primary text-black mb-4" />
+                                <Text text={staff.firstName + ' ' + staff.lastName} TwClassName="text-xl font-primary text-gray-900 mb-4" />
                                 <Text text={staff.staffTitle} />
                             </Container>
                         </Container>

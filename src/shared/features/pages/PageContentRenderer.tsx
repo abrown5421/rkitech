@@ -5,15 +5,21 @@ import Button from "../../components/button/Button";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { useNavigationHook } from "../../../hooks/useNavigationHook";
 import List from "../../components/list/List";
-import { parseTwClassName } from "../../utils/parseTwClassName";
+import { parseTwClassName } from "../../../admin/utils/parseTwClassName";
 import { setActiveEditorComponent, setActiveEditorUUID } from "../../../admin/features/page/pageEditorSlice";
 import type { PageEditorProps } from "../../../admin/features/page/pageEditorTypes";
+import Icon from "../../components/icon/Icon";
+import TrianglifyBanner from "../../components/trianglifyBanner/TrianglifyBanner";
+import Image from "../../components/image/Image";
 
 const componentMap: Record<string, React.FC<any>> = {
   Text,
+  Image,
   Container,
   Button, 
-  List
+  List,
+  Icon,
+  TrianglifyBanner,
 };
 
 const PageContentRenderer = ({ content, cmsMode }: { content: any; cmsMode?: boolean }) => {

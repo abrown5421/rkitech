@@ -77,12 +77,12 @@ export const useRenderMenuItems = ({
               key={menuItem.itemId}
               onClick={onClickHandler}
               TwClassName={`pt-3 pr-0 pb-3 pl-0 flex-row w-full justify-between items-center cursor-pointer ${
-                activePage === menuItem.itemName ? 'text-primary' : 'text-black'
-              } hover:text-primary hover:bg-gray-100`}
+                activePage === menuItem.itemName ? 'text-amber-500' : 'text-gray-900'
+              } hover:text-amber-500 hover:bg-gray-100`}
             >
               {page.pageName}
               {friendRequestCount > 0 && (
-                <Container TwClassName="bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center shadow ml-2">
+                <Container TwClassName="bg-error text-gray-50 text-xs font-bold rounded-full w-5 h-5 flex items-center shadow ml-2">
                   {friendRequestCount}
                 </Container>
               )}
@@ -93,8 +93,8 @@ export const useRenderMenuItems = ({
             <Button
               key={menuItem.itemId}
               TwClassName={`pt-3 pr-0 pb-3 pl-0 ${
-                activePage === menuItem.itemName ? 'text-primary' : 'text-black'
-              } hover:text-primary ${animationClass}`}
+                activePage === menuItem.itemName ? 'text-amber-500' : 'text-gray-900'
+              } hover:text-amber-500 ${animationClass}`}
               style={{ animationDelay: delay }}
               cursor="pointer"
               onClick={onClickHandler}
@@ -111,7 +111,7 @@ export const useRenderMenuItems = ({
         return (
           <Container key={menuItem.itemId} TwClassName={`relative ${animationClass}`} style={{ animationDelay: delay }}>
             <Button
-              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary flex items-center gap-1 ${animationClass}`}
+              TwClassName={`pt-3 pr-0 pb-3 pl-0 text-gray-900 hover:text-amber-500 flex items-center gap-1 ${animationClass}`}
               cursor="pointer"
               onClick={() => toggleDropdown(menuItem.itemId)}
               aria-expanded={isOpen}
@@ -134,7 +134,7 @@ export const useRenderMenuItems = ({
 
             {isOpen && (
               <Container
-                TwClassName="flex-col absolute top-full -left-1 mt-1 bg-white border border-gray-200 rounded shadow-md z-50 "
+                TwClassName="flex-col absolute top-full -left-1 mt-1 bg-gray-50 border border-gray-200 rounded shadow-md z-50 "
                 onClick={(e) => e.stopPropagation()} 
               >
                 {menuItem.itemChildren
@@ -156,7 +156,7 @@ export const useRenderMenuItems = ({
                       return (
                         <Button
                           key={child.itemId}
-                          TwClassName={`block w-full text-left px-4 py-2 text-black hover:bg-gray-100`}
+                          TwClassName={`block w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100`}
                           cursor="pointer"
                           onClick={onChildClick}
                         >
@@ -169,7 +169,7 @@ export const useRenderMenuItems = ({
                       return (
                         <Button
                           key={child.itemName}
-                          TwClassName="block w-full text-left px-4 py-2 text-black hover:bg-gray-100"
+                          TwClassName="block w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100"
                           cursor="pointer"
                           onClick={() => {
                             window.open(child.itemLink, '_blank');
@@ -193,7 +193,7 @@ export const useRenderMenuItems = ({
       return (
         <Button
           key={menuItem.itemName}
-          TwClassName={`pt-3 pr-0 pb-3 pl-0 text-black hover:text-primary ${animationClass}`}
+          TwClassName={`pt-3 pr-0 pb-3 pl-0 text-gray-900 hover:text-amber-500 ${animationClass}`}
           cursor="pointer"
           style={{ animationDelay: delay }}
           onClick={() => window.open(menuItem.itemLink, '_blank')}

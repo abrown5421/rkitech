@@ -82,7 +82,7 @@ const App: React.FC = () => {
   }, [pages]);
 
   return !loadingSite ? (
-    <Container TwClassName="flex-col w-screen h-screen z-30 relative bg-black">
+    <Container TwClassName="flex-col w-screen h-screen z-30 relative bg-gray-900">
       {activePage.activePageShellId === 'adminPage' ? <AdminNavbar /> : <Navbar />}
 
       <Routes>
@@ -90,7 +90,7 @@ const App: React.FC = () => {
           path="/admin/*"
           element={
             <PageShell
-              activePageShellBgColor={(activePage.activePageShellName === 'Admin' || activePage.activePageShellName === 'AdminPage') ? 'bg-black' : 'bg-white'}
+              activePageShellBgColor={(activePage.activePageShellName === 'Admin' || activePage.activePageShellName === 'AdminPage') ? 'bg-gray-900' : 'bg-gray-50'}
               activePageShellAnimation={{
                 entranceAnimation: 'animate__fadeInUpBig',
                 exitAnimation: 'animate__fadeOutDownBig',
@@ -131,8 +131,8 @@ const App: React.FC = () => {
       <Drawer />
     </Container>
   ) : (
-    <div className="w-screen h-screen z-30 relative bg-black flex justify-center items-center">
-      <Loader variant="bounce" color="bg-primary" />
+    <div className="w-screen h-screen z-30 relative bg-gray-900 flex justify-center items-center">
+      <Loader variant="bounce" color="bg-amber-500" />
     </div>
   );
 };

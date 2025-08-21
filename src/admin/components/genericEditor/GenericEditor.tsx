@@ -115,7 +115,7 @@ function GenericEditor<T extends Record<string, any>>({
   if (onDelete) {
     defaultActions.push({
       label: 'Delete',
-      className: "pt-0 pr-3 pb-0 pl-3 bg-error rounded-xl text-white",
+      className: "pt-0 pr-3 pb-0 pl-3 bg-error rounded-xl text-gray-50",
       onClick: (item) => onDelete(getItemId(item)),
       isLoading: (item) => isLoading('delete', getItemId(item)),
     });
@@ -127,13 +127,13 @@ function GenericEditor<T extends Record<string, any>>({
     <Container TwClassName="min-h-[calc(100vh-50px)] p-4 flex-col flex-grow gap-4">
       <Container TwClassName='flex-row justify-between'>
         <Container TwClassName='flex-col flex-10'>
-          <Text text={title} TwClassName='text-black font-primary text-xl' />
+          <Text text={title} TwClassName='text-gray-900 font-primary text-xl' />
         </Container>
         {addButtonModal && (
           <Container TwClassName='flex-col flex-2 h-full justify-center'>
             <Button
               onClick={handleAddNew}
-              TwClassName="relative pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border border-primary hover:text-primary hover:bg-transparent flex justify-center items-center"
+              TwClassName="relative pt-1 pr-3 pb-1 pl-3 bg-amber-500 rounded-xl text-gray-50 border border-primary hover:text-amber-500 hover:bg-transparent flex justify-center items-center"
             >
               <span className="absolute left-3">
                 <Icon color="text-gray-100" name="Plus" />
@@ -191,7 +191,7 @@ function GenericEditor<T extends Record<string, any>>({
                         onChange={() => onToggleActive(itemId, isActive || false)}
                     />
                     {isLoading('toggle', itemId) && (
-                        <Container TwClassName="flex items-center justify-center bg-white/50 rounded">
+                        <Container TwClassName="flex items-center justify-center bg-gray-50/50 rounded">
                         <Loader variant="spinner" color="text-amber-500" />
                         </Container>
                     )}
@@ -218,13 +218,13 @@ function GenericEditor<T extends Record<string, any>>({
         >
           <Button 
             onClick={onReset} 
-            TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black"
+            TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900"
           >
             Undo
           </Button>
           <Button 
             onClick={onSave} 
-            TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white"
+            TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-amber-500 rounded-xl text-gray-50"
           >
             {isLoading('save-items') ? (
               <Loader variant="spinner" color="amber-500" />

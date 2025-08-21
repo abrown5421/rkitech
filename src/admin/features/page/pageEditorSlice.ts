@@ -5,7 +5,6 @@ import type { Page } from "../../../shared/features/pages/pageTypes";
 
 const initialState: PageEditorProps = {
   localPageCompKey: '',
-  localItemUUID: '',
   localPageObjectFromDb: null,
   activePrefix: undefined,
   activeEditorComponent: undefined,
@@ -22,9 +21,6 @@ const localPageSlice = createSlice({
     },
     setLocalPageCompKey(state: PageEditorProps, action: PayloadAction<string>) {
       state.localPageCompKey = action.payload;
-    },
-    setLocalPageItemUUID(state: PageEditorProps, action: PayloadAction<string>) {
-      state.localItemUUID = action.payload;
     },
     setEnterExit(state: PageEditorProps, action: PayloadAction<boolean>) {
       state.enterExit = action.payload;
@@ -61,6 +57,31 @@ const localPageSlice = createSlice({
         state.localPageObjectFromDb[action.payload.field] = action.payload.value;
       }
     },
+    updateNodeByUUID(
+      state: PageEditorProps,
+      action: PayloadAction<{ UUID: string; props: any }>
+    ) {
+      const { UUID, props } = action.payload;
+
+      const updateNode = (node: any): boolean => {
+        if (node.UUID === UUID) {
+          node.props = props;
+          return true; 
+        }
+        if (node.children && Array.isArray(node.children)) {
+          for (let child of node.children) {
+            if (updateNode(child)) {
+              return true;
+            }
+          }
+        }
+        return false; 
+      };
+
+      if (state.localPageObjectFromDb) {
+        updateNode(state.localPageObjectFromDb);
+      }
+    },
     resetLocalPageState(state: PageEditorProps) {
       state.localPageCompKey = '';
       state.localPageObjectFromDb = null;
@@ -83,6 +104,7 @@ export const {
   unsetActiveEditorComponent,
   setActiveEditorUUID,
   unsetActiveEditorUUID,
+  updateNodeByUUID,
   updatePageField,
   resetLocalPageState,
 } = localPageSlice.actions;

@@ -22,7 +22,7 @@ import PageContentRenderer from './PageContentRenderer';
 import PageEditor from '../../../admin/features/page/PageEditor';
 
 const PageShell: React.FC<PageShellState> = ({
-    activePageShellBgColor = 'bg-white', 
+    activePageShellBgColor = 'bg-gray-50', 
     activePageShellAnimation = {
         entranceAnimation: 'animate__fadeIn',
         exitAnimation: 'animate__fadeOut',

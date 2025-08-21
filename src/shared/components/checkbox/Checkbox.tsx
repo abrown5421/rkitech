@@ -29,7 +29,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           onChange={onChange}
           className={clsx(
             "form-checkbox h-5 w-5 rounded border transition duration-150",
-            error ? "border-red-500 text-red-500" : "border-gray-300 text-primary",
+            error ? "border-red-500 text-red-500" : "border-gray-300 text-amber-500",
             "focus:ring-2 focus:ring-offset-1 focus:ring-primary"
           )}
           {...rest}

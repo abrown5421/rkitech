@@ -92,7 +92,7 @@ const BlogEditor: React.FC = () => {
                             "type": "Text",
                             "props": {
                                 "text": "Begin writing your new blog post here.",
-                                "TwClassName": "text-black mb-5"
+                                "TwClassName": "text-gray-900 mb-5"
                             }
                         }
                     ]
@@ -219,12 +219,12 @@ const BlogEditor: React.FC = () => {
     const actions: EditorAction[] = [
         {
             label: 'View',
-            className: "pt-0 pr-3 pb-0 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary",
+            className: "pt-0 pr-3 pb-0 pl-3 bg-amber-500 rounded-xl text-gray-50 border border-primary hover:bg-transparent hover:text-amber-500",
             onClick: (item) => clientNavigation(`${blogPage?.pagePath.toLowerCase() ?? ''}/${item.blogPostID}`, 'BlogPost', item.blogPostID)(),
         },
         {
             label: 'Edit',
-            className: "pt-0 pr-3 pb-0 pl-3 bg-gray-200 rounded-xl text-black",
+            className: "pt-0 pr-3 pb-0 pl-3 bg-gray-200 rounded-xl text-gray-900",
             onClick: (item) => {
                 console.log('Edit post:', item.blogPostID);
             },

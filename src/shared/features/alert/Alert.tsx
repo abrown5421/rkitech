@@ -10,7 +10,7 @@ const severityClasses: Record<Severity, { bg: string; text: string; border: stri
   error: { bg: 'bg-error-faded', text: 'text-error', border: 'border-error' },
   warning: { bg: 'bg-warning-faded', text: 'text-warning', border: 'border-warning' },
   info: { bg: 'bg-info-faded', text: 'text-info', border: 'border-info' },
-  primary: { bg: 'bg-primary-faded', text: 'text-primary', border: 'border-primary' },
+  primary: { bg: 'bg-amber-500-faded', text: 'text-amber-500', border: 'border-primary' },
   secondary: { bg: 'bg-secondary-faded', text: 'text-secondary', border: 'border-secondary' },
 };
 

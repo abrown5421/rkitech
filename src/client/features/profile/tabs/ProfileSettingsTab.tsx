@@ -127,7 +127,7 @@ const ProfileSettingsTab: React.FC = () => {
             </Container>
             <Container TwClassName="flex-col flex-2 items-center justify-center">
               <Button
-                TwClassName="p-2 bg-error rounded-xl text-white border-1 min-w-[150px] border-error hover:bg-transparent hover:text-error"
+                TwClassName="p-2 bg-error rounded-xl text-gray-50 border-1 min-w-[150px] border-error hover:bg-transparent hover:text-error"
                 onClick={section.handler}
                 disabled={section.loading}
               >

@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
 
   return (
     <Container
-      TwClassName="h-[50px] justify-between items-center bg-white p-2 relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
+      TwClassName="h-[50px] justify-between items-center bg-gray-50 p-2 relative z-40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
     >
       <Container
         TwClassName="items-center"
@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
         }}
       >
         <Image src="../../../public/assets/images/logo.png" height={50} alt="Rkitech" />
-        <Text text="Rkitech" TwClassName="text-xl font-primary text-black" />
+        <Text text="Rkitech" TwClassName="text-xl font-primary text-gray-900" />
       </Container>
 
       <Container
@@ -115,9 +115,9 @@ const Navbar: React.FC = () => {
                   TwClassName="rounded-full border border-gray-300 cursor-pointer object-cover"
                 />
               ) : (
-                <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+                <Container TwClassName="rounded-full w-10 h-10 bg-gray-900 cursor-pointer flex justify-center items-center">
                   <Text
-                    TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                    TwClassName="text-gray-50 w-full text-sm font-semibold leading-[2.5rem] text-center"
                     text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
                   />
                 </Container>
@@ -157,16 +157,16 @@ const Navbar: React.FC = () => {
                 TwClassName="rounded-full border border-gray-300 cursor-pointer object-cover"
               />
             ) : (
-              <Container TwClassName="rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center">
+              <Container TwClassName="rounded-full w-10 h-10 bg-gray-900 cursor-pointer flex justify-center items-center">
                 <Text
-                  TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                  TwClassName="text-gray-50 w-full text-sm font-semibold leading-[2.5rem] text-center"
                   text={`${authUser.user.firstName?.[0] || ''}${authUser.user.lastName?.[0] || ''}`.toUpperCase()}
                 />
               </Container>
             )}
 
             {unreadCount > 0 && (
-              <Container TwClassName="absolute top-0 right-1.5 bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+              <Container TwClassName="absolute top-0 right-1.5 bg-error text-gray-50 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
                 {unreadCount}
               </Container>
             )}
@@ -176,7 +176,7 @@ const Navbar: React.FC = () => {
           <Container TwClassName={`collapse-wrapper ${shouldShowLogin ? 'collapse-open' : 'collapse-closed'}`}>
             <Button
               cursor="pointer"
-              TwClassName={`pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
+              TwClassName={`pt-1 pr-3 pb-1 pl-3 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500 transition-all duration-300 origin-right ${isLoginHidden ? 'collapse-hidden' : 'collapse-open'}`}
               onClick={() => clientNavigation(authComp?.pagePath ?? '', 'Auth', authComp?.pageID ?? '')()}
             >
               <Text text="Login" />

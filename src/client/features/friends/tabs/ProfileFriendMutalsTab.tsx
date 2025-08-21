@@ -81,8 +81,8 @@ const ProfileFriendMutalsTab: React.FC = () => {
           aria-current={page === i ? 'page' : undefined}
           className={
             page === i
-              ? 'z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md'
-              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md'
+              ? 'z-10 bg-amber-500 border-primary text-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md'
+              : 'bg-gray-50 border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md'
           }
         >
           {i + 1}
@@ -110,10 +110,10 @@ const ProfileFriendMutalsTab: React.FC = () => {
                   />
                 ) : (
                   <Container
-                    TwClassName="-ml-1.5 rounded-full w-15 h-15 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
+                    TwClassName="-ml-1.5 rounded-full w-15 h-15 bg-gray-900 cursor-pointer flex justify-center items-center border-3 border-white"
                   >
                     <Text
-                      TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                      TwClassName="text-gray-50 w-full text-sm font-semibold leading-[2.5rem] text-center"
                       text={`${friend.firstName?.[0] || ''}${friend.lastName?.[0] || ''}`.toUpperCase()}
                     />
                   </Container>
@@ -124,7 +124,7 @@ const ProfileFriendMutalsTab: React.FC = () => {
                   <span>{friend.firstName} {friend.lastName}</span>
                   <span>
                     {friend.userId === authUser?.userId && (
-                      <Text text="(You)" TwClassName="text-primary font-bold" />
+                      <Text text="(You)" TwClassName="text-amber-500 font-bold" />
                     )}
                   </span>
                 </Container>
@@ -145,7 +145,7 @@ const ProfileFriendMutalsTab: React.FC = () => {
           <Button
             onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
             disabled={page === 0}
-            TwClassName={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
+            TwClassName={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-gray-50 text-sm font-medium text-gray-500 hover:bg-gray-50 ${
               page === 0 ? 'cursor-not-allowed opacity-50' : ''
             }`}
           >
@@ -167,7 +167,7 @@ const ProfileFriendMutalsTab: React.FC = () => {
           <Button
             onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
             disabled={page >= totalPages - 1}
-            TwClassName={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
+            TwClassName={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-gray-50 text-sm font-medium text-gray-500 hover:bg-gray-50 ${
               page >= totalPages - 1 ? 'cursor-not-allowed opacity-50' : ''
             }`}
           >

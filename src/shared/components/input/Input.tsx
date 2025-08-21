@@ -49,11 +49,11 @@ const Input: React.FC<InputProps> = ({
     "peer w-full text-base placeholder-transparent focus:outline-none",
     paddingLeft,
     paddingRight,
-    multiline ? "resize-none" : "h-12",
+    multiline ? "resize-none pt-2" : "h-12",
     rows === "fill" ? "flex-grow" : null,
     rest.disabled
       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-      : "bg-transparent text-black"
+      : "bg-transparent text-gray-900"
   );
 
   return (
@@ -105,12 +105,12 @@ const Input: React.FC<InputProps> = ({
         {label && (
           <label
             className={clsx(
-              "absolute left-3 transition-all duration-200 bg-white px-1",
+              "absolute left-3 transition-all duration-200 bg-gray-50 px-1",
               startAdornment && "left-10",
               (focused || hasValue)
                 ? rest.disabled
                   ? "text-xs -top-2.5 text-gray-400"
-                  : "text-xs -top-2.5 text-primary"
+                  : "text-xs -top-2.5 text-amber-500"
                 : rest.disabled
                   ? "text-base top-3 text-gray-400"
                   : "text-base top-3 text-gray-500"
