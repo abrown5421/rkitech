@@ -1,3 +1,4 @@
+
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { PageEditorProps } from "./pageEditorTypes";
@@ -10,6 +11,7 @@ const initialState: PageEditorProps = {
   activeEditorComponent: undefined,
   activeEditorUUID: undefined,
   enterExit: true,
+  hover: false,
 };
 
 const localPageSlice = createSlice({
@@ -31,7 +33,7 @@ const localPageSlice = createSlice({
     unsetLocalPageObject(state: PageEditorProps) {
       state.localPageObjectFromDb = null;
     },
-    setActivePrefix(state: PageEditorProps, action: PayloadAction<PageEditorProps['activePrefix']>) {
+    setActivePrefix(state, action: PayloadAction<PageEditorProps['activePrefix'] | undefined>) {
       state.activePrefix = action.payload;
     },
     unsetActivePrefix(state: PageEditorProps) {
@@ -45,6 +47,9 @@ const localPageSlice = createSlice({
     },
     setActiveEditorUUID(state: PageEditorProps, action: PayloadAction<string>) {
       state.activeEditorUUID = action.payload;
+    },
+    toggleHover(state: PageEditorProps) {
+      state.hover = !state.hover;
     },
     unsetActiveEditorUUID(state: PageEditorProps) {
       state.activeEditorUUID = undefined;
@@ -97,6 +102,7 @@ export const {
   setLocalPageCompKey,
   setLocalPageObject,
   setEnterExit,
+  toggleHover,
   unsetLocalPageObject,
   setActivePrefix,
   unsetActivePrefix,
