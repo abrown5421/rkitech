@@ -15,12 +15,12 @@ const Sidebar: React.FC = () => {
                     isEntering: true,
                 },
             }} 
-            TwClassName='flex-col bg-black text-white p-4 flex-2'
+            TwClassName='flex-col bg-gray-900 text-gray-50 p-4 flex-2'
         >
             <Button
                 onClick={() => clientNavigation('/admin/dashboard', 'AdminDash', 'adminPage')()}
                 TwClassName={
-                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
                     <Icon color="text-gray-900" name="Gauge" />
@@ -30,7 +30,7 @@ const Sidebar: React.FC = () => {
             <Button
                 onClick={() => clientNavigation('/admin/pages', 'AdminPages', 'adminPage')()}
                 TwClassName={
-                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
                     <Icon color="text-gray-900" name="NotepadText" />
@@ -40,7 +40,7 @@ const Sidebar: React.FC = () => {
             <Button
                 onClick={() => clientNavigation('/admin/menus', 'AdminMenues', 'adminPage')()}
                 TwClassName={
-                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
                     <Icon color="text-gray-900" name="Menu" />
@@ -50,7 +50,7 @@ const Sidebar: React.FC = () => {
             <Button
                 onClick={() => clientNavigation('/admin/blog', 'AdminBlog', 'adminPage')()}
                 TwClassName={
-                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
                     <Icon color="text-gray-900" name="Feather" />
@@ -60,7 +60,7 @@ const Sidebar: React.FC = () => {
             <Button
                 onClick={() => clientNavigation('/admin/gallery', 'AdminGallery', 'adminPage')()}
                 TwClassName={
-                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
                     <Icon color="text-gray-900" name="Camera" />
@@ -70,7 +70,7 @@ const Sidebar: React.FC = () => {
             <Button
                 onClick={() => clientNavigation('/admin/staff', 'AdminStaff', 'adminPage')()}
                 TwClassName={
-                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
+                    "relative mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:text-gray-200 hover:bg-transparent flex justify-center items-center"
                 }>
                 <span className="absolute left-3">
                     <Icon color="text-gray-900" name="ShieldUser" />

@@ -120,34 +120,34 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
           {isSentRequest && 
             <Button
               onClick={removeFriend} TwClassName={
-                !isSentRequest ? "relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
-                : "relative flex-1 mt-3 p-1 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
+                !isSentRequest ? "relative flex-1 mt-3 p-1 bg-amber-500 rounded-xl text-gray-50 border border-primary hover:bg-transparent hover:text-amber-500 flex justify-center items-center"
+                : "relative flex-1 mt-3 p-1 bg-error rounded-xl text-gray-50 border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
             }>
               <span className="absolute left-3">
                   <Icon color="text-gray-900" name="UserMinus" />
               </span>
-              {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Rescind'}
+              {friendRemoval ? <Loader variant="spinner" color="bg-gray-50-500" /> : 'Rescind'}
             </Button>
           }
           {isRecievedRequest && 
             <Container TwClassName="flex-col">
                 <Button
                   onClick={removeFriend} TwClassName={
-                    "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
+                    "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-gray-50 border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
                 }>
                   <span className="absolute left-3">
                       <Icon color="text-gray-900" name="UserMinus" />
                   </span>
-                  {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Decline'}
+                  {friendRemoval ? <Loader variant="spinner" color="bg-gray-50-500" /> : 'Decline'}
                 </Button>
                 <Button
                   onClick={acceptFriend} TwClassName={
-                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
+                      "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-amber-500 rounded-xl text-gray-50 border border-primary hover:bg-transparent hover:text-amber-500 flex justify-center items-center"
                   }>
                     <span className="absolute left-3">
                         <Icon color="text-gray-900" name="UserPlus" />
                     </span>
-                    {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Accept'}
+                    {friendRemoval ? <Loader variant="spinner" color="bg-gray-50-500" /> : 'Accept'}
                 </Button>
               
               {receivedRequest && validReceivedCreatedAt && profileUser?.firstName && (
@@ -165,13 +165,13 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
             <Button 
               disabled={isSentRequest}
               onClick={addFriend} TwClassName={
-                !isSentRequest ? "relative flex-1 mt-3 p-1 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center"
-                : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-black border border-gray-300 hover:bg-transparent flex justify-center items-center"
+                !isSentRequest ? "relative flex-1 mt-3 p-1 bg-amber-500 rounded-xl text-gray-50 border border-primary hover:bg-transparent hover:text-amber-500 flex justify-center items-center"
+                : "relative flex-1 mt-3 p-1 bg-gray-300 rounded-xl text-gray-900 border border-gray-300 hover:bg-transparent flex justify-center items-center"
             }>
               <span className="absolute left-3">
                   <Icon color="text-gray-900" name="UserPlus" />
               </span>
-              {friendAddition ? <Loader variant="spinner" color="bg-white-500" /> : (!isSentRequest ? 'Add Friend' : 'Pending')}
+              {friendAddition ? <Loader variant="spinner" color="bg-gray-50-500" /> : (!isSentRequest ? 'Add Friend' : 'Pending')}
             </Button>
           }
           {sentRequest && validSentCreatedAt && profileUser?.firstName && (
@@ -187,12 +187,12 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
             <Container TwClassName="flex-col">
               <Button
                 onClick={removeFriend} TwClassName={
-                  "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
+                  "relative flex-1 mt-3 pt-1 pr-3 pb-1 pl-3 bg-error rounded-xl text-gray-50 border border-error hover:bg-transparent hover:text-error flex justify-center items-center"
               }>
                 <span className="absolute left-3">
                     <Icon color="text-gray-900" name="UserMinus" />
                 </span>
-                {friendRemoval ? <Loader variant="spinner" color="bg-white-500" /> : 'Unfriend'}
+                {friendRemoval ? <Loader variant="spinner" color="bg-gray-50-500" /> : 'Unfriend'}
               </Button>
               {acceptedRequest && profileUser?.firstName && (
                 <Text
@@ -214,7 +214,7 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
                 ? `${friends.friends.length === 1 ? "1 Friend:" : friends.friends.length + " Friends:"}`
                 : "Friends:"
             }
-            TwClassName="text-black text-xl font-bold mt-5"
+            TwClassName="text-gray-900 text-xl font-bold mt-5"
           />
           <Container TwClassName="flex-row">
             {randomFriends.map((friend) => (
@@ -231,10 +231,10 @@ const FriendProfileModule: React.FC<FriendProfileModuleState> = ({profileUser}) 
                 ) : (
                   <Container
                     key={friend.userId}
-                    TwClassName="-ml-1.5 rounded-full w-7 h-7 bg-black cursor-pointer flex justify-center items-center border-3 border-white"
+                    TwClassName="-ml-1.5 rounded-full w-7 h-7 bg-gray-900 cursor-pointer flex justify-center items-center border-3 border-white"
                   >
                     <Text
-                      TwClassName="text-white w-full text-xs font-semibold leading-[2.5rem] text-center"
+                      TwClassName="text-gray-50 w-full text-xs font-semibold leading-[2.5rem] text-center"
                       text={`${friend.firstName?.[0] || ''}${friend.lastName?.[0] || ''}`.toUpperCase()}
                     />
                   </Container>

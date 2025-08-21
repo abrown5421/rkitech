@@ -38,11 +38,11 @@ const LoggedOutDrawerContent: React.FC = () => {
 
       {!isLoginHidden && (
         <Button
-          TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" 
+          TwClassName="w-full p-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500" 
           cursor="pointer"
           onClick={() => clientNavigation(authComp?.pagePath ?? '', 'Auth', authComp?.pageID ?? '')()}
         >
-          {isLoading ? <Loader variant="spinner" color="bg-white-500" /> : <Text text="Login" TwClassName="text-white" />}
+          {isLoading ? <Loader variant="spinner" color="bg-gray-50-500" /> : <Text text="Login" TwClassName="text-gray-50" />}
         </Button>)}
     </Container>
   );

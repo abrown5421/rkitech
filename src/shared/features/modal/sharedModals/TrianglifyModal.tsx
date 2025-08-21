@@ -105,7 +105,7 @@ const TrianglifyModal: React.FC = () => {
         <Button
           TwClassName={`py-1 px-3 rounded-full text-sm ${
             activeTab === "trianglify"
-              ? "bg-primary text-white"
+              ? "bg-amber-500 text-gray-50"
               : "bg-gray-200 text-gray-700"
           }`}
           onClick={() => {
@@ -118,7 +118,7 @@ const TrianglifyModal: React.FC = () => {
         <Button
           TwClassName={`py-1 px-3 rounded-full text-sm ${
             activeTab === "image"
-              ? "bg-primary text-white"
+              ? "bg-amber-500 text-gray-50"
               : "bg-gray-200 text-gray-700"
           }`}
           onClick={() => setActiveTab("image")}
@@ -242,13 +242,13 @@ const TrianglifyModal: React.FC = () => {
       <Container TwClassName="flex-row gap-2 justify-end mt-4">
         <Button
           onClick={handleCancel}
-          TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-white border-1 border-gray-300 hover:bg-transparent hover:text-gray-300 flex-1"
+          TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-gray-50 border-1 border-gray-300 hover:bg-transparent hover:text-gray-300 flex-1"
         >
           Cancel
         </Button>
         <Button
           onClick={handleSave}
-          TwClassName="min-w-[100px] py-1 px-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary flex-1"
+          TwClassName="min-w-[100px] py-1 px-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500 flex-1"
         >
           {savingPfb ? <Loader variant="spinner" color="text-gray-50" /> : <>Save</>}
         </Button>

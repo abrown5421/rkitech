@@ -33,8 +33,8 @@ const Pagination: React.FC<PaginationProps> = ({
   const canGoNext = currentPage < totalPages - 1;
 
   const buttonBaseClass = "relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md";
-  const activeButtonClass = "z-10 bg-primary border-primary text-white";
-  const inactiveButtonClass = "bg-white border-gray-300 text-gray-500 hover:bg-gray-50";
+  const activeButtonClass = "z-10 bg-amber-500 border-primary text-gray-50";
+  const inactiveButtonClass = "bg-gray-50 border-gray-300 text-gray-500 hover:bg-gray-50";
   const disabledButtonClass = "cursor-not-allowed opacity-50";
 
   return (
@@ -47,7 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
         disabled={!canGoPrevious}
         {...rest}
         TwClassName={`
-          relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50
+          relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-gray-50 text-sm font-medium text-gray-500 hover:bg-gray-50
           ${!canGoPrevious ? disabledButtonClass : ''}
         `}
         aria-label="Previous page"
@@ -75,7 +75,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!canGoNext}
         TwClassName={`
-          relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50
+          relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-gray-50 text-sm font-medium text-gray-500 hover:bg-gray-50
           ${!canGoNext ? disabledButtonClass : ''}
         `}
         aria-label="Next page"

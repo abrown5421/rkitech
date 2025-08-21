@@ -281,7 +281,7 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
             {authUser?.profileImage && (
               <Container
                 onClick={(e) => { e.stopPropagation(); handleDeleteProfilePicture(); }}
-                TwClassName="absolute top-2 right-2 cursor-pointer z-50 rounded-full border-1 bg-gray-200 border-gray-200 hover:text-primary hover:bg-gray-400 hover:border-primary p-2"
+                TwClassName="absolute top-2 right-2 cursor-pointer z-50 rounded-full border-1 bg-gray-200 border-gray-200 hover:text-amber-500 hover:bg-gray-400 hover:border-primary p-2"
               >
                 <Icon color="text-gray-900" name="Trash" />
               </Container>
@@ -299,7 +299,7 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
         </Container>
         
         <Container TwClassName="flex-col flex-8 gap-5">
-          <Text TwClassName="text-black text-xl font-bold" text="Personal Information" />
+          <Text TwClassName="text-gray-900 text-xl font-bold" text="Personal Information" />
           <Container TwClassName="flex-row justify-between gap-5">
             <Container TwClassName="flex-col flex-1">
               <Input
@@ -330,7 +330,7 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
 
       <Container TwClassName="flex-row gap-5 justify-between">
         <Container TwClassName="flex-col flex-8 gap-5 mt-5">
-          <Text TwClassName="text-black text-xl font-bold" text="Contact Information" />
+          <Text TwClassName="text-gray-900 text-xl font-bold" text="Contact Information" />
           <Input
             label="Phone"
             value={form.phone}
@@ -398,7 +398,7 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
 
       <Container TwClassName="flex-row gap-5 justify-between">
         <Container TwClassName="flex-col flex-8 gap-5 mt-5">
-          <Text TwClassName="text-black text-xl font-bold" text="Account Information" />
+          <Text TwClassName="text-gray-900 text-xl font-bold" text="Account Information" />
           <Container TwClassName="flex-col gap-4">
             <Input
               label="Old Password"
@@ -427,14 +427,14 @@ const MyProfileAboutTab: React.FC<ProfileTab> = ({ profileUser }) => {
 
       <Container TwClassName="flex-row gap-5 mt-5 justify-end">
         <Button
-          TwClassName="p-2 bg-gray-300 rounded-xl text-black border-1 min-w-[150px] border-gray-300 hover:bg-transparent hover:text-gray-300"
+          TwClassName="p-2 bg-gray-300 rounded-xl text-gray-900 border-1 min-w-[150px] border-gray-300 hover:bg-transparent hover:text-gray-300"
           onClick={handleRestore}
           disabled={isProfileRestoring}
         >
           {isProfileRestoring ? <Loader variant="spinner" color="bg-amber-500" /> : "Restore Changes"}
         </Button>
         <Button
-          TwClassName="p-2 bg-primary rounded-xl text-white border-1 min-w-[150px] border-primary hover:bg-transparent hover:text-primary"
+          TwClassName="p-2 bg-amber-500 rounded-xl text-gray-50 border-1 min-w-[150px] border-primary hover:bg-transparent hover:text-amber-500"
           onClick={handleSave}
           disabled={isProfileSaving || (emailChanged && !form.password)}
         >

@@ -75,8 +75,8 @@ const FriendCard: React.FC<FriendCardProps> = ({
 
   const getActionConfig = (): ActionConfig => {
     const baseButtonClasses = "w-full relative flex-1 mt-3 p-1 rounded-xl border flex justify-center items-center";
-    const primaryButton = `${baseButtonClasses} bg-primary text-white border-primary hover:bg-transparent hover:text-primary`;
-    const errorButton = `${baseButtonClasses} bg-error text-white border-error hover:bg-transparent hover:text-error`;
+    const primaryButton = `${baseButtonClasses} bg-amber-500 text-gray-50 border-primary hover:bg-transparent hover:text-amber-500`;
+    const errorButton = `${baseButtonClasses} bg-error text-gray-50 border-error hover:bg-transparent hover:text-error`;
 
     switch (meta.source) {
       case 'accepted':
@@ -153,9 +153,9 @@ const FriendCard: React.FC<FriendCardProps> = ({
     const initials = `${friend.firstName?.[0] || ''}${friend.lastName?.[0] || ''}`.toUpperCase();
     
     return (
-      <Container TwClassName="-ml-1.5 rounded-full w-20 h-20 bg-black cursor-pointer flex justify-center items-center border-3 border-white">
+      <Container TwClassName="-ml-1.5 rounded-full w-20 h-20 bg-gray-900 cursor-pointer flex justify-center items-center border-3 border-white">
         <Text
-          TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+          TwClassName="text-gray-50 w-full text-sm font-semibold leading-[2.5rem] text-center"
           text={initials}
         />
       </Container>
@@ -200,12 +200,12 @@ const FriendCard: React.FC<FriendCardProps> = ({
         {renderAvatar()}
 
         <Text
-          TwClassName="text-black text-xl font-bold"
+          TwClassName="text-gray-900 text-xl font-bold"
           text={fullName || 'Unknown User'}
         />
         
         <Text 
-          TwClassName="text-black text-md" 
+          TwClassName="text-gray-900 text-md" 
           text={friend.email || ''} 
         />
 

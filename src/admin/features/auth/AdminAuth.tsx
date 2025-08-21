@@ -134,7 +134,7 @@ const AdminAuth: React.FC = () => {
         <Container
             TwClassName="w-full min-h-[calc(100vh-50px)] justify-center items-center"
         >
-            <Container TwClassName='w-11/12 md:w-1/3 p-4 bg-white rounded-xl min-h-2/5 flex-col justify-between'>
+            <Container TwClassName='w-11/12 md:w-1/3 p-4 bg-gray-50 rounded-xl min-h-2/5 flex-col justify-between'>
                 <Text text='Login' TwClassName="text-xl" />
 
                 <Input
@@ -164,8 +164,8 @@ const AdminAuth: React.FC = () => {
                     }
                 />
 
-                <Button TwClassName='mt-3 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary' onClick={handleSubmit}>
-                    {isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Login'}
+                <Button TwClassName='mt-3 p-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500' onClick={handleSubmit}>
+                    {isLoading ? <Loader variant='spinner' color='bg-gray-50' /> : 'Login'}
                 </Button>
 
             </Container>

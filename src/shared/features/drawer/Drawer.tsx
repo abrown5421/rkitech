@@ -55,7 +55,7 @@ const Drawer: React.FC = () => {
       onClick={handleClose}
     >
       <Container
-        TwClassName={clsx('p-4 bg-white min-w-100 shadow-xl absolute', positionClasses[drawer.draweranchor ?? 'right'])}
+        TwClassName={clsx('p-4 bg-gray-50 min-w-100 shadow-xl absolute', positionClasses[drawer.draweranchor ?? 'right'])}
         animation={{
           entranceExit: {
             entranceAnimation: drawer.draweranimation.entranceAnimation,

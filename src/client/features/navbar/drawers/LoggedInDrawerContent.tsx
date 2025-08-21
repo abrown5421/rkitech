@@ -71,8 +71,8 @@ const LoggedInDrawerContent: React.FC = () => {
         {renderProfileMenuItems}
       </Container>
 
-      <Button TwClassName="w-full p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary" cursor="pointer" onClick={handleLogout}>
-        {isLoading ? <Loader variant="spinner" color="bg-white-500" /> : <Text text="Logout" />}
+      <Button TwClassName="w-full p-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500" cursor="pointer" onClick={handleLogout}>
+        {isLoading ? <Loader variant="spinner" color="bg-gray-50-500" /> : <Text text="Logout" />}
       </Button>
     </Container>
   );

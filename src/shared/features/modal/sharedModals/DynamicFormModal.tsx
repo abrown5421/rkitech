@@ -256,7 +256,7 @@ const DynamicFormModal: React.FC = () => {
               <Button
                 TwClassName={`py-1 px-3 rounded-full text-sm ${
                   activeTab === "url"
-                    ? "bg-primary text-white"
+                    ? "bg-amber-500 text-gray-50"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setActiveTab("url")}
@@ -266,7 +266,7 @@ const DynamicFormModal: React.FC = () => {
               <Button
                 TwClassName={`py-1 px-3 rounded-full text-sm ${
                   activeTab === "upload"
-                    ? "bg-primary text-white"
+                    ? "bg-amber-500 text-gray-50"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setActiveTab("upload")}
@@ -452,7 +452,7 @@ const DynamicFormModal: React.FC = () => {
         <Container TwClassName="flex-row gap-2 justify-end">
           <Button
             onClick={handleCancel}
-            TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-white border-1 border-gray-300 hover:bg-transparent hover:text-gray-300"
+            TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-gray-50 border-1 border-gray-300 hover:bg-transparent hover:text-gray-300"
           >
             Close
           </Button>
@@ -489,9 +489,9 @@ const DynamicFormModal: React.FC = () => {
                       TwClassName="-ml-1.5 rounded-full border border-gray-300 cursor-pointer object-cover border-3 border-white"
                     />
                   ) : (
-                    <Container TwClassName="-ml-1.5 rounded-full w-10 h-10 bg-black cursor-pointer flex justify-center items-center border-3 border-white">
+                    <Container TwClassName="-ml-1.5 rounded-full w-10 h-10 bg-gray-900 cursor-pointer flex justify-center items-center border-3 border-white">
                       <Text
-                        TwClassName="text-white w-full text-sm font-semibold leading-[2.5rem] text-center"
+                        TwClassName="text-gray-50 w-full text-sm font-semibold leading-[2.5rem] text-center"
                         text={`${user.firstName?.[0] || ""}${
                           user.lastName?.[0] || ""
                         }`.toUpperCase()}
@@ -517,13 +517,13 @@ const DynamicFormModal: React.FC = () => {
       <Container TwClassName="flex-row gap-2 justify-end mt-4">
         <Button
           onClick={handleCancel}
-          TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-white border-1 border-gray-300 hover:bg-transparent hover:text-gray-300 flex-1"
+          TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-gray-50 border-1 border-gray-300 hover:bg-transparent hover:text-gray-300 flex-1"
         >
           Cancel
         </Button>
         <Button
           onClick={handleSave}
-          TwClassName="min-w-[100px] py-1 px-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary flex-1"
+          TwClassName="min-w-[100px] py-1 px-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500 flex-1"
         >
           {savingImage ? <Loader variant='spinner' color='text-gray-50'/> : <>Save</>}
         </Button>

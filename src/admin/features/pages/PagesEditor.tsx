@@ -230,7 +230,7 @@ const PagesEditor: React.FC = () => {
         <Container TwClassName='flex-row items-center gap-4 mt-4 ml-1'>
           <Button
             onClick={() => clientNavigation(page.pagePath, page.pageName, page.pageID)()}
-            TwClassName='pt-0 pr-3 pb-0 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-transparent hover:text-primary flex justify-center items-center'
+            TwClassName='pt-0 pr-3 pb-0 pl-3 bg-amber-500 rounded-xl text-gray-50 border border-primary hover:bg-transparent hover:text-amber-500 flex justify-center items-center'
           >
             View 
           </Button>
@@ -244,14 +244,14 @@ const PagesEditor: React.FC = () => {
                   activeEditorUUID: undefined,
                 }));
                 clientNavigation(`/admin/page/${page.componentKey}`, 'AdminPage', 'adminPage')()}}
-              TwClassName='pt-0 pr-3 pb-0 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent hover:text-black flex justify-center items-center'
+              TwClassName='pt-0 pr-3 pb-0 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:bg-transparent hover:text-gray-900 flex justify-center items-center'
             >
               Edit
             </Button>
           )}
           {!isProtected && (<Button
             onClick={() => deletePage(page.pageID, page.pageName)}
-            TwClassName='pt-0 pr-3 pb-0 pl-3 bg-error rounded-xl text-white border border-error hover:bg-transparent hover:text-error flex justify-center items-center'
+            TwClassName='pt-0 pr-3 pb-0 pl-3 bg-error rounded-xl text-gray-50 border border-error hover:bg-transparent hover:text-error flex justify-center items-center'
           >
             Delete
           </Button> )}
@@ -263,7 +263,7 @@ const PagesEditor: React.FC = () => {
             }
           />
           {isToggling(page.pageID) && (
-            <Container TwClassName="flex items-center justify-center bg-white/50 rounded">
+            <Container TwClassName="flex items-center justify-center bg-gray-50/50 rounded">
               <Loader variant="spinner" color="text-amber-500" />
             </Container>
           )}
@@ -281,7 +281,7 @@ const PagesEditor: React.FC = () => {
         <>
           <Text
             text="Pages"
-            TwClassName='text-black font-primary text-xl' 
+            TwClassName='text-gray-900 font-primary text-xl' 
           />
           
           {localPages.map((page) => 
@@ -310,10 +310,10 @@ const PagesEditor: React.FC = () => {
         }}
         TwClassName='flex-row gap-2 justify-center'
       >
-        <Button onClick={handleUndo} TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-black border border-gray-200 hover:bg-transparent flex justify-center items-center">
+        <Button onClick={handleUndo} TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-gray-200 rounded-xl text-gray-900 border border-gray-200 hover:bg-transparent flex justify-center items-center">
           Undo
         </Button>
-        <Button onClick={handleSave} TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-primary rounded-xl text-white border border-primary hover:bg-primary flex justify-center items-center">
+        <Button onClick={handleSave} TwClassName="mb-3 pt-1 pr-3 pb-1 pl-3 bg-amber-500 rounded-xl text-gray-50 border border-primary hover:bg-amber-500 flex justify-center items-center">
           {isSaving ? <Loader variant='spinner' color='amber-500' /> : <>Save</>}
         </Button>
       </Container>

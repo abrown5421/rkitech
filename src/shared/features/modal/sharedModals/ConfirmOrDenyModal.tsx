@@ -49,13 +49,13 @@ const ConfirmOrDenyModal: React.FC = () => {
             dispatch(setNotLoading())
             dispatch(preCloseModal());
           }}
-          TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-white border-1 border-gray-300 hover:bg-transparent hover:text-gray-300 flex-1"
+          TwClassName="min-w-[100px] py-1 px-2 bg-gray-300 rounded-xl text-gray-50 border-1 border-gray-300 hover:bg-transparent hover:text-gray-300 flex-1"
         >
           Cancel
         </Button>
         <Button
           onClick={handleConfirm}
-          TwClassName="min-w-[100px] py-1 px-2 bg-error rounded-xl text-white border-1 border-error hover:bg-transparent hover:text-error flex-1"
+          TwClassName="min-w-[100px] py-1 px-2 bg-error rounded-xl text-gray-50 border-1 border-error hover:bg-transparent hover:text-error flex-1"
         >
           Confirm
         </Button>

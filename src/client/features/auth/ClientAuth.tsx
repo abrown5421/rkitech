@@ -212,7 +212,7 @@ const ClientAuth: React.FC = () => {
         <Container
             TwClassName="w-full min-h-[calc(100vh-50px)] justify-center items-center"
         >
-            <Container TwClassName='w-11/12 md:w-1/3 p-4 bg-white rounded-xl min-h-2/5 flex-col justify-between'>
+            <Container TwClassName='w-11/12 md:w-1/3 p-4 bg-gray-50 rounded-xl min-h-2/5 flex-col justify-between'>
                 <Text text={isSignup ? 'Create Account' : 'Login'} TwClassName="text-xl" />
 
                 {isSignup && (
@@ -275,12 +275,12 @@ const ClientAuth: React.FC = () => {
                     />
                 )}
 
-                <Button TwClassName='mt-3 p-2 bg-primary rounded-xl text-white border-1 border-primary hover:bg-transparent hover:text-primary' onClick={handleSubmit}>
-                    {isSignup ? (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Create Account') : (isLoading ? <Loader variant='spinner' color='bg-white' /> : 'Login')}
+                <Button TwClassName='mt-3 p-2 bg-amber-500 rounded-xl text-gray-50 border-1 border-primary hover:bg-transparent hover:text-amber-500' onClick={handleSubmit}>
+                    {isSignup ? (isLoading ? <Loader variant='spinner' color='bg-gray-50' /> : 'Create Account') : (isLoading ? <Loader variant='spinner' color='bg-gray-50' /> : 'Login')}
                 </Button>
 
                 <Button
-                    TwClassName="text-sm text-black hover:underline"
+                    TwClassName="text-sm text-gray-900 hover:underline"
                     onClick={() => {
                         isSignup
                             ? clientNavigation(loginComp?.pagePath ?? '', 'Auth', loginComp?.pageID ?? '')()
