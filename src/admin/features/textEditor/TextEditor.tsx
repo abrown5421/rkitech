@@ -10,6 +10,8 @@ import Icon from "../../../shared/components/icon/Icon";
 import ColorPicker from "../../components/colorPicker/ColorPicker";
 import BorderPicker from "../../components/borderPicker/BorderPicker";
 import Text from "../../../shared/components/text/Text";
+import MarginPicker from "../../components/marginPicker/MarginPicker";
+import PaddingPicker from "../../components/paddingPicker/PaddingPicker";
 
 const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
   const dispatch = useAppDispatch();
@@ -273,6 +275,18 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
         TwClassName="mb-4"
         value={textTwClassObj.borderStyle?.noPrefix || ""}
         onChange={(val) => updateNodeStyle("borderStyle", val)}
+      />
+      <MarginPicker
+        label="Margin"
+        TwClassName="mb-4"
+        value={textTwClassObj.margin?.noPrefix || ""}
+        onChange={(val) => updateNodeStyle("margin", val)}
+      />
+      <PaddingPicker
+        label="Padding"
+        TwClassName="mb-4"
+        value={textTwClassObj.margin?.noPrefix || ""}
+        onChange={(val) => updateNodeStyle("margin", val)}
       />
     </Container>
   );
