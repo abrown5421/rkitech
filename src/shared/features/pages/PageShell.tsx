@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import type { PageShellState, PagesShellSubState } from './pageTypes';
 import Auth from '../../../client/features/auth/ClientAuth';
@@ -22,7 +21,7 @@ import PageContentRenderer from './PageContentRenderer';
 import PageEditor from '../../../admin/features/page/PageEditor';
 
 const PageShell: React.FC<PageShellState> = ({
-    activePageShellBgColor = 'bg-white', 
+    activePageShellBgColor = 'bg-gray-50', 
     activePageShellAnimation = {
         entranceAnimation: 'animate__fadeIn',
         exitAnimation: 'animate__fadeOut',
@@ -50,7 +49,7 @@ const PageShell: React.FC<PageShellState> = ({
     }, [activePage])
 
     return (
-        <Container TwClassName="flex-row">
+        <Container TwClassName="flex-row overflow-scroll">
             {activePage.activePageShellId === 'adminPage' && activePage.activePageShellName !== 'Admin' && (
                 <>
                 {activePage.activePageShellName !== 'AdminPage' ? (
