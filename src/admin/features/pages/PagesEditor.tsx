@@ -193,7 +193,7 @@ const PagesEditor: React.FC = () => {
     const isProtected = isPermanent;
 
     return (
-      <Container TwClassName='flex-col border-gray-200 shadow border-1 rounded-xl p-4'>
+      <Container key={page + index} TwClassName='flex-col border-gray-200 shadow border-1 rounded-xl p-4'>
         
         <Container
           key={page.pageID}

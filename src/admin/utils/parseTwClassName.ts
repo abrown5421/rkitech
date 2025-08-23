@@ -1,24 +1,27 @@
-export const parseTwClassName = (twArray: any[] | string): string => {
-  if (!twArray) return "";
-
-  if (typeof twArray === "string") {
-    return twArray.trim().replace(/\s+/g, " ");
-  }
-
-  if (!Array.isArray(twArray)) return "";
-
-  const combined = twArray
-    .map(obj =>
-      [
-        obj.noPrefix || "",
-        obj.xl ? `xl:${obj.xl}` : "",
-        obj.lg ? `lg:${obj.lg}` : "",
-        obj.md ? `md:${obj.md}` : "",
-        obj.sm ? `sm:${obj.sm}` : "",
-        obj.hover ? `${obj.hover}` : ""
-      ].join(" ")
-    )
+export const parseTwClassName = (TwClassName: any[], activePrefix?: string | undefined): string => {
+  if (!Array.isArray(TwClassName)) return "";
+  
+  return TwClassName
+    .map((classObj) => {
+      if (!classObj || typeof classObj !== "object") return "";
+      
+      const { noPrefix = "", md = "", xl = "", hover = "" } = classObj;
+      
+      let activeClass = "";
+      
+      if (activePrefix === "md") {
+        activeClass = md || noPrefix;
+      } else if (activePrefix === "xl") {
+        activeClass = xl || md || noPrefix;
+      } else {
+        activeClass = noPrefix;
+      }
+      const cleanClass = activeClass.replace(/^(md:|xl:)/, "");
+      
+      const hoverClass = hover ? ` ${hover}` : "";
+      
+      return `${cleanClass}${hoverClass}`;
+    })
+    .filter(Boolean)
     .join(" ");
-
-  return combined.replace(/\s+/g, " ").trim();
 };

@@ -10,15 +10,21 @@ import Icon from "../../../shared/components/icon/Icon";
 import ColorPicker from "../../components/colorPicker/ColorPicker";
 import BorderPicker from "../../components/borderPicker/BorderPicker";
 import Text from "../../../shared/components/text/Text";
+import MarginPicker from "../../components/marginPicker/MarginPicker";
+import PaddingPicker from "../../components/paddingPicker/PaddingPicker";
 
 const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
   const dispatch = useAppDispatch();
+  const prefix = useAppSelector((state) => state.pageEditor.activePrefix);
+  const hoverMode = useAppSelector((state) => state.pageEditor.hover);
   const pageContent = useAppSelector(
     (state) => state.pageEditor.localPageObjectFromDb?.content
   );
 
   const [text, setText] = useState<string>("");
   const [textTwClassObj, setTextTwClassObj] = useState<Record<string, any>>({});
+
+  useEffect(()=>{console.log(pageContent)}, [pageContent])
 
   const findNodeByUUID = (content: any, uuid: string): any | null => {
     if (!content) return null;
@@ -34,6 +40,50 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
     return null;
   };
 
+  const getActiveFieldKey = () => {
+    // When hover mode is active, we're editing hover states
+    if (hoverMode) return "hover";
+    // Otherwise, use the breakpoint logic
+    if (prefix === "md") return "md";
+    if (prefix === "xl") return "xl";
+    return "noPrefix";
+  };
+
+  const getCurrentValue = (styleObj: any) => {
+    const fieldKey = getActiveFieldKey();
+    return styleObj?.[fieldKey] || "";
+  };
+
+  const removePrefix = (className: string) => {
+    if (!className) return "";
+    
+    // Remove hover: prefix
+    if (className.startsWith("hover:")) {
+      return className.substring(6);
+    }
+    
+    // Remove breakpoint prefixes
+    if (prefix === "md" && className.startsWith("md:")) {
+      return className.substring(3);
+    }
+    if (prefix === "xl" && className.startsWith("xl:")) {
+      return className.substring(3);
+    }
+    return className;
+  };
+
+  const addPrefix = (className: string) => {
+    if (!className) return "";
+    
+    // Add hover prefix when in hover mode
+    if (hoverMode) return `hover:${className}`;
+    
+    // Add breakpoint prefixes
+    if (prefix === "md") return `md:${className}`;
+    if (prefix === "xl") return `xl:${className}`;
+    return className;
+  };
+
   useEffect(() => {
     if (!pageContent) return;
 
@@ -44,7 +94,15 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
 
       const twClassObj = (node.props?.TwClassName || []).reduce(
         (acc: Record<string, any>, obj: any) => {
-          if (obj.propName) acc[obj.propName] = obj;
+          if (obj.propName) {
+            acc[obj.propName] = {
+              propName: obj.propName,
+              noPrefix: obj.noPrefix || "",
+              hover: obj.hover || "",
+              md: obj.md || "",
+              xl: obj.xl || "",
+            };
+          }
           return acc;
         },
         {}
@@ -58,15 +116,26 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
         "fontUnderline",
         "fontColor",
         "bgColor",
-        "borderStyle", // Added border support
+        "borderStyle",
+        "margin",
+        "padding",
       ];
+      
       defaultProps.forEach((key) => {
-        if (!twClassObj[key]) twClassObj[key] = { noPrefix: "" };
+        if (!twClassObj[key]) {
+          twClassObj[key] = {
+            propName: key,
+            noPrefix: "",
+            hover: "",
+            md: "",
+            xl: "",
+          };
+        }
       });
 
       setTextTwClassObj(twClassObj);
     }
-  }, [pageContent, nodeUUID]);
+  }, [pageContent, nodeUUID, prefix, hoverMode]);
 
   const handleChange = (val: string) => {
     setText(val);
@@ -102,25 +171,94 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
   };
 
   const toggleStyle = (propName: string, twClass: string) => {
-    const newValue =
-      textTwClassObj[propName]?.noPrefix === twClass ? "" : twClass;
-    setTextTwClassObj((prev) => {
-      const currentValue = prev[propName]?.noPrefix || "";
-      return {
+    const fieldKey = getActiveFieldKey();
+    const currentValue = removePrefix(getCurrentValue(textTwClassObj[propName]));
+
+    let newValue = "";
+
+    switch (propName) {
+      case "fontWeight":
+        newValue = currentValue === "font-bold" ? "font-normal" : "font-bold";
+        break;
+      case "fontItalic":
+        newValue = currentValue === "italic" ? "not-italic" : "italic";
+        break;
+      case "fontUnderline":
+        newValue = currentValue === "underline" ? "no-underline" : "underline";
+        break;
+      default:
+        newValue = currentValue === twClass ? "" : twClass;
+    }
+
+    // In hover mode, only update the hover field
+    if (hoverMode) {
+      const prefixedValue = newValue ? `hover:${newValue}` : "";
+      
+      setTextTwClassObj((prev) => ({
         ...prev,
         [propName]: {
           ...prev[propName],
-          noPrefix: currentValue === twClass ? "" : twClass,
+          hover: prefixedValue,
         },
-      };
+      }));
+
+      updateNodeStyle(propName, prefixedValue);
+      return;
+    }
+
+    // Normal breakpoint cascade behavior
+    const breakpointHierarchy = ["noPrefix", "md", "xl"];
+    const currentIndex = breakpointHierarchy.indexOf(fieldKey);
+    const targetBreakpoints = breakpointHierarchy.slice(currentIndex);
+
+    setTextTwClassObj((prev) => {
+      const updated = { ...prev };
+      targetBreakpoints.forEach(breakpoint => {
+        const prefixedValue = breakpoint === "noPrefix" ? newValue : `${breakpoint}:${newValue}`;
+        updated[propName] = {
+          ...updated[propName],
+          [breakpoint]: prefixedValue,
+        };
+      });
+      return updated;
     });
-    updateNodeStyle(propName, newValue);
+
+    updateNodeStyleCascade(propName, newValue, targetBreakpoints);
+  };
+
+  const updateNodeStyleCascade = (propName: string, newValue: string, targetBreakpoints: string[]) => {
+    if (!pageContent) return;
+
+    let updatedContent = pageContent;
+
+    targetBreakpoints.forEach(breakpoint => {
+      const prefixedValue = breakpoint === "noPrefix" ? newValue : `${breakpoint}:${newValue}`;
+      updatedContent = updateNodeTwClass(
+        updatedContent,
+        nodeUUID,
+        propName,
+        breakpoint,
+        prefixedValue
+      );
+    });
+
+    dispatch(
+      updatePageField({
+        field: "content",
+        value: updatedContent,
+      })
+    );
   };
 
   const updateNodeStyle = (propName: string, newValue: string) => {
+    const fieldKey = getActiveFieldKey();
+    
     setTextTwClassObj((prev) => ({
       ...prev,
-      [propName]: { ...prev[propName], noPrefix: newValue },
+      [propName]: { 
+        ...prev[propName], 
+        [fieldKey]: newValue 
+      },
     }));
 
     if (!pageContent) return;
@@ -129,6 +267,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
       pageContent,
       nodeUUID,
       propName,
+      fieldKey,
       newValue
     );
 
@@ -144,19 +283,30 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
     node: any,
     uuid: string,
     propName: string,
+    fieldKey: string,
     value: string
   ): any => {
     if (!node) return node;
     if (Array.isArray(node))
-      return node.map((n) => updateNodeTwClass(n, uuid, propName, value));
+      return node.map((n) => updateNodeTwClass(n, uuid, propName, fieldKey, value));
     if (node.UUID === uuid) {
       const existing = node.props?.TwClassName || [];
       const updatedClasses = existing.map((cls: any) =>
-        cls.propName === propName ? { ...cls, noPrefix: value } : cls
+        cls.propName === propName 
+          ? { ...cls, [fieldKey]: value } 
+          : cls
       );
 
       if (!updatedClasses.find((cls: any) => cls.propName === propName)) {
-        updatedClasses.push({ propName, noPrefix: value });
+        const newClass = {
+          propName,
+          noPrefix: "",
+          hover: "",
+          md: "",
+          xl: "",
+          [fieldKey]: value,
+        };
+        updatedClasses.push(newClass);
       }
 
       return {
@@ -170,7 +320,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
     if (node.children)
       return {
         ...node,
-        children: updateNodeTwClass(node.children, uuid, propName, value),
+        children: updateNodeTwClass(node.children, uuid, propName, fieldKey, value),
       };
     return node;
   };
@@ -179,13 +329,21 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
 
   return (
     <Container TwClassName="flex-col mb-4">
+      {/* Mode Indicator */}
+      {hoverMode && (
+        <Container TwClassName="mb-3 p-2 bg-amber-50 border border-amber-200 rounded">
+          <Text text="✨ Hover Mode Active - Editing hover states" TwClassName="text-amber-700 text-sm" />
+        </Container>
+      )}
+      
       <Container TwClassName="flex-row mb-3 gap-3">
         <Select
           TwClassName="flex-2"
-          label="Font Size"
-          value={textTwClassObj.fontSize?.noPrefix || ""}
-          onChange={(e) => updateNodeStyle("fontSize", e.target.value)}
+          label="Size"
+          value={removePrefix(getCurrentValue(textTwClassObj.fontSize))}
+          onChange={(e) => updateNodeStyle("fontSize", addPrefix(e.target.value))}
         >
+          <option value="">Default</option>
           <option value="text-xs">XS</option>
           <option value="text-sm">SM</option>
           <option value="text-md">MD</option>
@@ -203,9 +361,10 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
         <Select
           TwClassName="flex-3"
           label="Font Family"
-          value={textTwClassObj.fontFace?.noPrefix || ""}
-          onChange={(e) => updateNodeStyle("fontFace", e.target.value)}
+          value={removePrefix(getCurrentValue(textTwClassObj.fontFace))}
+          onChange={(e) => updateNodeStyle("fontFace", addPrefix(e.target.value))}
         >
+          <option value="">Default</option>
           <option value="font-primary">Primary</option>
           <option value="font-secondary">Secondary</option>
           <option value="font-sans">Sans</option>
@@ -214,7 +373,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
         </Select>
         <Button
           TwClassName={`border-1 border-gray-300 flex-1 rounded ${
-            textTwClassObj.fontWeight?.noPrefix === "font-bold"
+            removePrefix(getCurrentValue(textTwClassObj.fontWeight)) === "font-bold"
               ? "bg-gray-200"
               : ""
           }`}
@@ -225,7 +384,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
 
         <Button
           TwClassName={`border-1 border-gray-300 flex-1 rounded ${
-            textTwClassObj.fontItalic?.noPrefix === "italic"
+            removePrefix(getCurrentValue(textTwClassObj.fontItalic)) === "italic"
               ? "bg-gray-200"
               : ""
           }`}
@@ -236,7 +395,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
 
         <Button
           TwClassName={`border-1 border-gray-300 flex-1 rounded ${
-            textTwClassObj.fontUnderline?.noPrefix === "underline"
+            removePrefix(getCurrentValue(textTwClassObj.fontUnderline)) === "underline"
               ? "bg-gray-200"
               : ""
           }`}
@@ -258,21 +417,33 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
         label="Text Color"
         prefix="text-"
         TwClassName="mb-4"
-        value={textTwClassObj.fontColor?.noPrefix || ""}
-        onChange={(val) => updateNodeStyle("fontColor", val)}
+        value={removePrefix(getCurrentValue(textTwClassObj.fontColor))}
+        onChange={(val) => updateNodeStyle("fontColor", addPrefix(val))}
       />
       <ColorPicker
         label="Text Background"
         prefix="bg-"
         TwClassName="mb-4"
-        value={textTwClassObj.bgColor?.noPrefix || ""}
-        onChange={(val) => updateNodeStyle("bgColor", val)}
+        value={removePrefix(getCurrentValue(textTwClassObj.bgColor))}
+        onChange={(val) => updateNodeStyle("bgColor", addPrefix(val))}
       />
       <BorderPicker 
         label="Border Settings"
         TwClassName="mb-4"
-        value={textTwClassObj.borderStyle?.noPrefix || ""}
-        onChange={(val) => updateNodeStyle("borderStyle", val)}
+        value={removePrefix(getCurrentValue(textTwClassObj.borderStyle))}
+        onChange={(val) => updateNodeStyle("borderStyle", addPrefix(val))}
+      />
+      <MarginPicker
+        label="Margin"
+        TwClassName="mb-4"
+        value={removePrefix(getCurrentValue(textTwClassObj.margin))}
+        onChange={(val) => updateNodeStyle("margin", addPrefix(val))}
+      />
+      <PaddingPicker
+        label="Padding"
+        TwClassName="mb-4"
+        value={removePrefix(getCurrentValue(textTwClassObj.padding))}
+        onChange={(val) => updateNodeStyle("padding", addPrefix(val))}
       />
     </Container>
   );
