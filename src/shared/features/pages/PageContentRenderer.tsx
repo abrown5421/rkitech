@@ -22,7 +22,15 @@ const componentMap: Record<string, React.FC<any>> = {
   TrianglifyBanner,
 };
 
-const PageContentRenderer = ({ content, cmsMode }: { content: any; cmsMode?: boolean }) => {
+const PageContentRenderer = ({ 
+  content, 
+  cmsMode, 
+  activePrefix 
+}: { 
+  content: any; 
+  cmsMode?: boolean;
+  activePrefix?: string | undefined;
+}) => {
   const clientNavigation = useNavigationHook();
   const dispatch = useAppDispatch();
   const pages = useAppSelector((state) => state.pages.pages);
@@ -61,7 +69,12 @@ const PageContentRenderer = ({ content, cmsMode }: { content: any; cmsMode?: boo
     return (
       <>
         {content.map((child, index) => (
-          <PageContentRenderer key={index} content={child} cmsMode={cmsMode} />
+          <PageContentRenderer 
+            key={index} 
+            content={child} 
+            cmsMode={cmsMode}
+            activePrefix={activePrefix}
+          />
         ))}
       </>
     );
@@ -78,7 +91,7 @@ const PageContentRenderer = ({ content, cmsMode }: { content: any; cmsMode?: boo
   const normalizedProps = { ...props };
   
   if (normalizedProps.TwClassName) {
-    normalizedProps.TwClassName = parseTwClassName(normalizedProps.TwClassName);
+    normalizedProps.TwClassName = parseTwClassName(normalizedProps.TwClassName, activePrefix);
   }
 
   if (normalizedProps.onClick) {
@@ -101,7 +114,12 @@ const PageContentRenderer = ({ content, cmsMode }: { content: any; cmsMode?: boo
 
   if (childrenToRender) {
     renderedChildren = childrenToRender.map((child: any, i: number) => (
-      <PageContentRenderer key={i} content={child} cmsMode={cmsMode} />
+      <PageContentRenderer 
+        key={i} 
+        content={child} 
+        cmsMode={cmsMode}
+        activePrefix={activePrefix}
+      />
     ));
   }
 

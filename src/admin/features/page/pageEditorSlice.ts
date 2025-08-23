@@ -7,7 +7,7 @@ import type { Page } from "../../../shared/features/pages/pageTypes";
 const initialState: PageEditorProps = {
   localPageCompKey: '',
   localPageObjectFromDb: null,
-  activePrefix: undefined,
+  activePrefix: 'xl',
   activeEditorComponent: undefined,
   activeEditorUUID: undefined,
   enterExit: true,
