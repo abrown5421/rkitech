@@ -445,6 +445,18 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
         value={removePrefix(getCurrentValue(textTwClassObj.padding))}
         onChange={(val) => updateNodeStyle("padding", addPrefix(val))}
       />
+      <MarginPicker
+        label="Margin"
+        TwClassName="mb-4"
+        value={textTwClassObj.margin?.noPrefix || ""}
+        onChange={(val) => updateNodeStyle("margin", val)}
+      />
+      <PaddingPicker
+        label="Padding"
+        TwClassName="mb-4"
+        value={textTwClassObj.margin?.noPrefix || ""}
+        onChange={(val) => updateNodeStyle("margin", val)}
+      />
     </Container>
   );
 };
