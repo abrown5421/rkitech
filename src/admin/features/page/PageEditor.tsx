@@ -7,6 +7,7 @@ import Text from '../../../shared/components/text/Text';
 import EntrancExitAnimationPicker from '../../components/entrancExitPicker/EntrancExitAnimationPicker';
 import type { EntranceAnimation, ExitAnimation } from '../../components/entrancExitPicker/EntrancExitAnimationPickerTypes';
 import TextEditor from '../textEditor/TextEditor';
+import ContainerEditor from '../containerEditor/ContainerEditor';
 
 const PageEditor: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -55,7 +56,7 @@ const PageEditor: React.FC = () => {
                         <TextEditor nodeUUID={pageEditor.activeEditorUUID} />
                     }
                     {pageEditor.activeEditorComponent === 'Container' && 
-                        <>Container editor will go here</>
+                        <ContainerEditor nodeUUID={pageEditor.activeEditorUUID} />
                     }
                     {pageEditor.activeEditorComponent === 'Button' && 
                         <>Button editor will go here</>
