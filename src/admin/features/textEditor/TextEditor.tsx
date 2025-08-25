@@ -24,8 +24,6 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
   const [text, setText] = useState<string>("");
   const [textTwClassObj, setTextTwClassObj] = useState<Record<string, any>>({});
 
-  useEffect(()=>{console.log(pageContent)}, [pageContent])
-
   const findNodeByUUID = (content: any, uuid: string): any | null => {
     if (!content) return null;
     if (Array.isArray(content)) {
@@ -41,9 +39,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
   };
 
   const getActiveFieldKey = () => {
-    // When hover mode is active, we're editing hover states
     if (hoverMode) return "hover";
-    // Otherwise, use the breakpoint logic
     if (prefix === "md") return "md";
     if (prefix === "xl") return "xl";
     return "noPrefix";
@@ -57,12 +53,10 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
   const removePrefix = (className: string) => {
     if (!className) return "";
     
-    // Remove hover: prefix
     if (className.startsWith("hover:")) {
       return className.substring(6);
     }
     
-    // Remove breakpoint prefixes
     if (prefix === "md" && className.startsWith("md:")) {
       return className.substring(3);
     }
@@ -75,10 +69,8 @@ const TextEditor: React.FC<TextEditorProps> = ({ nodeUUID }) => {
   const addPrefix = (className: string) => {
     if (!className) return "";
     
-    // Add hover prefix when in hover mode
     if (hoverMode) return `hover:${className}`;
     
-    // Add breakpoint prefixes
     if (prefix === "md") return `md:${className}`;
     if (prefix === "xl") return `xl:${className}`;
     return className;
