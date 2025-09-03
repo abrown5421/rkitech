@@ -91,7 +91,11 @@ const PageContentRenderer = ({
   const normalizedProps = { ...props };
   
   if (normalizedProps.TwClassName) {
-    normalizedProps.TwClassName = parseTwClassName(normalizedProps.TwClassName, activePrefix);
+    normalizedProps.TwClassName = parseTwClassName(
+      normalizedProps.TwClassName,
+      cmsMode ?? false,
+      activePrefix
+    );
   }
 
   if (normalizedProps.onClick) {

@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import type { ButtonProps } from './buttonTypes';
 import { getAnimationClasses } from '../../../client/utils/useAnimation';
 
-const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps & { buttonText?: string }> = ({
   children,
   onClick,
   cursor,
@@ -11,6 +11,7 @@ const Button: React.FC<ButtonProps> = ({
   animation,
   TwClassName,
   style,
+  buttonText,
   ...rest
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -35,10 +36,9 @@ const Button: React.FC<ButtonProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       {...rest}
     >
-      {children}
+      {buttonText || children}
     </button>
   );
 };
 
 export default Button;
-
