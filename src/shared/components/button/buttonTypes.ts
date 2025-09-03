@@ -9,4 +9,5 @@ export interface ButtonProps {
   TwClassName?: string;
   cursor?: string;
   style?: React.CSSProperties;
+  buttonText?: string;
 }
