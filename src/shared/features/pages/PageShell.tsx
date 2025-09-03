@@ -86,7 +86,7 @@ const PageShell: React.FC<PageShellState> = ({
                             </Container>
                         ) : (
                             <Container TwClassName="flex-col flex-1 min-h-[calc(100vh-50px)]">
-                                <PageContentRenderer content={localPage?.localPageContent} />
+                                <PageContentRenderer content={localPage?.localPageContent} cmsMode={false} />
                             </Container>
                         )}
                         <Footer />

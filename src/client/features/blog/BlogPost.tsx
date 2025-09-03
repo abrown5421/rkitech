@@ -57,7 +57,7 @@ const BlogPost: React.FC = () => {
                     />
                     <Container TwClassName='flex-col p-10 w-full md:w-4/5 lg:w-1/2 mx-auto'>
                         <Text text={localPost.postTitle} TwClassName='text-gray-900 font-primary text-4xl mb-5' />
-                        <PageContentRenderer content={localPost.content} />
+                        <PageContentRenderer content={localPost.content} cmsMode={false} />
                         <Container TwClassName="flex-row justify-between border-t border-gray-200 pt-2 mt-4">
                             <Text text={localPost.postAuthor} TwClassName="text-amber-500 text-xs" />
                             <Text

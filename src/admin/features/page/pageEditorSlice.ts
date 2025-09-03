@@ -12,6 +12,7 @@ const initialState: PageEditorProps = {
   activeEditorUUID: undefined,
   enterExit: true,
   hover: false,
+  hasUnsavedChanges: false, 
 };
 
 const localPageSlice = createSlice({
@@ -60,7 +61,11 @@ const localPageSlice = createSlice({
     ) {
       if (state.localPageObjectFromDb) {
         state.localPageObjectFromDb[action.payload.field] = action.payload.value;
+        state.hasUnsavedChanges = true; 
       }
+    },
+    clearUnsavedChanges(state: PageEditorProps) {
+      state.hasUnsavedChanges = false;
     },
     updateNodeByUUID(
       state: PageEditorProps,
@@ -71,22 +76,23 @@ const localPageSlice = createSlice({
       const updateNode = (node: any): boolean => {
         if (node.UUID === UUID) {
           node.props = props;
-          return true; 
+          return true;
         }
         if (node.children && Array.isArray(node.children)) {
           for (let child of node.children) {
-            if (updateNode(child)) {
-              return true;
-            }
+            if (updateNode(child)) return true;
           }
         }
-        return false; 
+        return false;
       };
 
       if (state.localPageObjectFromDb) {
-        updateNode(state.localPageObjectFromDb);
+        if (updateNode(state.localPageObjectFromDb)) {
+          state.hasUnsavedChanges = true;
+        }
       }
     },
+
     resetLocalPageState(state: PageEditorProps) {
       state.localPageCompKey = '';
       state.localPageObjectFromDb = null;
@@ -112,6 +118,7 @@ export const {
   unsetActiveEditorUUID,
   updateNodeByUUID,
   updatePageField,
+  clearUnsavedChanges,
   resetLocalPageState,
 } = localPageSlice.actions;
 
