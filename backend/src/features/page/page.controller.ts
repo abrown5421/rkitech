@@ -6,24 +6,14 @@ import { BaseResponse } from "../base/BaseResponse";
 const pageService = new PageService();
 
 export class PageController {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async read(req: Request, res: Response, next: NextFunction) {
     try {
         const filters = req.query;
-        const pages = await pageService.getAll(filters);
+        const pages = await pageService.read(filters);
 
         res.json(BaseResponse.Success("Fetched pages successfully", pages));
     } catch (error) {
         next(error);
-    }
-  }
-
-  async getByID(req: Request, res: Response, next: NextFunction) {
-    try {
-      const page = await pageService.getById(req.params.id);
-      if (!page) throw BaseError.NotFound("Page", req.params.id);
-      res.json(BaseResponse.Success("Page retrieved successfully", page));
-    } catch (error) {
-      next(error);
     }
   }
 
