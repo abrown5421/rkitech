@@ -21,7 +21,7 @@ It will include:
 ### 🚀 Getting Started
 
 ```bash
-git clone https://github.com/abrown5421/rkitech.git
-cd rkitech
+npx degit abrown5421/rkitech my-new-project
+cd my-new-project
 npm install
 npm run dev
