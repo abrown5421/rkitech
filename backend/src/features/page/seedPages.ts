@@ -16,7 +16,6 @@ const defaultPages = [
     pageIntensity: false,
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
-    pageID: "534db1ae-8e49-45af-a505-2ef5c02c478b"
   },
   {
     pageName: "PageNotFound",
@@ -27,7 +26,6 @@ const defaultPages = [
     pageIntensity: false,
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
-    pageID: "58f820e6-e10b-4dbe-a11d-5f2055b75c0c"
   },
   {
     pageName: "PrivacyPolicy",
@@ -38,7 +36,6 @@ const defaultPages = [
     pageIntensity: false,
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
-    pageID: "7f2a04a6-b8c2-4cfd-b6e4-cf325b03e0e6"
   }
 ];
 
