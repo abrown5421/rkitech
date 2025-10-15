@@ -7,7 +7,7 @@ export class BaseService<T extends Document> {
         this.model = model;
     }
 
-    async getAll(filters: Partial<Record<keyof T, any>> = {}): Promise<T[]> {
+    async read(filters: Partial<Record<keyof T, any>> = {}): Promise<T[]> {
         const query: any = {};
         for (const [key, value] of Object.entries(filters)) {
         if (value !== undefined && value !== '') {
@@ -16,10 +16,6 @@ export class BaseService<T extends Document> {
         }
 
         return this.model.find(query).exec();
-    }
-
-    async getById(id: string): Promise<T | null> {
-        return this.model.findById(id).exec();
     }
 
     async create(data: Partial<T>): Promise<T> {
