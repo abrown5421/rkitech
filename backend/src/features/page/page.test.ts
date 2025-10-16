@@ -16,7 +16,7 @@ describe('Pages API', () => {
   });
 
   let createdPageId: string;
-
+  
   test('GET /api/pages should return all pages', async () => {
     const res = await request(app).get('/api/pages');
     expect(res.statusCode).toBe(200);
@@ -44,10 +44,11 @@ describe('Pages API', () => {
     createdPageId = res.body.data._id; 
   });
 
-  test('GET /api/pages/:id should return a single page', async () => {
-    const res = await request(app).get(`/api/pages/${createdPageId}`);
+  test('GET /api/pages/?_id should return a single page', async () => {
+    const res = await request(app).get(`/api/pages?_id=${createdPageId}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body.data._id).toBe(createdPageId);
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data[0]._id).toBe(createdPageId);
   });
 
   test('PUT /api/pages/:id should update a page', async () => {
