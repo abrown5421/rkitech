@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import pageRoutes from './features/page/page.routes';
 import userRoutes from './features/user/user.routes';
+import employeeRoutes from './features/employee/employee.routes';
 import { BaseError } from './features/base/BaseError';
 
 export const app = express();
@@ -26,7 +27,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // feature routes
 app.use('/api/pages', pageRoutes);
-app.use('/api/users', userRoutes)
+app.use('/api/users', userRoutes);
+app.use('/api/employees', employeeRoutes);
 
 // error middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
