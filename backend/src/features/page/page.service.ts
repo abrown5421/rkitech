@@ -6,8 +6,4 @@ export class PageService extends BaseService<IPage> {
     constructor() {
         super(Page)
     }
-
-    async getActivePages() {
-        return this.model.find({ pageActive: true})
-    }
 }
