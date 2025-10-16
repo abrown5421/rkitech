@@ -53,9 +53,9 @@ describe('Users API', () => {
   test('PUT /api/users/:id should update a user', async () => {
     const res = await request(app)
       .put(`/api/users/${createdUserId}`)
-      .send({ userFirstName: 'Testing' });
+      .send({ userFirstName: 'Test' });
     expect(res.statusCode).toBe(200);
-    expect(res.body.data.userFirstName).toBe("Testing");
+    expect(res.body.data.userFirstName).toBe("Test");
   });
 
   test('DELETE /api/users/:id should delete a user', async () => {
