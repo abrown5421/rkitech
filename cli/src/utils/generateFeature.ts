@@ -6,6 +6,55 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function registerFeatureRoute(featureName: string) {
+  const appFilePath = path.resolve(__dirname, "../../../backend/src/app.ts");
+  let appContent = fs.readFileSync(appFilePath, "utf-8");
+
+  const featureImportName = `${featureName.toLowerCase()}Routes`;
+  const featureImportPath = `./features/${featureName.toLowerCase()}/${featureName.toLowerCase()}.routes`;
+  const featureRoute = `app.use('/api/${featureName.toLowerCase()}s', ${featureImportName});`;
+
+  if (!appContent.includes(featureImportPath)) {
+    const importRegex = /(import\s+{?\s*BaseError[\s\S]*?;\s*)/;
+    if (importRegex.test(appContent)) {
+      appContent = appContent.replace(
+        importRegex,
+        `import ${featureImportName} from '${featureImportPath}';\n$1`
+      );
+    } else {
+      appContent = `import ${featureImportName} from '${featureImportPath}';\n` + appContent;
+    }
+    console.log(` Added import for ${featureName}`);
+  } else {
+    console.log(`  Import for ${featureName} already exists, skipping`);
+  }
+
+  const featureRoutesComment = "// feature routes";
+  if (appContent.includes(featureRoutesComment)) {
+    const lines = appContent.split("\n");
+    const commentIndex = lines.findIndex((line) => line.trim() === featureRoutesComment);
+
+    const nextRouteIndex = lines.slice(commentIndex + 1).findIndex((line) =>
+      line.trim().startsWith("app.use(")
+    );
+
+    const insertIndex =
+      nextRouteIndex === -1 ? commentIndex + 1 : commentIndex + 1 + nextRouteIndex;
+
+    const alreadyExists = appContent.includes(featureRoute);
+    if (!alreadyExists) {
+      lines.splice(insertIndex, 0, featureRoute);
+      appContent = lines.join("\n");
+      fs.writeFileSync(appFilePath, appContent, "utf-8");
+      console.log(` Added route for ${featureName} above existing feature routes`);
+    } else {
+      console.log(`  Route for ${featureName} already exists, skipping`);
+    }
+  } else {
+    console.error(" Could not find '// feature routes' comment in app.ts");
+  }
+}
+
 export async function generateFeature(
   featureName: string,
   schema: any,
@@ -89,4 +138,7 @@ export async function generateFeature(
   if (seedData && seedData.length > 0) {
     console.log(`   - Seed file (${seedData.length} records)`);
   }
+  
+  registerFeatureRoute(featureName);
+
 }
