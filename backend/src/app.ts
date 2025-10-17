@@ -26,9 +26,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // feature routes
+// [CLI_IMPORTS]
 app.use('/api/pages', pageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/employees', employeeRoutes);
+// [CLI_ROUTES]
 
 // error middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
