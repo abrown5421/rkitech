@@ -1,10 +1,6 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import { seedDatabase } from '../base/base.seed';
 import { Employee } from './employee.model';
-
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URI!;
+import { IEmployee } from './employee.types';
 
 const defaultEmployees = [
   {
@@ -12,7 +8,7 @@ const defaultEmployees = [
     employeeLastName: 'Superemployee',
     employeeEmail: 'Rkitech.superemployee@rkitech.com',
     employeePassword: 'string',
-    employeeCreated: Date.now(),
+    employeeCreated: Date.now().toString(),
     employeeProfileImage: '',
     employeeRole: 'Admin',
     employeeTitle: 'Developer',
@@ -20,24 +16,10 @@ const defaultEmployees = [
   }
 ];
 
-const seedEmployees = async () => {
-  try {
-    await mongoose.connect(MONGO_URI);
-    console.log('Connected to MongoDB');
-
-    for (const employeeData of defaultEmployees) {
-      const exists = await Employee.findOne({ employeeEmail: employeeData.employeeEmail });
-      if (!exists) {
-        await Employee.create(employeeData);
-        console.log(`Inserted employee: ${employeeData.employeeFirstName}`);
-      }
-    }
-
-    console.log('✅ Default employees initialized');
-    await mongoose.disconnect();
-  } catch (err) {
-    console.error('Error seeding employees:', err);
-  }
-};
-
-seedEmployees();
+seedDatabase<IEmployee>({
+  modelName: 'employee',
+  model: Employee,
+  data: defaultEmployees,
+  uniqueField: 'employeeEmail',
+  displayField: 'employeeFirstName',
+});

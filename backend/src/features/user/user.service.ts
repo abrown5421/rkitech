@@ -1,4 +1,4 @@
-import { BaseService } from '../base/BaseService';
+import { BaseService } from '../base/base.service';
 import { IUser } from './user.types';
 import { User } from './user.model';
 

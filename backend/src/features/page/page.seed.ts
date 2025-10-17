@@ -1,16 +1,12 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import { seedDatabase } from '../base/base.seed';
 import { Page } from './page.model';
-
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URI!;
+import { IPage } from './page.types';
 
 const defaultPages = [
   {
     pageName: "Home",
     pagePath: "/",
-    pageRenderMethod: "static",
+    pageRenderMethod: "static" as const,
     pageActive: true,
     pageColor: "white",
     pageIntensity: false,
@@ -20,7 +16,7 @@ const defaultPages = [
   {
     pageName: "PageNotFound",
     pagePath: "/page-not-found",
-    pageRenderMethod: "static",
+    pageRenderMethod: "static" as const,
     pageActive: true,
     pageColor: "white",
     pageIntensity: false,
@@ -30,7 +26,7 @@ const defaultPages = [
   {
     pageName: "PrivacyPolicy",
     pagePath: "/privacy-policy",
-    pageRenderMethod: "static",
+    pageRenderMethod: "static" as const,
     pageActive: true,
     pageColor: "white",
     pageIntensity: false,
@@ -39,24 +35,10 @@ const defaultPages = [
   }
 ];
 
-const seedPages = async () => {
-  try {
-    await mongoose.connect(MONGO_URI);
-    console.log('Connected to MongoDB');
-
-    for (const pageData of defaultPages) {
-      const exists = await Page.findOne({ pagePath: pageData.pagePath });
-      if (!exists) {
-        await Page.create(pageData);
-        console.log(`Inserted page: ${pageData.pageName}`);
-      }
-    }
-
-    console.log('✅ Default pages initialized');
-    await mongoose.disconnect();
-  } catch (err) {
-    console.error('Error seeding pages:', err);
-  }
-};
-
-seedPages();
+seedDatabase<IPage>({
+  modelName: 'page',
+  model: Page,
+  data: defaultPages,
+  uniqueField: 'pagePath',
+  displayField: 'pageName',
+});
