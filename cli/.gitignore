@@ -1,0 +1,23 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Build output
+dist/
+build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# MongoDB local storage (if you ever run mongod locally with --dbpath inside project)
+data/
