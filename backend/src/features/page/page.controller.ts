@@ -1,50 +1,8 @@
-import { NextFunction, Request, Response } from "express";
 import { PageService } from "./page.service";
-import { BaseError } from "../base/BaseError";
-import { BaseResponse } from "../base/BaseResponse";
+import { BaseController } from "../base/BaseController";
 
-const pageService = new PageService();
-
-export class PageController {
-  async read(req: Request, res: Response, next: NextFunction) {
-    try {
-        const filters = req.query;
-        const pages = await pageService.read(filters);
-
-        res.json(BaseResponse.Success("Fetched pages successfully", pages));
-    } catch (error) {
-        next(error);
-    }
-  }
-
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const newPage = await pageService.create(req.body);
-      res
-        .status(201)
-        .json(BaseResponse.Created("Page created successfully", newPage));
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async update(req: Request, res: Response, next: NextFunction) {
-    try {
-      const updatedPage = await pageService.update(req.params.id, req.body);
-      if (!updatedPage) throw BaseError.NotFound("Page", req.params.id);
-      res.json(BaseResponse.Success("Page updated successfully", updatedPage));
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async delete(req: Request, res: Response, next: NextFunction) {
-    try {
-      const deletedPage = await pageService.delete(req.params.id);
-      if (!deletedPage) throw BaseError.NotFound("Page", req.params.id);
-      res.json(BaseResponse.Success("Page deleted successfully"));
-    } catch (error) {
-      next(error);
-    }
-  }
+export class PageController extends BaseController<any> {
+  protected service = new PageService();
+  protected resourceName = "Page";
+  protected resourceNamePlural = "pages";
 }
