@@ -2,6 +2,7 @@
 import { Command } from "commander";
 import figlet from "figlet";
 import inquirer from "inquirer";
+import { featuresMenu as featuresMenuCommand } from "./menus/featuresMenu.js"; // your refactored featuresMenu
 
 const program = new Command();
 
@@ -31,7 +32,7 @@ async function mainMenu() {
 
   switch (section) {
     case "features":
-      await featuresMenu();
+      await featuresMenuCommand();
       break;
     case "components":
       await componentsMenu();
@@ -41,35 +42,21 @@ async function mainMenu() {
       break;
     case "exit":
     default:
-      console.log("Goodbye");
+      console.log("Goodbye!");
       process.exit(0);
   }
 
   await mainMenu();
 }
 
-async function featuresMenu() {
-  console.clear();
-  console.log("Features Menu\n");
-  await inquirer.prompt([
-    { type: "input", name: "return", message: "Press Enter to return to main menu" },
-  ]);
-}
-
 async function componentsMenu() {
   console.clear();
   console.log("Components Menu\n");
-  await inquirer.prompt([
-    { type: "input", name: "return", message: "Press Enter to return to main menu" },
-  ]);
 }
 
 async function settingsMenu() {
   console.clear();
   console.log("Settings Menu\n");
-  await inquirer.prompt([
-    { type: "input", name: "return", message: "Press Enter to return to main menu" },
-  ]);
 }
 
 program.action(async () => {

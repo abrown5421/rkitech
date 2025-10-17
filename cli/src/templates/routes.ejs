@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { <%= featureName %>Controller } from './<%= featureName.toLowerCase() %>.controller';
+
+const router = Router();
+const <%= featureName.toLowerCase() %>Controller = new <%= featureName %>Controller();
+
+router.get('/', <%= featureName.toLowerCase() %>Controller.read.bind(<%= featureName.toLowerCase() %>Controller));
+router.post('/', <%= featureName.toLowerCase() %>Controller.create.bind(<%= featureName.toLowerCase() %>Controller));
+router.put('/:id', <%= featureName.toLowerCase() %>Controller.update.bind(<%= featureName.toLowerCase() %>Controller));
+router.delete('/:id', <%= featureName.toLowerCase() %>Controller.delete.bind(<%= featureName.toLowerCase() %>Controller));
+
+export default router;

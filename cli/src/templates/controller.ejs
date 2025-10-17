@@ -1,0 +1,8 @@
+import { BaseController } from '../base/base.controller';
+import { <%= featureName %>Service } from './<%= featureName.toLowerCase() %>.service';
+
+export class <%= featureName %>Controller extends BaseController<any> {
+  protected service = new <%= featureName %>Service();
+  protected resourceName = "<%= featureName %>";
+  protected resourceNamePlural = "<%= featureName.toLowerCase() %>s";
+}

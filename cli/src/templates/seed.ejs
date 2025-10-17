@@ -1,0 +1,13 @@
+import { seedDatabase } from '../base/base.seed';
+import { <%= featureName %> } from './<%= featureName.toLowerCase() %>.model';
+import { I<%= featureName %> } from './<%= featureName.toLowerCase() %>.types';
+
+const default<%= featureName %>s = <%- JSON.stringify(seedData, null, 2) %>;
+
+seedDatabase<I<%= featureName %>>({
+  modelName: '<%= featureName.toLowerCase() %>',
+  model: <%= featureName %>,
+  data: default<%= featureName %>s,
+  uniqueField: Object.keys(default<%= featureName %>s[0])[0] as keyof I<%= featureName %>, // assumes first field is unique
+  displayField: Object.keys(default<%= featureName %>s[0])[0] as keyof I<%= featureName %>,
+});

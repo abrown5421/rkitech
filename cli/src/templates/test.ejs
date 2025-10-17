@@ -1,0 +1,40 @@
+import { BaseCrudTest } from '../base/base.test.helper';
+import { I<%= featureName %> } from './<%= featureName.toLowerCase() %>.types';
+
+describe('<%= featureName %>s API', () => {
+  const baseCrudTest = new BaseCrudTest<I<%= featureName %>>({
+    resourceName: '<%= featureName.toLowerCase() %>',
+    endpoint: '/api/<%= featureName.toLowerCase() %>s',
+    createPayload: {
+      <%_ for (const [fieldName, fieldConfig] of Object.entries(schema)) { _%>
+      <%- fieldName %>: <%- fieldConfig.testValue ?? getDefaultTestValue(fieldConfig.type) %>,
+      <%_ } _%>
+    },
+    updatePayload: {
+      <%_ const firstField = Object.keys(schema)[0]; if (firstField) { _%>
+      <%- firstField %>: 'Updated <%- featureName %> Field',
+      <%_ } _%>
+    },
+    createExpectations: [
+      <%_ const firstFieldName = Object.keys(schema)[0]; if (firstFieldName) { _%>
+      { field: '<%- firstFieldName %>', value: <%- schema[firstFieldName].testValue ?? getDefaultTestValue(schema[firstFieldName].type) %> },
+      <%_ } _%>
+    ],
+    updateExpectations: {
+      field: '<%- firstField %>',
+      value: 'Updated <%- featureName %> Field',
+    },
+  });
+
+  baseCrudTest.runAllTests();
+});
+
+function getDefaultTestValue(type: string) {
+  switch (type) {
+    case 'String': return "'Test Value'";
+    case 'Number': return 123;
+    case 'Boolean': return true;
+    case 'Date': return 'new Date()';
+    default: return "'Sample'";
+  }
+}
