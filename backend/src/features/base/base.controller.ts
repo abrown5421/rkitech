@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { BaseResponse } from "../base/BaseResponse";
-import { BaseError } from "../base/BaseError";
+import { BaseResponse } from "../../middleware/BaseResponse";
+import { BaseError } from "../../middleware/BaseError";
 
 export abstract class BaseController<T> {
   protected abstract service: any;

@@ -3,7 +3,7 @@ import cors from 'cors';
 import pageRoutes from './features/page/page.routes';
 import userRoutes from './features/user/user.routes';
 import employeeRoutes from './features/employee/employee.routes';
-import { BaseError } from './features/base/BaseError';
+import { BaseError } from './middleware/BaseError';
 
 export const app = express();
 

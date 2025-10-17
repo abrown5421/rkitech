@@ -1,5 +1,5 @@
 import { UserService } from "./user.service";
-import { BaseController } from "../base/BaseController";
+import { BaseController } from "../base/base.controller";
 
 export class UserController extends BaseController<any> {
   protected service = new UserService();
