@@ -1,0 +1,7 @@
+import { Document } from 'mongoose';
+
+export interface I<%= featureName %> extends Document {
+  <%_ for (const [fieldName, fieldConfig] of Object.entries(schema)) { _%>
+  <%- fieldName %>: <%- fieldConfig.type.toLowerCase() %><%= fieldConfig.required ? '' : ' | undefined' %>;
+  <%_ } _%>
+}

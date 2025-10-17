@@ -1,0 +1,92 @@
+import fs from "fs";
+import path from "path";
+import ejs from "ejs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export async function generateFeature(
+  featureName: string,
+  schema: any,
+  seedData: any[]
+) {
+  const featureDir = path.resolve(
+    __dirname,
+    "../../../backend/src/features",
+    featureName.toLowerCase()
+  );
+  
+  console.log(`\n📁 Creating directory: ${featureDir}`);
+  fs.mkdirSync(featureDir, { recursive: true });
+  console.log("✅ Directory created!\n");
+
+  const templates = [
+    { name: "feature.model.ts", template: "model.ejs" },
+    { name: "feature.types.ts", template: "types.ejs" },
+    { name: "feature.controller.ts", template: "controller.ejs" },
+    { name: "feature.service.ts", template: "service.ejs" },
+    { name: "feature.routes.ts", template: "routes.ejs" },
+    { name: "feature.test.ts", template: "test.ejs" },
+  ];
+  
+  if (seedData && seedData.length > 0) {
+    templates.push({ name: "feature.seed.ts", template: "seed.ejs" });
+    console.log("📦 Seed data detected - will generate seed file\n");
+  } else {
+    console.log("⏭️  No seed data - skipping seed file\n");
+  }
+
+  for (const { name, template } of templates) {
+    try {
+      const templatePath = path.resolve(__dirname, "../templates", template);
+      
+      if (!fs.existsSync(templatePath)) {
+        console.error(`❌ Template not found: ${templatePath}`);
+        continue;
+      }
+      
+      const content = await ejs.renderFile(templatePath, {
+        featureName,
+        schema,
+        seedData,
+        getDefaultTestValue: (type: string) => {
+          switch (type) {
+            case "String":
+              return "'Test Value'";
+            case "Number":
+              return 123;
+            case "Boolean":
+              return true;
+            case "Date":
+              return "new Date()";
+            default:
+              return "'Sample'";
+          }
+        },
+      });
+
+      const fileName = name.replace("feature", featureName.toLowerCase());
+      const filePath = path.join(featureDir, fileName);
+      
+      fs.writeFileSync(filePath, content);
+      console.log(`✅ Created: ${fileName}`);
+    } catch (error) {
+      console.error(`❌ Error creating ${name}:`, error);
+    }
+  }
+
+  console.log(`\n✅ Feature '${featureName}' created successfully!`);
+  console.log(`📂 Location: ${featureDir}`);
+  
+  console.log(`\n📋 Generated files:`);
+  console.log(`   - Model`);
+  console.log(`   - Types`);
+  console.log(`   - Controller`);
+  console.log(`   - Service`);
+  console.log(`   - Routes`);
+  console.log(`   - Tests`);
+  if (seedData && seedData.length > 0) {
+    console.log(`   - Seed file (${seedData.length} records)`);
+  }
+}

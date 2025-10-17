@@ -1,0 +1,10 @@
+import mongoose, { Schema } from 'mongoose';
+import { I<%= featureName %> } from './<%= featureName.toLowerCase() %>.types';
+
+const <%= featureName %>Schema: Schema = new Schema<I<%= featureName %>>({
+  <%_ for (const field of Object.entries(schema)) { _%>
+  <%- field[0] %>: { type: <%- field[1].type %>, required: <%- field[1].required %> },
+  <%_ } _%>
+}, { timestamps: true });
+
+export const <%= featureName %> = mongoose.model<I<%= featureName %>>('<%= featureName %>', <%= featureName %>Schema);

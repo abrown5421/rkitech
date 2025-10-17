@@ -1,0 +1,9 @@
+import { BaseService } from '../base/base.service';
+import { <%= featureName %> } from './<%= featureName.toLowerCase() %>.model';
+import { I<%= featureName %> } from './<%= featureName.toLowerCase() %>.types';
+
+export class <%= featureName %>Service extends BaseService<I<%= featureName %>> {
+  constructor() {
+    super(<%= featureName %>);
+  }
+}
