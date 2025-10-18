@@ -13,20 +13,20 @@ console.log(`Source: ${srcDir}`);
 console.log(`Destination: ${destDir}`);
 
 if (!fs.existsSync(srcDir)) {
-  console.error(`❌ Source directory does not exist: ${srcDir}`);
+  console.error(` Source directory does not exist: ${srcDir}`);
   process.exit(1);
 }
 
 function copyDir(src, dest) {
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true });
-    console.log(`✅ Created directory: ${dest}`);
+    console.log(` Created directory: ${dest}`);
   }
 
   const entries = fs.readdirSync(src, { withFileTypes: true });
 
   if (entries.length === 0) {
-    console.warn(`⚠️  No files found in: ${src}`);
+    console.warn(`  No files found in: ${src}`);
   }
 
   for (const entry of entries) {
@@ -37,7 +37,6 @@ function copyDir(src, dest) {
       copyDir(srcPath, destPath);
     } else {
       fs.copyFileSync(srcPath, destPath);
-      console.log(`✅ Copied: ${entry.name}`);
     }
   }
 }
