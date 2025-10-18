@@ -1,6 +1,7 @@
 import inquirer from "inquirer";
 import { createFeatureWizard } from "../commands/createFeatureWizard.js";
 import { deleteFeatureWizard } from "../commands/deleteFeatureWizard.js";
+import { editFeatureWizard } from "../commands/editFeatureWizard.js";
 
 export async function featuresMenu() {
   console.clear();
@@ -44,7 +45,7 @@ export async function featuresMenu() {
       }
       break;
     case "edit":
-      console.log("Edit feature (not implemented yet)");
+      await editFeatureWizard();
       await inquirer.prompt([
         {
           type: "input",
@@ -64,7 +65,7 @@ export async function featuresMenu() {
           },
         ]);
       } catch (error) {
-        console.error("❌ Error deleting feature:", error);
+        console.error(" Error deleting feature:", error);
         await inquirer.prompt([
           {
             type: "input",
