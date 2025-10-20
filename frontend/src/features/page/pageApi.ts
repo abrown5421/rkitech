@@ -1,4 +1,5 @@
-import { baseApi } from '../../app/api/baseApi';
+
+import { baseApi } from '../../store/api/baseApi';
 import type { IPage } from './pageTypes';
 
 export const pagesApi = baseApi.injectEndpoints({
