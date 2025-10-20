@@ -9,7 +9,6 @@
     "start": "node dist/server.js",
     "test": "jest",
     "seed": "ts-node src/seeder.ts"
-
   },
   "keywords": [],
   "author": "",
@@ -28,7 +27,6 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.7.2",
     "@types/supertest": "^6.0.3",
-    "@types/uuid": "^11.0.0",
     "jest": "^30.2.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.5",
