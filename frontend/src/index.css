@@ -1,4 +1,10 @@
 html, body {
-  padding: 0;
-  margin: 0;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden !important;
+  font-family: 'SecondaryFont', sans-serif
+}
+
+::-webkit-scrollbar {
+  display: none !important;
 }
