@@ -1,19 +1,31 @@
 import React from 'react';
-import { Container } from 'rkitech-components';
-import { useGetPagesQuery } from './features/page/pageApi';
+import { Container, Loader } from 'rkitech-components';
+import { usePreloadData } from './hooks/usePreloadData';
 
 const App: React.FC = () => {
-  const { data: pages, isLoading, error } = useGetPagesQuery();
+  const { loading, error } = usePreloadData();
 
-  if (isLoading) return <p>Loading pages...</p>;
-  if (error) return <p>Error loading pages</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <Container tailwindClasses='w-full h-full'>
-      {pages?.map((page) => (
-        <div key={page._id}>{page.pageName}</div>
-      ))}
+    <Container tailwindClasses='flex-col w-screen h-screen z-30 relative bg-gray-900'>
+      {loading ? (
+        <Container tailwindClasses="h-full w-full justify-center items-center">
+          <Loader
+            show={loading}
+            loaderType='Bars'
+            variant={2}
+            color='amber'
+            intensity={500}
+          />
+        </Container>
+      ) : (
+        <Container tailwindClasses="h-full w-full flex-col">
+          app
+        </Container>
+      )}
     </Container>
   );
 };
+
 export default App;
