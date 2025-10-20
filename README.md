@@ -8,7 +8,7 @@ It is structured as a **monorepo** with three main components:
 - **backend/** – A Node.js/Express API layer with room for future database integration.  
 - **cli/** – A command-line interface tool that can interact with the API and help scaffold or manage data, pages, and user resources.
 
-### 🌱 Purpose
+###  Purpose
 
 The goal of rkitech is to serve as a reusable foundation for new projects — something that can be cloned or generated via `degit` and immediately run both the frontend and backend environments with minimal setup.  
 

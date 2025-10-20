@@ -68,7 +68,7 @@ export async function generateFeature(
   
   console.log(`\n📁 Creating directory: ${featureDir}`);
   fs.mkdirSync(featureDir, { recursive: true });
-  console.log("✅ Directory created!\n");
+  console.log(" Directory created!\n");
 
   const templates = [
     { name: "feature.model.ts", template: "model.ejs" },
@@ -119,13 +119,13 @@ export async function generateFeature(
       const filePath = path.join(featureDir, fileName);
       
       fs.writeFileSync(filePath, content);
-      console.log(`✅ Created: ${fileName}`);
+      console.log(` Created: ${fileName}`);
     } catch (error) {
       console.error(`❌ Error creating ${name}:`, error);
     }
   }
 
-  console.log(`\n✅ Feature '${featureName}' created successfully!`);
+  console.log(`\n Feature '${featureName}' created successfully!`);
   console.log(`📂 Location: ${featureDir}`);
   
   console.log(`\n📋 Generated files:`);

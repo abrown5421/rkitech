@@ -43,7 +43,7 @@ function copyDir(src, dest) {
 
 try {
   copyDir(srcDir, destDir);
-  console.log('✅ Templates copied successfully!');
+  console.log(' Templates copied successfully!');
 } catch (error) {
   console.error('❌ Error copying templates:', error);
   process.exit(1);
