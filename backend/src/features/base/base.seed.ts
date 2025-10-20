@@ -33,7 +33,7 @@ export const seedDatabase = async <T extends Document>(
       }
     }
 
-    console.log(`✅ Default ${config.modelName}s initialized`);
+    console.log(` Default ${config.modelName}s initialized`);
     await mongoose.disconnect();
   } catch (err) {
     console.error(`Error seeding ${config.modelName}s:`, err);

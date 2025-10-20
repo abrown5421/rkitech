@@ -63,7 +63,7 @@ export async function createFeatureWizard() {
     try {
       seedData = JSON.parse(seedDataRaw);
       if (!Array.isArray(seedData)) {
-        console.warn("⚠️  Seed data must be an array. Skipping seed file generation.");
+        console.warn("  Seed data must be an array. Skipping seed file generation.");
         seedData = [];
       }
     } catch (e) {
