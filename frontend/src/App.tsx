@@ -3,7 +3,7 @@ import { Container, Loader } from 'rkitech-components';
 import { usePreloadData } from './hooks/usePreloadData';
 
 const App: React.FC = () => {
-  const { loading, error } = usePreloadData();
+  const { loading, error, pages } = usePreloadData();
 
   if (error) return <p>{error}</p>;
 
@@ -21,11 +21,14 @@ const App: React.FC = () => {
         </Container>
       ) : (
         <Container tailwindClasses="h-full w-full flex-col">
-          app
+          {pages.map((page) => (
+            <p key={page._id}>{page.pageName}</p>
+          ))}
         </Container>
       )}
     </Container>
   );
 };
+
 
 export default App;
