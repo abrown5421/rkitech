@@ -1,3 +1,4 @@
+
 export interface IPage {
   _id: string;
   pageName: string;
@@ -10,4 +11,8 @@ export interface IPage {
   pageExitAnimation: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface PageShellProps {
+  page: IPage
 }
