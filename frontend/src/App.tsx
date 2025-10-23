@@ -1,12 +1,9 @@
 import React from 'react';
-import { Container } from 'rkitech-components';
 
-const App: React.FC = () => {
+const Component: React.FC = () => {
 
   return (
-    <Container tailwindClasses='w-full h-full'>
-      App
-    </Container>
+    <div className=''>hello</div>
   );
 };
-export default App;
+export default Component;
