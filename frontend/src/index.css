@@ -25,3 +25,35 @@
   --color-accent: #CAD5E2;
   --color-accent-content: #314158;
 }
+
+@font-face {
+  font-family: 'PrimaryFont';
+  src: url('../public/fonts/Primary.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SecondaryFont';
+  src: url('../public/fonts/secondary.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html, body {
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden !important;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.primary-font {
+  font-family: 'PrimaryFont', sans-serif;
+}
+
+.secondary-font {
+  font-family: 'SecondaryFont', sans-serif;
+}
