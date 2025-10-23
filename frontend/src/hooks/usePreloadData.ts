@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch } from '../store/hooks';
 import { pagesApi } from '../features/page/pageApi';
 import type { IPage } from '../features/page/pageTypes';
+import { useAppDispatch } from '../store/hooks';
 
 export const usePreloadData = () => {
   const dispatch = useAppDispatch();
