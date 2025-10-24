@@ -4,9 +4,20 @@ import Pod from '../../components/pod/Pod';
 
 const Navbar: React.FC = () => {
   return (
-    <Pod className="navbar bg-base-100 shadow-sm justify-between h-16 px-4">
-      
-        <Pod className="flex flex-row items-center">
+    <Pod animationObject={{
+      entranceAnimation: 'animate__fadeIn',
+      exitAnimation: 'animate__fadeOut',
+      isEntering: true
+    }} 
+    className="navbar bg-base-100 shadow-sm justify-between h-16 px-4">
+        <Pod 
+          animationObject={{
+            entranceAnimation: 'animate__fadeInLeft',
+            exitAnimation: 'animate__fadeOutLeft',
+            isEntering: true
+          }} 
+          className="flex flex-row items-center"
+        >
           <Pod className="flex flex-col">
             <img
               src={logo}
@@ -17,7 +28,14 @@ const Navbar: React.FC = () => {
           <Pod className="flex flex-col justify-center primary-font">Rkitech</Pod>
         </Pod>
       
-      <Pod className="flex flex-row items-center">
+      <Pod 
+        animationObject={{
+          entranceAnimation: 'animate__fadeInRight',
+          exitAnimation: 'animate__fadeOutRight',
+          isEntering: true
+        }}
+        className="flex flex-row items-center"
+      >
         menu
       </Pod>
     </Pod>
