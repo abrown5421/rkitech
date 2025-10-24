@@ -1,6 +1,5 @@
 import React from 'react';
 import Navbar from './features/navbar/Navbar';
-import Footer from './features/footer/Footer';
 import { usePreloadData } from './hooks/usePreloadData';
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid"; 
 import PageShell from './features/page/PageShell';
