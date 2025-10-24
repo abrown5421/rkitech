@@ -7,7 +7,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
     return (
         <div className='overflow-scroll hide-sb'>
             {page.pageRenderMethod === 'static' ? (
-                <div className='page-body px-8 py-4'>{page.pageName}</div>
+                <div className='page-body p-4'>{page.pageName}</div>
             ) : (
                 <div>dynamic</div>
             )}

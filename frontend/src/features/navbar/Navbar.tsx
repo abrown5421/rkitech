@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
               className="h-full max-h-12 object-contain" 
             />
           </div>
-          <div className="flex flex-col justify-center primary-font">Reactor</div>
+          <div className="flex flex-col justify-center primary-font">Rkitech</div>
         </div>
       
       <div className="flex flex-row items-center">
