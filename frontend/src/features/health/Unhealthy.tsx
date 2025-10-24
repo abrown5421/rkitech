@@ -1,16 +1,17 @@
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 import React from 'react';
 import type { UnhealthyProps } from './HealthTypes';
+import Pod from '../../components/pod/Pod';
 
 const Unhealthy: React.FC<UnhealthyProps> = ({
     error
 }) => {
     return (
-      <div className="flex items-center justify-center w-screen h-screen bg-error">
-        <div className="bg-base-100 border border-error/40 rounded-2xl shadow-xl p-8 max-w-md text-center">
-          <div className="flex w-full justify-center items-center mb-4">
+      <Pod className="flex items-center justify-center w-screen h-screen bg-error">
+        <Pod className="bg-base-100 border border-error/40 rounded-2xl shadow-xl p-8 max-w-md text-center">
+          <Pod className="flex w-full justify-center items-center mb-4">
             <ExclamationCircleIcon className='w-15 h-15 text-error'/>
-          </div>
+          </Pod>
           <h2 className="text-2xl font-bold text-error mb-2">
             Yikes! Something went wrong.
           </h2>
@@ -23,8 +24,8 @@ const Unhealthy: React.FC<UnhealthyProps> = ({
           >
             Retry
           </button>
-        </div>
-      </div>
+        </Pod>
+      </Pod>
     );
 };
 export default Unhealthy;
