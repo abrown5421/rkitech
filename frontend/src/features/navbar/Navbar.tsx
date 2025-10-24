@@ -4,7 +4,7 @@ import logo from '../../../public/images/Logo.png';
 const Navbar: React.FC = () => {
   return (
     <div className="navbar bg-base-100 shadow-sm justify-between h-16 px-4">
-      <a className="btn btn-ghost text-xl no-animation">
+      
         <div className="flex flex-row items-center">
           <div className="flex flex-col">
             <img
@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
           </div>
           <div className="flex flex-col justify-center primary-font">Reactor</div>
         </div>
-      </a>
+      
       <div className="flex flex-row items-center">
         menu
       </div>
