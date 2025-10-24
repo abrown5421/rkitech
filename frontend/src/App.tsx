@@ -5,6 +5,7 @@ import PageShell from './features/page/PageShell';
 import { Route, Routes } from 'react-router-dom';
 import Healthy from './features/health/Healthy';
 import Unhealthy from './features/health/Unhealthy';
+import Pod from './components/pod/Pod';
 
 const App: React.FC = () => {
   const { loading, error, pages, progress } = usePreloadData();
@@ -18,7 +19,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col w-screen h-screen">
+    <Pod className="flex flex-col w-screen h-screen">
       <Navbar />
       <Routes>
         {pages.map((p) => (
@@ -29,7 +30,7 @@ const App: React.FC = () => {
           />
         ))}
       </Routes>
-    </div>
+    </Pod>
   );
 };
 
