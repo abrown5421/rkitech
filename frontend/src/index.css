@@ -26,6 +26,28 @@
   --color-accent-content: #314158;
 }
 
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #fe9a00;
+  --color-primary-content: #f8fafc;
+  --color-secondary: #314158;
+  --color-secondary-content: #f8fafc;
+  --color-accent: #CAD5E2;
+  --color-accent-content: #314158;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  default: true;
+  --color-primary: #fe9a00;
+  --color-primary-content: #f8fafc;
+  --color-secondary: #314158;
+  --color-secondary-content: #f8fafc;
+  --color-accent: #CAD5E2;
+  --color-accent-content: #314158;
+}
+
 @font-face {
   font-family: 'PrimaryFont';
   src: url('../public/fonts/Primary.ttf') format('truetype');
@@ -44,11 +66,18 @@ html, body {
   margin: 0px;
   padding: 0px;
   overflow-x: hidden !important;
+  scrollbar-width: none !important;
+}
+
+body {
+  -ms-overflow-style: none !important; 
 }
 
 ::-webkit-scrollbar {
-  display: none;
+  width: 0px !important;
+  height: 0px !important;
 }
+
 
 .primary-font {
   font-family: 'PrimaryFont', sans-serif;
@@ -56,4 +85,18 @@ html, body {
 
 .secondary-font {
   font-family: 'SecondaryFont', sans-serif;
+}
+
+.page-body {
+  height: calc(100vh - 64px) !important;
+}
+
+.hide-sb {
+  scrollbar-width: none !important; 
+  -ms-overflow-style: none !important;
+}
+
+.hide-sb::-webkit-scrollbar {
+  width: 0px !important;
+  height: 0px !important;
 }

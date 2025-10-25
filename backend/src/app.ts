@@ -4,11 +4,28 @@ import pageRoutes from './features/page/page.routes';
 import userRoutes from './features/user/user.routes';
 import employeeRoutes from './features/employee/employee.routes';
 import { BaseError } from './middleware/error.middleware';
+import mongoose from 'mongoose';
 
 export const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.get('/api/health', async (req: Request, res: Response) => {
+  const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  const isHealthy = mongoStatus === 'connected';
+
+  res.status(isHealthy ? 200 : 503).json({
+    success: isHealthy,
+    message: isHealthy
+      ? 'Server and database are healthy'
+      : 'Server running but database not connected',
+    mongoStatus,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 
 // root
 app.get('/', (res: Response) => {

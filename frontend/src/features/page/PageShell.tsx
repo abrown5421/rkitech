@@ -1,18 +1,29 @@
 import React from 'react';
 import type { PageShellProps } from './pageTypes';
 import Footer from '../footer/Footer';
+import Pod from '../../components/pod/Pod';
+import type { EntranceAnimation, ExitAnimation } from '../../components/pod/podTypes';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
 
     return (
-        <div className='overflow-scroll hide-sb'>
+        <Pod className='overflow-scroll hide-sb'>
             {page.pageRenderMethod === 'static' ? (
-                <div className='page-body px-8 py-4'>{page.pageName}</div>
+                <Pod 
+                  animationObject={{
+                    entranceAnimation: page.pageEntranceAnimation as EntranceAnimation,
+                    exitAnimation: page.pageExitAnimation as ExitAnimation,
+                    isEntering: true
+                  }} 
+                  className='page-body p-4'
+                >
+                    {page.pageName}
+                </Pod>
             ) : (
-                <div>dynamic</div>
+                <Pod>dynamic</Pod>
             )}
             <Footer />
-        </div>
+        </Pod>
     );
 };
 export default PageShell;
