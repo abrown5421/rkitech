@@ -16,3 +16,8 @@ export interface IPage {
 export interface PageShellProps {
   page: IPage
 }
+
+export interface ActivePageProps {
+  activePageName: string,
+  activePageAnimateIn: boolean
+}
