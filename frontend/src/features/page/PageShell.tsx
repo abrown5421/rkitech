@@ -15,7 +15,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
                   animationObject={{
                     entranceAnimation: page.pageEntranceAnimation as EntranceAnimation,
                     exitAnimation: page.pageExitAnimation as ExitAnimation,
-                    isEntering: true
+                    isEntering: activePage.activePageAnimateIn
                   }} 
                   className='page-body p-4'
                 >
