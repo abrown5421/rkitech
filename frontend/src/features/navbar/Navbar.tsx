@@ -1,8 +1,10 @@
 import React from 'react';
 import logo from '../../../public/images/Logo.png';
 import Pod from '../../components/pod/Pod';
+import { useNavigate } from '../../hooks/useNavigate';
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate(500)
   return (
     <Pod animationObject={{
       entranceAnimation: 'animate__fadeIn',
@@ -36,7 +38,9 @@ const Navbar: React.FC = () => {
         }}
         className="flex flex-row items-center"
       >
-        menu
+        <button onClick={() => navigate('Home', '/')}>Home</button>
+        <button onClick={() => navigate('Privacy Policy', '/privacy-policy')}>Privacy Policy</button>
+        
       </Pod>
     </Pod>
   );

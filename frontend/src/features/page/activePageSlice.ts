@@ -1,14 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-
-export interface ActivePageProps {
-  activePageName: string;
-  activePageAnimateIn: boolean;
-}
+import type { ActivePageProps } from './pageTypes';
 
 const initialState: ActivePageProps = {
-  activePageName: '',
-  activePageAnimateIn: false,
+  activePageName: 'Home',
+  activePageAnimateIn: true,
 };
  
 const activePageSlice = createSlice({
