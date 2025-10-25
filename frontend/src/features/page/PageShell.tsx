@@ -3,8 +3,10 @@ import type { PageShellProps } from './pageTypes';
 import Footer from '../footer/Footer';
 import Pod from '../../components/pod/Pod';
 import type { EntranceAnimation, ExitAnimation } from '../../components/pod/podTypes';
+import { useAppSelector } from '../../store/hooks'; 
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
+    const activePage = useAppSelector((state) => state.activePage)
 
     return (
         <Pod className='overflow-scroll hide-sb'>
