@@ -10,7 +10,7 @@ const initialState: ActivePageProps = {
   activePageName: '',
   activePageAnimateIn: false,
 };
-
+ 
 const activePageSlice = createSlice({
   name: 'activePage',
   initialState,
