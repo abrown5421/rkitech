@@ -6,6 +6,7 @@ import type { EntranceAnimation, ExitAnimation } from '../../components/pod/podT
 import { useAppSelector } from '../../store/hooks'; 
 import Home from '../home/Home';
 import PageNotFound from '../pageNotFound/PageNotFound';
+import PrivacyPolicy from '../privacyPolicy/PrivacyPolicy';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage)
@@ -19,10 +20,11 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
                     exitAnimation: page.pageExitAnimation as ExitAnimation,
                     isEntering: activePage.activePageAnimateIn
                   }} 
-                  className='page-body p-4'
+                  className='p-4'
                 >
                     {activePage.activePageName === 'Home' && <Home />}
                     {activePage.activePageName === 'PageNotFound' && <PageNotFound />}
+                    {activePage.activePageName === 'PrivacyPolicy' && <PrivacyPolicy />}
                 </Pod>
             ) : (
                 <Pod>dynamic</Pod>

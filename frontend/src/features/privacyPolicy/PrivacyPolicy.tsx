@@ -3,7 +3,7 @@ import Pod from '../../components/pod/Pod';
 
 const PrivacyPolicy: React.FC = () => {
     return (
-        <Pod className='flex flex-col p-6'>
+        <div className='flex flex-col p-6'>
             <div className='text-3xl primary-font'>Privacy Policy</div>
             <div className='text-sm mb-6'>Effective Date: 10/27/2025</div>
             <div className='mb-4'>We value your privacy. This Privacy Policy explains how we collect, use, and protect your information when you interact with our services.</div>
@@ -60,7 +60,7 @@ const PrivacyPolicy: React.FC = () => {
             <div className='primary-font mt-4 mb-2'>9. Contact Us</div>
             <div className='mb-4'>If you have questions about this Privacy Policy or how we handle your data, please contact us.</div>
                         
-        </Pod>
+        </div>
     );
 };
 
