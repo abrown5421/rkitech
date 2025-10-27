@@ -11,6 +11,10 @@ const activePageSlice = createSlice({
   name: 'activePage',
   initialState,
   reducers: {
+    setActivePage: (state, action: PayloadAction<ActivePageProps>) => {
+      state.activePageName = action.payload.activePageName
+      state.activePageAnimateIn = action.payload.activePageAnimateIn
+    },
     setActivePageName: (state, action: PayloadAction<string>) => {
       state.activePageName = action.payload;
     },
@@ -21,6 +25,7 @@ const activePageSlice = createSlice({
 });
 
 export const {
+  setActivePage,
   setActivePageName,
   setActivePageAnimateIn
 } = activePageSlice.actions;

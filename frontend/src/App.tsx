@@ -7,16 +7,16 @@ import Healthy from './features/health/Healthy';
 import Unhealthy from './features/health/Unhealthy';
 import Pod from './components/pod/Pod';
 import { useAppDispatch } from './store/hooks';
-import { useNavigate } from './hooks/useNavigate';
+import { setActivePage } from './features/page/activePageSlice';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
   const location = useLocation()
-  const navigate = useNavigate(500)
   const { loading, error, pages, progress } = usePreloadData();
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;
+
     const page = pages.find(p =>
       matchPath({ path: p.pagePath, end: true }, location.pathname)
     );
@@ -24,11 +24,10 @@ const App: React.FC = () => {
     const pageNotFound = pages.find((p) => p.pageName === 'PageNotFound');
 
     if (page) {
-      navigate(page.pageName, page.pagePath)      
+      dispatch(setActivePage({activePageName: page.pageName, activePageAnimateIn: true}));
     } else if (pageNotFound) {
-      navigate(pageNotFound.pageName, pageNotFound.pagePath)
+      dispatch(setActivePage({activePageName: pageNotFound.pageName, activePageAnimateIn: true}));
     }
-
   }, [dispatch, pages, location.pathname]);
 
   if (loading) {
@@ -50,6 +49,7 @@ const App: React.FC = () => {
             element={<PageShell page={p} />}
           />
         ))}
+        <Route path="*" element={<PageShell page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
       </Routes>
     </Pod>
   );
