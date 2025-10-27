@@ -5,6 +5,7 @@ import Pod from '../../components/pod/Pod';
 import type { EntranceAnimation, ExitAnimation } from '../../components/pod/podTypes';
 import { useAppSelector } from '../../store/hooks'; 
 import Home from '../home/Home';
+import PageNotFound from '../pageNotFound/PageNotFound';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage)
@@ -21,6 +22,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
                   className='page-body p-4'
                 >
                     {activePage.activePageName === 'Home' && <Home />}
+                    {activePage.activePageName === 'PageNotFound' && <PageNotFound />}
                 </Pod>
             ) : (
                 <Pod>dynamic</Pod>
