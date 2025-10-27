@@ -1,31 +1,18 @@
-import { useDispatch } from 'react-redux';
-import { useNavigate as useRouterNavigate } from 'react-router-dom';
-import { useCallback, useRef } from 'react';
-import { setActivePageAnimateIn, setActivePageName } from '../features/page/activePageSlice';
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../store/hooks";
+import type { IPage } from "../features/page/pageTypes";
+import { setActivePageAnimateIn, setActivePageName } from "../features/page/activePageSlice";
 
-export const useNavigate = (animationDuration: number = 500) => {
-  const dispatch = useDispatch();
-  const routerNavigate = useRouterNavigate();
-  const isAnimating = useRef(false); 
+export const useNavigation = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const navigateToPage = useCallback(
-    (newPageName: string, newPagePath: string) => {
-      if (isAnimating.current) return; 
-      isAnimating.current = true;
+  return (page: IPage) => {
+    dispatch(setActivePageAnimateIn(false));
 
-      dispatch(setActivePageAnimateIn(false));
-
-      setTimeout(() => {
-        dispatch(setActivePageName(newPageName));
-        routerNavigate(newPagePath);
-        dispatch(setActivePageAnimateIn(true));
-        setTimeout(() => {
-          isAnimating.current = false;
-        }, animationDuration);
-      }, animationDuration);
-    },
-    [dispatch, routerNavigate, animationDuration]
-  );
-
-  return navigateToPage;
+    setTimeout(() => {
+      dispatch(setActivePageName(page.pageName));
+      navigate(page.pagePath);
+    }, 500);
+  };
 };
