@@ -3,6 +3,8 @@ import { pagesApi } from '../features/page/pageApi';
 import { useAppDispatch } from '../store/hooks';
 import { useGetHealthQuery } from '../features/health/healthApi';
 import type { IPage } from '../features/page/pageTypes';
+import type { IConfiguration } from '../features/configurations/configurationsTypes';
+import { configApi } from '../features/configurations/configurationsApi';
 
 export const usePreloadData = () => {
   const dispatch = useAppDispatch();
@@ -10,15 +12,16 @@ export const usePreloadData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pages, setPages] = useState<IPage[]>([]);
+  const [configs, setConfigs] = useState<IConfiguration[]>([]);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (healthLoading) return; 
+    if (healthLoading) return;
 
     if (healthError || !health?.success) {
       setError('Server health check failed');
       setLoading(false);
-      return; 
+      return;
     }
 
     let progressInterval: ReturnType<typeof setInterval>;
@@ -28,13 +31,16 @@ export const usePreloadData = () => {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        const result = await dispatch(pagesApi.endpoints.getPages.initiate());
+        const [pagesResult, configResult] = await Promise.all([
+          dispatch(pagesApi.endpoints.getPages.initiate()),
+          dispatch(configApi.endpoints.getConfigs.initiate())
+        ]);
 
-        if ('error' in result) {
-          setError('Failed to preload pages');
-        } else if ('data' in result) {
-          setPages(result.data ?? []);
-        }
+        if ('error' in pagesResult) setError('Failed to load pages');
+        else if ('data' in pagesResult) setPages(pagesResult.data ?? []);
+
+        if ('error' in configResult) setError('Failed to load configurations');
+        else if ('data' in configResult) setConfigs(configResult.data ?? []);
 
         completed = true;
         setProgress(100);
@@ -59,5 +65,5 @@ export const usePreloadData = () => {
     return () => clearInterval(progressInterval);
   }, [dispatch, health, healthError, healthLoading]);
 
-  return { loading, error, pages, progress };
+  return { loading, error, pages, configs, progress };
 };
