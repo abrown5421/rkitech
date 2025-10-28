@@ -12,7 +12,7 @@ import { setActivePage } from './features/page/activePageSlice';
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
   const location = useLocation()
-  const { loading, error, pages, progress } = usePreloadData();
+  const { loading, error, pages, configs, progress } = usePreloadData();
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;
@@ -37,10 +37,10 @@ const App: React.FC = () => {
   if (error) {
     return <Unhealthy error={error} />;
   }
-
+  
   return (
     <Pod className="flex flex-col w-screen h-screen">
-      <Navbar />
+      <Navbar configs={configs} loading={loading} />
       <Routes>
         {pages.map((p) => (
           <Route
