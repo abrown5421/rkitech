@@ -3,6 +3,7 @@ import cors from 'cors';
 import pageRoutes from './features/page/page.routes';
 import userRoutes from './features/user/user.routes';
 import employeeRoutes from './features/employee/employee.routes';
+import configurationsRoutes from './features/configurations/configurations.routes';
 import { BaseError } from './middleware/error.middleware';
 import mongoose from 'mongoose';
 
@@ -44,6 +45,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // feature routes
 // [CLI_IMPORTS]
+app.use('/api/configurationss', configurationsRoutes);
 app.use('/api/pages', pageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/employees', employeeRoutes);
