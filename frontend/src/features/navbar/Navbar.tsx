@@ -56,20 +56,26 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
       </Pod>
 
       <Pod className="flex flex-row items-center space-x-4">
-        {navbarConfig.data.menuItems?.map((item: any) => {
+        {navbarConfig.data.menuItems?.map((item: any, index: number) => {
           const isActive =
             item.itemType === 'page' &&
             activePage?.activePageName === item.itemTitle;
 
           if (item.itemType === 'page') {
             return (
-              <span
+              <Pod
                 key={item.itemId}
                 className={`${
                   isActive
                     ? 'text-primary'
                     : 'text-base-content hover:text-primary cursor-pointer'
                 } transition-colors duration-200`}
+                animationObject={{
+                  entranceAnimation: item.itemAnimation.entranceAnimation,
+                  exitAnimation: item.itemAnimation.exitAnimation,
+                  isEntering: true,
+                  delay: 0.25 * index
+                }}
                 onClick={() => {
                   if (!isActive) {
                     navigate({
@@ -80,19 +86,28 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
                 }}
               >
                 {item.itemTitle}
-              </span>
+              </Pod>
             );
           } else if (item.itemType === 'link') {
             return (
-              <a
-                key={item.itemId}
-                href={item.itemPath}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-base-content hover:text-primary cursor-pointer transition-colors duration-200"
+              <Pod
+                animationObject={{
+                  entranceAnimation: item.itemAnimation.entranceAnimation,
+                  exitAnimation: item.itemAnimation.exitAnimation,
+                  isEntering: true,
+                  delay: 0.25 * index
+                }}
               >
-                {item.itemTitle}
-              </a>
+                <a
+                  key={item.itemId}
+                  href={item.itemPath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base-content hover:text-primary cursor-pointer transition-colors duration-200"
+                >
+                  {item.itemTitle}
+                </a>
+              </Pod>
             );
           }
 
