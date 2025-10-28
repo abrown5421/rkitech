@@ -1,5 +1,6 @@
 import inquirer from "inquirer";
 import { generateFeature } from "../utils/generateFeature.js";
+import { createFrontendFeature } from "../utils/generateFrontendApi.js";
 
 export async function createFeatureWizard() {
   const { featureName } = await inquirer.prompt([
@@ -63,16 +64,26 @@ export async function createFeatureWizard() {
     try {
       seedData = JSON.parse(seedDataRaw);
       if (!Array.isArray(seedData)) {
-        console.warn("  Seed data must be an array. Skipping seed file generation.");
+        console.warn(" Seed data must be an array. Skipping seed file generation.");
         seedData = [];
       }
     } catch (e) {
-      console.error("❌ Invalid JSON. Skipping seed file generation.");
+      console.error(" Invalid JSON. Skipping seed file generation.");
       seedData = [];
     }
   } else {
     console.log("⏭️  Skipping seed data generation.");
   }
 
+  console.log("\n Generating backend feature...\n");
   await generateFeature(featureName, fields, seedData);
+  
+  console.log("\n Generating frontend API...\n");
+  const frontendSuccess = createFrontendFeature(featureName, fields);
+  
+  if (frontendSuccess) {
+    console.log("\n Feature created successfully (backend + frontend)!");
+  } else {
+    console.log("\n  Backend created, but frontend generation had issues.");
+  }
 }

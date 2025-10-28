@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { generateFeature } from "../utils/generateFeature.js";
+import { createFrontendFeature } from "../utils/generateFrontendApi.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -356,6 +357,14 @@ export async function editFeatureWizard() {
   const properFeatureName = featureToEdit.charAt(0).toUpperCase() + featureToEdit.slice(1).toLowerCase();
   
   await generateFeature(properFeatureName, newSchema, seedData);
-  
+  console.log(`\n Updating frontend API...\n`);
+  const frontendSuccess = createFrontendFeature(properFeatureName, newSchema);
+
+  if (frontendSuccess) {
+    console.log(`\n Feature '${featureToEdit}' updated successfully (backend + frontend)!`);
+  } else {
+    console.log(`\n  Backend updated, but frontend generation had issues.`);
+  }
+
   console.log(`\n Feature '${featureToEdit}' updated successfully!`);
 }
