@@ -1,10 +1,10 @@
 import { BaseCrudTest } from '../base/base.test.helper';
 import { IConfiguration } from './configurations.types';
 
-describe('Configurationss API', () => {
+describe('Configurations API', () => {
   const baseCrudTest = new BaseCrudTest<IConfiguration>({
     resourceName: 'configurations',
-    endpoint: '/api/configurationss',
+    endpoint: '/api/configurations',
     createPayload: {
       key: 'Test Value',
       data: { test: true },
