@@ -6,10 +6,16 @@ const Accordion: React.FC<AccordionProps> = ({
   className = "",
   toggleable = true,
   allowMultipleOpen = false,
+  animationObject,
+  style,
 }) => {
   const [openItems, setOpenItems] = useState<Set<string | number>>(
     new Set(items.filter(item => item.defaultOpen).map(item => item.id))
   );
+
+  const animationClasses = animationObject
+    ? `animate__animated ${animationObject.isEntering ? animationObject.entranceAnimation : animationObject.exitAnimation}`
+    : '';
 
   const handleToggle = (id: string | number) => {
     setOpenItems(prev => {
@@ -36,7 +42,11 @@ const Accordion: React.FC<AccordionProps> = ({
         return (
           <div
             key={item.id}
-            className={`collapse collapse-arrow ${isOpen ? "collapse-open" : ""} border ${colors.borderClass} ${colors.bgColorClass}`}
+            className={`collapse collapse-arrow ${isOpen ? "collapse-open" : ""} border ${colors.borderClass} ${colors.bgColorClass} ${animationClasses}`}
+            style={{
+                animationDelay: `${animationObject?.delay ?? 0}s`,
+                ...style, 
+            }}
           >
             <div
               className={`collapse-title font-semibold cursor-pointer flex items-center justify-between ${colors.headingTextClass}`}

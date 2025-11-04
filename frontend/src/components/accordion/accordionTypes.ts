@@ -1,3 +1,5 @@
+import type { AnimationObject } from "../shared/types/animationTypes";
+
 export interface ItemColor {
   bgColorClass: string;
   headingTextClass: string;
@@ -20,4 +22,6 @@ export interface AccordionProps {
   toggleable?: boolean; 
   allowMultipleOpen?: boolean; 
   namePrefix?: string;
+  animationObject?: AnimationObject;
+  style?: React.CSSProperties;
 }
