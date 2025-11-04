@@ -12,6 +12,16 @@ export const app = express();
 app.use(cors());
 app.use(express.json());
 
+// logging middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  console.log(`New ${req.method} request sent to ${req.url}`);
+  res.on('finish', () => {
+    console.log(`${req.method} request processed in ${Date.now() - start}ms`);
+  });
+  next();
+});
+
 app.get('/api/health', async (req: Request, res: Response) => {
   const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
   const isHealthy = mongoStatus === 'connected';
@@ -27,20 +37,9 @@ app.get('/api/health', async (req: Request, res: Response) => {
   });
 });
 
-
 // root
 app.get('/', (res: Response) => {
   res.send('Rkitech Node server is running successfully');
-});
-
-// logging middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const start = Date.now();
-  console.log(`New ${req.method} request sent to ${req.url}`);
-  res.on('finish', () => {
-    console.log(`${req.method} request processed in ${Date.now() - start}ms`);
-  });
-  next();
 });
 
 // feature routes
