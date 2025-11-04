@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
-import { generateFeature } from "../utils/generateFeature.js";
-import { createFrontendFeature } from "../utils/generateFrontendApi.js";
+import { generateFeature } from "../../utils/generateFeature.js";
+import { createFrontendFeature } from "../../utils/generateFrontendApi.js";
 
 export async function createFeatureWizard() {
   const { featureName } = await inquirer.prompt([

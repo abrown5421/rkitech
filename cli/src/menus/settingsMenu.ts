@@ -1,11 +1,10 @@
 import inquirer from "inquirer";
-import { createFeatureWizard } from "../commands/features/createFeatureWizard.js";
-import { editFeatureWizard } from "../commands/features/editFeatureWizard.js";
-import { deleteFeatureWizard } from "../commands/features/deleteFeatureWizard.js";
+import { chooseThemeWizard } from "../commands/themes/chooseThemeWizard.js";
+import { editThemeWizard } from "../commands/themes/editThemeWizard.js";
 
-export async function featuresMenu() {
+export async function settingsMenu() {
   console.clear();
-  console.log("Features Menu\n");
+  console.log("Settings Menu\n");
 
   const { action } = await inquirer.prompt([
     {
@@ -13,19 +12,18 @@ export async function featuresMenu() {
       name: "action",
       message: "What would you like to do?",
       choices: [
-        { name: "Create new feature", value: "new" },
-        { name: "Edit existing feature", value: "edit" },
-        { name: "Delete feature", value: "delete" },
+        { name: "Choose Theme", value: "choose" },
+        { name: "Edit Theme", value: "edit" },
         { name: "Back", value: "back" },
       ],
     },
   ]);
 
   switch (action) {
-    case "new":
+    case "choose":
       try {
-        await createFeatureWizard();
-        console.log("\n Feature creation completed!");
+        await chooseThemeWizard();
+        console.log("\n Theme choice completed!");
         await inquirer.prompt([
           {
             type: "input",
@@ -34,7 +32,7 @@ export async function featuresMenu() {
           },
         ]);
       } catch (error) {
-        console.error(" Error creating feature:", error);
+        console.error(" Error choosing theme:", error);
         await inquirer.prompt([
           {
             type: "input",
@@ -45,18 +43,9 @@ export async function featuresMenu() {
       }
       break;
     case "edit":
-      await editFeatureWizard();
-      await inquirer.prompt([
-        {
-          type: "input",
-          name: "continue",
-          message: "Press Enter to continue...",
-        },
-      ]);
-      break;
-    case "delete":
       try {
-        await deleteFeatureWizard();
+        await editThemeWizard();
+        console.log("\n Theme edit completed!");
         await inquirer.prompt([
           {
             type: "input",
@@ -65,7 +54,7 @@ export async function featuresMenu() {
           },
         ]);
       } catch (error) {
-        console.error(" Error deleting feature:", error);
+        console.error(" Error editing theme:", error);
         await inquirer.prompt([
           {
             type: "input",
@@ -81,6 +70,6 @@ export async function featuresMenu() {
   }
 
   if (action !== "back") {
-    await featuresMenu();
+    await settingsMenu();
   }
 }

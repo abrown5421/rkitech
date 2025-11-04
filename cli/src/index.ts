@@ -2,7 +2,8 @@
 import { Command } from "commander";
 import figlet from "figlet";
 import inquirer from "inquirer";
-import { featuresMenu as featuresMenuCommand } from "./menus/featuresMenu.js"; // your refactored featuresMenu
+import { featuresMenu as featuresMenuCommand } from "./menus/featuresMenu.js"; 
+import { settingsMenu as settingsMenuCommand } from "./menus/settingsMenu.js"; 
 
 const program = new Command();
 
@@ -23,7 +24,6 @@ async function mainMenu() {
       message: "What would you like to work on?",
       choices: [
         { name: "Features", value: "features" },
-        { name: "Components", value: "components" },
         { name: "Settings", value: "settings" },
         { name: "Exit", value: "exit" },
       ],
@@ -34,11 +34,8 @@ async function mainMenu() {
     case "features":
       await featuresMenuCommand();
       break;
-    case "components":
-      await componentsMenu();
-      break;
     case "settings":
-      await settingsMenu();
+      await settingsMenuCommand();
       break;
     case "exit":
     default:
@@ -47,11 +44,6 @@ async function mainMenu() {
   }
 
   await mainMenu();
-}
-
-async function componentsMenu() {
-  console.clear();
-  console.log("Components Menu\n");
 }
 
 async function settingsMenu() {
