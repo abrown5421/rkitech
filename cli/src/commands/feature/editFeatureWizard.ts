@@ -2,8 +2,8 @@ import inquirer from "inquirer";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { generateFeature } from "../utils/generateFeature.js";
-import { createFrontendFeature } from "../utils/generateFrontendApi.js";
+import { generateFeature } from "../../utils/generateFeature.js";
+import { createFrontendFeature } from "../../utils/generateFrontendApi.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

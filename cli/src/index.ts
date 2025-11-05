@@ -23,7 +23,6 @@ async function mainMenu() {
       message: "What would you like to work on?",
       choices: [
         { name: "Features", value: "features" },
-        { name: "Components", value: "components" },
         { name: "Settings", value: "settings" },
         { name: "Exit", value: "exit" },
       ],
@@ -33,9 +32,6 @@ async function mainMenu() {
   switch (section) {
     case "features":
       await featuresMenuCommand();
-      break;
-    case "components":
-      await componentsMenu();
       break;
     case "settings":
       await settingsMenu();
@@ -47,11 +43,6 @@ async function mainMenu() {
   }
 
   await mainMenu();
-}
-
-async function componentsMenu() {
-  console.clear();
-  console.log("Components Menu\n");
 }
 
 async function settingsMenu() {

@@ -1,9 +1,10 @@
 import inquirer from "inquirer";
-import { createFeatureWizard } from "../commands/feature/createFeatureWizard.js";
-import { deleteFeatureWizard } from "../commands/feature/deleteFeatureWizard.js";
-import { editFeatureWizard } from "../commands/feature/editFeatureWizard.js";
+import { createThemeWizard } from "../commands/theme/createThemeWizard.js";
+import { editThemeWizard } from "../commands/theme/editThemeWizard.js";
+import { deleteThemeWizard } from "../commands/theme/deleteThemeWizard.js";
+import { selectThemeWizard } from "../commands/theme/selectThemeWizard.js";
 
-export async function featuresMenu() {
+export async function settingsMenu() {
   console.clear();
   console.log("Features Menu\n");
 
@@ -13,18 +14,41 @@ export async function featuresMenu() {
       name: "action",
       message: "What would you like to do?",
       choices: [
-        { name: "Create new feature", value: "new" },
-        { name: "Edit existing feature", value: "edit" },
-        { name: "Delete feature", value: "delete" },
+        { name: "Select theme", value: "select" },
+        { name: "Create new theme", value: "new" },
+        { name: "Edit existing theme", value: "edit" },
+        { name: "Delete theme", value: "delete" },
         { name: "Back", value: "back" },
       ],
     },
   ]);
 
   switch (action) {
+    case "select":
+      try {
+        await selectThemeWizard();
+        console.log("\n Feature selection completed!");
+        await inquirer.prompt([
+          {
+            type: "input",
+            name: "continue",
+            message: "Press Enter to continue...",
+          },
+        ]);
+      } catch (error) {
+        console.error(" Error creating feature:", error);
+        await inquirer.prompt([
+          {
+            type: "input",
+            name: "continue",
+            message: "Press Enter to continue...",
+          },
+        ]);
+      }
+      break;
     case "new":
       try {
-        await createFeatureWizard();
+        await createThemeWizard();
         console.log("\n Feature creation completed!");
         await inquirer.prompt([
           {
@@ -45,7 +69,7 @@ export async function featuresMenu() {
       }
       break;
     case "edit":
-      await editFeatureWizard();
+      await editThemeWizard();
       await inquirer.prompt([
         {
           type: "input",
@@ -56,7 +80,7 @@ export async function featuresMenu() {
       break;
     case "delete":
       try {
-        await deleteFeatureWizard();
+        await deleteThemeWizard();
         await inquirer.prompt([
           {
             type: "input",
@@ -81,6 +105,6 @@ export async function featuresMenu() {
   }
 
   if (action !== "back") {
-    await featuresMenu();
+    await settingsMenu();
   }
 }
