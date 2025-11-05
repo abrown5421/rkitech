@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function getAvailableFeatures(): string[] {
-  const featuresDir = path.resolve(__dirname, "../../../backend/src/features");
+  const featuresDir = path.resolve(__dirname, "../../../../backend/src/features");
   
   if (!fs.existsSync(featuresDir)) {
     console.error(" Features directory not found!");
@@ -25,7 +25,7 @@ function getAvailableFeatures(): string[] {
 function parseExistingSchema(featureName: string): Record<string, any> {
   const typesFilePath = path.resolve(
     __dirname,
-    `../../../backend/src/features/${featureName.toLowerCase()}/${featureName.toLowerCase()}.types.ts`
+    `../../../../backend/src/features/${featureName.toLowerCase()}/${featureName.toLowerCase()}.types.ts`
   );
 
   if (!fs.existsSync(typesFilePath)) {
@@ -78,7 +78,7 @@ function parseExistingSchema(featureName: string): Record<string, any> {
 function getSeedData(featureName: string): any[] {
   const seedFilePath = path.resolve(
     __dirname,
-    `../../../backend/src/features/${featureName.toLowerCase()}/${featureName.toLowerCase()}.seed.ts`
+    `../../../../backend/src/features/${featureName.toLowerCase()}/${featureName.toLowerCase()}.seed.ts`
   );
 
   if (!fs.existsSync(seedFilePath)) {
@@ -228,7 +228,7 @@ async function editSchema(currentSchema: Record<string, any>): Promise<Record<st
         break;
 
       case "view":
-        console.log("\n📋 Current Schema:");
+        console.log("\n Current Schema:");
         if (Object.keys(newSchema).length === 0) {
           console.log("  (empty)");
         } else {
@@ -352,7 +352,7 @@ export async function editFeatureWizard() {
     return;
   }
 
-  console.log(`\n🔄 Regenerating feature '${featureToEdit}'...\n`);
+  console.log(`\n Regenerating feature '${featureToEdit}'...\n`);
   
   const properFeatureName = featureToEdit.charAt(0).toUpperCase() + featureToEdit.slice(1).toLowerCase();
   

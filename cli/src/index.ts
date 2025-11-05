@@ -2,7 +2,8 @@
 import { Command } from "commander";
 import figlet from "figlet";
 import inquirer from "inquirer";
-import { featuresMenu as featuresMenuCommand } from "./menus/featuresMenu.js"; // your refactored featuresMenu
+import { featuresMenu as featuresMenuCommand } from "./menus/featuresMenu.js";
+import { settingsMenu } from "./menus/settingsMenu.js";
 
 const program = new Command();
 
@@ -43,11 +44,6 @@ async function mainMenu() {
   }
 
   await mainMenu();
-}
-
-async function settingsMenu() {
-  console.clear();
-  console.log("Settings Menu\n");
 }
 
 program.action(async () => {
