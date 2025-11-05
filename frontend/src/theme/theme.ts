@@ -1,6 +1,8 @@
 import { createTheme, type ThemeOptions } from '@mui/material/styles';
 
-const commonPalette = {
+export type PaletteColors = typeof commonPalette;
+
+export const commonPalette = {
   primary: { main: '#FE9A00' },
   secondary: { main: '#101828' },
   accent: { main: '#973C00' },
@@ -8,45 +10,46 @@ const commonPalette = {
   success: { main: '#00A63E' },
   warning: { main: '#D08700' },
   error: { main: '#E7000B' },
-  light: { main: '#F9FAFB'},
-  dark: { main: '#1A1D27'}
+  light: { main: '#F9FAFB' },
+  dark: { main: '#1A1D27' },
 };
 
-const lightThemeOptions: ThemeOptions = {
-  palette: {
-    mode: 'light',
-    background: {
-      default: '#F9FAFB',
-      paper: '#fff',
-    },
-    text: {
-      primary: '#1A1D27',
-      secondary: '#020618',
-    },
-    ...commonPalette,
-  },
-  typography: {
-    fontFamily: 'Inter, Roboto, Arial, sans-serif',
-  },
-};
+export interface ThemeConfig {
+  name: string; 
+  palette: PaletteColors;
+  lightOverrides?: Partial<ThemeOptions>;
+  darkOverrides?: Partial<ThemeOptions>;
+}
 
-const darkThemeOptions: ThemeOptions = {
-  palette: {
-    mode: 'dark',
-    background: {
-      default: '#020618',
-      paper: '#1A1D27',
+export const defaultTheme: ThemeConfig = {
+  name: 'Default',
+  palette: commonPalette,
+  lightOverrides: {
+    palette: {
+      mode: 'light',
+      background: { default: '#F9FAFB', paper: '#fff' },
+      text: { primary: '#1A1D27', secondary: '#020618' },
     },
-    text: {
-      primary: '#F9FAFB',
-      secondary: '#fff',
-    },
-    ...commonPalette,
   },
-  typography: {
-    fontFamily: 'Inter, Roboto, Arial, sans-serif',
+  darkOverrides: {
+    palette: {
+      mode: 'dark',
+      background: { default: '#020618', paper: '#1A1D27' },
+      text: { primary: '#F9FAFB', secondary: '#fff' },
+    },
   },
 };
 
-export const lightTheme = createTheme(lightThemeOptions);
-export const darkTheme = createTheme(darkThemeOptions);
+export const createMuiThemes = (config: ThemeConfig) => {
+  const lightTheme = createTheme({
+    typography: { fontFamily: 'Inter, Roboto, Arial, sans-serif' },
+    palette: { ...config.palette, ...(config.lightOverrides?.palette || {}) },
+  });
+
+  const darkTheme = createTheme({
+    typography: { fontFamily: 'Inter, Roboto, Arial, sans-serif' },
+    palette: { ...config.palette, ...(config.darkOverrides?.palette || {}) },
+  });
+
+  return { lightTheme, darkTheme };
+};
