@@ -8,11 +8,19 @@ import Unhealthy from './features/health/Unhealthy';
 import Pod from './components/pod/AnimBox';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/page/activePageSlice';
+import { setActiveTheme } from './features/theme/themeSlice'; 
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
   const location = useLocation()
-  const { loading, error, pages, configs, progress } = usePreloadData();
+  const { loading, error, pages, themes, configs, progress } = usePreloadData();
+
+  useEffect(() => {
+    if (themes && themes.length > 0) {
+      const activeTheme = themes.find(theme => theme.active) || themes[0];
+      dispatch(setActiveTheme(activeTheme));
+    }
+  }, [themes, dispatch]);
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;

@@ -5,6 +5,8 @@ import { useGetHealthQuery } from '../features/health/healthApi';
 import type { IPage } from '../features/page/pageTypes';
 import type { IConfiguration } from '../features/configurations/configurationsTypes';
 import { configApi } from '../features/configurations/configurationsApi';
+import { themeApi } from '../features/theme/themeApi';
+import type { ITheme } from '../features/theme/themeTypes';
 
 export const usePreloadData = () => {
   const dispatch = useAppDispatch();
@@ -13,6 +15,7 @@ export const usePreloadData = () => {
   const [error, setError] = useState<string | null>(null);
   const [pages, setPages] = useState<IPage[]>([]);
   const [configs, setConfigs] = useState<IConfiguration[]>([]);
+  const [themes, setThemes] = useState<ITheme[]>([]);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -31,9 +34,10 @@ export const usePreloadData = () => {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        const [pagesResult, configResult] = await Promise.all([
+        const [pagesResult, configResult, themesResult] = await Promise.all([
           dispatch(pagesApi.endpoints.getPages.initiate()),
-          dispatch(configApi.endpoints.getConfigs.initiate())
+          dispatch(configApi.endpoints.getConfigs.initiate()),
+          dispatch(themeApi.endpoints.getThemes.initiate())
         ]);
 
         if ('error' in pagesResult) setError('Failed to load pages');
@@ -41,6 +45,9 @@ export const usePreloadData = () => {
 
         if ('error' in configResult) setError('Failed to load configurations');
         else if ('data' in configResult) setConfigs(configResult.data ?? []);
+
+        if ('error' in themesResult) setError('Failed to load themes');
+        else if ('data' in themesResult) setThemes(themesResult.data ?? []);
 
         completed = true;
         setProgress(100);
@@ -65,5 +72,5 @@ export const usePreloadData = () => {
     return () => clearInterval(progressInterval);
   }, [dispatch, health, healthError, healthLoading]);
 
-  return { loading, error, pages, configs, progress };
+  return { loading, error, pages, configs, themes, progress };
 };

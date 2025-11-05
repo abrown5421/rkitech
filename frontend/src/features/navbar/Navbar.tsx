@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   AppBar,
   Toolbar,
@@ -12,11 +12,9 @@ import { useNavigation } from '../../hooks/useNavigate';
 import type { IPage } from '../page/pageTypes';
 import type { NavbarProps } from './navbarTypes';
 import { useAppSelector } from '../../store/hooks';
-import { ThemeContext } from '../../theme/ThemeProvider';
 
 const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
   const navigate = useNavigation();
-  const { mode } = useContext(ThemeContext);
   const activePage = useAppSelector((state) => state.activePage);
   const navbarConfig = configs.find((c) => c.key === 'navbar');
 
@@ -69,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
           <AnimBox display="flex" flexDirection="column" mr={1}>
             <Box
               component="img"
-              src={mode === 'light' ? data.logo : data.invLogo}
+              src={data.logo}
               alt="Logo"
               sx={{
                 height: '100%',
