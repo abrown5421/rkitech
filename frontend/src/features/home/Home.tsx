@@ -1,12 +1,19 @@
 import React from 'react';
-import Pod from '../../components/pod/Pod';
+import { Box } from '@mui/material';
 
 const Home: React.FC = () => {
-
-    return (
-        <Pod className='flex flex-row min-h-[calc(100vh-50px)]'>
-            Home
-        </Pod>
-    );
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        minHeight: 'calc(100vh - 50px)',
+        width: '100%',
+      }}
+    >
+      Home
+    </Box>
+  );
 };
+
 export default Home;

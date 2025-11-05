@@ -1,5 +1,13 @@
-import React from 'react';
-import Pod from '../../components/pod/Pod';
+import React, { useEffect } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Typography,
+  Skeleton,
+  Link as MuiLink,
+} from '@mui/material';
+import AnimBox from '../../components/pod/AnimBox';
 import { useNavigation } from '../../hooks/useNavigate';
 import type { IPage } from '../page/pageTypes';
 import type { NavbarProps } from './navbarTypes';
@@ -7,114 +15,145 @@ import { useAppSelector } from '../../store/hooks';
 
 const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
   const navigate = useNavigation();
-  const activePage = useAppSelector((state) => state.activePage)
-  const navbarConfig = configs.find(c => c.key === 'navbar');
+  const activePage = useAppSelector((state) => state.activePage);
+  const navbarConfig = configs.find((c) => c.key === 'navbar');
 
   if (loading || !navbarConfig) {
     return (
-      <div className="navbar h-16 px-4 shadow-sm justify-between">
-        <div className="flex flex-row items-center space-x-4">
-          <div className="w-12 h-12 bg-base-200 rounded animate-pulse" />
-          <div className="w-24 h-6 bg-base-200 rounded animate-pulse" />
-        </div>
-        <div className="flex flex-row items-center space-x-4">
-          <div className="w-16 h-6 bg-base-200 rounded animate-pulse" />
-          <div className="w-16 h-6 bg-base-200 rounded animate-pulse" />
-          <div className="w-16 h-6 bg-base-200 rounded animate-pulse" />
-        </div>
-      </div>
+      <AppBar position="static" color="default" elevation={1}>
+        <Toolbar sx={{ justifyContent: 'space-between', px: 2, height: 64 }}>
+          <Box display="flex" alignItems="center" gap={2}>
+            <Skeleton variant="circular" width={48} height={48} />
+            <Skeleton variant="text" width={100} height={24} />
+          </Box>
+          <Box display="flex" alignItems="center" gap={2}>
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} variant="text" width={80} height={24} />
+            ))}
+          </Box>
+        </Toolbar>
+      </AppBar>
     );
   }
 
+  const { data } = navbarConfig;
+  useEffect(()=>{console.log(data.backgroundColor)}, [data.backgroundColor])
   return (
-    <Pod
+    <AnimBox
+      component={AppBar}
+      position="static"
+      color="transparent"
       animationObject={{
-        entranceAnimation: navbarConfig.data.componentAnimation?.entranceAnimation,
-        exitAnimation: navbarConfig.data.componentAnimation?.exitAnimation,
+        entranceAnimation: data.componentAnimation?.entranceAnimation,
+        exitAnimation: data.componentAnimation?.exitAnimation,
         isEntering: true,
       }}
-      className={`navbar ${navbarConfig.data.backgroundColor} shadow-sm justify-between h-16 px-4`}
+      sx={{
+        bgcolor: data.backgroundColor || 'background.paper',
+        justifyContent: 'space-between',
+        height: 64,
+      }}
     >
-      <Pod
-        animationObject={{
-          entranceAnimation: navbarConfig.data.logoAnimation?.entranceAnimation,
-          exitAnimation: navbarConfig.data.logoAnimation?.exitAnimation,
-          isEntering: true,
-        }}
-        className="flex flex-row items-center"
-      >
-        <Pod className="flex flex-col">
-          <img
-            src={navbarConfig.data.logo}
-            alt="Logo"
-            className="h-full max-h-12 object-contain"
-          />
-        </Pod>
-        <Pod className="flex flex-col justify-center primary-font">
-          {navbarConfig.data.logoTitle}
-        </Pod>
-      </Pod>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <AnimBox
+          animationObject={{
+            entranceAnimation: data.logoAnimation?.entranceAnimation,
+            exitAnimation: data.logoAnimation?.exitAnimation,
+            isEntering: true,
+          }}
+          display="flex"
+          alignItems="center"
+        >
+          <AnimBox display="flex" flexDirection="column" mr={1}>
+            <Box
+              component="img"
+              src={data.logo}
+              alt="Logo"
+              sx={{
+                height: '100%',
+                maxHeight: 48,
+                objectFit: 'contain',
+              }}
+            />
+          </AnimBox>
+          <Typography
+            variant="h6"
+            sx={{
+              fontFamily: 'PrimaryFont',
+              color: 'text.primary',
+            }}
+          >
+            {data.logoTitle}
+          </Typography>
+        </AnimBox>
 
-      <Pod className="flex flex-row items-center space-x-4">
-        {navbarConfig.data.menuItems?.map((item: any, index: number) => {
-          const isActive =
-            item.itemType === 'page' &&
-            activePage?.activePageName === item.itemTitle;
+        <Box display="flex" alignItems="center" gap={3}>
+          {data.menuItems?.map((item: any, index: number) => {
+            const isActive =
+              item.itemType === 'page' &&
+              activePage?.activePageName === item.itemTitle;
 
-          if (item.itemType === 'page') {
-            return (
-              <Pod
-                key={item.itemId}
-                className={`${
-                  isActive
-                    ? 'text-primary'
-                    : 'text-base-content hover:text-primary cursor-pointer'
-                } transition-colors duration-200`}
-                animationObject={{
-                  entranceAnimation: item.itemAnimation.entranceAnimation,
-                  exitAnimation: item.itemAnimation.exitAnimation,
-                  isEntering: true,
-                  delay: 0.25 * index
-                }}
-                onClick={() => {
-                  if (!isActive) {
-                    navigate({
-                      pageName: item.itemTitle,
-                      pagePath: item.itemPath,
-                    } as IPage);
-                  }
-                }}
-              >
-                {item.itemTitle}
-              </Pod>
-            );
-          } else if (item.itemType === 'link') {
-            return (
-              <Pod
-                animationObject={{
-                  entranceAnimation: item.itemAnimation.entranceAnimation,
-                  exitAnimation: item.itemAnimation.exitAnimation,
-                  isEntering: true,
-                  delay: 0.25 * index
-                }}
-              >
-                <a
+            const commonAnimation = {
+              entranceAnimation: item.itemAnimation?.entranceAnimation,
+              exitAnimation: item.itemAnimation?.exitAnimation,
+              isEntering: true,
+              delay: 0.25 * index,
+            };
+
+            if (item.itemType === 'page') {
+              return (
+                <AnimBox
                   key={item.itemId}
-                  href={item.itemPath}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-content hover:text-primary cursor-pointer transition-colors duration-200"
+                  animationObject={commonAnimation}
+                  onClick={() => {
+                    if (!isActive) {
+                      navigate({
+                        pageName: item.itemTitle,
+                        pagePath: item.itemPath,
+                      } as IPage);
+                    }
+                  }}
+                  sx={{
+                    cursor: 'pointer',
+                    color: isActive ? 'primary.main' : 'text.primary',
+                    transition: 'color 0.2s ease',
+                    '&:hover': { color: 'primary.main' },
+                  }}
                 >
-                  {item.itemTitle}
-                </a>
-              </Pod>
-            );
-          }
+                  <Typography variant="body1">{item.itemTitle}</Typography>
+                </AnimBox>
+              );
+            }
 
-          return null;
-        })}
-      </Pod>
-    </Pod>
+            if (item.itemType === 'link') {
+              return (
+                <AnimBox
+                  key={item.itemId}
+                  animationObject={commonAnimation}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <MuiLink
+                    href={item.itemPath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="none"
+                    sx={{
+                      color: 'text.primary',
+                      transition: 'color 0.2s ease',
+                      '&:hover': { color: 'primary.main' },
+                    }}
+                  >
+                    {item.itemTitle}
+                  </MuiLink>
+                </AnimBox>
+              );
+            }
+
+            return null;
+          })}
+        </Box>
+      </Toolbar>
+    </AnimBox>
   );
 };
 
