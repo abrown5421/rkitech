@@ -91,7 +91,7 @@ export async function generateFeature(
       const templatePath = path.resolve(__dirname, "../templates", template);
       
       if (!fs.existsSync(templatePath)) {
-        console.error(`❌ Template not found: ${templatePath}`);
+        console.error(` Template not found: ${templatePath}`);
         continue;
       }
       
@@ -121,14 +121,14 @@ export async function generateFeature(
       fs.writeFileSync(filePath, content);
       console.log(` Created: ${fileName}`);
     } catch (error) {
-      console.error(`❌ Error creating ${name}:`, error);
+      console.error(` Error creating ${name}:`, error);
     }
   }
 
   console.log(`\n Feature '${featureName}' created successfully!`);
   console.log(`📂 Location: ${featureDir}`);
   
-  console.log(`\n📋 Generated files:`);
+  console.log(`\n Generated files:`);
   console.log(`   - Model`);
   console.log(`   - Types`);
   console.log(`   - Controller`);

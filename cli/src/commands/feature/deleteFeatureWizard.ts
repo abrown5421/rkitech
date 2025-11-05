@@ -2,13 +2,13 @@ import inquirer from "inquirer";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { deleteFrontendFeature } from "../utils/generateFrontendApi.js";
+import { deleteFrontendFeature } from "../../utils/generateFrontendApi.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function getAvailableFeatures(): string[] {
-  const featuresDir = path.resolve(__dirname, "../../../backend/src/features");
+  const featuresDir = path.resolve(__dirname, "../../../../backend/src/features");
   
   if (!fs.existsSync(featuresDir)) {
     console.error(" Features directory not found!");
@@ -22,7 +22,7 @@ function getAvailableFeatures(): string[] {
 }
 
 function removeFeatureFromApp(featureName: string): boolean {
-  const appFilePath = path.resolve(__dirname, "../../../backend/src/app.ts");
+  const appFilePath = path.resolve(__dirname, "../../../../backend/src/app.ts");
   
   if (!fs.existsSync(appFilePath)) {
     console.error(" app.ts file not found!");
@@ -60,7 +60,7 @@ function removeFeatureFromApp(featureName: string): boolean {
 function deleteFeatureDirectory(featureName: string): boolean {
   const featureDir = path.resolve(
     __dirname,
-    "../../../backend/src/features",
+    "../../../../backend/src/features",
     featureName.toLowerCase()
   );
 
