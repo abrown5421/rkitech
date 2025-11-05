@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -12,9 +12,11 @@ import { useNavigation } from '../../hooks/useNavigate';
 import type { IPage } from '../page/pageTypes';
 import type { NavbarProps } from './navbarTypes';
 import { useAppSelector } from '../../store/hooks';
+import { ThemeContext } from '../../theme/ThemeProvider';
 
 const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
   const navigate = useNavigation();
+  const { mode } = useContext(ThemeContext);
   const activePage = useAppSelector((state) => state.activePage);
   const navbarConfig = configs.find((c) => c.key === 'navbar');
 
@@ -37,10 +39,9 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
   }
 
   const { data } = navbarConfig;
-  useEffect(()=>{console.log(data.backgroundColor)}, [data.backgroundColor])
+  
   return (
     <AnimBox
-      component={AppBar}
       position="static"
       color="transparent"
       animationObject={{
@@ -50,6 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
       }}
       sx={{
         bgcolor: data.backgroundColor || 'background.paper',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
         justifyContent: 'space-between',
         height: 64,
       }}
@@ -67,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
           <AnimBox display="flex" flexDirection="column" mr={1}>
             <Box
               component="img"
-              src={data.logo}
+              src={mode === 'light' ? data.logo : data.invLogo}
               alt="Logo"
               sx={{
                 height: '100%',

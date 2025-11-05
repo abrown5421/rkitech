@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AnimBox from '../../components/pod/AnimBox';
 import { useNavigation } from '../../hooks/useNavigate';
 import { useAppSelector } from '../../store/hooks';
@@ -12,6 +12,8 @@ const Footer: React.FC = () => {
   const { data: footerConfig, isLoading } = useGetConfigByKeyQuery('footer');
   const currentYear = new Date().getFullYear();
 
+  useEffect(()=>{console.log(activePage)}, [activePage])
+  
   if (isLoading || !footerConfig) {
     return (
       <AnimBox
@@ -53,8 +55,8 @@ const Footer: React.FC = () => {
 
   const renderMenuItem = (item: any, index: number) => {
     const isActive =
-      item.itemType === 'page' && activePage?.activePageName === item.itemTitle;
-
+      item.itemType === 'page' && activePage?.activePageName === item.itemTitle.replace(/\s/g, "");
+    
     const animationObject = {
       entranceAnimation: item.itemAnimation?.entranceAnimation,
       exitAnimation: item.itemAnimation?.exitAnimation,
@@ -137,7 +139,6 @@ const Footer: React.FC = () => {
       }}
     >
       <AnimBox sx={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-        {/* Primary menu */}
         <AnimBox sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mb: 3 }}>
           {menuItems.map(renderMenuItem)}
         </AnimBox>
