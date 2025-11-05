@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { BoxProps } from "@mui/material";
 
 export type EntranceAnimation =
   | "animate__backInDown"
@@ -94,10 +94,6 @@ export type AnimationObject = {
   delay?: number;
 };
 
-export interface PodProps {
-  children: ReactNode;
-  className?: string;
+export interface AnimBoxProps extends BoxProps {
   animationObject?: AnimationObject;
-  style?: React.CSSProperties;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }

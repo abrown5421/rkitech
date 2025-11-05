@@ -6,13 +6,16 @@ import { store } from './store/store.ts';
 import App from './App.tsx'
 import './index.css';
 import 'animate.css';
+import { AppThemeProvider } from './theme/ThemeProvider.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>
+    <AppThemeProvider>
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Provider>
+    </AppThemeProvider>
   </StrictMode>,
 )

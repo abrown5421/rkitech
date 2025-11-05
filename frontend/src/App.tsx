@@ -5,7 +5,7 @@ import PageShell from './features/page/PageShell';
 import { matchPath, Route, Routes, useLocation } from 'react-router-dom';
 import Healthy from './features/health/Healthy';
 import Unhealthy from './features/health/Unhealthy';
-import Pod from './components/pod/Pod';
+import Pod from './components/pod/AnimBox';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/page/activePageSlice';
 
