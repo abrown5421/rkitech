@@ -33,6 +33,12 @@ export class BaseCrudTest<T extends Document> {
   setupDatabase() {
     beforeAll(async () => {
       await mongoose.connect(process.env.MONGO_URI_TEST!);
+
+      const db = mongoose.connection.db;
+      if (!db) throw new Error('MongoDB connection not established.');
+
+      const collectionName = this.config.endpoint.replace('/api/', '');
+      await db.collection(collectionName).deleteMany({});
     });
 
     afterAll(async () => {
@@ -54,12 +60,16 @@ export class BaseCrudTest<T extends Document> {
       const res = await request(app)
         .post(this.config.endpoint)
         .send(this.config.createPayload);
-      
+
       expect(res.statusCode).toBe(201);
       expect(res.body.success).toBe(true);
 
       this.config.createExpectations.forEach(({ field, value }) => {
-        expect(res.body.data[field as string]).toBe(value);
+        if (typeof value === 'object' && value !== null) {
+          expect(res.body.data[field as string]).toMatchObject(value);
+        } else {
+          expect(res.body.data[field as string]).toBe(value);
+        }
       });
 
       this.createdResourceId = res.body.data._id;
@@ -71,7 +81,9 @@ export class BaseCrudTest<T extends Document> {
       const res = await request(app).get(
         `${this.config.endpoint}?_id=${this.createdResourceId}`
       );
+
       expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
       expect(res.body.data).toHaveLength(1);
       expect(res.body.data[0]._id).toBe(this.createdResourceId);
     });
@@ -82,10 +94,17 @@ export class BaseCrudTest<T extends Document> {
       const res = await request(app)
         .put(`${this.config.endpoint}/${this.createdResourceId}`)
         .send(this.config.updatePayload);
-      
+
       expect(res.statusCode).toBe(200);
-      expect(res.body.data[this.config.updateExpectations.field as string])
-        .toBe(this.config.updateExpectations.value);
+      expect(res.body.success).toBe(true);
+
+      const { field, value } = this.config.updateExpectations;
+
+      if (typeof value === 'object' && value !== null) {
+        expect(res.body.data[field as string]).toMatchObject(value);
+      } else {
+        expect(res.body.data[field as string]).toBe(value);
+      }
     });
   }
 
@@ -94,9 +113,10 @@ export class BaseCrudTest<T extends Document> {
       const res = await request(app).delete(
         `${this.config.endpoint}/${this.createdResourceId}`
       );
+
       expect(res.statusCode).toBe(200);
-      expect(res.body.data).toBeUndefined();
       expect(res.body.success).toBe(true);
+      expect(res.body.data).toBeUndefined();
     });
   }
 
