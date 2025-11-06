@@ -7,6 +7,7 @@ export interface IPage {
   pageActive: boolean;
   pageColor: string;
   pageFontFamily?: string;
+  pageFontColor?: string;
   pageIntensity: boolean;
   pageEntranceAnimation: string;
   pageExitAnimation: string;

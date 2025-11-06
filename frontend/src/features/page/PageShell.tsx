@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { PageShellProps } from './pageTypes';
 import Footer from '../footer/Footer';
 import AnimBox from '../../components/animBox/AnimBox';
@@ -15,6 +15,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
   const { data: theme, isLoading: themeLoading } = useGetActiveThemeQuery();
   const pageBgColor = useThemeValue(page.pageColor);
+  const pageFontColor = page.pageFontColor ? useThemeValue(page.pageFontColor) : null;
   
   if (themeLoading || !theme) {
     return null; 
@@ -34,12 +35,15 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
             isEntering: activePage.activePageAnimateIn,
           }}
           sx={{ 
+            position: 'relative',
+            zIndex: 1,
             width: '100%', 
             minHeight: 'calc(100vh - 64px)', 
             backgroundColor: pageBgColor,
+            color: pageFontColor ?? theme.neutral.content,
+            fontFamily: page.pageFontFamily ?? 'SecondaryFont',
             boxSizing: 'border-box',
-            p: 4,
-            fontFamily: page.pageFontFamily ?? 'SecondaryFont'
+            p: 4
           }}
         >
           {activePage.activePageName === 'Home' && <Home />}

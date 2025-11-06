@@ -14,6 +14,7 @@ import type { NavbarProps } from './navbarTypes';
 import { useAppSelector } from '../../store/hooks';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
 import { useThemeValue } from '../../hooks/useThemeValue';
+import { isColorLight } from '../../utils/isColorLight';
 
 const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
   const navigate = useNavigation();
@@ -40,6 +41,8 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
   }
   
   const { data } = navbarConfig;
+  const background = useThemeValue(data.backgroundColor)
+  const isLight = isColorLight(background as string)
   
   return (
     <AnimBox
@@ -51,6 +54,8 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
         isEntering: true,
       }}
       sx={{
+        position: 'relative',
+        zIndex: 3,
         bgcolor: useThemeValue(data.backgroundColor) || 'neutral',
         boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
         justifyContent: 'space-between',
@@ -70,7 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
           <AnimBox display="flex" flexDirection="column" mr={1}>
             <Box
               component="img"
-              src={data.logo}
+              src={isLight ? data.logo : data.logoInv}
               alt="Logo"
               sx={{
                 height: '100%',
