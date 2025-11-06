@@ -15,13 +15,6 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
   const { data: theme, isLoading: themeLoading } = useGetActiveThemeQuery();
   const pageBgColor = useThemeValue(page.pageColor);
-
-  useEffect(()=>{
-    console.log('page.pageColor:', page.pageColor);
-    console.log('pageBgColor:', pageBgColor);
-    console.log('Full theme object:', theme); // ADD THIS
-    console.log('Theme keys:', theme ? Object.keys(theme) : 'no theme'); // ADD THIS
-  }, [page.pageColor, pageBgColor, theme])
   
   if (themeLoading || !theme) {
     return null; 
@@ -40,7 +33,14 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
             exitAnimation: page.pageExitAnimation as ExitAnimation,
             isEntering: activePage.activePageAnimateIn,
           }}
-          sx={{ width: '100%', minHeight: 'calc(100vh - 64px)', backgroundColor: pageBgColor}}
+          sx={{ 
+            width: '100%', 
+            minHeight: 'calc(100vh - 64px)', 
+            backgroundColor: pageBgColor,
+            boxSizing: 'border-box',
+            p: 4,
+            fontFamily: page.pageFontFamily ?? 'SecondaryFont'
+          }}
         >
           {activePage.activePageName === 'Home' && <Home />}
           {activePage.activePageName === 'PageNotFound' && <PageNotFound />}

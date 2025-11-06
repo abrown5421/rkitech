@@ -7,10 +7,8 @@ const Home: React.FC = () => {
       sx={{
         display: 'flex',
         flexDirection: 'row',
-        minHeight: 'calc(100vh - 50px)',
+        minHeight: 'calc(100vh - 64px)',
         width: '100%',
-        boxSizing: 'border-box',
-        p: 4
       }}
     >
       Home
