@@ -16,6 +16,7 @@ import {
   Alert,
 } from '@mui/material';
 import type { ElementMapperProps } from './elementsTypes';
+import AnimBox from '../../components/animBox/AnimBox';
 
 export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children }) => {
   if (!element || !element.type) {
@@ -52,6 +53,17 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
     : undefined;
 
   switch (type.toLowerCase()) {
+    case 'animbox':
+      return (
+        <AnimBox
+          {...mergedProps}
+          animationObject={data?.animationObject}
+          onClick={handleClick}
+        >
+          {children}
+        </AnimBox>
+      );
+
     case 'typography':
       return (
         <Typography {...mergedProps} variant={data?.variant || 'body1'}>
