@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import inquirer from "inquirer";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -44,10 +42,4 @@ async function deleteTheme(themeId: string): Promise<boolean> {
     console.error(" Error deleting theme:", error);
     return false;
   }
-}
-
->>>>>>> Stashed changes
-export async function deleteThemeWizard() {
-  console.clear();
-  console.log(" Delete Theme\n");
 }

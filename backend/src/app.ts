@@ -4,6 +4,7 @@ import pageRoutes from './features/page/page.routes';
 import userRoutes from './features/user/user.routes';
 import employeeRoutes from './features/employee/employee.routes';
 import configurationsRoutes from './features/configurations/configurations.routes';
+import themeRoutes from './features/theme/theme.routes';
 import { BaseError } from './middleware/error.middleware';
 import mongoose from 'mongoose';
 
@@ -45,6 +46,7 @@ app.get('/', (res: Response) => {
 
 // feature routes
 // [CLI_IMPORTS]
+app.use('/api/themes', themeRoutes);
 app.use('/api/configurations', configurationsRoutes);
 app.use('/api/pages', pageRoutes);
 app.use('/api/users', userRoutes);

@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import inquirer from "inquirer";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -60,10 +58,4 @@ async function setActiveTheme(themeId: string): Promise<boolean> {
     console.error(" Error setting active theme:", error);
     return false;
   }
-}
-
->>>>>>> Stashed changes
-export async function selectThemeWizard() {
-  console.clear();
-  console.log(" Select Theme\n");  
 }

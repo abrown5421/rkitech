@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const srcDir = path.join(__dirname, 'src', 'templates');
 const destDir = path.join(__dirname, 'dist', 'templates');
 
-console.log('📋 Copying templates...');
+console.log(' Copying templates...');
 console.log(`Source: ${srcDir}`);
 console.log(`Destination: ${destDir}`);
 
@@ -45,6 +45,6 @@ try {
   copyDir(srcDir, destDir);
   console.log(' Templates copied successfully!');
 } catch (error) {
-  console.error('❌ Error copying templates:', error);
+  console.error(' Error copying templates:', error);
   process.exit(1);
 }

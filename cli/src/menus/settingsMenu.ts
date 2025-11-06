@@ -6,7 +6,7 @@ import { selectThemeWizard } from "../commands/theme/selectThemeWizard.js";
 
 export async function settingsMenu() {
   console.clear();
-  console.log("Features Menu\n");
+  console.log("Themes Menu\n");
 
   const { action } = await inquirer.prompt([
     {
@@ -27,7 +27,7 @@ export async function settingsMenu() {
     case "select":
       try {
         await selectThemeWizard();
-        console.log("\n Feature selection completed!");
+        console.log("\n Theme selection completed!");
         await inquirer.prompt([
           {
             type: "input",
@@ -49,7 +49,7 @@ export async function settingsMenu() {
     case "new":
       try {
         await createThemeWizard();
-        console.log("\n Feature creation completed!");
+        console.log("\n Theme creation completed!");
         await inquirer.prompt([
           {
             type: "input",

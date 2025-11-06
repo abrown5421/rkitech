@@ -125,18 +125,18 @@ export function createFrontendFeature(
     const typesContent = generateTypeScriptInterface(featureName, schema);
     const typesPath = path.join(frontendDir, `${featureLower}Types.ts`);
     fs.writeFileSync(typesPath, typesContent, "utf-8");
-    console.log(`✅ Created: ${typesPath}`);
+    console.log(` Created: ${typesPath}`);
 
     const apiContent = generateRTKQueryApi(featureName);
     const apiPath = path.join(frontendDir, `${featureLower}Api.ts`);
     fs.writeFileSync(apiPath, apiContent, "utf-8");
-    console.log(`✅ Created: ${apiPath}`);
+    console.log(` Created: ${apiPath}`);
 
     updateBaseApiTags(featureName);
 
     return true;
   } catch (error) {
-    console.error(`❌ Error creating frontend feature:`, error);
+    console.error(` Error creating frontend feature:`, error);
     return false;
   }
 }
@@ -145,7 +145,7 @@ function updateBaseApiTags(featureName: string): void {
   const baseApiPath = path.resolve(__dirname, "../../../frontend/src/store/api/baseApi.ts");
   
   if (!fs.existsSync(baseApiPath)) {
-    console.warn(`⚠️  baseApi.ts not found at ${baseApiPath}`);
+    console.warn(`  baseApi.ts not found at ${baseApiPath}`);
     return;
   }
 
@@ -153,7 +153,7 @@ function updateBaseApiTags(featureName: string): void {
   const tagType = capitalizeFirst(featureName);
 
   if (content.includes(`'${tagType}'`)) {
-    console.log(`ℹ️  Tag '${tagType}' already exists in baseApi`);
+    console.log(`  Tag '${tagType}' already exists in baseApi`);
     return;
   }
   const tagTypesRegex = /tagTypes:\s*\[([\s\S]*?)\]/;
@@ -171,9 +171,9 @@ function updateBaseApiTags(featureName: string): void {
     );
 
     fs.writeFileSync(baseApiPath, content, "utf-8");
-    console.log(`✅ Added '${tagType}' tag to baseApi`);
+    console.log(` Added '${tagType}' tag to baseApi`);
   } else {
-    console.warn(`⚠️  Could not find tagTypes array in baseApi`);
+    console.warn(`  Could not find tagTypes array in baseApi`);
   }
 }
 
@@ -184,16 +184,16 @@ export function deleteFrontendFeature(featureName: string): boolean {
 
     if (fs.existsSync(frontendDir)) {
       fs.rmSync(frontendDir, { recursive: true, force: true });
-      console.log(`✅ Deleted frontend directory: ${frontendDir}`);
+      console.log(` Deleted frontend directory: ${frontendDir}`);
     } else {
-      console.log(`ℹ️  Frontend directory not found: ${frontendDir}`);
+      console.log(`  Frontend directory not found: ${frontendDir}`);
     }
 
     removeBaseApiTag(featureName);
 
     return true;
   } catch (error) {
-    console.error(`❌ Error deleting frontend feature:`, error);
+    console.error(` Error deleting frontend feature:`, error);
     return false;
   }
 }
@@ -218,5 +218,5 @@ function removeBaseApiTag(featureName: string): void {
   content = content.replace(/,\s*\]/g, ']');
 
   fs.writeFileSync(baseApiPath, content, "utf-8");
-  console.log(`✅ Removed '${tagType}' tag from baseApi`);
+  console.log(` Removed '${tagType}' tag from baseApi`);
 }

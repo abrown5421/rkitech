@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-export async function editThemeWizard() {
-  console.clear();
-  console.log(" Edit theme\n");
-=======
 import inquirer from "inquirer";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -237,5 +232,3 @@ export async function editThemeWizard() {
   } else {
     console.log(" Failed to update theme.");
   }
->>>>>>> Stashed changes
-}

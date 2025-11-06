@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-export async function createThemeWizard() {
-  console.clear();
-  console.log(" New Theme\n");  
-=======
 import inquirer from "inquirer";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -159,5 +154,3 @@ export async function createThemeWizard() {
   } else {
     console.log(" Failed to create theme.");
   }
->>>>>>> Stashed changes
-}
