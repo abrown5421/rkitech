@@ -3,7 +3,7 @@ import { IElements } from './elements.types';
 
 const ElementsSchema: Schema = new Schema<IElements>({
   type: { type: String, required: true },
-  data: { type: Schema.Types.Mixed, required: true, default: {} },
+  data: { type: Schema.Types.Mixed, required: false, default: {} },
   styles: { type: Schema.Types.Mixed, required: false },
   sx: { type: Schema.Types.Mixed, required: false },
   className: { type: String, required: false },
