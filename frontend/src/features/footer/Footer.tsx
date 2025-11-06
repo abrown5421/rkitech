@@ -84,7 +84,7 @@ const Footer: React.FC = () => {
             cursor: 'pointer',
             color: isActive 
               ? theme?.primary?.main || '#FE9A00' 
-              : theme?.neutral2?.content || '#1A1D27',
+              : theme?.neutral?.content || '#1A1D27',
             transition: 'color 0.2s',
             '&:hover': {
               color: isActive 
@@ -107,7 +107,7 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             underline="none"
             sx={{
-              color: theme?.neutral2?.content || '#1A1D27',
+              color: theme?.neutral?.content || '#1A1D27',
               transition: 'color 0.2s',
               '&:hover': { color: theme?.primary?.main || '#FE9A00' },
             }}
@@ -130,13 +130,15 @@ const Footer: React.FC = () => {
         isEntering: true,
       }}
       sx={{
+        position: 'relative',
+        zIndex: 2,
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         flexWrap: 'wrap',
         width: '100%',
         minHeight: '150px',
         bgcolor: resolvedBackgroundColor || theme?.neutral2.main,
-        color: theme?.neutral2?.content,
+        color: theme?.neutral?.content,
         justifyContent: 'space-between',
         alignItems: 'center',
         boxShadow: '0 -2px 4px rgba(0,0,0,0.15)',
