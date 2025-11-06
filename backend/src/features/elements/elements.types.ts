@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface IElements extends Document {
+  name?: string;
   type: string;
   data: Record<string, any>; 
   styles?: Record<string, any>;

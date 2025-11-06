@@ -4,6 +4,7 @@ import { IElements } from './elements.types';
 
 const defaultElementss = [
   {
+    name: "test",
     type: "typography",
     data: {
       text: "Hello World",

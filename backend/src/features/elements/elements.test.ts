@@ -6,6 +6,7 @@ describe('Elementss API', () => {
     resourceName: 'elements',
     endpoint: '/api/elements',
     createPayload: {
+      name: "Test",
       type: 'Test Value',
       data: { test: true },
     },
