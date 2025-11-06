@@ -5,22 +5,14 @@ import PageShell from './features/page/PageShell';
 import { matchPath, Route, Routes, useLocation } from 'react-router-dom';
 import Healthy from './features/health/Healthy';
 import Unhealthy from './features/health/Unhealthy';
-import Pod from './components/pod/AnimBox';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/page/activePageSlice';
-import { setActiveTheme } from './features/theme/themeSlice'; 
+import { Box } from '@mui/material';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
   const location = useLocation()
-  const { loading, error, pages, themes, configs, progress } = usePreloadData();
-
-  useEffect(() => {
-    if (themes && themes.length > 0) {
-      const activeTheme = themes.find(theme => theme.active) || themes[0];
-      dispatch(setActiveTheme(activeTheme));
-    }
-  }, [themes, dispatch]);
+  const { loading, error, pages, theme, configs, progress } = usePreloadData();
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;
@@ -47,7 +39,15 @@ const App: React.FC = () => {
   }
   
   return (
-    <Pod className="flex flex-col w-screen h-screen">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: theme?.neutral?.content || '#1A1D27'
+      }}
+    >
       <Navbar configs={configs} loading={loading} />
       <Routes>
         {pages.map((p) => (
@@ -59,7 +59,7 @@ const App: React.FC = () => {
         ))}
         <Route path="*" element={<PageShell page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
       </Routes>
-    </Pod>
+    </Box>
   );
 };
 

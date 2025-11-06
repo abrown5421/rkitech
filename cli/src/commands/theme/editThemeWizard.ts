@@ -21,7 +21,7 @@ interface Theme {
   success: ColorObject;
   warning: ColorObject;
   error: ColorObject;
-  nuetral: ColorObject;
+  neutral: ColorObject;
 }
 
 function isValidHexColor(color: string): boolean {
@@ -158,7 +158,7 @@ export async function editThemeWizard() {
           { name: `Success color`, value: "success" },
           { name: `Warning color`, value: "warning" },
           { name: `Error color`, value: "error" },
-          { name: `Neutral color`, value: "nuetral" },
+          { name: `Neutral color`, value: "neutral" },
           { name: "Done editing", value: "done" },
         ],
       },
@@ -187,7 +187,7 @@ export async function editThemeWizard() {
       updates.name = newName;
       selectedTheme.name = newName;
     } else {
-      const colorField = fieldToEdit as keyof Pick<Theme, "primary" | "secondary" | "accent" | "success" | "warning" | "error" | "nuetral">;
+      const colorField = fieldToEdit as keyof Pick<Theme, "primary" | "secondary" | "accent" | "success" | "warning" | "error" | "neutral">;
       const currentColor = selectedTheme[colorField];
       const newColor = await editColorField(currentColor, fieldToEdit);
       updates[colorField] = newColor;
@@ -232,4 +232,3 @@ export async function editThemeWizard() {
   } else {
     console.log(" Failed to update theme.");
   }
-}

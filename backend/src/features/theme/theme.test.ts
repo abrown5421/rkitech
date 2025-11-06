@@ -14,7 +14,9 @@ describe('Themes API', () => {
       success: { main: '#28a745', content: '#FFFFFF' },
       warning: { main: '#ffc107', content: '#000000' },
       error: { main: '#dc3545', content: '#FFFFFF' },
-      nuetral: { main: '#6c757d', content: '#FFFFFF' },
+      neutral: { main: '#6c757d', content: '#FFFFFF' },
+      neutral2: { main: '#6c757d', content: '#FFFFFF' },
+      neutral3: { main: '#6c757d', content: '#FFFFFF' },
     },
     updatePayload: {
       name: 'Updated Theme',

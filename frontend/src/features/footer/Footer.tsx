@@ -1,19 +1,24 @@
-import React, { useEffect } from 'react';
-import AnimBox from '../../components/pod/AnimBox';
+import React from 'react';
+import AnimBox from '../../components/animBox/AnimBox';
 import { useNavigation } from '../../hooks/useNavigate';
 import { useAppSelector } from '../../store/hooks';
 import type { IPage } from '../page/pageTypes';
 import { useGetConfigByKeyQuery } from '../configurations/configurationsApi';
 import { Typography, Link as MuiLink } from '@mui/material';
+import { useGetActiveThemeQuery } from '../theme/themeApi';
+import { useThemeValue } from '../../hooks/useThemeValue';
 
 const Footer: React.FC = () => {
   const navigate = useNavigation();
-  const activePage = useAppSelector((state) => state.activePage);
+  const { data: theme } = useGetActiveThemeQuery();
   const { data: footerConfig, isLoading } = useGetConfigByKeyQuery('footer');
+  const activePage = useAppSelector((state) => state.activePage);
   const currentYear = new Date().getFullYear();
 
-  useEffect(()=>{console.log(activePage)}, [activePage])
-  
+  const resolvedBackgroundColor = useThemeValue(
+    footerConfig?.data?.backgroundColor ?? ''
+  );
+
   if (isLoading || !footerConfig) {
     return (
       <AnimBox
@@ -23,8 +28,6 @@ const Footer: React.FC = () => {
           width: '100%',
           minHeight: '150px',
           p: 4,
-          bgcolor: 'background.default',
-          color: 'text.primary',
           justifyContent: 'space-between',
           alignItems: 'center',
         }}
@@ -51,7 +54,7 @@ const Footer: React.FC = () => {
     );
   }
 
-  const { copyText, backgroundColor, menuItems = [], auxMenuItems = [] } = footerConfig.data;
+  const { copyText, menuItems = [], auxMenuItems = [] } = footerConfig.data;
 
   const renderMenuItem = (item: any, index: number) => {
     const isActive =
@@ -79,10 +82,14 @@ const Footer: React.FC = () => {
           }}
           sx={{
             cursor: 'pointer',
-            color: isActive ? 'primary.main' : 'text.primary',
+            color: isActive 
+              ? theme?.primary?.main || '#FE9A00' 
+              : theme?.neutral2?.content || '#1A1D27',
             transition: 'color 0.2s',
             '&:hover': {
-              color: 'primary.main',
+              color: isActive 
+                ? theme?.accent?.main || '#FE9A00' 
+                : theme?.primary?.main || '#FE9A00',
             },
           }}
         >
@@ -100,11 +107,9 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             underline="none"
             sx={{
-              color: 'text.primary',
+              color: theme?.neutral2?.content || '#1A1D27',
               transition: 'color 0.2s',
-              '&:hover': {
-                color: 'primary.main',
-              },
+              '&:hover': { color: theme?.primary?.main || '#FE9A00' },
             }}
           >
             <Typography variant="body2">{item.itemTitle}</Typography>
@@ -130,12 +135,13 @@ const Footer: React.FC = () => {
         flexWrap: 'wrap',
         width: '100%',
         minHeight: '150px',
-        p: 4,
-        bgcolor: backgroundColor || 'background.paper',
-        color: 'text.primary',
+        bgcolor: resolvedBackgroundColor || theme?.neutral2.main,
+        color: theme?.neutral2?.content,
         justifyContent: 'space-between',
         alignItems: 'center',
         boxShadow: '0 -2px 4px rgba(0,0,0,0.15)',
+        boxSizing: 'border-box', 
+        p: 4
       }}
     >
       <AnimBox sx={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>

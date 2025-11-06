@@ -15,7 +15,7 @@ export const usePreloadData = () => {
   const [error, setError] = useState<string | null>(null);
   const [pages, setPages] = useState<IPage[]>([]);
   const [configs, setConfigs] = useState<IConfiguration[]>([]);
-  const [themes, setThemes] = useState<ITheme[]>([]);
+  const [theme, setTheme] = useState<ITheme | null>(null);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -34,10 +34,10 @@ export const usePreloadData = () => {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        const [pagesResult, configResult, themesResult] = await Promise.all([
+        const [pagesResult, configResult, activeThemeResult] = await Promise.all([
           dispatch(pagesApi.endpoints.getPages.initiate()),
           dispatch(configApi.endpoints.getConfigs.initiate()),
-          dispatch(themeApi.endpoints.getThemes.initiate())
+          dispatch(themeApi.endpoints.getActiveTheme.initiate())
         ]);
 
         if ('error' in pagesResult) setError('Failed to load pages');
@@ -46,8 +46,8 @@ export const usePreloadData = () => {
         if ('error' in configResult) setError('Failed to load configurations');
         else if ('data' in configResult) setConfigs(configResult.data ?? []);
 
-        if ('error' in themesResult) setError('Failed to load themes');
-        else if ('data' in themesResult) setThemes(themesResult.data ?? []);
+        if ('error' in activeThemeResult) setError('Failed to load active theme');
+        else if ('data' in activeThemeResult) setTheme(activeThemeResult.data ?? null);
 
         completed = true;
         setProgress(100);
@@ -72,5 +72,5 @@ export const usePreloadData = () => {
     return () => clearInterval(progressInterval);
   }, [dispatch, health, healthError, healthLoading]);
 
-  return { loading, error, pages, configs, themes, progress };
+  return { loading, error, pages, configs, theme, progress };
 };

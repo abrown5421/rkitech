@@ -15,7 +15,9 @@ const DEFAULT_THEME_CONFIG = {
   success: { main: '#00A43B', content: '#FFFFFF' },
   warning: { main: '#FDC700', content: '#000000' },
   error: { main: '#FF6266', content: '#000000' },
-  nuetral: { main: '#F9FAFB', content: '#1A1D27' },
+  neutral: { main: '#F9FAFB', content: '#1A1D27' },
+  neutral2: { main: '#F8F8F8', content: '#171a26' },
+  neutral3: { main: '#EEEEEE', content: '#151926' },
 };
 
 export const AppThemeProvider: React.FC<AppThemeProviderProps> = ({ children }) => {

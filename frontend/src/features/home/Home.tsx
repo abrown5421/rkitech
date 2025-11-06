@@ -9,6 +9,8 @@ const Home: React.FC = () => {
         flexDirection: 'row',
         minHeight: 'calc(100vh - 50px)',
         width: '100%',
+        boxSizing: 'border-box',
+        p: 4
       }}
     >
       Home

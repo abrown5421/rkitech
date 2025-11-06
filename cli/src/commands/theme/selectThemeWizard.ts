@@ -21,7 +21,7 @@ interface Theme {
   success: ColorObject;
   warning: ColorObject;
   error: ColorObject;
-  nuetral: ColorObject;
+  neutral: ColorObject;
 }
 
 async function fetchThemes(): Promise<Theme[]> {
@@ -57,58 +57,5 @@ async function setActiveTheme(themeId: string): Promise<boolean> {
   } catch (error) {
     console.error(" Error setting active theme:", error);
     return false;
-  }
-}
-
-export async function selectThemeWizard() {
-  console.clear();
-  console.log(" Select Active Theme\n");
-
-  const themes = await fetchThemes();
-
-  if (themes.length === 0) {
-    console.log("  No themes found. Please create a theme first.");
-    return;
-  }
-
-  const activeTheme = themes.find(t => t.active);
-  
-  console.log(`Current active theme: ${activeTheme ? activeTheme.name : "None"}\n`);
-
-  const { selectedThemeId } = await inquirer.prompt([
-    {
-      type: "list",
-      name: "selectedThemeId",
-      message: "Select a theme to activate:",
-      choices: [
-        ...themes.map(theme => ({
-          name: `${theme.name}${theme.active ? " (currently active)" : ""}`,
-          value: theme._id,
-        })),
-        { name: "Cancel", value: null },
-      ],
-    },
-  ]);
-
-  if (!selectedThemeId) {
-    console.log(" Selection cancelled.");
-    return;
-  }
-
-  const selectedTheme = themes.find(t => t._id === selectedThemeId);
-  
-  if (selectedTheme?.active) {
-    console.log(`ℹ️  Theme '${selectedTheme.name}' is already active.`);
-    return;
-  }
-
-  console.log(`\n Setting '${selectedTheme?.name}' as active theme...\n`);
-
-  const success = await setActiveTheme(selectedThemeId);
-
-  if (success) {
-    console.log(` Theme '${selectedTheme?.name}' is now active!`);
-  } else {
-    console.log(" Failed to set active theme.");
   }
 }

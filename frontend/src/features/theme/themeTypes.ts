@@ -17,7 +17,9 @@ export interface ITheme {
   success: ColorObject;
   warning: ColorObject;
   error: ColorObject;
-  nuetral: ColorObject;
+  neutral: ColorObject;
+  neutral2: ColorObject;
+  neutral3: ColorObject;
   createdAt?: Date;
   updatedAt?: Date;
 }

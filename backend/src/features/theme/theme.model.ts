@@ -16,7 +16,9 @@ const ThemeSchema: Schema = new Schema<ITheme>(
     success: { type: ColorSchema, required: true },
     warning: { type: ColorSchema, required: true },
     error: { type: ColorSchema, required: true },
-    nuetral: { type: ColorSchema, required: true },
+    neutral: { type: ColorSchema, required: true },
+    neutral2: { type: ColorSchema, required: true },
+    neutral3: { type: ColorSchema, required: true },
   },
   { timestamps: true }
 );

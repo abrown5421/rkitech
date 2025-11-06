@@ -15,6 +15,14 @@ export const themeApi = baseApi.injectEndpoints({
       transformResponse: (response: any) => response.data,
     }),
 
+    getActiveTheme: build.query<ITheme | undefined, void>({
+      query: () => '/themes',
+      providesTags: ['Theme'],
+      transformResponse: (response: any) => {
+        return response.data.find((theme: ITheme) => theme.active);
+      },
+    }),
+
     createTheme: build.mutation<ITheme, Partial<ITheme>>({
       query: (body) => ({
         url: '/themes',
@@ -46,6 +54,7 @@ export const themeApi = baseApi.injectEndpoints({
 export const {
   useGetThemesQuery,
   useGetThemeByIdQuery,
+  useGetActiveThemeQuery,
   useCreateThemeMutation,
   useUpdateThemeMutation,
   useDeleteThemeMutation,

@@ -20,7 +20,7 @@ interface ThemePayload {
   success: ColorObject;
   warning: ColorObject;
   error: ColorObject;
-  nuetral: ColorObject;
+  neutral: ColorObject;
 }
 
 function isValidHexColor(color: string): boolean {
@@ -106,7 +106,7 @@ export async function createThemeWizard() {
   const success = await promptForColor("Success");
   const warning = await promptForColor("Warning");
   const error = await promptForColor("Error");
-  const nuetral = await promptForColor("Neutral");
+  const neutral = await promptForColor("Neutral");
 
   const themeData: ThemePayload = {
     name,
@@ -117,7 +117,7 @@ export async function createThemeWizard() {
     success,
     warning,
     error,
-    nuetral,
+    neutral,
   };
 
   console.log("\n Theme Summary:");
@@ -129,7 +129,7 @@ export async function createThemeWizard() {
   console.log(`Success: ${success.main} / ${success.content}`);
   console.log(`Warning: ${warning.main} / ${warning.content}`);
   console.log(`Error: ${error.main} / ${error.content}`);
-  console.log(`Neutral: ${nuetral.main} / ${nuetral.content}`);
+  console.log(`Neutral: ${neutral.main} / ${neutral.content}`);
 
   const { confirm } = await inquirer.prompt([
     {
@@ -154,4 +154,3 @@ export async function createThemeWizard() {
   } else {
     console.log(" Failed to create theme.");
   }
-}

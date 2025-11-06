@@ -12,7 +12,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#00A43B', content: '#FFFFFF' },
     warning: { main: '#FDC700', content: '#000000' },
     error: { main: '#FF6266', content: '#000000' },
-    nuetral: { main: '#F9FAFB', content: '#1A1D27' },
+    neutral: { main: '#F9FAFB', content: '#1A1D27' },
+    neutral2: { main: '#F8F8F8', content: '#171a26' },
+    neutral3: { main: '#EEEEEE', content: '#151926' },
   },
   {
     name: 'cupcake',
@@ -23,7 +25,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#00BA7B', content: '#002C21' },
     warning: { main: '#EEAF00', content: '#411E03' },
     error: { main: '#FE1C55', content: '#4D0218' },
-    nuetral: { main: '#FAF7F5', content: '#291334' },
+    neutral: { main: '#FAF7F5', content: '#291334' },
+    neutral2: { main: '#EFEAE6', content: '#1A1D27' },
+    neutral3: { main: '#E7E2E0', content: '#1A1D27' },
   },
   {
     name: 'bumblebee',
@@ -34,7 +38,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#00D390', content: '#004C39' },
     warning: { main: '#FCB700', content: '#793205' },
     error: { main: '#FF6266', content: '#801518' },
-    nuetral: { main: '#FFFFFF', content: '#161616' },
+    neutral: { main: '#FFFFFF', content: '#161616' },
+    neutral2: { main: '#F5F5F5', content: '#1A1D27' },
+    neutral3: { main: '#E4E4E4', content: '#1A1D27' },
   },
   {
     name: 'corporate',
@@ -45,7 +51,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#181A2A', content: '#FFFFFF' },
     warning: { main: '#FDC700', content: '#000000' },
     error: { main: '#FF6266', content: '#000000' },
-    nuetral: { main: '#FFFFFF', content: '#181A2A' },
+    neutral: { main: '#FFFFFF', content: '#181A2A' },
+    neutral2: { main: '#E8E8E8', content: '#1A1D27' },
+    neutral3: { main: '#D1D1D1', content: '#1A1D27' },
   },
   {
     name: 'silk',
@@ -56,7 +64,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#AFD89E', content: '#042800' },
     warning: { main: '#EFC375', content: '#714900' },
     error: { main: '#FF7878', content: '#800001' },
-    nuetral: { main: '#FFFFFF', content: '#181A2A' },
+    neutral: { main: '#F7F5F3', content: '#181A2A' },
+    neutral2: { main: '#F3EDE9', content: '#1A1D27' },
+    neutral3: { main: '#E2DDD9', content: '#1A1D27' },
   },
   {
     name: 'nord',
@@ -67,7 +77,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#A3BE8D', content: '#0A0D07' },
     warning: { main: '#EBCB8B', content: '#130F07' },
     error: { main: '#BF616A', content: '#0D0304' },
-    nuetral: { main: '#ECEFF4', content: '#2E3440' },
+    neutral: { main: '#ECEFF4', content: '#2E3440' },
+    neutral2: { main: '#E5E9F0', content: '#1A1D27' },
+    neutral3: { main: '#D8DEE9', content: '#1A1D27' },
   },
   {
     name: 'caramellatte',
@@ -78,7 +90,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#156953', content: '#FDD6A8' },
     warning: { main: '#F5B816', content: '#803D16' },
     error: { main: '#F76E74', content: '#0D0304' },
-    nuetral: { main: '#F8F1E9', content: '#831D22' },
+    neutral: { main: '#FFF7ED', content: '#831D22' },
+    neutral2: { main: '#FEECD3', content: '#1A1D27' },
+    neutral3: { main: '#FFD6A7', content: '#1A1D27' },
   },
   {
     name: 'abyss',
@@ -89,7 +103,9 @@ const defaultThemes: Partial<ITheme>[] = [
     success: { main: '#01DF72', content: '#022D14' },
     warning: { main: '#FFBF00', content: '#854200' },
     error: { main: '#F04E4F', content: '#690000' },
-    nuetral: { main: '#001E29', content: '#FFD6A7' },
+    neutral: { main: '#001E29', content: '#FFD6A7' },
+    neutral2: { main: '#00111D', content: '#1A1D27' },
+    neutral3: { main: '#000611', content: '#1A1D27' },
   },
 ];
 
