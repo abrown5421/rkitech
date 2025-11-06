@@ -154,3 +154,4 @@ export async function createThemeWizard() {
   } else {
     console.log(" Failed to create theme.");
   }
+}

@@ -232,3 +232,4 @@ export async function editThemeWizard() {
   } else {
     console.log(" Failed to update theme.");
   }
+}
