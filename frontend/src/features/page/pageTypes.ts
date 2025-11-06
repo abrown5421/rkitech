@@ -6,6 +6,7 @@ export interface IPage {
   pageRenderMethod: 'static' | 'dynamic';
   pageActive: boolean;
   pageColor: string;
+  pageFontFamily?: string;
   pageIntensity: boolean;
   pageEntranceAnimation: string;
   pageExitAnimation: string;

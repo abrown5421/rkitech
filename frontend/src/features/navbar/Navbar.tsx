@@ -118,7 +118,7 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
                   }}
                   sx={{
                     cursor: 'pointer',
-                    color: isActive ? theme?.primary?.main || '#FE9A00' : theme?.neutral2?.content || '#1A1D27',
+                    color: isActive ? theme?.primary?.main || '#FE9A00' : theme?.neutral?.content || '#1A1D27',
                     transition: 'color 0.2s ease',
                     '&:hover': { color: isActive ? theme?.accent.main : theme?.primary?.main },
                   }}
@@ -141,7 +141,7 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
                     rel="noopener noreferrer"
                     underline="none"
                     sx={{
-                      color: theme?.neutral2?.content || '#1A1D27',
+                      color: theme?.neutral?.content || '#1A1D27',
                       transition: 'color 0.2s ease',
                       '&:hover': { color: theme?.primary?.main },
                     }}
