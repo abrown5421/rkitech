@@ -3,7 +3,7 @@ import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
 
 const PrivacyPolicy: React.FC = () => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', boxSizing: 'border-box', p: 4}}>
       <Typography fontFamily="PrimaryFont" variant="h3" gutterBottom>
         Privacy Policy
       </Typography>

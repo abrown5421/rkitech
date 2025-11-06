@@ -1,14 +1,11 @@
+import { Document } from 'mongoose';
+
 export interface ColorObject {
   main: string;
   content: string;
 }
 
-export interface AppThemeProviderProps {
-  children: React.ReactNode;
-}
-
-export interface ITheme {
-  _id?: string;
+export interface ITheme extends Document {
   name: string;
   active: boolean;
   primary: ColorObject;
@@ -20,6 +17,4 @@ export interface ITheme {
   neutral: ColorObject;
   neutral2: ColorObject;
   neutral3: ColorObject;
-  createdAt?: Date;
-  updatedAt?: Date;
 }

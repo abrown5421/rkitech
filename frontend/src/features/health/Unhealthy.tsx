@@ -2,8 +2,11 @@ import React from 'react';
 import { Box, Paper, Typography, Button } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import type { UnhealthyProps } from './HealthTypes';
+import { useGetActiveThemeQuery } from '../theme/themeApi';
 
 const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
+  const { data: theme } = useGetActiveThemeQuery();
+
   return (
     <Box
       display="flex"
@@ -11,7 +14,7 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
       justifyContent="center"
       width="100vw"
       height="100vh"
-      bgcolor="error.main"
+      bgcolor={theme?.error.main ?? '#FF6266'}
     >
       <Paper
         elevation={6}
@@ -20,8 +23,7 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
           maxWidth: 400,
           textAlign: 'center',
           borderRadius: 4,
-          border: theme => `1px solid ${theme.palette.error.light}`,
-          backgroundColor: 'background.paper',
+          backgroundColor: theme?.neutral.main ?? 'F9FAFB',
         }}
       >
         <Box
@@ -30,16 +32,16 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
           alignItems="center"
           mb={2}
         >
-          <ErrorOutline sx={{ fontSize: 60, color: 'error.main' }} />
+          <ErrorOutline sx={{ fontSize: 60, color: theme?.error.main ?? '#FF6266' }} />
         </Box>
 
-        <Typography variant="h5" fontWeight="bold" color="error.main" mb={1}>
+        <Typography variant="h5" fontWeight="bold" color={theme?.error.main ?? '#FF6266'} mb={1}>
           Yikes! Something went wrong.
         </Typography>
 
         <Typography
           variant="body1"
-          color="text.secondary"
+          color={theme?.neutral.content}
           mb={3}
         >
           {error || 'An unexpected error occurred while loading the application.'}
@@ -47,8 +49,15 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
 
         <Button
           variant="outlined"
-          color="error"
           onClick={() => window.location.reload()}
+          sx={{
+            borderColor: theme?.error.main ?? '#FF6266',
+            color: theme?.error.main ?? '#FF6266',
+            "&:hover": {
+              backgroundColor: theme?.error.main ?? '#FF6266',
+              color: theme?.error.content ?? '#000000', 
+            },
+          }}
         >
           Retry
         </Button>

@@ -1,13 +1,15 @@
 import React from 'react';
-import AnimBox from '../../components/pod/AnimBox';
+import AnimBox from '../../components/animBox/AnimBox';
 import src from '../../../public/images/404.png';
 import { useNavigation } from '../../hooks/useNavigate';
 import { useGetPagesQuery } from '../page/pageApi';
 import type { IPage } from '../page/pageTypes';
 import { Typography, Button, CircularProgress, Box } from '@mui/material';
+import { useGetActiveThemeQuery } from '../theme/themeApi';
 
 const PageNotFound: React.FC = () => {
   const navigate = useNavigation();
+  const { data: theme } = useGetActiveThemeQuery();
   const { data: pages = [], isLoading } = useGetPagesQuery();
   const homePage = pages.find((p) => p.pagePath === '/');
 
@@ -19,9 +21,8 @@ const PageNotFound: React.FC = () => {
         minHeight: 'calc(100vh - 50px)',
         justifyContent: 'center',
         alignItems: 'center',
-        bgcolor: 'background.default',
-        color: 'text.primary',
-        px: 2,
+        boxSizing: 'border-box', 
+        p: 4
       }}
     >
       {isLoading ? (
@@ -57,7 +58,7 @@ const PageNotFound: React.FC = () => {
           <Typography
             variant="h1"
             sx={{
-              color: 'primary.main',
+              color: theme?.primary.main,
               fontWeight: 'bold',
               mb: 2,
               fontFamily: 'PrimaryFont',
@@ -85,35 +86,28 @@ const PageNotFound: React.FC = () => {
             sx={{
               fontWeight: 'bold',
               mb: 3,
-              color: 'text.secondary',
-              fontFamily: 'SecondaryFont',
             }}
           >
             Not all who wander are lost. But you sure are.
           </Typography>
 
           <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              textTransform: 'none',
-              borderRadius: 2,
-              px: 4,
-              py: 1,
-              color: 'light.main',
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              boxShadow: 3,
-              '&:hover': {
-                boxShadow: 6,
-              },
-            }}
+            variant="outlined"
             onClick={() => {
               if (homePage) navigate(homePage as IPage);
+            }}
+            sx={{
+              borderColor: theme?.primary.main,
+              color: theme?.primary.main,
+              "&:hover": {
+                backgroundColor: theme?.primary.main,
+                color: theme?.primary.content, 
+              },
             }}
           >
             Go Home
           </Button>
+
         </AnimBox>
       )}
     </Box>

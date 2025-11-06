@@ -1,8 +1,11 @@
 import React from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
 import type { HealthyProps } from './HealthTypes';
+import { useGetActiveThemeQuery } from '../theme/themeApi';
 
 const Healthy: React.FC<HealthyProps> = ({ progress }) => {
+  const { data: theme } = useGetActiveThemeQuery();
+
   return (
     <Box
       display="flex"
@@ -10,7 +13,8 @@ const Healthy: React.FC<HealthyProps> = ({ progress }) => {
       justifyContent="center"
       width="100vw"
       height="100vh"
-      bgcolor="secondary.main"
+      bgcolor={theme?.secondary.main}
+      color={theme?.primary.main}
     >
       <Box
         display="flex"
@@ -21,17 +25,19 @@ const Healthy: React.FC<HealthyProps> = ({ progress }) => {
           <LinearProgress
             variant="determinate"
             value={progress}
-            color="primary"
             sx={{
               height: 10,
               borderRadius: 5,
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: theme?.primary.main,
+              },
+              backgroundColor: theme?.primary.content,
             }}
           />
         </Box>
 
         <Typography
           variant="body2"
-          color="primary"
           sx={{ mt: 2, fontWeight: 500 }}
         >
           {progress}%

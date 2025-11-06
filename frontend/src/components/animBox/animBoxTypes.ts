@@ -43,7 +43,6 @@ export type EntranceAnimation =
   | "animate__slideInLeft"
   | "animate__slideInRight"
   | "animate__slideInUp";
-
 export type ExitAnimation =
   | "animate__backOutDown"
   | "animate__backOutLeft"
@@ -86,7 +85,6 @@ export type ExitAnimation =
   | "animate__slideOutLeft"
   | "animate__slideOutRight"
   | "animate__slideOutUp";
-
 export type AnimationObject = {
   entranceAnimation: EntranceAnimation;
   exitAnimation: ExitAnimation;
