@@ -3,6 +3,7 @@ export interface IElements {
   type: string;
   data: Record<string, any>; 
   styles?: Record<string, any>;
+  sx?: Record<string, any>; 
   className?: string;
   props?: Record<string, any>;
   children?: string[];
@@ -20,5 +21,10 @@ export interface ElementMapperProps {
 
 export interface ElementNodeProps {
   elementId: string;
+  onError?: (error: any) => void;
+}
+
+export interface ElementWithChildrenProps {
+  element: IElements;
   onError?: (error: any) => void;
 }

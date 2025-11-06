@@ -46,8 +46,6 @@ const Navbar: React.FC<NavbarProps> = ({ configs, loading }) => {
   
   return (
     <AnimBox
-      position="static"
-      color="transparent"
       animationObject={{
         entranceAnimation: data.componentAnimation?.entranceAnimation,
         exitAnimation: data.componentAnimation?.exitAnimation,

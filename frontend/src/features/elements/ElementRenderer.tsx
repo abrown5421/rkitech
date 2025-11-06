@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGetElementsByIdQuery } from '../../features/elements/elementsApi';
 import { Box, CircularProgress, Alert } from '@mui/material';
-import type { ElementNodeProps, IElements } from './elementsTypes';
+import type { ElementNodeProps, ElementWithChildrenProps } from './elementsTypes';
 import { ElementMapper } from './ElementMapper';
 
 interface ElementRendererProps {
@@ -50,11 +50,6 @@ if (!element) return null;
 
   return <ElementWithChildren element={element} onError={onError} />;
 };
-
-interface ElementWithChildrenProps {
-  element: IElements;
-  onError?: (error: any) => void;
-}
 
 const ElementWithChildren: React.FC<ElementWithChildrenProps> = ({ 
   element, 
