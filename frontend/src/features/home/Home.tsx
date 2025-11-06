@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import { ElementRenderer } from '../elements/ElementRenderer';
 
 const Home: React.FC = () => {
   return (
@@ -11,7 +12,7 @@ const Home: React.FC = () => {
         width: '100%',
       }}
     >
-      Home
+      <ElementRenderer elementIds={['690cd5710c67842ae27ace74']} />
     </Box>
   );
 };

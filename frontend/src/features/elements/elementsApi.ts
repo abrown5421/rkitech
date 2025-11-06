@@ -10,7 +10,7 @@ export const elementsApi = baseApi.injectEndpoints({
     }),
 
     getElementsById: build.query<IElements, string>({
-      query: (id) => `/elements/${id}`,
+      query: (id) => `/elements?_id=${id}`, 
       providesTags: (_result, _error, id) => [{ type: 'Elements', id }],
       transformResponse: (response: any) => response.data,
     }),
