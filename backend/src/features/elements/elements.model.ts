@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { IElements } from './elements.types';
 
 const ElementsSchema: Schema = new Schema<IElements>({
+  name: { type: String, required: false, default: "" },
   type: { type: String, required: true },
   data: { type: Schema.Types.Mixed, required: true, default: {} },
   styles: { type: Schema.Types.Mixed, required: false },
