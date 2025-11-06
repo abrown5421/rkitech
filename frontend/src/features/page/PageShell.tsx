@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { PageShellProps } from './pageTypes';
 import Footer from '../footer/Footer';
 import AnimBox from '../../components/animBox/AnimBox';
@@ -10,6 +10,7 @@ import { Box } from '@mui/material';
 import { useThemeValue } from '../../hooks/useThemeValue';
 import type { EntranceAnimation, ExitAnimation } from '../../components/animBox/animBoxTypes';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
+import { ElementRenderer } from '../elements/ElementRenderer';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
@@ -20,6 +21,8 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
   if (themeLoading || !theme) {
     return null; 
   }
+
+  useEffect(()=>{console.log(page)}, [page])
 
   return (
     <Box
@@ -51,7 +54,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
           {activePage.activePageName === 'PrivacyPolicy' && <PrivacyPolicy />}
         </AnimBox>
       ) : (
-        <AnimBox>dynamic</AnimBox>
+        page.pageContent && <ElementRenderer elementIds={page.pageContent} />
       )}
 
       <Footer />
