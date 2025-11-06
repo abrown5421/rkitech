@@ -9,6 +9,7 @@ describe('Pages API', () => {
       pageName: 'Test Page',
       pagePath: '/test-page',
       pageRenderMethod: 'static',
+      pageContent: [],
       pageActive: true,
       pageColor: 'white',
       pageIntensity: false,
@@ -20,6 +21,7 @@ describe('Pages API', () => {
     },
     createExpectations: [
       { field: 'pageName', value: 'Test Page' },
+      { field: 'pageContent', value: [] }, 
     ],
     updateExpectations: {
       field: 'pageName',
