@@ -12,7 +12,7 @@ const Home: React.FC = () => {
         width: '100%',
       }}
     >
-      <ElementRenderer elementIds={['690cd5710c67842ae27ace74']} />
+      <ElementRenderer elementIds={['690cd8530c67842ae27ace7f']} />
     </Box>
   );
 };
