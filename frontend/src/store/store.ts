@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { baseApi } from './api/baseApi';
 import activePageReducer from '../features/page/activePageSlice';
 import alertReducer from '../features/alert/alertSlice';
+import modalReducer from '../features/modal/modalSlice';
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     activePage: activePageReducer,
-    alert: alertReducer
+    alert: alertReducer,
+    modal: modalReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),
