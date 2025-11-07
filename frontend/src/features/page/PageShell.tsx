@@ -1,6 +1,5 @@
 import React from 'react';
 import type { PageShellProps } from './pageTypes';
-import Footer from '../footer/Footer';
 import AnimBox from '../../components/animBox/AnimBox';
 import { useAppSelector } from '../../store/hooks';
 import Home from '../home/Home';
@@ -54,7 +53,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
           page.pageContent && <ElementRenderer elementIds={page.pageContent} />
         )}
       </AnimBox>
-      <Footer />
+      <ElementRenderer elementIds={["690e29f0f3f8484e3f4013b0"]} />
     </Box>
   );
 };
