@@ -6,8 +6,10 @@ import Healthy from './features/health/Healthy';
 import Unhealthy from './features/health/Unhealthy';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/page/activePageSlice';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { ElementRenderer } from './features/elements/ElementRenderer';
+import Alert from './features/alert/Alert';
+import { openAlert } from './features/alert/alertSlice';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -49,6 +51,19 @@ const App: React.FC = () => {
       }}
     >
       <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />
+      <Button onClick={() => {
+        dispatch(openAlert({
+            body: "Something happened!",
+            closeable: true,
+            severity: "success",
+            entrance: "animate__fadeInRight",
+            exit: "animate__fadeOutRight",
+            orientation: "bottom-right",
+        }));
+      }}  
+      >
+        open alert
+      </Button>
       <Routes>
         {pages.map((p) => (
           <Route
@@ -59,6 +74,7 @@ const App: React.FC = () => {
         ))}
         <Route path="*" element={<PageShell page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
       </Routes>
+      <Alert />
     </Box>
   );
 };
