@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Navbar from './features/navbar/Navbar';
 import { usePreloadData } from './hooks/usePreloadData';
 import PageShell from './features/page/PageShell';
 import { matchPath, Route, Routes, useLocation } from 'react-router-dom';
@@ -8,6 +7,7 @@ import Unhealthy from './features/health/Unhealthy';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/page/activePageSlice';
 import { Box } from '@mui/material';
+import { ElementRenderer } from './features/elements/ElementRenderer';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -48,7 +48,7 @@ const App: React.FC = () => {
         backgroundColor: theme?.neutral?.content || '#1A1D27'
       }}
     >
-      <Navbar configs={configs} loading={loading} />
+      <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />
       <Routes>
         {pages.map((p) => (
           <Route

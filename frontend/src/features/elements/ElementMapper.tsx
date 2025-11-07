@@ -14,6 +14,7 @@ import {
   Chip,
   Avatar,
   Alert,
+  Toolbar
 } from '@mui/material';
 import AnimBox from '../../components/animBox/AnimBox';
 import { useThemeValue } from '../../hooks/useThemeValue';
@@ -90,7 +91,12 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
           {children}
         </AnimBox>
       );
-
+    case 'toolbar':
+      return (
+        <Toolbar {...mergedProps}>
+          {children}
+        </Toolbar>
+      );
     case 'typography':
       return (
         <Typography {...mergedProps} variant={data?.variant || 'body1'}>
