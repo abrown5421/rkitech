@@ -12,7 +12,7 @@ import { ElementRenderer } from './features/elements/ElementRenderer';
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
   const location = useLocation()
-  const { loading, error, pages, theme, configs, progress } = usePreloadData();
+  const { loading, error, pages, theme, progress } = usePreloadData();
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;
