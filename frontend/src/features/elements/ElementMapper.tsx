@@ -20,6 +20,8 @@ import AnimBox from '../../components/animBox/AnimBox';
 import { useThemeValue } from '../../hooks/useThemeValue';
 import type { ElementMapperProps } from './elementsTypes';
 import { useElementActions } from './useElementActions';
+import { useAppSelector } from '../../store/hooks';
+import { useGetActiveThemeQuery } from '../theme/themeApi';
 
 function resolveThemeValue(value: any) {
   if (typeof value === 'string' && value.startsWith('$theme.')) {
@@ -52,6 +54,8 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
   // );
 
   const runActions = useElementActions();
+  const { data: theme } = useGetActiveThemeQuery();
+  const activePage = useAppSelector((state) => state.activePage);
 
   if (!element || !element.type) {
     return (
@@ -170,13 +174,22 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
       return <Alert {...mergedProps} severity={data?.severity || 'info'}>{data?.text || children || ''}</Alert>;
 
     case 'internallink':
+      
       return (
         <AnimBox 
           {...mergedProps} 
           animationObject={data?.animationObject}
           onClick={() => runActions(data?.action || data?.actions)}
         >
-          <Typography variant={data?.variant || 'body1'}>
+          <Typography variant={data?.variant || 'body1'}
+            sx={{
+              color: activePage.activePageName === data?.text ? theme?.primary.main : 'inherit',
+              transition: 'color 0.2s',
+              '&:hover': {
+                color: activePage.activePageName === data?.text ? theme?.accent.main : 'inherit', 
+              },
+            }}
+          >
             {data?.text || children || ''}
           </Typography>
         </AnimBox>
