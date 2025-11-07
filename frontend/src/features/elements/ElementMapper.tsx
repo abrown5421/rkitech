@@ -19,6 +19,7 @@ import {
 import AnimBox from '../../components/animBox/AnimBox';
 import { useThemeValue } from '../../hooks/useThemeValue';
 import type { ElementMapperProps } from './elementsTypes';
+import { useElementActions } from './useElementActions';
 
 function resolveThemeValue(value: any) {
   if (typeof value === 'string' && value.startsWith('$theme.')) {
@@ -38,17 +39,20 @@ function resolveThemeInObject(obj: Record<string, any> = {}) {
 }
 
 export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children }) => {
-   console.log(
-    "%c[Element Rendered]",
-    "color: #4CAF50; font-weight: bold;",
-    {
-      id: element?._id,
-      type: element?.type,
-      data: element?.data,
-      props: element?.props,
-      childrenCount: children ? React.Children.count(children) : 0
-    }
-  );
+  // console.log(
+  //   "%c[Element Rendered]",
+  //   "color: #4CAF50; font-weight: bold;",
+  //   {
+  //     id: element?._id,
+  //     type: element?.type,
+  //     data: element?.data,
+  //     props: element?.props,
+  //     childrenCount: children ? React.Children.count(children) : 0
+  //   }
+  // );
+
+  const runActions = useElementActions();
+
   if (!element || !element.type) {
     return (
       <Box>
@@ -106,7 +110,7 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
 
     case 'button':
       return (
-        <Button {...mergedProps} variant={data?.variant || 'contained'} onClick={handleClick}>
+        <Button {...mergedProps} variant={data?.variant || 'contained'} onClick={() => runActions(data?.action || data?.actions)}>
           {data?.text || children || 'Button'}
         </Button>
       );
@@ -164,6 +168,19 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
 
     case 'alert':
       return <Alert {...mergedProps} severity={data?.severity || 'info'}>{data?.text || children || ''}</Alert>;
+
+    case 'internallink':
+      return (
+        <AnimBox 
+          {...mergedProps} 
+          animationObject={data?.animationObject}
+          onClick={() => runActions(data?.action || data?.actions)}
+        >
+          <Typography variant={data?.variant || 'body1'}>
+            {data?.text || children || ''}
+          </Typography>
+        </AnimBox>
+      );
 
     default:
       console.warn(`Unknown element type: ${type}`);
