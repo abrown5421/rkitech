@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { PageShellProps } from './pageTypes';
 import Footer from '../footer/Footer';
 import AnimBox from '../../components/animBox/AnimBox';
@@ -20,8 +20,6 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
   if (themeLoading || !theme) {
     return null; 
   }
-
-  useEffect(()=>{console.log(page)}, [page])
 
   return (
     <Box
