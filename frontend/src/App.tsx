@@ -10,6 +10,7 @@ import { Box } from '@mui/material';
 import { ElementRenderer } from './features/elements/ElementRenderer';
 import Alert from './features/alert/Alert';
 import Modal from './features/modal/Modal';
+import Drawer from './features/drawer/Drawer';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -63,6 +64,7 @@ const App: React.FC = () => {
       </Routes>
       <Alert />
       <Modal />
+      <Drawer />
     </Box>
   );
 };
