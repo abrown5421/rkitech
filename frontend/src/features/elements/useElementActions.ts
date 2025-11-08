@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { pagesApi } from "../page/pageApi";
 import { openDrawer } from "../drawer/drawerSlice";
 import { useGetActiveThemeQuery } from "../theme/themeApi"; 
+import { openModal } from "../modal/modalSlice";
 
 export function useElementActions() {
   const navigation = useNavigation();
@@ -61,6 +62,20 @@ export function useElementActions() {
           children: payload.childrenElementIds ?? [],
           entrance: payload.entrance ?? "animate__slideInRight",
           exit: payload.exit ?? "animate__slideOutRight"
+        })
+      );
+    },
+    
+    openModal: (payload) => {
+      dispatch(
+        openModal({
+          open: true,
+          closeable: payload.closeable ?? true,
+          title: payload.title ?? "",
+          entrance: payload.entrance ?? "animate__flipInX",
+          exit: payload.exit ?? "animate__flipOutX",
+          children: payload.childrenElementIds ?? [],
+          backgroundColor: resolveThemeValue(payload.backgroundColor)
         })
       );
     }

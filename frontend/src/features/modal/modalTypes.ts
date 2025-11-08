@@ -7,5 +7,6 @@ export interface ModalProps {
     entrance?: EntranceAnimation;
     exit?: ExitAnimation;
     children: string[];
+    backgroundColor: string; 
 }
 

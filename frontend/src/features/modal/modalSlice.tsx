@@ -8,6 +8,7 @@ const defaultModalState: ModalProps = {
   entrance: undefined,
   exit: undefined,
   children: [],
+  backgroundColor: "$theme.neutral.main"
 };
 
 const initialState: ModalProps = { ...defaultModalState };
