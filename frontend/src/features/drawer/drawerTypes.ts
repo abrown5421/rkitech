@@ -8,11 +8,11 @@ export type DrawerOrientation =
 
 export interface DrawerProps {
     open: boolean;
-    title?: string;
     screenPercentage: number,
     entrance?: EntranceAnimation;
     exit?: ExitAnimation;
     orientation?: DrawerOrientation;
     backgroundColor: string; 
     children: string[];
+    isClosing?: boolean; 
 }
