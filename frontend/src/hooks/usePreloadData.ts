@@ -3,8 +3,6 @@ import { pagesApi } from '../features/page/pageApi';
 import { useAppDispatch } from '../store/hooks';
 import { useGetHealthQuery } from '../features/health/healthApi';
 import type { IPage } from '../features/page/pageTypes';
-import type { IConfiguration } from '../features/configurations/configurationsTypes';
-import { configApi } from '../features/configurations/configurationsApi';
 import { themeApi } from '../features/theme/themeApi';
 import type { ITheme } from '../features/theme/themeTypes';
 
@@ -14,7 +12,6 @@ export const usePreloadData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pages, setPages] = useState<IPage[]>([]);
-  const [configs, setConfigs] = useState<IConfiguration[]>([]);
   const [theme, setTheme] = useState<ITheme | null>(null);
   const [progress, setProgress] = useState(0);
 
@@ -34,17 +31,13 @@ export const usePreloadData = () => {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        const [pagesResult, configResult, activeThemeResult] = await Promise.all([
+        const [pagesResult, activeThemeResult] = await Promise.all([
           dispatch(pagesApi.endpoints.getPages.initiate()),
-          dispatch(configApi.endpoints.getConfigs.initiate()),
           dispatch(themeApi.endpoints.getActiveTheme.initiate())
         ]);
 
         if ('error' in pagesResult) setError('Failed to load pages');
         else if ('data' in pagesResult) setPages(pagesResult.data ?? []);
-
-        if ('error' in configResult) setError('Failed to load configurations');
-        else if ('data' in configResult) setConfigs(configResult.data ?? []);
 
         if ('error' in activeThemeResult) setError('Failed to load active theme');
         else if ('data' in activeThemeResult) setTheme(activeThemeResult.data ?? null);
@@ -72,5 +65,5 @@ export const usePreloadData = () => {
     return () => clearInterval(progressInterval);
   }, [dispatch, health, healthError, healthLoading]);
 
-  return { loading, error, pages, configs, theme, progress };
+  return { loading, error, pages, theme, progress };
 };
