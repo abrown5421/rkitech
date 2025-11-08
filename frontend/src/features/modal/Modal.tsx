@@ -66,7 +66,7 @@ const Modal: React.FC = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    backgroundColor: theme?.neutral.main,
+                    backgroundColor: modal.backgroundColor ?? theme?.neutral.main,
                     borderRadius: '1rem',
                     p: 4,
                     m: 4,
