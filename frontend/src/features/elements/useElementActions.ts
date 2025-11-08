@@ -1,12 +1,34 @@
 import { useNavigation } from "../../hooks/useNavigate";
-import { useAppSelector } from "../../store/hooks";
-import { pagesApi } from "../page/pageApi"; 
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { pagesApi } from "../page/pageApi";
+import { openDrawer } from "../drawer/drawerSlice";
+import { useGetActiveThemeQuery } from "../theme/themeApi"; 
 
 export function useElementActions() {
   const navigation = useNavigation();
-  const activePage = useAppSelector((state) => state.activePage)
+  const activePage = useAppSelector((state) => state.activePage);
+  const dispatch = useAppDispatch();
+  const { data: theme } = useGetActiveThemeQuery(); 
 
   const [fetchPageById] = pagesApi.endpoints.getPageById.useLazyQuery();
+
+  const resolveThemeValue = (value: any) => {
+    if (typeof value === 'string' && value.startsWith('$theme.')) {
+      const path = value.replace('$theme.', '').split('.');
+      let result: any = theme;
+      
+      for (const key of path) {
+        if (result && typeof result === 'object') {
+          result = result[key];
+        } else {
+          return value; 
+        }
+      }
+      
+      return result ?? value;
+    }
+    return value;
+  };
 
   const handlers: Record<string, (payload: any) => void> = {
     internalNav: async (payload) => {
@@ -17,24 +39,38 @@ export function useElementActions() {
       const page = Array.isArray(pageData) ? pageData[0] : pageData;
       if (!page || page.pageName === activePage.activePageName) return;
 
-      navigation(page); 
+      navigation(page);
     },
 
     externalNav: (payload) => {
-        window.open(payload.url, "_blank");
+      window.open(payload.url, "_blank");
     },
 
     log: (payload) => {
       console.log(payload.message);
     },
+
+    openDrawer: (payload) => {
+      console.log(payload);
+      dispatch(
+        openDrawer({
+          open: true,
+          orientation: payload.orientation ?? "right",
+          screenPercentage: payload.screenPercentage ?? 25,
+          backgroundColor: resolveThemeValue(payload.backgroundColor) ?? "#ffffff",
+          children: payload.childrenElementIds ?? [],
+          entrance: payload.entrance ?? "animate__slideInRight",
+          exit: payload.exit ?? "animate__slideOutRight"
+        })
+      );
+    }
   };
 
   return (actionData: any) => {
     if (!actionData) return;
 
     if (actionData.type) {
-      const fn = handlers[actionData.type];
-      return fn?.(actionData);
+      return handlers[actionData.type]?.(actionData);
     }
 
     if (Array.isArray(actionData)) {

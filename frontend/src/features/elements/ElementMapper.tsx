@@ -22,6 +22,7 @@ import type { ElementMapperProps } from './elementsTypes';
 import { useElementActions } from './useElementActions';
 import { useAppSelector } from '../../store/hooks';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
+import * as MuiIcons from '@mui/icons-material';
 
 function resolveThemeValue(value: any) {
   if (typeof value === 'string' && value.startsWith('$theme.')) {
@@ -38,6 +39,21 @@ function resolveThemeInObject(obj: Record<string, any> = {}) {
     resolved[key] = val && typeof val === 'object' ? resolveThemeInObject(val) : resolveThemeValue(val);
   }
   return resolved;
+}
+
+function getMuiIconByName(name?: string) {
+  if (!name) return null;
+
+  const normalized =
+    name
+      .split(/[-_ ]+/)
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .join('');
+
+  const iconName = normalized;
+
+  const IconComponent = (MuiIcons as Record<string, any>)[iconName];
+  return IconComponent ? <IconComponent /> : null;
 }
 
 export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children }) => {
@@ -162,7 +178,11 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
       return <Divider {...mergedProps} />;
 
     case 'iconbutton':
-      return <IconButton {...mergedProps}>{data?.icon || children || ''}</IconButton>;
+      return (
+        <IconButton {...mergedProps} onClick={() => runActions(data?.action || data?.actions)}>
+          {getMuiIconByName(data?.icon) || children || null}
+        </IconButton>
+      );
 
     case 'chip':
       return <Chip {...mergedProps} label={data?.label || ''} variant={data?.variant || 'filled'} />;

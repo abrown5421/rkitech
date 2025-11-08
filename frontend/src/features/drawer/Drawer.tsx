@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import AnimBox from '../../components/animBox/AnimBox';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { closeDrawer } from './drawerSlice';
+import { closeDrawer, preCloseDrawer } from './drawerSlice';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
 import { ElementRenderer } from '../elements/ElementRenderer';
 
@@ -12,7 +12,7 @@ const Drawer: React.FC = () => {
     const { data: theme } = useGetActiveThemeQuery();
     const drawer = useAppSelector((state) => state.drawer);
 
-    const [isClosing, setIsClosing] = React.useState(false);
+    const isClosing = drawer.isClosing;
 
     if (!drawer.open && !isClosing) return null;
 
@@ -57,15 +57,21 @@ const Drawer: React.FC = () => {
     };
 
     const handleClose = () => {
-    setIsClosing(true);
+        dispatch(preCloseDrawer());
 
-    const duration = 1000; 
-    setTimeout(() => {
-        dispatch(closeDrawer());
-        setIsClosing(false);
-    }, duration);
+        const duration = 1000;
+        setTimeout(() => {
+            dispatch(closeDrawer());
+        }, duration);
+    };
+
+const getGreeting = () => {
+    const hour = new Date().getHours();
+
+    if (hour >= 4 && hour < 12) return "Good morning";
+    if (hour >= 12 && hour < 17) return "Good afternoon";
+    return "Good evening"; 
 };
-
 
     return (
         <AnimBox
@@ -108,7 +114,9 @@ const Drawer: React.FC = () => {
                         flexDirection: 'column',
                         width: '100%',       
                         height: '100%',      
-                        position: 'relative' 
+                        position: 'relative',
+                        boxSizing: 'border-box',
+                        p: 2  
                     }}
                 >
                     
@@ -116,24 +124,23 @@ const Drawer: React.FC = () => {
                         sx={{
                             display: 'flex', 
                             flexDirection: 'row',
-                            justifyContent: 'space-between', 
-                            p: 2    
+                            justifyContent: 'space-between',   
                         }}
                     >
                         <Typography 
                             sx={{
                                 fontSize: '1.25rem', 
-                                fontFamily: 'primary-font',
+                                fontFamily: 'PrimaryFont',
                                 color: theme?.neutral.content
                             }}
-                        >{drawer.title || ''}</Typography>
+                        >
+                            {getGreeting()}
+                        </Typography>
                         
                         <IconButton
                             onClick={handleClose}
                             sx={{
-                                position: 'absolute',
-                                top: 16,
-                                right: 16,
+                                padding: 0,
                                 color: theme?.neutral.content
                             }}
                         >
@@ -141,6 +148,7 @@ const Drawer: React.FC = () => {
                         </IconButton>
                         
                     </Box>
+                    <Divider sx={{my: 2}} />
                     <ElementRenderer elementIds={drawer.children} />
                 </Box>
             </AnimBox>
