@@ -40,6 +40,24 @@ export const employeesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, id) => [{ type: 'Employees', id }],
     }),
+
+    loginEmployee: build.query<
+      IEmployees | null,
+      { email: string; password: string }
+    >({
+      query: () => '/employees',
+      transformResponse: (response: any, _meta, arg) => {
+        const employees: IEmployees[] = response.data;
+
+        const match = employees.find(
+          (e) =>
+            e.employeeEmail.toLowerCase() === arg.email.toLowerCase() &&
+            e.employeePassword === arg.password
+        );
+
+        return match || null;
+      },
+    }),
   }),
 });
 
@@ -49,4 +67,5 @@ export const {
   useCreateEmployeesMutation,
   useUpdateEmployeesMutation,
   useDeleteEmployeesMutation,
+  useLazyLoginEmployeeQuery,
 } = employeesApi;
