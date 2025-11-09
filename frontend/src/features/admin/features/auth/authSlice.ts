@@ -13,11 +13,11 @@ export const authSlice = createSlice({
     setUser(state, action: PayloadAction<IEmployees | null>) {
       state.user = action.payload;
     },
-    logout(state) {
+    logoutAdmin(state) {
       state.user = null;
     },
   },
 });
 
-export const { setUser, logout } = authSlice.actions;
+export const { setUser, logoutAdmin } = authSlice.actions;
 export default authSlice.reducer;
