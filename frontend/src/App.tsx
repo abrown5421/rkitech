@@ -4,7 +4,7 @@ import PageShell from './features/page/PageShell';
 import { matchPath, Route, Routes, useLocation } from 'react-router-dom';
 import Healthy from './features/health/Healthy';
 import Unhealthy from './features/health/Unhealthy';
-import { useAppDispatch } from './store/hooks';
+import { useAppDispatch, useAppSelector } from './store/hooks';
 import { setActivePage } from './features/page/activePageSlice';
 import { Box } from '@mui/material';
 import { ElementRenderer } from './features/elements/ElementRenderer';
@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch()
   const location = useLocation()
   const { loading, error, pages, theme, progress } = usePreloadData();
+  const adminAuth = useAppSelector((state) => state.adminAuth);
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;
@@ -44,7 +45,6 @@ const App: React.FC = () => {
   if (error) {
     return <Unhealthy error={error} />;
   }
-  const isLoggedIn = false;
 
   return (
     <Box
@@ -70,7 +70,7 @@ const App: React.FC = () => {
           />
         ))}
         <Route path="/admin" element={<Admin />}>
-            <Route index element={isLoggedIn ? <Dashboard /> : <Auth />} />
+            <Route index element={adminAuth ? <Dashboard /> : <Auth />} />
         </Route>
         <Route path="*" element={<PageShell page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
       </Routes>
