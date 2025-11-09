@@ -70,7 +70,7 @@ const App: React.FC = () => {
           />
         ))}
         <Route path="/admin" element={<Admin />}>
-            <Route index element={adminAuth ? <Dashboard /> : <Auth />} />
+            <Route index element={adminAuth.user ? <Dashboard /> : <Auth />} />
         </Route>
         <Route path="*" element={<PageShell page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
       </Routes>

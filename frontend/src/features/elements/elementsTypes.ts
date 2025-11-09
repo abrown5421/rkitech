@@ -28,3 +28,9 @@ export interface ElementWithChildrenProps {
   element: IElements;
   onError?: (error: any) => void;
 }
+
+export interface ElementRendererProps {
+  elementIds: string[];
+  full?: boolean,
+  onError?: (error: any) => void;
+}

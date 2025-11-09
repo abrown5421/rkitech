@@ -1,20 +1,16 @@
 import React from 'react';
 import { useGetElementsByIdQuery } from '../../features/elements/elementsApi';
 import { Box, CircularProgress, Alert } from '@mui/material';
-import type { ElementNodeProps, ElementWithChildrenProps } from './elementsTypes';
+import type { ElementNodeProps, ElementRendererProps, ElementWithChildrenProps } from './elementsTypes';
 import { ElementMapper } from './ElementMapper';
-
-interface ElementRendererProps {
-  elementIds: string[];
-  onError?: (error: any) => void;
-}
 
 export const ElementRenderer: React.FC<ElementRendererProps> = ({ 
   elementIds, 
+  full,
   onError 
 }) => {
   return (
-    <Box>
+    <Box sx={{height: full ? '100%' : ''}}>
       {elementIds.map((elementId) => (
         <ElementNode key={elementId} elementId={elementId} onError={onError} />
       ))}
