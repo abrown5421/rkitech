@@ -2,9 +2,9 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import pageRoutes from './features/page/page.routes';
 import userRoutes from './features/user/user.routes';
-import employeeRoutes from './features/employee/employee.routes';
 import themeRoutes from './features/theme/theme.routes';
 import elementsRoutes from './features/elements/elements.routes';
+import employeesRoutes from './features/employees/employees.routes';
 import { BaseError } from './middleware/error.middleware';
 import mongoose from 'mongoose';
 
@@ -46,11 +46,11 @@ app.get('/', (res: Response) => {
 
 // feature routes
 // [CLI_IMPORTS]
+app.use('/api/employees', employeesRoutes);
 app.use('/api/elements', elementsRoutes);
 app.use('/api/themes', themeRoutes);
 app.use('/api/pages', pageRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/employees', employeeRoutes);
 // [CLI_ROUTES]
 
 // error middleware
