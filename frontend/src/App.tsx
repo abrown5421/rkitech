@@ -11,6 +11,10 @@ import { ElementRenderer } from './features/elements/ElementRenderer';
 import Alert from './features/alert/Alert';
 import Modal from './features/modal/Modal';
 import Drawer from './features/drawer/Drawer';
+import Admin from './features/admin/Admin';
+import Navbar from './features/admin/features/navbar/Navbar';
+import Auth from './features/admin/features/auth/Auth';
+import Dashboard from './features/admin/features/dashboard/Dashboard';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -40,7 +44,8 @@ const App: React.FC = () => {
   if (error) {
     return <Unhealthy error={error} />;
   }
-  
+  const isLoggedIn = false;
+
   return (
     <Box
       sx={{
@@ -51,7 +56,11 @@ const App: React.FC = () => {
         backgroundColor: theme?.neutral?.content || '#1A1D27'
       }}
     >
-      <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />
+      {location.pathname.toLowerCase().startsWith('/admin') ? (
+        <Navbar />
+      ) : (
+        <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />
+      )}
       <Routes>
         {pages.map((p) => (
           <Route
@@ -60,6 +69,9 @@ const App: React.FC = () => {
             element={<PageShell page={p} />}
           />
         ))}
+        <Route path="/admin" element={<Admin />}>
+            <Route index element={isLoggedIn ? <Dashboard /> : <Auth />} />
+        </Route>
         <Route path="*" element={<PageShell page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
       </Routes>
       <Alert />
