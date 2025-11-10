@@ -13,7 +13,7 @@ const Healthy: React.FC<HealthyProps> = ({ progress }) => {
       justifyContent="center"
       width="100vw"
       height="100vh"
-      bgcolor={theme?.secondary.main}
+      bgcolor={theme?.neutral.content}
       color={theme?.primary.main}
     >
       <Box

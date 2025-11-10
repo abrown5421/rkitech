@@ -4,7 +4,6 @@ import activePageReducer from '../features/page/activePageSlice';
 import alertReducer from '../features/alert/alertSlice';
 import modalReducer from '../features/modal/modalSlice';
 import drawerReducer from '../features/drawer/drawerSlice';
-import adminAuthReducer from '../features/admin/features/auth/authSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,8 +11,7 @@ export const store = configureStore({
     activePage: activePageReducer,
     alert: alertReducer,
     modal: modalReducer,
-    drawer: drawerReducer,
-    adminAuth: adminAuthReducer
+    drawer: drawerReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

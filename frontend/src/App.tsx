@@ -4,23 +4,18 @@ import PageShell from './features/page/PageShell';
 import { matchPath, Route, Routes, useLocation } from 'react-router-dom';
 import Healthy from './features/health/Healthy';
 import Unhealthy from './features/health/Unhealthy';
-import { useAppDispatch, useAppSelector } from './store/hooks';
+import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/page/activePageSlice';
 import { Box } from '@mui/material';
 import { ElementRenderer } from './features/elements/ElementRenderer';
 import Alert from './features/alert/Alert';
 import Modal from './features/modal/Modal';
 import Drawer from './features/drawer/Drawer';
-import Admin from './features/admin/Admin';
-import Navbar from './features/admin/features/navbar/Navbar';
-import Auth from './features/admin/features/auth/Auth';
-import Dashboard from './features/admin/features/dashboard/Dashboard';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
   const location = useLocation()
   const { loading, error, pages, theme, progress } = usePreloadData();
-  const adminAuth = useAppSelector((state) => state.adminAuth);
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;
@@ -56,11 +51,7 @@ const App: React.FC = () => {
         backgroundColor: theme?.neutral?.content || '#1A1D27'
       }}
     >
-      {location.pathname.toLowerCase().startsWith('/admin') ? (
-        <Navbar />
-      ) : (
-        <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />
-      )}
+      <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />
       <Routes>
         {pages.map((p) => (
           <Route
@@ -69,9 +60,6 @@ const App: React.FC = () => {
             element={<PageShell page={p} />}
           />
         ))}
-        <Route path="/admin" element={<Admin />}>
-            <Route index element={adminAuth ? <Dashboard /> : <Auth />} />
-        </Route>
         <Route path="*" element={<PageShell page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
       </Routes>
       <Alert />
