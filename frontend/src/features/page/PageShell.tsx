@@ -9,9 +9,12 @@ import { useThemeValue } from '../../hooks/useThemeValue';
 import type { EntranceAnimation, ExitAnimation } from '../../components/animBox/animBoxTypes';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
 import { ElementRenderer } from '../elements/ElementRenderer';
+import Admin from '../admin/Admin';
+import { useLocation } from 'react-router-dom';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
+  const location = useLocation();
   const { data: theme, isLoading: themeLoading } = useGetActiveThemeQuery();
   const pageBgColor = useThemeValue(page.pageColor);
   const pageFontColor = page.pageFontColor ? useThemeValue(page.pageFontColor) : null;
@@ -48,12 +51,13 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
           <>
             {activePage.activePageName === 'Home' && <Home />}
             {activePage.activePageName === 'PrivacyPolicy' && <PrivacyPolicy />}
+            {activePage.activePageName === 'AdminRootPage' && <Admin />}
           </>
         ) : (
           page.pageContent && <ElementRenderer elementIds={page.pageContent} />
         )}
       </AnimBox>
-      <ElementRenderer elementIds={["690e29f0f3f8484e3f4013b0"]} />
+      {!location.pathname.toLowerCase().startsWith("/admin") && <ElementRenderer elementIds={["690e29f0f3f8484e3f4013b0"]} />}
     </Box>
   );
 };
