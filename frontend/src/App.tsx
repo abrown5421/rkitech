@@ -51,7 +51,7 @@ const App: React.FC = () => {
         backgroundColor: theme?.neutral?.content || '#1A1D27'
       }}
     >
-      <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />
+      {!location.pathname.toLowerCase().startsWith("/admin") && <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />}
       <Routes>
         {pages.map((p) => (
           <Route
