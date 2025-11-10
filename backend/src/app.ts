@@ -40,7 +40,7 @@ app.get('/api/health', async (req: Request, res: Response) => {
 
 
 // root
-app.get('/', (res: Response) => {
+app.get('/', (req: Request, res: Response) => {
   res.send('Rkitech Node server is running successfully');
 });
 
