@@ -6,6 +6,7 @@ import { setUser } from './authSlice';
 import { useLazyLoginEmployeeQuery } from '../../../employees/employeesApi';
 import { openAlert } from "../../../alert/alertSlice";
 import AnimBox from '../../../../components/animBox/AnimBox';
+import Cookies from 'js-cookie';
 
 const Auth: React.FC = () => {
     const { data: theme } = useGetActiveThemeQuery();
@@ -68,7 +69,7 @@ const Auth: React.FC = () => {
         }
 
         const result = await loginEmployee({ email, password });
-
+        
         if (!result?.data) {
             dispatch(
                 openAlert({
@@ -86,6 +87,8 @@ const Auth: React.FC = () => {
         }
         setAnimate(false)
         const user = result.data;
+        Cookies.set('adminUser', JSON.stringify(user), { expires: 7, sameSite: 'strict' });
+
         setTimeout(() => {
             dispatch(setUser(user));
         }, 500)

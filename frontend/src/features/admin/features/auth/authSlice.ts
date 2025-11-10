@@ -1,9 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { IEmployees } from '../../../employees/employeesTypes';
 import type { AuthState } from './authTypes';
+import Cookies from 'js-cookie';
 
 const initialState: AuthState = {
-  user: null,
+  user: Cookies.get('adminUser') ? JSON.parse(Cookies.get('adminUser')!) : null,
 };
 
 export const authSlice = createSlice({

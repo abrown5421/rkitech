@@ -5,6 +5,7 @@ import { closeDrawer, openDrawer, preCloseDrawer } from "../drawer/drawerSlice";
 import { useGetActiveThemeQuery } from "../theme/themeApi"; 
 import { openModal } from "../modal/modalSlice";
 import { logoutAdmin } from "../admin/features/auth/authSlice";
+import Cookies from 'js-cookie';
 
 export function useElementActions() {
   const navigation = useNavigation();
@@ -87,6 +88,7 @@ export function useElementActions() {
         dispatch(logoutAdmin())
         setTimeout(() => {
           dispatch(closeDrawer())
+          Cookies.remove('adminUser');
         }, 500)
       }, 500)
     }
