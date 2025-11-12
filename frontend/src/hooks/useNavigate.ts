@@ -9,17 +9,22 @@ export const useNavigation = () => {
   const navigate = useNavigate();
   const drawer = useAppSelector((state) => state.drawer);
 
-  return (page: IPage) => {
-    dispatch(setActivePageAnimateIn(false));
-    if (drawer.open) {
-      dispatch(preCloseDrawer())
+  return (page: IPage, crossfade: boolean = true) => {
+    if (!crossfade) {
+      if (drawer.open) dispatch(preCloseDrawer());
+      dispatch(setActivePageName(page.pageName));
+      navigate(page.pagePath);
+      if (drawer.open) dispatch(closeDrawer());
+      return;
     }
+
+    dispatch(setActivePageAnimateIn(false));
+    if (drawer.open) dispatch(preCloseDrawer());
+
     setTimeout(() => {
       dispatch(setActivePageName(page.pageName));
       navigate(page.pagePath);
-      if (drawer.open) {
-        dispatch(closeDrawer())
-      }
+      if (drawer.open) dispatch(closeDrawer());
     }, 500);
   };
 };

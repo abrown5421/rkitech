@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, TextField, Button, Typography, Alert } from '@mui/material';
 import { useGetActiveThemeQuery } from '../../../theme/themeApi';
 import { useDispatch } from 'react-redux';
@@ -9,13 +9,23 @@ import AnimBox from '../../../../components/animBox/AnimBox';
 import { useNavigation } from '../../../../hooks/useNavigate';
 import { useGetPagesQuery } from '../../../page/pageApi';
 import type { IPage } from '../../../page/pageTypes';
+import Cookies from 'js-cookie';
+import { useAppSelector } from '../../../../store/hooks';
 
 const AdminAuth: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigation();
   const { data: theme } = useGetActiveThemeQuery();
   const { data: pages } = useGetPagesQuery();
+  const adminUser = useAppSelector((state) => state.adminUser)
+  const dashboardPage = pages?.find((p) => p.pageName === 'AdminDashPage')
 
+  useEffect(()=>{
+    if (adminUser.user) {
+      navigate(dashboardPage as IPage, false)
+    }
+  }, [adminUser])
+  
   const [triggerLogin, { isFetching }] = useLazyLoginEmployeeQuery();
 
   const [form, setForm] = useState({
@@ -34,7 +44,6 @@ const AdminAuth: React.FC = () => {
     e.preventDefault();
     setError('');
     console.log(pages)
-    const dashboardPage = pages?.find((p) => p.pageName === 'AdminDashPage')
     const { email, password } = form;
 
     const result = await triggerLogin({ email, password });
@@ -53,9 +62,9 @@ const AdminAuth: React.FC = () => {
     setIsAnimating(false)
     
     setTimeout(() => {
-      console.log(dashboardPage)
-      navigate(dashboardPage as IPage)
+      navigate(dashboardPage as IPage, true)
       dispatch(setAdminUser(result.data ?? null));
+      Cookies.set('adminUser', JSON.stringify(result.data), { expires: 7, sameSite: 'strict' });
     }, 500)
     
   };
