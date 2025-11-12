@@ -11,11 +11,14 @@ import { ElementRenderer } from './features/elements/ElementRenderer';
 import Alert from './features/alert/Alert';
 import Modal from './features/modal/Modal';
 import Drawer from './features/drawer/Drawer';
+import { useAdminAuthFromCookie } from './hooks/useAdminAuthFromCookie';
 
 const App: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const location = useLocation()
+  const dispatch = useAppDispatch();
+  const location = useLocation();
   const { loading, error, pages, theme, progress } = usePreloadData();
+  
+  const cookieLoading = useAdminAuthFromCookie();
 
   useEffect(() => {
     if (!pages || pages.length === 0) return;
@@ -33,7 +36,7 @@ const App: React.FC = () => {
     }
   }, [dispatch, pages, location.pathname]);
 
-  if (loading) {
+  if (loading || cookieLoading) {
     return <Healthy progress={progress} />;
   }
 
