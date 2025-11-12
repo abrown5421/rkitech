@@ -12,6 +12,7 @@ import Alert from './features/alert/Alert';
 import Modal from './features/modal/Modal';
 import Drawer from './features/drawer/Drawer';
 import { useAdminAuthFromCookie } from './hooks/useAdminAuthFromCookie';
+import AdminNavbar from './features/admin/features/adminNavbar/AdminNavbar';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -54,7 +55,17 @@ const App: React.FC = () => {
         backgroundColor: theme?.neutral?.content || '#1A1D27'
       }}
     >
-      {!location.pathname.toLowerCase().startsWith("/admin") && <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />}
+      {(() => {
+        const path = location.pathname.toLowerCase();
+
+        if (path === "/admin/auth") {
+          return null;
+        } else if (path.startsWith("/admin")) {
+          return <AdminNavbar />;
+        } else {
+          return <ElementRenderer elementIds={["690d2f77f96d2590ee5adc64"]} />;
+        }
+      })()}
       <Routes>
         {pages.map((p) => (
           <Route

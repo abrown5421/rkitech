@@ -1,20 +1,20 @@
 import React from 'react';
-import AnimBox from '../../../../components/animBox/AnimBox';
+import { Box } from '@mui/material';
 
 const AdminDashboard: React.FC = () => {
   return (
-    <AnimBox
+    <Box
       sx={{
         display: 'flex',
+        height: "calc(100vh - 128px)",
+        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        minHeight: 'calc(100vh - 64px)',
-        width: '100%',
       }}
     >
       dashboard
-    </AnimBox>
+    </Box>
   );
 };
 

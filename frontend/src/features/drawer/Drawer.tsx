@@ -149,7 +149,7 @@ const getGreeting = () => {
                         
                     </Box>
                     <Divider sx={{my: 2}} />
-                    <ElementRenderer elementIds={drawer.children} />
+                    <ElementRenderer elementIds={drawer.children} fullHeight />
                 </Box>
             </AnimBox>
         </AnimBox>
