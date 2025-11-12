@@ -6,11 +6,9 @@ const AdminDashboard: React.FC = () => {
     <Box
       sx={{
         display: 'flex',
-        height: "calc(100vh - 128px)",
         width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
         flexDirection: 'row',
+        p: 4,
       }}
     >
       dashboard

@@ -1,20 +1,19 @@
 import React from 'react';
 import { Box } from '@mui/material';
 
-const Home: React.FC = () => {
+const AdminNavPage: React.FC = () => {
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'row',
-        minHeight: 'calc(100vh - 64px)',
         width: '100%',
+        flexDirection: 'row',
         p: 4,
       }}
     >
-      Home
+      AdminNavPage
     </Box>
   );
 };
 
-export default Home;
+export default AdminNavPage;

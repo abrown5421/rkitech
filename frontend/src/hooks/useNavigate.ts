@@ -10,6 +10,7 @@ export const useNavigation = () => {
   const drawer = useAppSelector((state) => state.drawer);
 
   return (page: IPage, crossfade: boolean = true) => {
+    console.log(page)
     if (!crossfade) {
       if (drawer.open) dispatch(preCloseDrawer());
       dispatch(setActivePageName(page.pageName));

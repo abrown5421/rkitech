@@ -13,7 +13,7 @@ const AdminNavbar: React.FC = () => {
     const handleOpenDrawer = () => {
         dispatch(openDrawer({
             open: true,
-            screenPercentage: 50,
+            screenPercentage: 30,
             orientation: 'right',
             backgroundColor: theme?.neutral.main || '#fff',
             children: ["6910c5b88f42818c65d16166"],
