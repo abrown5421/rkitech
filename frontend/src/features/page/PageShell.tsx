@@ -11,6 +11,8 @@ import { useGetActiveThemeQuery } from '../theme/themeApi';
 import { ElementRenderer } from '../elements/ElementRenderer';
 import Admin from '../admin/Admin';
 import { useLocation } from 'react-router-dom';
+import AdminAuth from '../admin/features/adminAuth/AdminAuth';
+import AdminDashboard from '../admin/features/adminDashboard/AdminDashboard';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
@@ -52,6 +54,8 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
             {activePage.activePageName === 'Home' && <Home />}
             {activePage.activePageName === 'PrivacyPolicy' && <PrivacyPolicy />}
             {activePage.activePageName === 'AdminRootPage' && <Admin />}
+            {activePage.activePageName === 'AdminAuthPage' && <AdminAuth />}
+            {activePage.activePageName === 'AdminDashPage' && <AdminDashboard />}
           </>
         ) : (
           page.pageContent && <ElementRenderer elementIds={page.pageContent} />
