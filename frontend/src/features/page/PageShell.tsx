@@ -9,13 +9,16 @@ import { useThemeValue } from '../../hooks/useThemeValue';
 import type { EntranceAnimation, ExitAnimation } from '../../components/animBox/animBoxTypes';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
 import { ElementRenderer } from '../elements/ElementRenderer';
-import Admin from '../admin/Admin';
 import AdminAuth from '../admin/features/adminAuth/AdminAuth';
 import AdminDashboard from '../admin/features/adminDashboard/AdminDashboard';
 import { useLocation } from 'react-router-dom';
 import { useNavigation } from '../../hooks/useNavigate';
 import { useGetPagesQuery } from '../page/pageApi';
 import type { IPage } from '../page/pageTypes';
+import AdminSidebar from '../admin/features/adminSidebar/AdminSidebar';
+import AdminPages from '../admin/features/adminPages/AdminPages';
+import AdminNavPage from '../admin/features/adminNavPage/AdminNavPage';
+import AdminFooterPage from '../admin/features/adminFooterPage/AdminFooterPage';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
@@ -37,21 +40,24 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
 
   useEffect(() => {
-    if (
-      isAdminRoute &&
-      !adminUser &&
-      activePage.activePageName !== 'AdminAuthPage' &&
-      pages
-    ) {
-      const adminAuthPage = pages.find((p) => p.pageName === 'AdminAuthPage');
-      if (adminAuthPage) {
-        navigate(adminAuthPage as IPage, false);
+    if (isAdminRoute && pages) {
+      if (!adminUser) {
+        const adminAuthPage = pages.find((p) => p.pageName === 'AdminAuthPage');
+        if (adminAuthPage && activePage.activePageName !== 'AdminAuthPage') {
+          navigate(adminAuthPage as IPage, false);
+        }
+      } else if (location.pathname.toLowerCase() === '/admin') {
+        const dashboardPage = pages.find((p) => p.pageName === 'AdminDashPage');
+        if (dashboardPage && activePage.activePageName !== 'AdminDashPage') {
+          navigate(dashboardPage as IPage, false);
+        }
       }
     }
-  }, [isAdminRoute, adminUser, activePage.activePageName, pages, navigate]);
+  }, [isAdminRoute, adminUser, pages, activePage.activePageName, navigate]);
 
   return (
-    <Box sx={{ overflow: 'auto' }}>
+    <Box sx={{ height: 'calc(100vh - 64px)', position: 'relative', overflow: 'scroll', display: "flex", flexDirection: isAdminRoute ? "row" : "column" }}>
+      {isAdminRoute && location.pathname !== '/admin/auth' && <AdminSidebar />}
       <AnimBox
         animationObject={{
           entranceAnimation: page.pageEntranceAnimation as EntranceAnimation,
@@ -60,14 +66,15 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
         }}
         sx={{
           position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 10,
           zIndex: 1,
           width: '100%',
-          minHeight: 'calc(100vh - 64px)',
           backgroundColor: pageBgColor,
           color: pageFontColor ?? theme.neutral.content,
           fontFamily: page.pageFontFamily ?? 'SecondaryFont',
           boxSizing: 'border-box',
-          p: 4,
         }}
       >
         {page.pageRenderMethod === 'static' ? (
@@ -76,9 +83,11 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
             {activePage.activePageName === 'PrivacyPolicy' && <PrivacyPolicy />}
 
             {/* Admin routes (auto-protected above) */}
-            {activePage.activePageName === 'AdminRootPage' && <Admin />}
             {activePage.activePageName === 'AdminAuthPage' && <AdminAuth />}
             {activePage.activePageName === 'AdminDashPage' && <AdminDashboard />}
+            {activePage.activePageName === 'AdminPagesPage' && <AdminPages />}
+            {activePage.activePageName === 'AdminNavPage' && <AdminNavPage />}
+            {activePage.activePageName === 'AdminFooterPage' && <AdminFooterPage />}
           </>
         ) : (
           page.pageContent && <ElementRenderer elementIds={page.pageContent} />

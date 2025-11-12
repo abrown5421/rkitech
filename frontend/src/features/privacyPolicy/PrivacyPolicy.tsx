@@ -7,8 +7,8 @@ const PrivacyPolicy: React.FC = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 'calc(100vh - 64px)',
         width: '100%',
+        p: 4,
       }}
     >
       <Typography fontFamily="PrimaryFont" variant="h3" gutterBottom>

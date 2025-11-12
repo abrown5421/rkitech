@@ -1,19 +1,20 @@
 import React from 'react';
 import { Box } from '@mui/material';
 
-const Admin: React.FC = () => {
+const AdminPages: React.FC = () => {
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'row',
-        minHeight: 'calc(100vh - 64px)',
         width: '100%',
+        flexDirection: 'row',
+        flex: 10,
+        p: 4,
       }}
     >
-      Admin
+      adminPages
     </Box>
   );
 };
 
-export default Admin;
+export default AdminPages;
