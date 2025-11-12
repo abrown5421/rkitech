@@ -1,9 +1,12 @@
 import { useNavigation } from "../../hooks/useNavigate";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { pagesApi } from "../page/pageApi";
-import { openDrawer } from "../drawer/drawerSlice";
+import { openDrawer, preCloseDrawer } from "../drawer/drawerSlice";
 import { useGetActiveThemeQuery } from "../theme/themeApi"; 
 import { openModal } from "../modal/modalSlice";
+import { logoutAdmin } from "../admin/features/adminAuth/adminAuthSlice";
+import Cookies from 'js-cookie';
+import { setActivePageAnimateIn } from "../page/activePageSlice";
 
 export function useElementActions() {
   const navigation = useNavigation();
@@ -78,6 +81,22 @@ export function useElementActions() {
           backgroundColor: resolveThemeValue(payload.backgroundColor)
         })
       );
+    },
+
+    handleLogout: async (payload) => {
+      dispatch(preCloseDrawer());
+      if (!payload.pageLinkId) return;
+      const { data: pageData } = await fetchPageById(payload.pageLinkId);
+      const page = Array.isArray(pageData) ? pageData[0] : pageData;
+      if (!page || page.pageName === activePage.activePageName) return;
+      dispatch(setActivePageAnimateIn(false));
+      setTimeout(() => {
+        dispatch(logoutAdmin())
+        Cookies.remove('adminUser');
+        setTimeout(() => {
+          navigation(page, false);
+        }, 500);
+      }, 500);
     }
   };
 
