@@ -6,6 +6,7 @@ import AnimBox from "../../components/animBox/AnimBox";
 import { Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import { useGetActiveThemeQuery } from "../theme/themeApi";
+import { lightenHex } from "../../utils/colorUtils";
 
 const Alert: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -74,7 +75,7 @@ const Alert: React.FC = () => {
                 margin: 16,
                 borderRadius: 6,
                 border: `2px solid ${themeColorObj?.main}`,
-                backgroundColor: themeColorObj?.main + "20",
+                backgroundColor: lightenHex(themeColorObj?.main ?? '#0cff00', 0.8),
                 display: "flex",
                 flexDirection: "row",
                 gap: 16,

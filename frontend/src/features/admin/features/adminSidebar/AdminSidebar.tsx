@@ -34,7 +34,7 @@ const AdminSidebar: React.FC = () => {
   const goToPage = (pageName: string) => {
     if (!pages) return;
     const page = pages.find((p: any) => p.pageName === pageName);
-    if (page && pageName !== activePage.activePageName) {
+    if (page) {
       navigate(page); 
     }
   };
