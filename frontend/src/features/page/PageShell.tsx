@@ -19,6 +19,7 @@ import AdminSidebar from '../admin/features/adminSidebar/AdminSidebar';
 import AdminPages from '../admin/features/adminPages/AdminPages';
 import AdminNavPage from '../admin/features/adminNavPage/AdminNavPage';
 import AdminFooterPage from '../admin/features/adminFooterPage/AdminFooterPage';
+import AdminThemePage from '../admin/features/adminThemePage/AdminThemePage';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
@@ -88,6 +89,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
             {activePage.activePageName === 'AdminPagesPage' && <AdminPages />}
             {activePage.activePageName === 'AdminNavPage' && <AdminNavPage />}
             {activePage.activePageName === 'AdminFooterPage' && <AdminFooterPage />}
+            {activePage.activePageName === 'AdminThemePage' && <AdminThemePage />}
           </>
         ) : (
           page.pageContent && <ElementRenderer elementIds={page.pageContent} />
