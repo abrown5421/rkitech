@@ -38,7 +38,7 @@ export const themeApi = baseApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Theme', id }],
+      invalidatesTags: ['Theme'],
     }),
 
     deleteTheme: build.mutation<void, string>({
@@ -46,7 +46,7 @@ export const themeApi = baseApi.injectEndpoints({
         url: `/themes/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, id) => [{ type: 'Theme', id }],
+      invalidatesTags: ['Theme'],
     }),
 
     changeActiveTheme: build.mutation<ITheme, string>({

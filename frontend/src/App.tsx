@@ -24,16 +24,28 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!pages || pages.length === 0) return;
 
-    const page = pages.find(p =>
+    const page = pages.find((p) =>
       matchPath({ path: p.pagePath, end: true }, location.pathname)
     );
 
     const pageNotFound = pages.find((p) => p.pageName === 'PageNotFound');
 
     if (page) {
-      dispatch(setActivePage({activePageName: page.pageName, activePageAnimateIn: true}));
+      dispatch(
+        setActivePage({
+          activePageName: page.pageName,
+          activePageAnimateIn: true,
+          activePageObj: page,
+        })
+      );
     } else if (pageNotFound) {
-      dispatch(setActivePage({activePageName: pageNotFound.pageName, activePageAnimateIn: true}));
+      dispatch(
+        setActivePage({
+          activePageName: pageNotFound.pageName,
+          activePageAnimateIn: true,
+          activePageObj: pageNotFound, 
+        })
+      );
     }
   }, [dispatch, pages, location.pathname]);
 

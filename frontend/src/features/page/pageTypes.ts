@@ -22,5 +22,6 @@ export interface PageShellProps {
 
 export interface ActivePageProps {
   activePageName: string,
-  activePageAnimateIn: boolean
+  activePageAnimateIn: boolean,
+  activePageObj?: IPage
 }
