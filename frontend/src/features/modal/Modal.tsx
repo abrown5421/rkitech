@@ -72,9 +72,9 @@ const Modal: React.FC = () => {
                     m: 4,
                     width: '100%',
                     position: 'relative', 
-                    '@media (min-width: 768px)': { width: '50%' },
+                    '@media (min-width: 768px)': { width: '75%' },
                     '@media (min-width: 1024px)': { width: '33.333%' },
-                    '@media (min-width: 1280px)': { width: '25%' },
+                    '@media (min-width: 1280px)': { width: '50%' },
                 }}
             >
                 {modal.closeable && (
@@ -94,7 +94,7 @@ const Modal: React.FC = () => {
                 <Typography
                     sx={{
                         fontSize: '1.25rem',
-                        fontFamily: 'primary-font',
+                        fontFamily: 'PrimaryFont',
                         color: theme?.neutral.content,
                     }}
                 >

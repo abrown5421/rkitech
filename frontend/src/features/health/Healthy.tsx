@@ -13,8 +13,7 @@ const Healthy: React.FC<HealthyProps> = ({ progress }) => {
       justifyContent="center"
       width="100vw"
       height="100vh"
-      bgcolor={theme?.neutral.content}
-      color={theme?.primary.main}
+      bgcolor={theme?.neutral3.main}
     >
       <Box
         display="flex"
@@ -31,14 +30,14 @@ const Healthy: React.FC<HealthyProps> = ({ progress }) => {
               "& .MuiLinearProgress-bar": {
                 backgroundColor: theme?.primary.main,
               },
-              backgroundColor: theme?.primary.content,
+              backgroundColor: theme?.neutral.main,
             }}
           />
         </Box>
 
         <Typography
           variant="body2"
-          sx={{ mt: 2, fontWeight: 500 }}
+          sx={{ mt: 2, fontWeight: 500, color: theme?.primary.main }}
         >
           {progress}%
         </Typography>

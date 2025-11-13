@@ -48,6 +48,15 @@ export const themeApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, id) => [{ type: 'Theme', id }],
     }),
+
+    changeActiveTheme: build.mutation<ITheme, string>({
+      query: (id) => ({
+        url: `/themes/${id}/activate`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Theme'], 
+      transformResponse: (response: any) => response.data,
+    }),
   }),
 });
 
@@ -58,4 +67,5 @@ export const {
   useCreateThemeMutation,
   useUpdateThemeMutation,
   useDeleteThemeMutation,
+  useChangeActiveThemeMutation
 } = themeApi;
