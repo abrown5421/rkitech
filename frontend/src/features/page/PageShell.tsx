@@ -5,7 +5,7 @@ import { useAppSelector } from '../../store/hooks';
 import Home from '../home/Home';
 import PrivacyPolicy from '../privacyPolicy/PrivacyPolicy';
 import { Box } from '@mui/material';
-import { useThemeValue } from '../../hooks/useThemeValue';
+import { resolveThemeValue } from '../../hooks/useThemeValue';
 import type { EntranceAnimation, ExitAnimation } from '../../components/animBox/animBoxTypes';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
 import { ElementRenderer } from '../elements/ElementRenderer';
@@ -29,8 +29,8 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const { data: pages } = useGetPagesQuery();
   const navigate = useNavigation();
 
-  const pageBgColor = useThemeValue(page.pageColor);
-  const pageFontColor = page.pageFontColor ? useThemeValue(page.pageFontColor) : null;
+  const pageBgColor = resolveThemeValue(page.pageColor, theme);
+  const pageFontColor = page.pageFontColor ? resolveThemeValue(page.pageFontColor, theme) : null;
 
   const isLoading = themeLoading || !theme;
 

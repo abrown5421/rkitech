@@ -17,26 +17,21 @@ import {
   Toolbar
 } from '@mui/material';
 import AnimBox from '../../components/animBox/AnimBox';
-import { useThemeValue } from '../../hooks/useThemeValue';
+import { resolveThemeValue } from '../../hooks/useThemeValue';
 import type { ElementMapperProps } from './elementsTypes';
 import { useElementActions } from './useElementActions';
 import { useAppSelector } from '../../store/hooks';
 import { useGetActiveThemeQuery } from '../theme/themeApi';
 import * as MuiIcons from '@mui/icons-material';
 
-function resolveThemeValue(value: any) {
-  if (typeof value === 'string' && value.startsWith('$theme.')) {
-    return useThemeValue(value.replace('$theme.', ''));
-  }
-  return value;
-}
-
-function resolveThemeInObject(obj: Record<string, any> = {}) {
+function resolveThemeInObject(obj: Record<string, any> = {}, theme: any) {
   const resolved: Record<string, any> = {};
   for (const key in obj) {
     if (!obj.hasOwnProperty(key)) continue;
     const val = obj[key];
-    resolved[key] = val && typeof val === 'object' ? resolveThemeInObject(val) : resolveThemeValue(val);
+    resolved[key] = val && typeof val === 'object' 
+      ? resolveThemeInObject(val, theme) 
+      : resolveThemeValue(val, theme);
   }
   return resolved;
 }
@@ -83,8 +78,8 @@ export const ElementMapper: React.FC<ElementMapperProps> = ({ element, children 
 
   const { type, data = {}, styles, className, props, sx } = element;
 
-  const resolvedSx = resolveThemeInObject(sx);
-  const resolvedStyles = resolveThemeInObject(styles);
+  const resolvedSx = resolveThemeInObject(sx, theme);
+  const resolvedStyles = resolveThemeInObject(styles, theme);
 
   const mergedProps = {
     ...props,

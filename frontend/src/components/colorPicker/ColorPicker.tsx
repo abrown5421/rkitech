@@ -4,27 +4,29 @@ import { HexColorPicker } from "react-colorful";
 import type { ColorPickerProps } from "./colorPickerTypes";
 import { useGetActiveThemeQuery } from "../../features/theme/themeApi";
 import type { ColorObject } from "../../features/theme/themeTypes";
+import { resolveThemeValue } from "../../hooks/useThemeValue";
 
-const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, label, sx, inputSx }) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, inputProps, containerSx }) => {
   const { data: theme } = useGetActiveThemeQuery();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLInputElement | null>(null);
+  
+  const resolvedColor = resolveThemeValue(color, theme);
+  const isThemeColor = color.startsWith('$theme.');
 
   const handleClick = () => setOpen((prev) => !prev);
   const handleClickAway = () => setOpen(false);
-
-  const handleColorChange = (newColor: string) => {
-    onChange(newColor);
-  };
+  const handleColorChange = (newColor: string) => onChange(newColor);
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <Box sx={{ ...sx }}>
+      <Box sx={{ ...containerSx }}>
         <TextField
           fullWidth
-          label={label}
+          {...inputProps}
+          label={inputProps.label ? `${inputProps.label} (${isThemeColor ? 'theme' : 'custom'})` : undefined}
           inputRef={anchorRef}
-          value={color}
+          value={resolvedColor}
           onChange={(e) => onChange(e.target.value)}
           onClick={handleClick}
           variant="outlined"
@@ -36,7 +38,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, label, sx, i
                   sx={{
                     width: 24,
                     height: 24,
-                    bgcolor: color,
+                    bgcolor: resolvedColor,
                     border: "1px solid #ccc",
                     borderRadius: 0,
                   }}
@@ -44,7 +46,6 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, label, sx, i
               </InputAdornment>
             ),
           }}
-          sx={{ ...inputSx }}
         />
 
         <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" style={{ zIndex: 1300 }}>

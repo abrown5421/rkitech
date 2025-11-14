@@ -26,7 +26,7 @@ const FONT_OPTIONS: FontType[] = [
   "Brush Script MT",
 ];
 
-const FontPicker: React.FC<FontPickerProps> = ({ font, onChange, label, sx, inputSx }) => {
+const FontPicker: React.FC<FontPickerProps> = ({ font, onChange, inputProps, containerSx }) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLInputElement | null>(null);
 
@@ -40,10 +40,10 @@ const FontPicker: React.FC<FontPickerProps> = ({ font, onChange, label, sx, inpu
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <Box sx={{ ...sx }}>
+      <Box sx={{ ...containerSx }}>
         <TextField
           fullWidth
-          label={label}
+          {...inputProps}
           inputRef={anchorRef}
           value={font}
           onClick={handleClick}
@@ -67,7 +67,6 @@ const FontPicker: React.FC<FontPickerProps> = ({ font, onChange, label, sx, inpu
               </InputAdornment>
             ),
           }}
-          sx={{ ...inputSx }}
         />
 
         <Popper
