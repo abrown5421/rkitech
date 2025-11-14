@@ -14,8 +14,8 @@ program
 
 async function mainMenu() {
   console.clear();
-  console.log(figlet.textSync("RKITECH", { font: "Big" }));
-  console.log("Welcome to RKITECH CLI!\n");
+  console.log(figlet.textSync("RKITECH-CLI", { font: "Big" }));
+  console.log("Welcome to the RKITECH CLI!\n");
 
   const { section } = await inquirer.prompt([
     {

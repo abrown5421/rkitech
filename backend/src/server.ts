@@ -12,9 +12,8 @@ const startServer = async () => {
     await mongoose.connect(process.env.MONGO_URI!);
 
     console.clear();
-    console.log(figlet.textSync("RKITECH", { font: "Big" }));
-    console.log("Welcome to RKITECH!\n");
-    console.log('MongoDB connection successful');
+    console.log(figlet.textSync("RKITECH-BACKEND", { font: "Big" }));
+    console.log("Welcome to the RKITECH backend server!\n");
 
     app.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
