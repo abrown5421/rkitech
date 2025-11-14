@@ -13,6 +13,7 @@ import Modal from './features/modal/Modal';
 import Drawer from './features/drawer/Drawer';
 import { useAdminAuthFromCookie } from './hooks/useAdminAuthFromCookie';
 import AdminNavbar from './features/admin/features/adminNavbar/AdminNavbar';
+import { MuiStyleOverider } from './MuiStyleOverider';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -91,6 +92,7 @@ const App: React.FC = () => {
       <Alert />
       <Modal />
       <Drawer />
+      <MuiStyleOverider />
     </Box>
   );
 };

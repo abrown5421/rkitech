@@ -5,7 +5,7 @@ import TrashIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Add } from "@mui/icons-material";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { useDeletePageMutation, useGetPagesQuery } from '../../../page/pageApi';
+import { useDeletePageMutation, useGetPagesQuery, useCreatePageMutation, useUpdatePageMutation } from '../../../page/pageApi';
 import { useNavigation } from "../../../../hooks/useNavigate";
 import { openAlert } from '../../../alert/alertSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
@@ -26,6 +26,8 @@ const AdminPagesPage: React.FC = () => {
   const { data: pages, isLoading, isError } = useGetPagesQuery();
   const { data: theme } = useGetActiveThemeQuery();
   const [deletePage, { isLoading: isDeleting }] = useDeletePageMutation();
+  const [createPage] = useCreatePageMutation();
+  const [updatePage, { isLoading: isUpdating }] = useUpdatePageMutation();
   
   const activePage = useAppSelector((state) => state.activePage);
 
@@ -76,6 +78,23 @@ const AdminPagesPage: React.FC = () => {
     }
   };
 
+  const handlePageSave = async (type: 'new' | 'existing') => {
+    if (type === 'existing' && (!editablePage || !pageId)) return;
+
+    try {
+      if (type === 'new') {
+        await createPage(newPage).unwrap();
+        showAlert('Page created successfully', 'success');
+        navigateToPath('/admin/pages');
+      } else {
+        await updatePage({ id: pageId!, data: editablePage! }).unwrap();
+        showAlert('Page updated successfully', 'success');
+      }
+    } catch (error) {
+      showAlert(`Failed to save page: ${error}`, 'error');
+    }
+  };
+
   if (action === "new" || (pageId && editablePage)) {
     const isNew = action === "new";
     const page = isNew ? newPage : editablePage!;
@@ -97,45 +116,41 @@ const AdminPagesPage: React.FC = () => {
     
     return (
       <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'scroll' }}>
-        <Typography variant="h6" sx={{ mb: 3, fontFamily: 'PrimaryFont' }}>
-          {isNew ? 'New Page Editor' : `Editing ${page.pageName}`}
-        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", mb:2 }}>
+          <Typography variant="h6" sx={{ fontFamily: 'PrimaryFont' }}>
+            {isNew ? 'New Page Editor' : `Editing ${page.pageName} Page`}
+          </Typography>
+          <Button
+            startIcon={<EditIcon />}
+            onClick={() => navigateToPath(`${activePage.activePageObj?.pagePath}?action=new`)}
+            sx={{
+              backgroundColor: theme?.primary.main,
+              color: theme?.primary.content,
+              border: '1px solid transparent',
+              transition: 'all 0.2s ease-in-out',
+              '&:hover': {
+                backgroundColor: theme?.neutral.main,
+                color: theme?.primary.main,
+                borderColor: theme?.primary.main,
+              },
+            }}
+          >
+            Edit Page
+          </Button>
+        </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 3 }}>
           <Box sx={{ flex: 1 }}>
             <TextField
               fullWidth
-              size='small'
-              label="Page Name"
-              value={page.pageName || ''}
-              onChange={(e) => handleChange({ pageName: e.target.value })}
-              helperText="This is an ID not the name that shows on the page"
-            />
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <TextField
-              fullWidth
+              disabled={page.pagePath === '/'}
               size='small'
               label="Page Path"
               value={page.pagePath || ''}
               onChange={(e) => handleChange({ pagePath: e.target.value })}
-              helperText="The URL the page should be present at"
+              helperText={page.pagePath === '/' ? "The root route cannot be modified. Something has to appear at '/'" : "The URL the page should be present at"}
             />
           </Box>
-          <Box sx={{ flex: 1 }}>
-            <ColorPicker
-              inputProps={{
-                label: "Page Color",
-                sx: { width: '100%' },
-                helperText: "The background color of the page"
-              }}
-              color={page.pageColor || ''}
-              onChange={(color) => handleChange({ pageColor: color })}
-            />
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 3 }}>
           <Box sx={{ flex: 1 }}>
             <FormControl fullWidth >
               <InputLabel>Render Method</InputLabel>
@@ -168,9 +183,24 @@ const AdminPagesPage: React.FC = () => {
             </FormControl>
           </Box>
           <Box sx={{ flex: 1 }}>
-            <FontPicker
+            <ColorPicker
               inputProps={{
                 label: "Page Color",
+                sx: { width: '100%' },
+                helperText: "The background color of the page"
+              }}
+              color={page.pageColor || ''}
+              onChange={(color) => handleChange({ pageColor: color })}
+            />
+          </Box>
+        </Box>
+        
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 3 }}>
+          
+          <Box sx={{ flex: 1 }}>
+            <FontPicker
+              inputProps={{
+                label: "Page Font",
                 sx: { width: '100%' },
                 helperText: "The font family used by all text on the page"
               }}
@@ -189,14 +219,15 @@ const AdminPagesPage: React.FC = () => {
               onChange={(color) => handleChange({ pageFontColor: color })}
             />
           </Box>
+          <AnimationPicker
+            entrance={page.pageEntranceAnimation as EntranceAnimation || ''}
+            exit={page.pageExitAnimation as ExitAnimation || ''}
+            onEntChange={(entrance) => handleChange({ pageEntranceAnimation: entrance })}
+            onExtChange={(exit) => handleChange({ pageExitAnimation: exit })}
+          />
         </Box>
 
-        <AnimationPicker
-          entrance={page.pageEntranceAnimation as EntranceAnimation || ''}
-          exit={page.pageExitAnimation as ExitAnimation || ''}
-          onEntChange={(entrance) => handleChange({ pageEntranceAnimation: entrance })}
-          onExtChange={(exit) => handleChange({ pageExitAnimation: exit })}
-        />
+        
 
         <Box sx={{ display: 'flex', justifyContent: 'end', mt: 'auto' }}>
           <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
@@ -221,10 +252,8 @@ const AdminPagesPage: React.FC = () => {
             )}
             
             <Button
-              disabled={!isNew && !isChanged}
-              onClick={() => {
-                console.log('ah')
-              }}
+              disabled={((!isNew && !isChanged) || isUpdating)}
+              onClick={() => handlePageSave(isNew ? 'new' : 'existing')}
               sx={{
                 backgroundColor: (isNew || isChanged) ? theme?.primary.main : '#ccc',
                 color: (isNew || isChanged) ? theme?.primary.content : '#fff',
@@ -237,7 +266,7 @@ const AdminPagesPage: React.FC = () => {
                 },
               }}
             >
-              Save Page
+              {isUpdating ? <CircularProgress size={20} /> : 'Save Page'}
             </Button>
           </Box>
         </Box>
@@ -313,7 +342,6 @@ const AdminPagesPage: React.FC = () => {
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigateToPath(`${activePage.activePageObj?.pagePath}?id=${page._id}`)
                   }}
                   sx={{
                     color: theme?.primary.main,
