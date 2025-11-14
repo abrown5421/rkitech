@@ -119,21 +119,13 @@ const ColorGroupEditor: React.FC<ColorGroupEditorProps> = ({
   onChange, 
   activeTheme 
 }) => {
-  const inputSx = {
-    border: `1px solid ${activeTheme?.neutral.content}`,
-    '& .MuiInputBase-input': { color: activeTheme?.neutral.content },
-    '& .MuiInputLabel-root': {
-      color: activeTheme?.neutral.content,
-      backgroundColor: activeTheme?.neutral.main,
-    },
-  };
 
   return (
     <Box 
       sx={{ 
         display: "flex", 
         flexDirection: "column", 
-        border: `1px solid ${activeTheme?.neutral.content}`, 
+        border: `1px solid ${activeTheme?.accent.main}`, 
         p: 2, 
         borderRadius: '5px' 
       }}
@@ -145,14 +137,18 @@ const ColorGroupEditor: React.FC<ColorGroupEditorProps> = ({
         <ColorPicker
           color={colorGroup.main}
           onChange={(newColor) => onChange(colorKey, 'main', newColor)}
-          sx={{ flex: 1 }}
-          inputSx={inputSx}
+          inputProps={{
+            label: "Color",
+          }}
+          containerSx={{ flex: 1 }}
         />
         <ColorPicker
           color={colorGroup.content}
           onChange={(newColor) => onChange(colorKey, 'content', newColor)}
-          sx={{ flex: 1 }}
-          inputSx={inputSx}
+          inputProps={{
+            label: "Contrast Color",
+          }}
+          containerSx={{ flex: 1 }}
         />
       </Box>
     </Box>
