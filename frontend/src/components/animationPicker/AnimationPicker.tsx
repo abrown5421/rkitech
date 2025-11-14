@@ -6,6 +6,7 @@ import {
   Select,
   type SelectChangeEvent,
   Box,
+  FormHelperText,
 } from "@mui/material";
 import { entranceOptions, exitOptions, type AnimationPickerProps } from "./animationPickerTypes";
 import type { EntranceAnimation, ExitAnimation } from "../animBox/animBoxTypes";
@@ -39,6 +40,7 @@ export const AnimationPicker: React.FC<AnimationPickerProps> = ({
                     </MenuItem>
                 ))}
                 </Select>
+                <FormHelperText>The animation that plays when the page loads</FormHelperText>
             </FormControl>
         </Box>
         <Box sx={{ flex: 1 }}>
@@ -57,6 +59,7 @@ export const AnimationPicker: React.FC<AnimationPickerProps> = ({
                     </MenuItem>
                 ))}
                 </Select>
+                <FormHelperText>The animation that plays when the user navigates away from the page</FormHelperText>
             </FormControl>
         </Box>
     </Box>

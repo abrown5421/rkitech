@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, CircularProgress, IconButton, Select, TextField, Tooltip, Typography, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { Box, Button, CircularProgress, IconButton, Select, TextField, Tooltip, Typography, MenuItem, InputLabel, FormControl, FormHelperText } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import TrashIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -109,6 +109,7 @@ const AdminPagesPage: React.FC = () => {
               label="Page Name"
               value={page.pageName || ''}
               onChange={(e) => handleChange({ pageName: e.target.value })}
+              helperText="This is an ID not the name that shows on the page"
             />
           </Box>
           <Box sx={{ flex: 1 }}>
@@ -118,14 +119,18 @@ const AdminPagesPage: React.FC = () => {
               label="Page Path"
               value={page.pagePath || ''}
               onChange={(e) => handleChange({ pagePath: e.target.value })}
+              helperText="The URL the page should be present at"
             />
           </Box>
           <Box sx={{ flex: 1 }}>
             <ColorPicker
-              label="Page Color"
+              inputProps={{
+                label: "Page Color",
+                sx: { width: '100%' },
+                helperText: "The background color of the page"
+              }}
               color={page.pageColor || ''}
               onChange={(color) => handleChange({ pageColor: color })}
-              sx={{ width: '100%' }}
             />
           </Box>
         </Box>
@@ -139,10 +144,12 @@ const AdminPagesPage: React.FC = () => {
                 value={page.pageRenderMethod || 'static'}
                 label="Render Method"
                 onChange={(e) => handleChange({ pageRenderMethod: e.target.value as 'static' | 'dynamic' })}
+                
               >
                 <MenuItem value="static">Static</MenuItem>
                 <MenuItem value="dynamic">Dynamic</MenuItem>
               </Select>
+              <FormHelperText>Static pages are fixed, dynamic can be edited</FormHelperText>
             </FormControl>
           </Box>
           <Box sx={{ flex: 1 }}>
@@ -157,25 +164,29 @@ const AdminPagesPage: React.FC = () => {
                 <MenuItem value="true">Active</MenuItem>
                 <MenuItem value="false">Inactive</MenuItem>
               </Select>
+              <FormHelperText>Hide pages without deleting them</FormHelperText>
             </FormControl>
           </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 3 }}>
           <Box sx={{ flex: 1 }}>
             <FontPicker
-              label="Page Font"
+              inputProps={{
+                label: "Page Color",
+                sx: { width: '100%' },
+                helperText: "The font family used by all text on the page"
+              }}
               font={page.pageFontFamily as FontType || 'PrimaryFont'}
               onChange={(font) => handleChange({ pageFontFamily: font })}
-              sx={{ width: '100%' }}
             />
           </Box>
           <Box sx={{ flex: 1 }}>
             <ColorPicker
-              label="Font Color"
+              inputProps={{
+                label: "Font Color",
+                sx: { width: '100%' },
+                helperText: "The font color of the page"
+              }}
               color={page.pageFontColor || ''}
               onChange={(color) => handleChange({ pageFontColor: color })}
-              sx={{ width: '100%' }}
             />
           </Box>
         </Box>
@@ -187,7 +198,6 @@ const AdminPagesPage: React.FC = () => {
           onExtChange={(exit) => handleChange({ pageExitAnimation: exit })}
         />
 
-        {/* Action Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'end', mt: 'auto' }}>
           <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
             {!isNew && (
@@ -298,21 +308,23 @@ const AdminPagesPage: React.FC = () => {
             </Typography>
           </Box>
           <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            <Tooltip title="Edit">
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigateToPath(`${activePage.activePageObj?.pagePath}?id=${page._id}`)
-                }}
-                sx={{
-                  color: theme?.primary.main,
-                  border: "1px solid transparent",
-                  "&:hover": { borderColor: theme?.primary.main },
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
+            {page.pageRenderMethod === 'dynamic' && (
+              <Tooltip title="Edit">
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateToPath(`${activePage.activePageObj?.pagePath}?id=${page._id}`)
+                  }}
+                  sx={{
+                    color: theme?.primary.main,
+                    border: "1px solid transparent",
+                    "&:hover": { borderColor: theme?.primary.main },
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            )}
 
             <Tooltip title="Settings">
               <IconButton

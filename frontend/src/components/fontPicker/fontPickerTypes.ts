@@ -1,4 +1,4 @@
-import type { SxProps } from "@mui/material";
+import type { SxProps, TextFieldProps } from "@mui/material";
 
 export type FontType =
   | "PrimaryFont"
@@ -16,7 +16,6 @@ export type FontType =
 export interface FontPickerProps {
   font: FontType;
   onChange: (font: FontType) => void;
-  label?: string;
-  sx?: SxProps;
-  inputSx?: SxProps;
+  inputProps: TextFieldProps;
+  containerSx?: SxProps
 }

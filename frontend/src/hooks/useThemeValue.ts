@@ -11,3 +11,13 @@ export function useThemeValue(path: string): string | undefined {
 
   return value;
 }
+
+export function resolveThemeValue(value: any, theme: any) {
+  if (typeof value === 'string' && value.startsWith('$theme.')) {
+    const path = value.replace('$theme.', '');
+    return path.split('.').reduce((obj: any, key: string) => {
+      return obj?.[key];
+    }, theme);
+  }
+  return value;
+}
