@@ -10,7 +10,6 @@ const PageSchema: Schema = new Schema<IPage>({
   pageFontColor: { type: String, default: 'neutral.content' },
   pageActive: { type: Boolean, default: true },
   pageColor: { type: String, default: 'white' },
-  pageIntensity: { type: Boolean, default: false },
   pageEntranceAnimation: { type: String, default: 'animate__fadeIn' },
   pageExitAnimation: { type: String, default: 'animate__fadeOut' },
 }, { timestamps: true });

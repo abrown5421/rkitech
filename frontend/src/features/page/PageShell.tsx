@@ -16,10 +16,10 @@ import { useNavigation } from '../../hooks/useNavigate';
 import { useGetPagesQuery } from '../page/pageApi';
 import type { IPage } from '../page/pageTypes';
 import AdminSidebar from '../admin/features/adminSidebar/AdminSidebar';
-import AdminPages from '../admin/features/adminPages/AdminPages';
 import AdminNavPage from '../admin/features/adminNavPage/AdminNavPage';
 import AdminFooterPage from '../admin/features/adminFooterPage/AdminFooterPage';
 import AdminThemePage from '../admin/features/adminThemePage/AdminThemePage';
+import AdminPagesPage from '../admin/features/adminPagesPage/AdminPagesPage';
 
 const PageShell: React.FC<PageShellProps> = ({ page }) => {
   const activePage = useAppSelector((state) => state.activePage);
@@ -86,7 +86,7 @@ const PageShell: React.FC<PageShellProps> = ({ page }) => {
             {/* Admin routes (auto-protected above) */}
             {activePage.activePageName === 'AdminAuthPage' && <AdminAuth />}
             {activePage.activePageName === 'AdminDashPage' && <AdminDashboard />}
-            {activePage.activePageName === 'AdminPagesPage' && <AdminPages />}
+            {activePage.activePageName === 'AdminPagesPage' && <AdminPagesPage />}
             {activePage.activePageName === 'AdminNavPage' && <AdminNavPage />}
             {activePage.activePageName === 'AdminFooterPage' && <AdminFooterPage />}
             {activePage.activePageName === 'AdminThemePage' && <AdminThemePage />}

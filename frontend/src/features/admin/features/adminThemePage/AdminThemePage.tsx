@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, IconButton, TextField, Button, Chip, Divider } from "@mui/material";
+import { Box, Typography, IconButton, TextField, Button, Chip } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
+import TrashIcon from '@mui/icons-material/Delete';
 import { Add } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import { 
@@ -17,32 +18,8 @@ import { openAlert } from "../../../alert/alertSlice";
 import { useNavigation } from "../../../../hooks/useNavigate";
 import type { IPage } from "../../../page/pageTypes";
 import ColorPicker from "../../../../components/colorPicker/ColorPicker";
-
-const COLOR_KEYS = ["primary", "secondary", "accent", "success", "warning", "error"] as const;
-const ALL_COLOR_KEYS = [...COLOR_KEYS, "neutral", "neutral2", "neutral3"] as const;
-
-const DEFAULT_THEME: Partial<ITheme> = {
-  name: "New Theme",
-  primary: { main: "#1976d2", content: "#ffffff" },
-  secondary: { main: "#dc004e", content: "#ffffff" },
-  accent: { main: "#f50057", content: "#ffffff" },
-  success: { main: "#4caf50", content: "#ffffff" },
-  warning: { main: "#ff9800", content: "#000000" },
-  error: { main: "#f44336", content: "#ffffff" },
-  neutral: { main: "#ffffff", content: "#000000" },
-  neutral2: { main: "#f5f5f5", content: "#000000" },
-  neutral3: { main: "#e0e0e0", content: "#000000" },
-};
-
-type ColorKey = typeof ALL_COLOR_KEYS[number];
-
-interface ThemePreviewProps {
-  theme: ITheme | Partial<ITheme>;
-  activeTheme?: ITheme;
-  isActive?: boolean;
-  onActivate?: () => void;
-  isLoading?: boolean;
-}
+import { ALL_COLOR_KEYS, COLOR_KEYS, DEFAULT_THEME, type ColorGroupEditorProps, type ColorKey, type ThemeCardProps, type ThemeEditorProps, type ThemePreviewProps } from "./adminThemePageTypes";
+import { openModal } from "../../../modal/modalSlice";
 
 const ThemePreview: React.FC<ThemePreviewProps> = ({ 
   theme, 
@@ -136,13 +113,6 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
   </Box>
 );
 
-interface ColorGroupEditorProps {
-  colorKey: ColorKey;
-  colorGroup: { main: string; content: string };
-  onChange: (key: ColorKey, type: 'main' | 'content', value: string) => void;
-  activeTheme?: ITheme;
-}
-
 const ColorGroupEditor: React.FC<ColorGroupEditorProps> = ({ 
   colorKey, 
   colorGroup, 
@@ -189,32 +159,16 @@ const ColorGroupEditor: React.FC<ColorGroupEditorProps> = ({
   );
 };
 
-interface ThemeEditorProps {
-  theme: ITheme | Partial<ITheme>;
-  originalTheme?: ITheme;
-  activeTheme?: ITheme;
-  isNew: boolean;
-  onSave: () => void;
-  onDelete?: () => void;
-  onRevert?: () => void;
-  onChange: (theme: ITheme | Partial<ITheme>) => void;
-  onActivate?: () => void;
-  isSaving?: boolean;
-  isDeleting?: boolean;
-}
-
 const ThemeEditor: React.FC<ThemeEditorProps> = ({
   theme,
   originalTheme,
   activeTheme,
   isNew,
   onSave,
-  onDelete,
   onRevert,
   onChange,
   onActivate,
-  isSaving,
-  isDeleting,
+  isSaving
 }) => {
   const isChanged = JSON.stringify(theme) !== JSON.stringify(originalTheme);
   const isActive = !isNew && theme._id === activeTheme?._id;
@@ -242,7 +196,7 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({
     <Box sx={{ p: 4, display: "flex", flexDirection: "column", height: "100%", overflow: 'scroll' }}>
       <Box sx={{ display: "flex", flexDirection: "row", gap: 4, mb: 4 }}>
         <Box sx={{ display: "flex", flexDirection: "column", flex: 9 }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2, fontFamily: "PrimaryFont" }}>
             {isNew ? 'New Theme Editor' : `Editing ${theme.name} Theme`}
           </Typography>
           {isNew ? (
@@ -295,26 +249,6 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        {!isNew && (
-          <Button
-            disabled={isDeleting}
-            onClick={onDelete}
-            sx={{
-              backgroundColor: !isDeleting ? activeTheme?.error.main : activeTheme?.neutral.main,
-              color: !isDeleting ? activeTheme?.error.content : activeTheme?.neutral.content,
-              border: '1px solid transparent',
-              transition: 'all 0.2s ease-in-out',
-              '&:hover': {
-                backgroundColor: activeTheme?.neutral.main,
-                color: activeTheme?.error.main,
-                borderColor: activeTheme?.error.main,
-              },
-            }}
-          >
-            Delete Theme
-          </Button>
-        )}
-        
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, ml: 'auto' }}>
           {!isNew && (
             <Button
@@ -358,20 +292,13 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({
   );
 };
 
-interface ThemeCardProps {
-  theme: ITheme;
-  activeTheme?: ITheme;
-  isLoading?: boolean;
-  onActivate: () => void;
-  onEdit: () => void;
-}
-
 const ThemeCard: React.FC<ThemeCardProps> = ({ 
   theme, 
   activeTheme, 
   isLoading, 
   onActivate, 
-  onEdit 
+  onEdit,
+  onDelete
 }) => (
   <Box
     onClick={onActivate}
@@ -395,24 +322,36 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
       },
     }}
   >
-    <IconButton
-      size="small"
-      onClick={(e) => {
-        e.stopPropagation();
-        onEdit();
-      }}
-      sx={{
-        position: "absolute",
-        top: 4,
-        right: 4,
-        zIndex: 2,
-        color: activeTheme?.primary.main,
-        border: "1px solid transparent",
-        "&:hover": { borderColor: activeTheme?.primary.main },
-      }}
-    >
-      <EditIcon fontSize="small" />
-    </IconButton>
+    <Box sx={{display: 'flex', flexDirection: 'row', position: "absolute", top: 4, right: 4, zIndex: 2,}}>
+      <IconButton
+        size="small"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit();
+        }}
+        sx={{
+          color: activeTheme?.primary.main,
+          border: "1px solid transparent",
+          "&:hover": { borderColor: activeTheme?.primary.main },
+        }}
+      >
+        <EditIcon fontSize="small" />
+      </IconButton>
+      <IconButton
+        size="small"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+        sx={{
+          color: activeTheme?.error.main,
+          border: "1px solid transparent",
+          "&:hover": { borderColor: activeTheme?.error.main },
+        }}
+      >
+        <TrashIcon fontSize="small" />
+      </IconButton>
+    </Box>
 
     <Box sx={{ display: "flex", flexDirection: "column", width: "25%" }}>
       <Box sx={{ flex: 1, backgroundColor: theme.neutral2.main }} />
@@ -480,7 +419,7 @@ const AdminThemePage: React.FC = () => {
   const [changeActiveTheme, { isLoading }] = useChangeActiveThemeMutation();
   const [createTheme] = useCreateThemeMutation();
   const [updateTheme, { isLoading: isUpdating }] = useUpdateThemeMutation();
-  const [deleteTheme, { isLoading: isDeleting }] = useDeleteThemeMutation();
+  const [deleteTheme] = useDeleteThemeMutation();
 
   const searchParams = new URLSearchParams(location.search);
   const themeId = searchParams.get("id");
@@ -534,15 +473,41 @@ const AdminThemePage: React.FC = () => {
     }
   };
 
-  const handleThemeDelete = async () => {
-    if (!themeId || !window.confirm("Are you sure you want to delete this theme?")) return;
+  const handleThemeDelete = async (id?: string) => {
+      const deleteId = id || themeId;
+      if (!deleteId) return;
+      if (id === activeTheme?._id){
+        dispatch(openModal({
+          open: true,
+          closeable: true,
+          title: "This Theme Can't Be Deleted!",
+          body: "We are unable to delete this theme as it is currently enabled. Please enable a different theme before attempting to delete again.",
+          backgroundColor: activeTheme?.neutral.main ?? "#fff", 
+          prefab: "confirm",
+          onConfirm: () => {}
+        }));
+      } else {
+        dispatch(openModal({
+          open: true,
+          closeable: true,
+          title: "Delete this theme?",
+          body: "Are you sure you want to delete this theme? This action can not be undone.",
+          backgroundColor: activeTheme?.neutral.main ?? "#fff", 
+          prefab: "confirmDeny",
+          onConfirm: () => proceed(deleteId), 
+          onDeny: () => {},
+        }));
+      }
+      
+  };
 
+  const proceed = async (deleteId: string) => {
     try {
-      await deleteTheme(themeId).unwrap();
-      showAlert("Theme deleted successfully", 'success');
-      navigateToPath('/admin/theme');
+        await deleteTheme(deleteId).unwrap();
+        showAlert("Theme deleted successfully", 'success');
+        navigateToPath('/admin/theme');
     } catch (error) {
-      showAlert(`Failed to delete theme: ${error}`, 'error');
+        showAlert(`Failed to delete theme: ${error}`, 'error');
     }
   };
 
@@ -557,21 +522,19 @@ const AdminThemePage: React.FC = () => {
         activeTheme={activeTheme}
         isNew={isNew}
         onSave={() => handleThemeSave(isNew ? 'new' : 'existing')}
-        onDelete={!isNew ? handleThemeDelete : undefined}
         onRevert={!isNew ? () => setEditableTheme(thisTheme) : undefined}
         onChange={isNew 
           ? (theme) => setNewTheme(theme) 
           : (theme) => setEditableTheme(theme as ITheme)}
         onActivate={!isNew ? () => handleThemeActivate(editableTheme!) : undefined}
         isSaving={isUpdating}
-        isDeleting={isDeleting}
       />
     );
   }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: "column", p: 4 }}>
-      <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between" }}>
+      <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", mb:2 }}>
         <Typography variant="h6" sx={{ fontFamily: 'PrimaryFont' }}>
           Theme Manager
         </Typography>
@@ -593,7 +556,7 @@ const AdminThemePage: React.FC = () => {
           Add New Theme
         </Button>
       </Box>
-      <Divider sx={{ my: 2 }} />
+      
       <Box
         sx={{
           display: "grid",
@@ -613,6 +576,7 @@ const AdminThemePage: React.FC = () => {
               isLoading={isLoading}
               onActivate={() => handleThemeActivate(theme)}
               onEdit={() => navigateToPath(`${activePage.activePageObj?.pagePath}?id=${theme._id}`)}
+              onDelete={() => handleThemeDelete(theme._id)}
             />
           ))}
       </Box>

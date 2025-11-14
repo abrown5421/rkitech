@@ -12,7 +12,6 @@ describe('Pages API', () => {
       pageContent: [],
       pageActive: true,
       pageColor: 'white',
-      pageIntensity: false,
       pageEntranceAnimation: 'animate__fadeIn',
       pageExitAnimation: 'animate__fadeOut',
     },

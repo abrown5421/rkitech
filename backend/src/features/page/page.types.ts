@@ -9,7 +9,6 @@ export interface IPage extends Document {
   pageFontColor?: string;
   pageActive: boolean;
   pageColor: string;
-  pageIntensity: boolean;
   pageEntranceAnimation: string;
   pageExitAnimation: string;
 }
