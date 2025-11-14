@@ -1,28 +1,11 @@
 import inquirer from "inquirer";
 import axios from "axios";
 import dotenv from "dotenv";
+import { ColorObject, Theme } from "./themeTypes.js";
 
 dotenv.config();
 
 const API_URL = process.env.API_URL || "http://localhost:3001";
-
-interface ColorObject {
-  main: string;
-  content: string;
-}
-
-interface Theme {
-  _id: string;
-  name: string;
-  active: boolean;
-  primary: ColorObject;
-  secondary: ColorObject;
-  accent: ColorObject;
-  success: ColorObject;
-  warning: ColorObject;
-  error: ColorObject;
-  neutral: ColorObject;
-}
 
 function isValidHexColor(color: string): boolean {
   return /^#[0-9A-F]{6}$/i.test(color);
@@ -38,9 +21,15 @@ async function fetchThemes(): Promise<Theme[]> {
   }
 }
 
-async function updateTheme(themeId: string, updates: Partial<Theme>): Promise<boolean> {
+async function updateTheme(
+  themeId: string,
+  updates: Partial<Theme>
+): Promise<boolean> {
   try {
-    const response = await axios.put(`${API_URL}/api/themes/${themeId}`, updates);
+    const response = await axios.put(
+      `${API_URL}/api/themes/${themeId}`,
+      updates
+    );
     return response.status === 200;
   } catch (error) {
     console.error(" Error updating theme:", error);
@@ -48,15 +37,24 @@ async function updateTheme(themeId: string, updates: Partial<Theme>): Promise<bo
   }
 }
 
-async function editColorField(currentColor: ColorObject, fieldName: string): Promise<ColorObject> {
+async function editColorField(
+  currentColor: ColorObject,
+  fieldName: string
+): Promise<ColorObject> {
   const { editWhat } = await inquirer.prompt([
     {
       type: "list",
       name: "editWhat",
       message: `Edit ${fieldName}:`,
       choices: [
-        { name: `Main color (currently: ${currentColor.main})`, value: "main" },
-        { name: `Content color (currently: ${currentColor.content})`, value: "content" },
+        {
+          name: `Main color (currently: ${currentColor.main})`,
+          value: "main",
+        },
+        {
+          name: `Content color (currently: ${currentColor.content})`,
+          value: "content",
+        },
         { name: "Both colors", value: "both" },
         { name: "Skip", value: "skip" },
       ],
@@ -110,12 +108,12 @@ async function editColorField(currentColor: ColorObject, fieldName: string): Pro
 
 export async function editThemeWizard() {
   console.clear();
-  console.log("✏️  Edit Theme\n");
+  console.log(" Edit Theme\n");
 
   const themes = await fetchThemes();
 
   if (themes.length === 0) {
-    console.log("  No themes found to edit.");
+    console.log(" No themes found to edit.");
     return;
   }
 
@@ -125,7 +123,7 @@ export async function editThemeWizard() {
       name: "themeToEdit",
       message: "Select a theme to edit:",
       choices: [
-        ...themes.map(theme => ({
+        ...themes.map((theme) => ({
           name: `${theme.name}${theme.active ? " (active)" : ""}`,
           value: theme._id,
         })),
@@ -139,9 +137,8 @@ export async function editThemeWizard() {
     return;
   }
 
-  const selectedTheme = themes.find(t => t._id === themeToEdit)!;
+  const selectedTheme = themes.find((t) => t._id === themeToEdit)!;
   const updates: Partial<Theme> = {};
-
   let continueEditing = true;
 
   while (continueEditing) {
@@ -152,13 +149,15 @@ export async function editThemeWizard() {
         message: "What would you like to edit?",
         choices: [
           { name: `Name (currently: ${selectedTheme.name})`, value: "name" },
-          { name: `Primary color`, value: "primary" },
-          { name: `Secondary color`, value: "secondary" },
-          { name: `Accent color`, value: "accent" },
-          { name: `Success color`, value: "success" },
-          { name: `Warning color`, value: "warning" },
-          { name: `Error color`, value: "error" },
-          { name: `Neutral color`, value: "neutral" },
+          { name: "Primary color", value: "primary" },
+          { name: "Secondary color", value: "secondary" },
+          { name: "Accent color", value: "accent" },
+          { name: "Success color", value: "success" },
+          { name: "Warning color", value: "warning" },
+          { name: "Error color", value: "error" },
+          { name: "Neutral color", value: "neutral" },
+          { name: "Neutral 2 color", value: "neutral2" },
+          { name: "Neutral 3 color", value: "neutral3" },
           { name: "Done editing", value: "done" },
         ],
       },
@@ -187,7 +186,18 @@ export async function editThemeWizard() {
       updates.name = newName;
       selectedTheme.name = newName;
     } else {
-      const colorField = fieldToEdit as keyof Pick<Theme, "primary" | "secondary" | "accent" | "success" | "warning" | "error" | "neutral">;
+      const colorField = fieldToEdit as keyof Pick<
+        Theme,
+        | "primary"
+        | "secondary"
+        | "accent"
+        | "success"
+        | "warning"
+        | "error"
+        | "neutral"
+        | "neutral2"
+        | "neutral3"
+      >;
       const currentColor = selectedTheme[colorField];
       const newColor = await editColorField(currentColor, fieldToEdit);
       updates[colorField] = newColor;
@@ -196,7 +206,7 @@ export async function editThemeWizard() {
   }
 
   if (Object.keys(updates).length === 0) {
-    console.log("ℹ️  No changes made.");
+    console.log("ℹ No changes made.");
     return;
   }
 
@@ -224,7 +234,6 @@ export async function editThemeWizard() {
   }
 
   console.log("\n Updating theme...\n");
-
   const success = await updateTheme(themeToEdit, updates);
 
   if (success) {

@@ -6,40 +6,72 @@ dotenv.config();
 
 const API_URL = process.env.API_URL || "http://localhost:3001";
 
-interface ColorObject {
-  main: string;
-  content: string;
-}
-
-interface Theme {
-  _id: string;
-  name: string;
-  active: boolean;
-  primary: ColorObject;
-  secondary: ColorObject;
-  accent: ColorObject;
-  success: ColorObject;
-  warning: ColorObject;
-  error: ColorObject;
-  neutral: ColorObject;
-}
-
-async function fetchThemes(): Promise<Theme[]> {
+async function fetchThemes() {
   try {
     const response = await axios.get(`${API_URL}/api/themes`);
     return response.data.data;
   } catch (error) {
-    console.error(" Error fetching themes:", error);
+    console.error("Error fetching themes:", error);
     return [];
   }
 }
 
-async function deleteTheme(themeId: string): Promise<boolean> {
+async function deleteTheme(themeId: string) {
   try {
     const response = await axios.delete(`${API_URL}/api/themes/${themeId}`);
     return response.status === 200;
-  } catch (error) {
-    console.error(" Error deleting theme:", error);
+  } catch (err) {
+    console.error("Error deleting theme:", err);
     return false;
   }
+}
+
+export async function deleteThemeWizard() {
+  console.clear();
+  console.log("🗑 Delete Theme\n");
+
+  const themes = await fetchThemes();
+
+  if (themes.length === 0) {
+    console.log("No themes available to delete.");
+    return;
+  }
+
+  const { themeToDelete } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "themeToDelete",
+      message: "Select a theme to delete:",
+      choices: themes.map((t: any) => ({
+        name: `${t.name}${t.active ? " (active)" : ""}`,
+        value: t._id,
+      })),
+    },
+  ]);
+
+  if (!themeToDelete) {
+    console.log("Deletion cancelled.");
+    return;
+  }
+
+  const { confirmDelete } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "confirmDelete",
+      message: "Are you sure? This cannot be undone.",
+      default: false,
+    },
+  ]);
+
+  if (!confirmDelete) {
+    console.log("Deletion cancelled.");
+    return;
+  }
+
+  console.log("\nDeleting theme...");
+
+  const success = await deleteTheme(themeToDelete);
+
+  if (success) console.log(" Theme deleted successfully!");
+  else console.log("✖ Failed to delete theme.");
 }
