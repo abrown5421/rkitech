@@ -11,7 +11,6 @@ const defaultPages = [
     pageColor: "neutral.main",
     pageFontFamily: "SecondaryFont",
     pageFontColor: "neutral.content",
-    pageIntensity: false,
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
   },
@@ -24,7 +23,6 @@ const defaultPages = [
     pageColor: "neutral.main",
     pageFontFamily: "SecondaryFont",
     pageFontColor: "neutral.content",
-    pageIntensity: false,
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
   },
@@ -36,7 +34,6 @@ const defaultPages = [
     pageColor: "neutral.main",
     pageFontFamily: "SecondaryFont",
     pageFontColor: "neutral.content",
-    pageIntensity: false,
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
   }

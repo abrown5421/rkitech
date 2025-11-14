@@ -5,10 +5,14 @@ const defaultModalState: ModalProps = {
   open: false,
   closeable: true,
   title: "",
+  body: "",
   entrance: undefined,
   exit: undefined,
   children: [],
-  backgroundColor: "$theme.neutral.main"
+  backgroundColor: "$theme.neutral.main",
+  prefab: undefined,
+  onConfirm: undefined,
+  onDeny: undefined
 };
 
 const initialState: ModalProps = { ...defaultModalState };
