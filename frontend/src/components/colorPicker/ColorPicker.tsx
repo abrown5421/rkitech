@@ -12,7 +12,6 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, inputProps, 
   const anchorRef = useRef<HTMLInputElement | null>(null);
   
   const resolvedColor = resolveThemeValue(color, theme);
-  const isThemeColor = color.startsWith('$theme.');
 
   const handleClick = () => setOpen((prev) => !prev);
   const handleClickAway = () => setOpen(false);
@@ -24,7 +23,6 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, inputProps, 
         <TextField
           fullWidth
           {...inputProps}
-          label={inputProps.label ? `${inputProps.label} (${isThemeColor ? 'theme' : 'custom'})` : undefined}
           inputRef={anchorRef}
           value={resolvedColor}
           onChange={(e) => onChange(e.target.value)}
