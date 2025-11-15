@@ -18,6 +18,7 @@ import ColorPicker from '../../../../components/colorPicker/ColorPicker';
 import { AnimationPicker } from '../../../../components/animationPicker/AnimationPicker';
 import type { FontType } from '../../../../components/fontPicker/fontPickerTypes';
 import type { EntranceAnimation, ExitAnimation } from '../../../../components/animBox/animBoxTypes';
+import { elementsApi, useCreateElementsMutation, useDeleteElementsMutation } from '../../../elements/elementsApi';
 
 const AdminPagesPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -28,7 +29,9 @@ const AdminPagesPage: React.FC = () => {
   const [deletePage, { isLoading: isDeleting }] = useDeletePageMutation();
   const [createPage] = useCreatePageMutation();
   const [updatePage, { isLoading: isUpdating }] = useUpdatePageMutation();
-  
+  const [createElements] = useCreateElementsMutation();
+  const [deleteElement] = useDeleteElementsMutation();
+
   const activePage = useAppSelector((state) => state.activePage);
 
   const searchParams = new URLSearchParams(location.search);
@@ -67,12 +70,52 @@ const AdminPagesPage: React.FC = () => {
     }));
   };
   
+  const deleteElementRecursively = async (elementId: string): Promise<void> => {
+    try {
+      const subscription = dispatch(
+        elementsApi.endpoints.getElementsById.initiate(elementId)
+      );
+
+      const { data } = await subscription;
+
+      const element = Array.isArray(data) ? data[0] : data;
+
+      if (!element) {
+        console.warn(`Skipping deletion of element ${elementId} - not found`);
+        subscription.unsubscribe();
+        return;
+      }
+
+      if (Array.isArray(element.children) && element.children.length > 0) {
+        for (const childId of element.children) {
+          await deleteElementRecursively(childId);
+        }
+      }
+
+      await deleteElement(elementId).unwrap();
+
+      subscription.unsubscribe();
+
+    } catch (error) {
+      console.error(`Failed to delete element ${elementId}:`, error);
+    }
+  };
+
+
   const handlePageDelete = async (id?: string) => {
     if (!id || !window.confirm("Are you sure you want to delete this page?")) return;
 
     try {
+      const pageToDelete = pages?.find((p) => p._id === id);
+      
+      if (pageToDelete?.pageContent && Array.isArray(pageToDelete.pageContent)) {
+        for (const rootElementId of pageToDelete.pageContent) {
+          await deleteElementRecursively(rootElementId);
+        }
+      }
+      
       await deletePage(id).unwrap();
-      showAlert("Page deleted successfully", 'success');
+      showAlert("Page and associated elements deleted successfully", 'success');
     } catch (error) {
       showAlert(`Failed to delete page: ${error}`, 'error');
     }
@@ -83,7 +126,41 @@ const AdminPagesPage: React.FC = () => {
 
     try {
       if (type === 'new') {
-        await createPage(newPage).unwrap();
+        const pageData = { ...newPage }; 
+        if (pageData.pageRenderMethod === 'dynamic') {
+          const pageNameElement = {
+            type: "typography",
+            data: {
+              variant: "body1",
+              text: `${pageData.pageName || 'Page'}`
+            },
+            name: `${pageData.pageName || 'Page'} body text`
+          };
+          
+          const createdPageNameElement = await createElements(pageNameElement).unwrap();
+
+          const rootElement = {
+            type: "box",
+            sx: {
+              boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "row",
+              minHeight: "calc(100vh - 50px)",
+              backgroundColor: "$theme.neutral.main",
+              m: 3
+            },
+            children: [`${createdPageNameElement.data._id}`],
+            order: 0,
+            name: `${pageData.pageName || 'Page'} root`
+          };
+          
+          const createdElement = await createElements(rootElement).unwrap();
+          
+          pageData.pageContent = [`${createdElement.data._id}`];
+
+        }
+        
+        await createPage(pageData).unwrap();
         showAlert('Page created successfully', 'success');
         navigateToPath('/admin/pages');
       } else {
