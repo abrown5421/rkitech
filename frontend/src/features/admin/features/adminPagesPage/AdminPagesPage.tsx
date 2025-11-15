@@ -19,6 +19,7 @@ import { AnimationPicker } from '../../../../components/animationPicker/Animatio
 import type { FontType } from '../../../../components/fontPicker/fontPickerTypes';
 import type { EntranceAnimation, ExitAnimation } from '../../../../components/animBox/animBoxTypes';
 import { elementsApi, useCreateElementsMutation, useDeleteElementsMutation } from '../../../elements/elementsApi';
+import { openModal } from '../../../modal/modalSlice';
 
 const AdminPagesPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -103,21 +104,35 @@ const AdminPagesPage: React.FC = () => {
 
 
   const handlePageDelete = async (id?: string) => {
-    if (!id || !window.confirm("Are you sure you want to delete this page?")) return;
+    if (!id) return;
 
+    const pageToDelete = pages?.find((p) => p._id === id);
+
+    dispatch(openModal({
+      open: true,
+      closeable: true,
+      title: "Delete this page?",
+      body: "Deleting this page will also delete all elements associated with it. This action cannot be undone.",
+      backgroundColor: theme?.neutral.main ?? "#fff",
+      prefab: "confirmDeny",
+      onConfirm: () => proceedPageDelete(id, pageToDelete),
+      onDeny: () => {},
+    }));
+  };
+
+  const proceedPageDelete = async (id: string, pageToDelete?: IPage) => {
     try {
-      const pageToDelete = pages?.find((p) => p._id === id);
-      
       if (pageToDelete?.pageContent && Array.isArray(pageToDelete.pageContent)) {
         for (const rootElementId of pageToDelete.pageContent) {
           await deleteElementRecursively(rootElementId);
         }
       }
-      
+
       await deletePage(id).unwrap();
-      showAlert("Page and associated elements deleted successfully", 'success');
+
+      showAlert("Page and associated elements deleted successfully", "success");
     } catch (error) {
-      showAlert(`Failed to delete page: ${error}`, 'error');
+      showAlert(`Failed to delete page: ${error}`, "error");
     }
   };
 
