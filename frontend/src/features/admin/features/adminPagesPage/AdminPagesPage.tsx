@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, CircularProgress, IconButton, Select, TextField, Tooltip, Typography, MenuItem, InputLabel, FormControl, FormHelperText } from '@mui/material';
+import React from 'react';
+import { Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, FormHelperText, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import TrashIcon from '@mui/icons-material/Delete';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { Add } from "@mui/icons-material";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useDeletePageMutation, useGetPagesQuery, useCreatePageMutation, useUpdatePageMutation } from '../../../page/pageApi';
-import { useNavigation } from "../../../../hooks/useNavigate";
-import { openAlert } from '../../../alert/alertSlice';
-import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { useGetActiveThemeQuery } from '../../../theme/themeApi';
 import type { IPage } from '../../../page/pageTypes';
-import { useLocation } from 'react-router-dom';
 import { DEFAULT_PAGE } from './adminPagesPageTypes';
 import FontPicker from '../../../../components/fontPicker/FontPicker';
 import ColorPicker from '../../../../components/colorPicker/ColorPicker';
@@ -19,11 +11,19 @@ import { AnimationPicker } from '../../../../components/animationPicker/Animatio
 import type { FontType } from '../../../../components/fontPicker/fontPickerTypes';
 import type { EntranceAnimation, ExitAnimation } from '../../../../components/animBox/animBoxTypes';
 import { elementsApi, useCreateElementsMutation, useDeleteElementsMutation } from '../../../elements/elementsApi';
+import { useAppDispatch } from '../../../../store/hooks';
+import { useAdminPageState } from '../../../../hooks/useAdminPageState';
+import { useEntityEditor } from '../../../../hooks/useEntityEditor';
+import { useCrudWithFeedback } from '../../../../hooks/useCrudWithFeedback';
+import { useDeleteConfirmation } from '../../../../hooks/useDeleteConfirmation';
+import { FormRow } from '../../components/admin/FormRow';
+import { EditorActions } from '../../components/admin/EditorActions';
+import { QueryStateHandler } from '../../components/admin/QueryStateHandler';
+import { AdminPageLayout } from '../../components/admin/AdminPageLayout';
+import { EntityActionButtons } from '../../components/admin/EntityAction';
 
 const AdminPagesPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigation();
-  const location = useLocation();
   const { data: pages, isLoading, isError } = useGetPagesQuery();
   const { data: theme } = useGetActiveThemeQuery();
   const [deletePage, { isLoading: isDeleting }] = useDeletePageMutation();
@@ -32,52 +32,34 @@ const AdminPagesPage: React.FC = () => {
   const [createElements] = useCreateElementsMutation();
   const [deleteElement] = useDeleteElementsMutation();
 
-  const activePage = useAppSelector((state) => state.activePage);
+  const {
+    itemId,
+    isCreating,
+    isEditing,
+    navigateToCreate,
+    navigateToEdit,
+    navigateToList,
+    navigateToPath,
+    navigateToPage,
+    activePage,
+  } = useAdminPageState();
 
-  const searchParams = new URLSearchParams(location.search);
-  const pageId = searchParams.get("id");
-  const action = searchParams.get("action");
-  
-  const thisPage = pages?.find((p) => p._id === pageId);
-  const [editablePage, setEditablePage] = useState<IPage | undefined>(thisPage);
-  const [newPage, setNewPage] = useState<Partial<IPage>>(DEFAULT_PAGE);
-  
-  useEffect(() => {
-    setEditablePage(thisPage);
-  }, [thisPage]);
+  const thisPage = pages?.find((p) => p._id === itemId);
 
-  if (isLoading) return <Typography sx={{ p: 4 }}>Loading pages...</Typography>;
-  if (isError || !pages) return <Typography sx={{ p: 4 }}>Failed to load pages.</Typography>;
+  const { entity, isChanged, handleChange, handleRevert } = useEntityEditor<IPage>({
+    defaultEntity: DEFAULT_PAGE,
+    currentEntity: thisPage,
+    isNew: isCreating,
+  });
 
-  const filteredPages = pages.filter(
-    (page) => !page.pagePath?.toLowerCase().startsWith('/admin')
-  );
+  const { executeWithFeedback } = useCrudWithFeedback();
 
-  const navigateToPath = (path: string) => {
-    if (!activePage.activePageObj) return;
-    navigate({
-      ...activePage.activePageObj,
-      pagePath: path,
-    } as IPage, true);
-  };
-  
-  const showAlert = (body: string, severity: 'success' | 'error') => {
-    dispatch(openAlert({
-      body,
-      closeable: true,
-      severity,
-      orientation: "bottom-right",
-    }));
-  };
-  
   const deleteElementRecursively = async (elementId: string): Promise<void> => {
     try {
       const subscription = dispatch(
         elementsApi.endpoints.getElementsById.initiate(elementId)
       );
-
       const { data } = await subscription;
-
       const element = Array.isArray(data) ? data[0] : data;
 
       if (!element) {
@@ -93,109 +75,102 @@ const AdminPagesPage: React.FC = () => {
       }
 
       await deleteElement(elementId).unwrap();
-
       subscription.unsubscribe();
-
     } catch (error) {
       console.error(`Failed to delete element ${elementId}:`, error);
     }
   };
 
+  const { confirmDelete } = useDeleteConfirmation({
+    onConfirm: async (id?: string) => {
+      if (!id) return;
 
-  const handlePageDelete = async (id?: string) => {
-    if (!id || !window.confirm("Are you sure you want to delete this page?")) return;
-
-    try {
       const pageToDelete = pages?.find((p) => p._id === id);
-      
-      if (pageToDelete?.pageContent && Array.isArray(pageToDelete.pageContent)) {
+      if (!pageToDelete) return;
+
+      if (pageToDelete.pageContent && Array.isArray(pageToDelete.pageContent)) {
         for (const rootElementId of pageToDelete.pageContent) {
           await deleteElementRecursively(rootElementId);
         }
       }
-      
-      await deletePage(id).unwrap();
-      showAlert("Page and associated elements deleted successfully", 'success');
-    } catch (error) {
-      showAlert(`Failed to delete page: ${error}`, 'error');
-    }
-  };
 
-  const handlePageSave = async (type: 'new' | 'existing') => {
-    if (type === 'existing' && (!editablePage || !pageId)) return;
+      await executeWithFeedback(
+        () => deletePage(id).unwrap(),
+        {
+          successMessage: 'Page and associated elements deleted successfully',
+          onSuccess: navigateToList,
+        }
+      );
+    },
+    canDelete: (id?: string) => {
+      const page = pages?.find((p) => p._id === id);
+      if (!page) return false;
 
-    try {
-      if (type === 'new') {
-        const pageData = { ...newPage }; 
+      if (page.pagePath === '/' || page.pagePath === '/page-not-found') {
+        return { canDelete: false, reason: 'This page cannot be deleted as it is required for the system.' };
+      }
+      return true;
+    },
+    itemName: 'page',
+  });
+
+  const handlePageSave = async () => {
+    const mutation = async () => {
+      if (isCreating) {
+        const pageData = { ...entity };
         if (pageData.pageRenderMethod === 'dynamic') {
           const pageNameElement = {
-            type: "typography",
+            type: 'typography',
             data: {
-              variant: "body1",
-              text: `${pageData.pageName || 'Page'}`
+              variant: 'body1',
+              text: `${pageData.pageName || 'Page'}`,
             },
-            name: `${pageData.pageName || 'Page'} body text`
+            name: `${pageData.pageName || 'Page'} body text`,
           };
-          
+
           const createdPageNameElement = await createElements(pageNameElement).unwrap();
 
           const rootElement = {
-            type: "box",
+            type: 'box',
             sx: {
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "row",
-              minHeight: "calc(100vh - 50px)",
-              backgroundColor: "$theme.neutral.main",
-              m: 3
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'row',
+              minHeight: 'calc(100vh - 50px)',
+              backgroundColor: '$theme.neutral.main',
+              m: 3,
             },
             children: [`${createdPageNameElement.data._id}`],
             order: 0,
-            name: `${pageData.pageName || 'Page'} root`
+            name: `${pageData.pageName || 'Page'} root`,
           };
-          
-          const createdElement = await createElements(rootElement).unwrap();
-          
-          pageData.pageContent = [`${createdElement.data._id}`];
 
+          const createdElement = await createElements(rootElement).unwrap();
+          pageData.pageContent = [`${createdElement.data._id}`];
         }
-        
-        await createPage(pageData).unwrap();
-        showAlert('Page created successfully', 'success');
-        navigateToPath('/admin/pages');
+
+        return await createPage(pageData).unwrap();
       } else {
-        await updatePage({ id: pageId!, data: editablePage! }).unwrap();
-        showAlert('Page updated successfully', 'success');
+        return await updatePage({ id: itemId!, data: entity! }).unwrap();
       }
-    } catch (error) {
-      showAlert(`Failed to save page: ${error}`, 'error');
-    }
+    };
+
+    await executeWithFeedback(mutation, {
+      successMessage: isCreating ? 'Page created successfully' : 'Page updated successfully',
+      onSuccess: isCreating ? navigateToList : undefined,
+    });
   };
 
-  if (action === "new" || (pageId && editablePage)) {
-    const isNew = action === "new";
-    const page = isNew ? newPage : editablePage!;
-    const isChanged = JSON.stringify(page) !== JSON.stringify(isNew ? DEFAULT_PAGE : thisPage);
-    
-    const handleChange = (updates: Partial<IPage>) => {
-      if (isNew) {
-        setNewPage({ ...newPage, ...updates });
-      } else {
-        setEditablePage({ ...editablePage!, ...updates });
-      }
-    };
+  const filteredPages = pages?.filter(
+    (page) => !page.pagePath?.toLowerCase().startsWith('/admin')
+  ) || [];
 
-    const handleRevert = () => {
-      if (!isNew) {
-        setEditablePage(thisPage);
-      }
-    };
-    
+  if (isCreating || isEditing) {
     return (
       <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'scroll' }}>
-        <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", mb:2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mb: 2 }}>
           <Typography variant="h6" sx={{ fontFamily: 'PrimaryFont' }}>
-            {isNew ? 'New Page Editor' : `Editing ${page.pageName} Page`}
+            {isCreating ? 'New Page Editor' : `Editing ${entity?.pageName} Page`}
           </Typography>
           <Button
             startIcon={<EditIcon />}
@@ -216,27 +191,26 @@ const AdminPagesPage: React.FC = () => {
           </Button>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 3 }}>
+        <FormRow>
           <Box sx={{ flex: 1 }}>
             <TextField
               fullWidth
-              disabled={page.pagePath === '/'}
-              size='small'
+              disabled={entity?.pagePath === '/'}
+              size="small"
               label="Page Path"
-              value={page.pagePath || ''}
+              value={entity?.pagePath || ''}
               onChange={(e) => handleChange({ pagePath: e.target.value })}
-              helperText={page.pagePath === '/' ? "The root route cannot be modified. Something has to appear at '/'" : "The URL the page should be present at"}
+              helperText={entity?.pagePath === '/' ? "The root route cannot be modified" : "The URL the page should be present at"}
             />
           </Box>
           <Box sx={{ flex: 1 }}>
-            <FormControl fullWidth >
+            <FormControl fullWidth>
               <InputLabel>Render Method</InputLabel>
               <Select
-                size='small'
-                value={page.pageRenderMethod || 'static'}
+                size="small"
+                value={entity?.pageRenderMethod || 'static'}
                 label="Render Method"
                 onChange={(e) => handleChange({ pageRenderMethod: e.target.value as 'static' | 'dynamic' })}
-                
               >
                 <MenuItem value="static">Static</MenuItem>
                 <MenuItem value="dynamic">Dynamic</MenuItem>
@@ -245,11 +219,11 @@ const AdminPagesPage: React.FC = () => {
             </FormControl>
           </Box>
           <Box sx={{ flex: 1 }}>
-            <FormControl fullWidth >
+            <FormControl fullWidth>
               <InputLabel>Page Status</InputLabel>
               <Select
-                size='small'
-                value={page.pageActive ? 'true' : 'false'}
+                size="small"
+                value={entity?.pageActive ? 'true' : 'false'}
                 label="Page Status"
                 onChange={(e) => handleChange({ pageActive: e.target.value === 'true' })}
               >
@@ -262,233 +236,141 @@ const AdminPagesPage: React.FC = () => {
           <Box sx={{ flex: 1 }}>
             <ColorPicker
               inputProps={{
-                label: "Page Color",
+                label: 'Page Color',
                 sx: { width: '100%' },
-                helperText: "The background color of the page"
+                helperText: 'The background color of the page',
               }}
-              color={page.pageColor || ''}
+              color={entity?.pageColor || ''}
               onChange={(color) => handleChange({ pageColor: color })}
             />
           </Box>
-        </Box>
-        
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 3 }}>
-          
+        </FormRow>
+
+        <FormRow>
           <Box sx={{ flex: 1 }}>
             <FontPicker
               inputProps={{
-                label: "Page Font",
+                label: 'Page Font',
                 sx: { width: '100%' },
-                helperText: "The font family used by all text on the page"
+                helperText: 'The font family used by all text on the page',
               }}
-              font={page.pageFontFamily as FontType || 'PrimaryFont'}
+              font={(entity?.pageFontFamily as FontType) || 'PrimaryFont'}
               onChange={(font) => handleChange({ pageFontFamily: font })}
             />
           </Box>
           <Box sx={{ flex: 1 }}>
             <ColorPicker
               inputProps={{
-                label: "Font Color",
+                label: 'Font Color',
                 sx: { width: '100%' },
-                helperText: "The font color of the page"
+                helperText: 'The font color of the page',
               }}
-              color={page.pageFontColor || ''}
+              color={entity?.pageFontColor || ''}
               onChange={(color) => handleChange({ pageFontColor: color })}
             />
           </Box>
           <AnimationPicker
-            entrance={page.pageEntranceAnimation as EntranceAnimation || ''}
-            exit={page.pageExitAnimation as ExitAnimation || ''}
+            entrance={(entity?.pageEntranceAnimation as EntranceAnimation) || ''}
+            exit={(entity?.pageExitAnimation as ExitAnimation) || ''}
             onEntChange={(entrance) => handleChange({ pageEntranceAnimation: entrance })}
             onExtChange={(exit) => handleChange({ pageExitAnimation: exit })}
           />
-        </Box>
+        </FormRow>
 
-        
-
-        <Box sx={{ display: 'flex', justifyContent: 'end', mt: 'auto' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
-            {!isNew && (
-              <Button
-                onClick={handleRevert}
-                disabled={!isChanged}
-                sx={{
-                  backgroundColor: isChanged ? theme?.secondary.main : '#ccc',
-                  color: isChanged ? theme?.secondary.content : '#fff',
-                  border: '1px solid transparent',
-                  transition: 'all 0.2s ease-in-out',
-                  '&:hover': {
-                    backgroundColor: theme?.neutral.main,
-                    color: theme?.secondary.main,
-                    borderColor: theme?.secondary.main,
-                  },
-                }}
-              >
-                Revert Changes
-              </Button>
-            )}
-            
-            <Button
-              disabled={((!isNew && !isChanged) || isUpdating)}
-              onClick={() => handlePageSave(isNew ? 'new' : 'existing')}
-              sx={{
-                backgroundColor: (isNew || isChanged) ? theme?.primary.main : '#ccc',
-                color: (isNew || isChanged) ? theme?.primary.content : '#fff',
-                border: '1px solid transparent',
-                transition: 'all 0.2s ease-in-out',
-                '&:hover': {
-                  backgroundColor: theme?.neutral.main,
-                  color: theme?.primary.main,
-                  borderColor: theme?.primary.main,
-                },
-              }}
-            >
-              {isUpdating ? <CircularProgress size={20} /> : 'Save Page'}
-            </Button>
-          </Box>
-        </Box>
+        <EditorActions
+          isNew={isCreating}
+          isChanged={isChanged}
+          isSaving={isUpdating}
+          onSave={handlePageSave}
+          onRevert={handleRevert}
+          saveText="Save Page"
+        />
       </Box>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: 'calc(100vh - 64px)',
-        overflow: 'scroll',
-        width: '100%',
-        boxSizing: 'border-box',
-        p: 4,
-      }}
+    <QueryStateHandler
+      isLoading={isLoading}
+      isError={isError}
+      data={pages}
+      loadingText="Loading pages..."
+      errorText="Failed to load pages."
     >
-      <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", mb:2 }}>
-        <Typography variant="h6" sx={{ fontFamily: 'PrimaryFont' }}>
-          Page Manager
-        </Typography>
-        <Button
-          startIcon={<Add />}
-          onClick={() => navigateToPath(`${activePage.activePageObj?.pagePath}?action=new`)}
-          sx={{
-            backgroundColor: theme?.primary.main,
-            color: theme?.primary.content,
-            border: '1px solid transparent',
-            transition: 'all 0.2s ease-in-out',
-            '&:hover': {
-              backgroundColor: theme?.neutral.main,
-              color: theme?.primary.main,
-              borderColor: theme?.primary.main,
-            },
-          }}
-        >
-          Add New Page
-        </Button>
-      </Box>
-      <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
-      {filteredPages.map((page) => (
-        <Box
-          key={page._id}
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: 'center',
-            borderRadius: 2,
-            p: 2,
-            overflow: "hidden",
-            boxShadow: 1,
-            position: "relative",
-            border: "1px solid rgba(0,0,0,0.1)",
-          }}
-        >          
-          <Box sx={{display: "flex", flexDirection: "column"}}>
-            <Typography variant="h6" sx={{ fontFamily: 'SecondaryFont', color: theme?.neutral.content }}>
-              {page.pageName}
-            </Typography>
-            <Typography variant="subtitle1" sx={{color: theme?.neutral.content}}>
-              {page.pagePath}
-            </Typography>
-            <Typography variant="caption" sx={page.pageActive ? ({color: theme?.success.main}) : ({color: theme?.error.main})}>
-              {page.pageActive ? "Active" : "Inactive"}
-            </Typography>
-          </Box>
-          <Box sx={{display: 'flex', flexDirection: 'row'}}>
-            {page.pageRenderMethod === 'dynamic' && (
-              <Tooltip title="Edit">
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  sx={{
-                    color: theme?.primary.main,
-                    border: "1px solid transparent",
-                    "&:hover": { borderColor: theme?.primary.main },
-                  }}
+      <AdminPageLayout title="Page Manager" onAddNew={navigateToCreate} addButtonText="Add New Page">
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {filteredPages.map((page) => (
+            <Box
+              key={page._id}
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderRadius: 2,
+                p: 2,
+                boxShadow: 1,
+                border: '1px solid rgba(0,0,0,0.1)',
+              }}
+            >
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Typography variant="h6" sx={{ fontFamily: 'SecondaryFont', color: theme?.neutral.content }}>
+                  {page.pageName}
+                </Typography>
+                <Typography variant="subtitle1" sx={{ color: theme?.neutral.content }}>
+                  {page.pagePath}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={page.pageActive ? { color: theme?.success.main } : { color: theme?.error.main }}
                 >
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            )}
+                  {page.pageActive ? 'Active' : 'Inactive'}
+                </Typography>
+              </Box>
 
-            <Tooltip title="Settings">
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigateToPath(`${activePage.activePageObj?.pagePath}?id=${page._id}`)
-                }}
-                sx={{
-                  color: theme?.secondary.main,
-                  border: "1px solid transparent",
-                  "&:hover": { borderColor: theme?.secondary.main },
-                }}
-              >
-                <SettingsIcon />
-              </IconButton>
-            </Tooltip>
-
-            {page.pagePath !== '/' && page.pagePath !== '/page-not-found' && (
-              <Tooltip title="Delete">
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePageDelete(page._id);
-                  }}
-                  sx={{
-                    color: theme?.error.main,
-                    border: "1px solid transparent",
-                    "&:hover": { borderColor: theme?.error.main },
-                  }}
-                >
-                  {isDeleting ? (
-                    <CircularProgress sx={{ color: theme?.error.main }} size={16} />
-                  ) : (
-                    <TrashIcon />
-                  )}
-                </IconButton>
-              </Tooltip>
-            )}
-
-            <Tooltip title="View">
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(page);
-                }}
-                sx={{
-                  color: theme?.success.main,
-                  border: "1px solid transparent",
-                  "&:hover": { borderColor: theme?.success.main },
-                }}
-              >
-                <RemoveRedEyeIcon />
-              </IconButton>
-            </Tooltip>
-          </Box>
+              <EntityActionButtons
+                actions={[
+                  {
+                    icon: 'edit',
+                    tooltip: 'Edit',
+                    onClick: (e) => {
+                      e.stopPropagation();
+                    },
+                    show: page.pageRenderMethod === 'dynamic',
+                  },
+                  {
+                    icon: 'settings',
+                    tooltip: 'Settings',
+                    onClick: (e) => {
+                      e.stopPropagation();
+                      navigateToEdit(page._id!);
+                    },
+                  },
+                  {
+                    icon: 'delete',
+                    tooltip: 'Delete',
+                    onClick: (e) => {
+                      e.stopPropagation();
+                      confirmDelete(page._id);
+                    },
+                    show: page.pagePath !== '/' && page.pagePath !== '/page-not-found',
+                    isLoading: isDeleting,
+                  },
+                  {
+                    icon: 'view',
+                    tooltip: 'View',
+                    onClick: (e) => {
+                      e.stopPropagation();
+                      navigateToPage(page);
+                    },
+                  },
+                ]}
+              />
+            </Box>
+          ))}
         </Box>
-      ))}
-      </Box>
-    </Box>
+      </AdminPageLayout>
+    </QueryStateHandler>
   );
 };
 

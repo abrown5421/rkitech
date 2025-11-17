@@ -12,5 +12,6 @@ export interface ModalProps {
     prefab?: "confirm" | "confirmDeny" | string;
     onConfirm?: () => void;
     onDeny?: () => void;
+    callbackKey?: string;
 }
 
