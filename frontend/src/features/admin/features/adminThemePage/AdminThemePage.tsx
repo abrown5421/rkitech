@@ -1,77 +1,79 @@
-import React, { useEffect, useState } from "react";
-import { Box, Typography, IconButton, TextField, Button, Chip } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
-import TrashIcon from '@mui/icons-material/Delete';
-import { Add } from "@mui/icons-material";
-import { useLocation } from "react-router-dom";
-import { 
-  useGetThemesQuery, 
-  useChangeActiveThemeMutation, 
-  useGetActiveThemeQuery, 
-  useUpdateThemeMutation, 
-  useDeleteThemeMutation, 
-  useCreateThemeMutation 
-} from "../../../theme/themeApi";
-import type { ITheme } from "../../../theme/themeTypes";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import { openAlert } from "../../../alert/alertSlice";
-import { useNavigation } from "../../../../hooks/useNavigate";
-import type { IPage } from "../../../page/pageTypes";
-import ColorPicker from "../../../../components/colorPicker/ColorPicker";
-import { ALL_COLOR_KEYS, COLOR_KEYS, DEFAULT_THEME, type ColorGroupEditorProps, type ColorKey, type ThemeCardProps, type ThemeEditorProps, type ThemePreviewProps } from "./adminThemePageTypes";
-import { openModal } from "../../../modal/modalSlice";
+import React from 'react';
+import { Box, Typography, TextField, Chip } from '@mui/material';
+import {
+  useGetThemesQuery,
+  useChangeActiveThemeMutation,
+  useGetActiveThemeQuery,
+  useUpdateThemeMutation,
+  useDeleteThemeMutation,
+  useCreateThemeMutation,
+} from '../../../theme/themeApi';
+import type { ITheme } from '../../../theme/themeTypes';
+import ColorPicker from '../../../../components/colorPicker/ColorPicker';
+import {
+  ALL_COLOR_KEYS,
+  COLOR_KEYS,
+  DEFAULT_THEME,
+  type ColorKey,
+} from './adminThemePageTypes';
+import { EntityActionButtons } from '../../components/admin/EntityAction';
+import { useAdminPageState } from '../../../../hooks/useAdminPageState';
+import { useEntityEditor } from '../../../../hooks/useEntityEditor';
+import { useCrudWithFeedback } from '../../../../hooks/useCrudWithFeedback';
+import { useDeleteConfirmation } from '../../../../hooks/useDeleteConfirmation';
+import { EditorActions } from '../../components/admin/EditorActions';
+import { QueryStateHandler } from '../../components/admin/QueryStateHandler';
+import { AdminPageLayout } from '../../components/admin/AdminPageLayout';
 
-const ThemePreview: React.FC<ThemePreviewProps> = ({ 
-  theme, 
-  activeTheme, 
-  isActive, 
-  onActivate, 
-  isLoading 
-}) => (
+const ThemePreview: React.FC<{
+  theme: Partial<ITheme>;
+  activeTheme?: ITheme;
+  isActive?: boolean;
+  onActivate?: () => void;
+}> = ({ theme, activeTheme, isActive, onActivate }) => (
   <Box
     sx={{
-      display: "flex",
-      flexDirection: "row",
+      display: 'flex',
+      flexDirection: 'row',
       height: '100%',
       borderRadius: 2,
-      overflow: "hidden",
+      overflow: 'hidden',
       boxShadow: 1,
-      position: "relative",
-      opacity: isLoading ? 0.6 : 1,
-      transition: "all 0.2s ease-in-out",
-      border: `1px solid ${activeTheme?.neutral.content}`
+      position: 'relative',
+      transition: 'all 0.2s ease-in-out',
+      border: `1px solid ${activeTheme?.neutral.content}`,
     }}
   >
     {isActive !== undefined && (
       <Chip
-        label={isActive ? "Active" : "Activate"}
-        variant={isActive ? "filled" : "outlined"}
+        label={isActive ? 'Active' : 'Activate'}
+        variant={isActive ? 'filled' : 'outlined'}
         clickable={!isActive}
         onClick={() => !isActive && onActivate?.()}
         sx={{
           position: 'absolute',
           top: 5,
           right: 5,
-          backgroundColor: isActive ? activeTheme?.success.main : "transparent",
+          backgroundColor: isActive ? activeTheme?.success.main : 'transparent',
           color: isActive ? activeTheme?.success.content : activeTheme?.neutral3.main,
           borderColor: isActive ? activeTheme?.success.content : activeTheme?.neutral3.main,
         }}
       />
     )}
-    
-    <Box sx={{ display: "flex", flexDirection: "column", width: "25%" }}>
+
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: '25%' }}>
       <Box sx={{ flex: 1, backgroundColor: theme.neutral2?.main }} />
       <Box sx={{ flex: 1, backgroundColor: theme.neutral3?.main }} />
     </Box>
 
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
         flex: 1,
         backgroundColor: theme.neutral?.main,
         p: 1.2,
-        justifyContent: "space-between",
+        justifyContent: 'space-between',
       }}
     >
       <Typography
@@ -79,29 +81,29 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
         sx={{
           color: theme.neutral?.content,
           fontWeight: 600,
-          textTransform: "capitalize",
+          textTransform: 'capitalize',
         }}
       >
         {theme.name}
       </Typography>
 
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5 }}>
         {COLOR_KEYS.map((key) => {
           const color = (theme as any)[key];
           return (
             <Box
               key={key}
               sx={{
-                width: "16%",
+                width: '16%',
                 height: 24,
-                borderRadius: "4px",
+                borderRadius: '4px',
                 backgroundColor: color?.main,
                 color: color?.content,
-                fontWeight: "bold",
-                fontSize: "0.75rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                fontWeight: 'bold',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               A
@@ -113,67 +115,211 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
   </Box>
 );
 
-const ColorGroupEditor: React.FC<ColorGroupEditorProps> = ({ 
-  colorKey, 
-  colorGroup, 
-  onChange, 
-  activeTheme 
-}) => {
+const ColorGroupEditor: React.FC<{
+  colorKey: ColorKey;
+  colorGroup: { main: string; content: string };
+  onChange: (key: ColorKey, type: 'main' | 'content', value: string) => void;
+  activeTheme?: ITheme;
+}> = ({ colorKey, colorGroup, onChange, activeTheme }) => (
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      border: `1px solid ${activeTheme?.accent.main}`,
+      p: 2,
+      borderRadius: '5px',
+    }}
+  >
+    <Typography sx={{ width: 100, textTransform: 'capitalize', mb: 2 }}>
+      {colorKey}
+    </Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
+      <ColorPicker
+        color={colorGroup.main}
+        onChange={(newColor) => onChange(colorKey, 'main', newColor)}
+        inputProps={{ label: 'Color' }}
+        containerSx={{ flex: 1 }}
+      />
+      <ColorPicker
+        color={colorGroup.content}
+        onChange={(newColor) => onChange(colorKey, 'content', newColor)}
+        inputProps={{ label: 'Contrast Color' }}
+        containerSx={{ flex: 1 }}
+      />
+    </Box>
+  </Box>
+);
 
-  return (
-    <Box 
-      sx={{ 
-        display: "flex", 
-        flexDirection: "column", 
-        border: `1px solid ${activeTheme?.accent.main}`, 
-        p: 2, 
-        borderRadius: '5px' 
+const ThemeCard: React.FC<{
+  theme: ITheme;
+  activeTheme?: ITheme;
+  isLoading: boolean;
+  onActivate: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}> = ({ theme, isLoading, onActivate, onEdit, onDelete }) => (
+  <Box
+    onClick={onActivate}
+    sx={{
+      display: 'flex',
+      flexDirection: 'row',
+      height: 80,
+      borderRadius: 2,
+      overflow: 'hidden',
+      boxShadow: 1,
+      cursor: 'pointer',
+      position: 'relative',
+      border: theme.active ? `2px solid ${theme.accent.main}` : '1px solid rgba(0,0,0,0.1)',
+      opacity: isLoading ? 0.6 : 1,
+      transition: 'all 0.2s ease-in-out',
+      '&:hover': {
+        transform: 'scale(1.03)',
+        boxShadow: 3,
+      },
+    }}
+  >
+    <Box sx={{ display: 'flex', flexDirection: 'row', position: 'absolute', top: 4, right: 4, zIndex: 2 }}>
+      <EntityActionButtons
+        actions={[
+          {
+            icon: 'edit',
+            tooltip: 'Edit',
+            onClick: (e) => {
+              e.stopPropagation();
+              onEdit();
+            },
+          },
+          {
+            icon: 'delete',
+            tooltip: 'Delete',
+            onClick: (e) => {
+              e.stopPropagation();
+              onDelete();
+            },
+          },
+        ]}
+      />
+    </Box>
+
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: '25%' }}>
+      <Box sx={{ flex: 1, backgroundColor: theme.neutral2.main }} />
+      <Box sx={{ flex: 1, backgroundColor: theme.neutral3.main }} />
+    </Box>
+
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        backgroundColor: theme.neutral.main,
+        p: 1.2,
+        justifyContent: 'space-between',
       }}
     >
-      <Typography sx={{ width: 100, textTransform: "capitalize", mb: 2 }}>
-        {colorKey}
+      <Typography
+        variant="body2"
+        sx={{
+          color: theme.neutral.content,
+          fontWeight: 600,
+          textTransform: 'capitalize',
+        }}
+      >
+        {theme.name}
       </Typography>
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignItems: "center" }}>
-        <ColorPicker
-          color={colorGroup.main}
-          onChange={(newColor) => onChange(colorKey, 'main', newColor)}
-          inputProps={{
-            label: "Color",
-          }}
-          containerSx={{ flex: 1 }}
-        />
-        <ColorPicker
-          color={colorGroup.content}
-          onChange={(newColor) => onChange(colorKey, 'content', newColor)}
-          inputProps={{
-            label: "Contrast Color",
-          }}
-          containerSx={{ flex: 1 }}
-        />
+
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5 }}>
+        {COLOR_KEYS.map((key) => {
+          const color = (theme as any)[key];
+          return (
+            <Box
+              key={key}
+              sx={{
+                width: '16%',
+                height: 24,
+                borderRadius: '4px',
+                backgroundColor: color.main,
+                color: color.content,
+                fontWeight: 'bold',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              A
+            </Box>
+          );
+        })}
       </Box>
     </Box>
-  );
-};
+  </Box>
+);
 
-const ThemeEditor: React.FC<ThemeEditorProps> = ({
-  theme,
-  originalTheme,
-  activeTheme,
-  isNew,
-  onSave,
-  onRevert,
-  onChange,
-  onActivate,
-  isSaving
-}) => {
-  const isChanged = JSON.stringify(theme) !== JSON.stringify(originalTheme);
-  const isActive = !isNew && theme._id === activeTheme?._id;
+const AdminThemePage: React.FC = () => {
+  const { data: themes, isLoading, isError } = useGetThemesQuery();
+  const { data: activeTheme } = useGetActiveThemeQuery();
+
+  const [changeActiveTheme, { isLoading: isActivating }] = useChangeActiveThemeMutation();
+  const [createTheme] = useCreateThemeMutation();
+  const [updateTheme, { isLoading: isUpdating }] = useUpdateThemeMutation();
+  const [deleteTheme] = useDeleteThemeMutation();
+
+  const { itemId, isCreating, isEditing, navigateToCreate, navigateToEdit, navigateToList } = useAdminPageState();
+
+  const thisTheme = themes?.find((t) => t._id === itemId);
+
+  const { entity, isChanged, handleChange, handleRevert } = useEntityEditor<ITheme>({
+    defaultEntity: DEFAULT_THEME,
+    currentEntity: thisTheme,
+    isNew: isCreating,
+  });
+
+  const { executeWithFeedback } = useCrudWithFeedback();
+
+  const handleThemeActivate = async (theme: ITheme) => {
+    await executeWithFeedback(
+      () => changeActiveTheme(theme._id ?? '').unwrap(),
+      { successMessage: 'Theme activated successfully' }
+    );
+  };
+
+  const handleThemeSave = async () => {
+    if (!entity) return; 
+
+    const mutation = isCreating
+      ? () => createTheme(entity!).unwrap()
+      : () => updateTheme({ id: itemId!, data: entity }).unwrap();
+
+    await executeWithFeedback(mutation, {
+      successMessage: 'Theme saved successfully',
+    });
+  };
+
+  const { confirmDelete } = useDeleteConfirmation({
+    onConfirm: async (id?: string) => {
+      if (!id) return; 
+      await executeWithFeedback(() => deleteTheme(id).unwrap(), {
+        successMessage: 'Theme deleted successfully',
+        onSuccess: navigateToList,
+      });
+    },
+    canDelete: (id?: string) => {
+      if (id === activeTheme?._id) {
+        return {
+          canDelete: false,
+          reason: 'Unable to delete the currently active theme. Please activate a different theme first.',
+        };
+      }
+      return true;
+    },
+    itemName: 'theme',
+  });
 
   const handleColorChange = (key: ColorKey, type: 'main' | 'content', value: string) => {
-    onChange({
-      ...theme,
+    handleChange({
+      ...entity,
       [key]: {
-        ...(theme as any)[key],
+        ...(entity as any)[key],
         [type]: value,
       },
     });
@@ -188,395 +334,105 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({
     },
   };
 
-  return (
-    <Box sx={{ p: 4, display: "flex", flexDirection: "column", height: "100%", overflow: 'scroll' }}>
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 4, mb: 4 }}>
-        <Box sx={{ display: "flex", flexDirection: "column", flex: 9 }}>
-          <Typography variant="h6" sx={{ mb: 2, fontFamily: "PrimaryFont" }}>
-            {isNew ? 'New Theme Editor' : `Editing ${theme.name} Theme`}
-          </Typography>
-          {isNew ? (
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              A theme in our system is built from nine color pairs primary, secondary, accent, 
-              success, warning, error, neutral, neutral2, and neutral3. Each color pair contains 
-              a main and a contrasting content color to promote readability.
-            </Typography>
-          ) : (
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Theme ID: <strong>{theme._id}</strong>
-            </Typography>
-          )}
-          <TextField
-            fullWidth
-            size="small"
-            label="Theme Name"
-            variant="outlined"
-            value={theme?.name || ""}
-            onChange={(e) => onChange({ ...theme, name: e.target.value })}
-            sx={inputSx}
-          />
-        </Box>
-        
-        <Box sx={{ display: "flex", flexDirection: "column", flex: 3 }}>
-          <ThemePreview 
-            theme={theme} 
-            activeTheme={activeTheme}
-            isActive={isActive}
-            onActivate={onActivate}
-          />
-        </Box>
-      </Box>
+  if (isCreating || isEditing) {
+    const isActive = !isCreating && entity?._id === activeTheme?._id;
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 4, mb: 4 }}>
-        {ALL_COLOR_KEYS.map((key) => {
-          const colorGroup = (theme as any)[key];
-          if (!colorGroup) return null;
-          
-          return (
-            <ColorGroupEditor
-              key={key}
-              colorKey={key}
-              colorGroup={colorGroup}
-              onChange={handleColorChange}
-              activeTheme={activeTheme}
-            />
-          );
-        })}
-      </Box>
-
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, ml: 'auto' }}>
-          {!isNew && (
-            <Button
-              onClick={onRevert}
-              sx={{
-                backgroundColor: isChanged ? activeTheme?.secondary.main : '#ccc',
-                color: isChanged ? activeTheme?.secondary.content : '#fff',
-                border: '1px solid transparent',
-                transition: 'all 0.2s ease-in-out',
-                '&:hover': {
-                  backgroundColor: activeTheme?.neutral.main,
-                  color: activeTheme?.secondary.main,
-                  borderColor: activeTheme?.secondary.main,
-                },
-              }}
-            >
-              Revert Theme
-            </Button>
-          )}
-          
-          <Button
-            disabled={(!isNew && !isChanged) || isSaving}
-            onClick={onSave}
-            sx={{
-              backgroundColor: (isNew || isChanged) ? activeTheme?.primary.main : '#ccc',
-              color: (isNew || isChanged) ? activeTheme?.primary.content : '#fff',
-              border: '1px solid transparent',
-              transition: 'all 0.2s ease-in-out',
-              '&:hover': {
-                backgroundColor: activeTheme?.neutral.main,
-                color: activeTheme?.primary.main,
-                borderColor: activeTheme?.primary.main,
-              },
-            }}
-          >
-            Save Theme
-          </Button>
-        </Box>
-      </Box>
-    </Box>
-  );
-};
-
-const ThemeCard: React.FC<ThemeCardProps> = ({ 
-  theme, 
-  activeTheme, 
-  isLoading, 
-  onActivate, 
-  onEdit,
-  onDelete
-}) => (
-  <Box
-    onClick={onActivate}
-    sx={{
-      display: "flex",
-      flexDirection: "row",
-      height: 80,
-      borderRadius: 2,
-      overflow: "hidden",
-      boxShadow: 1,
-      cursor: "pointer",
-      position: "relative",
-      border: theme.active
-        ? `2px solid ${theme.accent.main}`
-        : "1px solid rgba(0,0,0,0.1)",
-      opacity: isLoading ? 0.6 : 1,
-      transition: "all 0.2s ease-in-out",
-      "&:hover": {
-        transform: "scale(1.03)",
-        boxShadow: 3,
-      },
-    }}
-  >
-    <Box sx={{display: 'flex', flexDirection: 'row', position: "absolute", top: 4, right: 4, zIndex: 2,}}>
-      <IconButton
-        size="small"
-        onClick={(e) => {
-          e.stopPropagation();
-          onEdit();
-        }}
-        sx={{
-          color: activeTheme?.primary.main,
-          border: "1px solid transparent",
-          "&:hover": { borderColor: activeTheme?.primary.main },
-        }}
-      >
-        <EditIcon fontSize="small" />
-      </IconButton>
-      <IconButton
-        size="small"
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
-        sx={{
-          color: activeTheme?.error.main,
-          border: "1px solid transparent",
-          "&:hover": { borderColor: activeTheme?.error.main },
-        }}
-      >
-        <TrashIcon fontSize="small" />
-      </IconButton>
-    </Box>
-
-    <Box sx={{ display: "flex", flexDirection: "column", width: "25%" }}>
-      <Box sx={{ flex: 1, backgroundColor: theme.neutral2.main }} />
-      <Box sx={{ flex: 1, backgroundColor: theme.neutral3.main }} />
-    </Box>
-
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-        backgroundColor: theme.neutral.main,
-        p: 1.2,
-        justifyContent: "space-between",
-      }}
-    >
-      <Typography
-        variant="body2"
-        sx={{
-          color: theme.neutral.content,
-          fontWeight: 600,
-          textTransform: "capitalize",
-        }}
-      >
-        {theme.name}
-      </Typography>
-
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
-        {COLOR_KEYS.map((key) => {
-          const color = (theme as any)[key];
-          return (
-            <Box
-              key={key}
-              sx={{
-                width: "16%",
-                height: 24,
-                borderRadius: "4px",
-                backgroundColor: color.main,
-                color: color.content,
-                fontWeight: "bold",
-                fontSize: "0.75rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              A
-            </Box>
-          );
-        })}
-      </Box>
-    </Box>
-  </Box>
-);
-
-const AdminThemePage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigation();
-  const location = useLocation();
-  const activePage = useAppSelector((state) => state.activePage);
-
-  const { data: themes } = useGetThemesQuery();
-  const { data: activeTheme } = useGetActiveThemeQuery();
-  
-  const [changeActiveTheme, { isLoading }] = useChangeActiveThemeMutation();
-  const [createTheme] = useCreateThemeMutation();
-  const [updateTheme, { isLoading: isUpdating }] = useUpdateThemeMutation();
-  const [deleteTheme] = useDeleteThemeMutation();
-
-  const searchParams = new URLSearchParams(location.search);
-  const themeId = searchParams.get("id");
-  const action = searchParams.get("action");
-  
-  const thisTheme = themes?.find((t) => t._id === themeId);
-  const [editableTheme, setEditableTheme] = useState<ITheme | undefined>(thisTheme);
-  const [newTheme, setNewTheme] = useState<Partial<ITheme>>(DEFAULT_THEME);
-
-  useEffect(() => {
-    setEditableTheme(thisTheme);
-  }, [thisTheme]);
-
-  const showAlert = (body: string, severity: 'success' | 'error') => {
-    dispatch(openAlert({
-      body,
-      closeable: true,
-      severity,
-      orientation: "bottom-right",
-    }));
-  };
-
-  const navigateToPath = (path: string) => {
-    if (!activePage.activePageObj) return;
-    navigate({
-      ...activePage.activePageObj,
-      pagePath: path,
-    } as IPage, true);
-  };
-
-  const handleThemeActivate = async (theme: ITheme) => {
-    try {
-      await changeActiveTheme(theme._id ?? "").unwrap();
-    } catch (error) {
-      showAlert(`Failed to change theme: ${error}`, 'error');
-    }
-  };
-
-  const handleThemeSave = async (type: 'new' | 'existing') => {
-    if (type === 'existing' && (!editableTheme || !themeId)) return;
-
-    try {
-      if (type === 'new') {
-        await createTheme(newTheme).unwrap();
-      } else {
-        await updateTheme({ id: themeId!, data: editableTheme! }).unwrap();
-      }
-      showAlert('The theme was saved successfully', 'success');
-    } catch (error) {
-      showAlert(`Failed to save theme: ${error}`, 'error');
-    }
-  };
-
-  const handleThemeDelete = async (id?: string) => {
-      const deleteId = id || themeId;
-      if (!deleteId) return;
-      if (id === activeTheme?._id){
-        dispatch(openModal({
-          open: true,
-          closeable: true,
-          title: "This Theme Can't Be Deleted!",
-          body: "We are unable to delete this theme as it is currently enabled. Please enable a different theme before attempting to delete again.",
-          backgroundColor: activeTheme?.neutral.main ?? "#fff", 
-          prefab: "confirm",
-          onConfirm: () => {}
-        }));
-      } else {
-        dispatch(openModal({
-          open: true,
-          closeable: true,
-          title: "Delete this theme?",
-          body: "Are you sure you want to delete this theme? This action can not be undone.",
-          backgroundColor: activeTheme?.neutral.main ?? "#fff", 
-          prefab: "confirmDeny",
-          onConfirm: () => proceed(deleteId), 
-          onDeny: () => {},
-        }));
-      }
-      
-  };
-
-  const proceed = async (deleteId: string) => {
-    try {
-        await deleteTheme(deleteId).unwrap();
-        showAlert("Theme deleted successfully", 'success');
-        navigateToPath('/admin/theme');
-    } catch (error) {
-        showAlert(`Failed to delete theme: ${error}`, 'error');
-    }
-  };
-
-  if (action === "new" || (themeId && editableTheme)) {
-    const isNew = action === "new";
-    const theme = isNew ? newTheme : editableTheme!;
-    
     return (
-      <ThemeEditor
-        theme={theme}
-        originalTheme={isNew ? undefined : thisTheme}
-        activeTheme={activeTheme}
-        isNew={isNew}
-        onSave={() => handleThemeSave(isNew ? 'new' : 'existing')}
-        onRevert={!isNew ? () => setEditableTheme(thisTheme) : undefined}
-        onChange={isNew 
-          ? (theme) => setNewTheme(theme) 
-          : (theme) => setEditableTheme(theme as ITheme)}
-        onActivate={!isNew ? () => handleThemeActivate(editableTheme!) : undefined}
-        isSaving={isUpdating}
-      />
+      <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'scroll' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, mb: 4 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 9 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontFamily: 'PrimaryFont' }}>
+              {isCreating ? 'New Theme Editor' : `Editing ${entity?.name} Theme`}
+            </Typography>
+            {isCreating ? (
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                A theme consists of nine color pairs: primary, secondary, accent, success, warning, error, neutral,
+                neutral2, and neutral3. Each pair contains a main and contrasting content color.
+              </Typography>
+            ) : (
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                Theme ID: <strong>{entity?._id}</strong>
+              </Typography>
+            )}
+            <TextField
+              fullWidth
+              size="small"
+              label="Theme Name"
+              variant="outlined"
+              value={entity?.name || ''}
+              onChange={(e) => handleChange({ ...entity, name: e.target.value })}
+              sx={inputSx}
+            />
+          </Box>
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3 }}>
+            <ThemePreview
+              theme={entity || {}}
+              activeTheme={activeTheme}
+              isActive={isActive}
+              onActivate={() => handleThemeActivate(entity as ITheme)}
+            />
+          </Box>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mb: 4 }}>
+          {ALL_COLOR_KEYS.map((key) => {
+            const colorGroup = (entity as any)?.[key];
+            if (!colorGroup) return null;
+
+            return (
+              <ColorGroupEditor
+                key={key}
+                colorKey={key}
+                colorGroup={colorGroup}
+                onChange={handleColorChange}
+                activeTheme={activeTheme}
+              />
+            );
+          })}
+        </Box>
+
+        <EditorActions
+          isNew={isCreating}
+          isChanged={isChanged}
+          isSaving={isUpdating}
+          onSave={handleThemeSave}
+          onRevert={handleRevert}
+          saveText="Save Theme"
+          revertText="Revert Theme"
+        />
+      </Box>
     );
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: "column", p: 4 }}>
-      <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", mb:2 }}>
-        <Typography variant="h6" sx={{ fontFamily: 'PrimaryFont' }}>
-          Theme Manager
-        </Typography>
-        <Button
-          startIcon={<Add />}
-          onClick={() => navigateToPath(`${activePage.activePageObj?.pagePath}?action=new`)}
+    <QueryStateHandler isLoading={isLoading} isError={isError} data={themes}>
+      <AdminPageLayout title="Theme Manager" onAddNew={navigateToCreate} addButtonText="Add New Theme">
+        <Box
           sx={{
-            backgroundColor: activeTheme?.primary.main,
-            color: activeTheme?.primary.content,
-            border: '1px solid transparent',
-            transition: 'all 0.2s ease-in-out',
-            '&:hover': {
-              backgroundColor: activeTheme?.neutral.main,
-              color: activeTheme?.primary.main,
-              borderColor: activeTheme?.primary.main,
-            },
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            gap: 2,
+            boxSizing: 'border-box',
           }}
         >
-          Add New Theme
-        </Button>
-      </Box>
-      
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
-          gap: 2,
-          boxSizing: "border-box",
-        }}
-      >
-        {themes
-          ?.slice()
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((theme: ITheme) => (
-            <ThemeCard
-              key={theme._id || theme.name}
-              theme={theme}
-              activeTheme={activeTheme}
-              isLoading={isLoading}
-              onActivate={() => handleThemeActivate(theme)}
-              onEdit={() => navigateToPath(`${activePage.activePageObj?.pagePath}?id=${theme._id}`)}
-              onDelete={() => handleThemeDelete(theme._id)}
-            />
-          ))}
-      </Box>
-    </Box>
+          {themes
+            ?.slice()
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((theme: ITheme) => (
+              <ThemeCard
+                key={theme._id || theme.name}
+                theme={theme}
+                activeTheme={activeTheme}
+                isLoading={isActivating}
+                onActivate={() => handleThemeActivate(theme)}
+                onEdit={() => navigateToEdit(theme._id!)}
+                onDelete={() => confirmDelete(theme._id)}
+              />
+            ))}
+        </Box>
+      </AdminPageLayout>
+    </QueryStateHandler>
   );
 };
 

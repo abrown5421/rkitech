@@ -1,5 +1,6 @@
 import React from 'react';
 import { closeModal } from './modalSlice';
+import { modalCallbackRegistry } from "./modalCallbackRegistry";
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import AnimBox from '../../components/animBox/AnimBox';
 import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
@@ -36,6 +37,18 @@ const Modal: React.FC = () => {
         }
     };
     
+    const handleConfirm = () => {
+        const cb = modalCallbackRegistry.onConfirm[modal.callbackKey!];
+        cb?.();
+        handleClose();
+    };
+
+    const handleDeny = () => {
+        const cb = modalCallbackRegistry.onDeny[modal.callbackKey!];
+        cb?.();
+        handleClose();
+    };
+
     const renderPrefab = () => {
         switch (modal.prefab) {
             case "confirm":
@@ -64,7 +77,7 @@ const Modal: React.FC = () => {
                 return (
                     <Box sx={{ display: "flex", gap: "1rem", mt: "1rem", justifyContent: 'end' }}>
                         <Button 
-                            onClick={() => { modal.onDeny?.(); handleClose(); }}
+                            onClick={handleDeny}
                             sx={{
                                 backgroundColor: theme?.neutral3.main,
                                 color: theme?.neutral3.content,
@@ -80,7 +93,7 @@ const Modal: React.FC = () => {
                             Cancel
                         </Button>
                         <Button 
-                            onClick={() => { modal.onConfirm?.(); handleClose(); }}
+                            onClick={handleConfirm}
                             sx={{
                                 backgroundColor: theme?.primary.main,
                                 color: theme?.primary.content,
