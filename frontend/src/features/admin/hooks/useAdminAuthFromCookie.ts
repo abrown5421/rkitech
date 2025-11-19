@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
-import type { IEmployees } from '../features/employees/employeesTypes';
-import { setAdminUser } from '../features/admin/features/adminAuth/adminAuthSlice';
+import type { IEmployees } from '../../employees/employeesTypes';
+import { setAdminUser } from '../features/adminAuth/adminAuthSlice';
 
 export const useAdminAuthFromCookie = (): boolean => {
   const dispatch = useDispatch();

@@ -8,6 +8,16 @@ import {
 } from "../features/page/activePageSlice";
 import { closeDrawer, preCloseDrawer } from "../features/drawer/drawerSlice";
 
+export const navigateToPath = (path: string) => {
+  const navigate = useNavigation();
+  const activePage = useAppSelector((state) => state.activePage);
+  if (!activePage.activePageObj) return;
+  navigate({
+    ...activePage.activePageObj,
+    pagePath: path,
+  } as IPage, true);
+};
+
 export const useNavigation = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

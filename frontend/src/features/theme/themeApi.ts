@@ -10,7 +10,7 @@ export const themeApi = baseApi.injectEndpoints({
     }),
 
     getThemeById: build.query<ITheme, string>({
-      query: (id) => `/themes/${id}`,
+      query: (id) => `/themes?_id=${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Theme', id }],
       transformResponse: (response: any) => response.data,
     }),

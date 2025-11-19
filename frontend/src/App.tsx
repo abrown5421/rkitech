@@ -11,9 +11,9 @@ import { ElementRenderer } from './features/elements/ElementRenderer';
 import Alert from './features/alert/Alert';
 import Modal from './features/modal/Modal';
 import Drawer from './features/drawer/Drawer';
-import { useAdminAuthFromCookie } from './hooks/useAdminAuthFromCookie';
 import AdminNavbar from './features/admin/features/adminNavbar/AdminNavbar';
 import { MuiStyleOverider } from './MuiStyleOverider';
+import { useAdminAuthFromCookie } from './features/admin/hooks/useAdminAuthFromCookie';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();

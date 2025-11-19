@@ -4,10 +4,10 @@ import { ITheme } from './theme.types';
 
 const defaultThemes: Partial<ITheme>[] = [
   {
-    name: 'default',
+    name: 'Rkitech',
     active: true,
     primary: { main: '#FE9A00', content: '#F9FAFB' },
-    secondary: { main: '#101828', content: '#F9FAFB' },
+    secondary: { main: '#183164', content: '#F9FAFB' },
     accent: { main: '#973C00', content: '#F9FAFB' },
     success: { main: '#00A43B', content: '#FFFFFF' },
     warning: { main: '#FDC700', content: '#000000' },
@@ -197,19 +197,6 @@ const defaultThemes: Partial<ITheme>[] = [
     neutral: { main: '#F8F8F8', content: '#000000' },
     neutral2: { main: '#EEEEEE', content: '#000000' },
     neutral3: { main: '#E1E1E1', content: '#000000' },
-  },
-  {
-    name: 'dummy',
-    active: false,
-    primary: { main: '#FF00FF', content: '#E1E1E1' },
-    secondary: { main: '#FF6E00', content: '#E1E1E1' },
-    accent: { main: '#C8FF00', content: '#E1E1E1' },
-    success: { main: '#00FF8A', content: '#E1E1E1' },
-    warning: { main: '#FFE200', content: '#E1E1E1' },
-    error: { main: '#FF0000', content: '#190000' },
-    neutral: { main: '#000000', content: '#E1E1E1' },
-    neutral2: { main: '#000000', content: '#E1E1E1' },
-    neutral3: { main: '#000000', content: '#E1E1E1' },
   },
 ];
 
