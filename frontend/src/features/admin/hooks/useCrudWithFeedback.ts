@@ -1,6 +1,5 @@
-import { openAlert } from "../features/alert/alertSlice";
-import { useAppDispatch } from "../store/hooks";
-
+import { useAppDispatch } from "../../../store/hooks";
+import { openAlert } from "../../alert/alertSlice";
 
 interface UseCrudFeedbackOptions {
   successMessage: string;

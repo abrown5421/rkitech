@@ -1,18 +1,22 @@
-import { openModal } from "../features/modal/modalSlice";
-import { modalCallbackRegistry } from "../features/modal/modalCallbackRegistry";
-import { useGetActiveThemeQuery } from "../features/theme/themeApi";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch } from "../../../store/hooks";
+import { modalCallbackRegistry } from "../../modal/modalCallbackRegistry";
+import { openModal } from "../../modal/modalSlice";
+import { useGetActiveThemeQuery } from "../../theme/themeApi";
 
 interface UseDeleteConfirmationProps {
   onConfirm: (id?: string) => Promise<void>;
   canDelete?: (id?: string) => boolean | { canDelete: boolean; reason: string };
   itemName?: string;
+  title?: string
+  body?: string
 }
 
 export const useDeleteConfirmation = ({
   onConfirm,
   canDelete,
   itemName = "item",
+  title = "Delete?",
+  body = "Are you sure you want to delete this item? This action cannot be undone."
 }: UseDeleteConfirmationProps) => {
   const dispatch = useAppDispatch();
   const { data: theme } = useGetActiveThemeQuery();
@@ -25,13 +29,13 @@ export const useDeleteConfirmation = ({
         if (typeof result === "object" && !result.canDelete) {
         dispatch(
             openModal({
-            open: true,
-            closeable: true,
-            title: "Cannot Delete",
-            body: result.reason,
-            backgroundColor: theme?.neutral.main ?? "#fff",
-            prefab: "confirm",
-            callbackKey,
+              open: true,
+              closeable: true,
+              title: "Cannot Delete",
+              body: result.reason,
+              backgroundColor: theme?.neutral.main ?? "#fff",
+              prefab: "confirm",
+              callbackKey,
             })
         );
 
@@ -59,8 +63,8 @@ export const useDeleteConfirmation = ({
         openModal({
         open: true,
         closeable: true,
-        title: `Delete this ${itemName}?`,
-        body: `Are you sure you want to delete this ${itemName}? This action cannot be undone.`,
+        title: title,
+        body: body,
         backgroundColor: theme?.neutral.main ?? "#fff",
         prefab: "confirmDeny",
         callbackKey,
