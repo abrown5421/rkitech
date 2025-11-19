@@ -8,20 +8,70 @@ import type { IPage } from '../../../page/pageTypes';
 import AdminFeatureManagereCrudControls from '../adminFeatureManager/AdminFeatureManagereCrudControls';
 import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
 import { useCrudWithFeedback } from '../../hooks/useCrudWithFeedback';
+import { elementsApi, useDeleteElementsMutation } from '../../../elements/elementsApi';
+import { useAppDispatch } from '../../../../store/hooks';
 
 const AdminPagesPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { data: theme } = useGetActiveThemeQuery();
   const { data: pages, isLoading } = useGetPagesQuery();
   const nonAdminPages = pages?.filter(p => !p.pagePath.startsWith('/admin'));
   const [deletePage] = useDeletePageMutation();
+  const [deleteElement] = useDeleteElementsMutation();
   const { executeWithFeedback } = useCrudWithFeedback();
   
+  const deleteElementRecursively = async (elementId: string): Promise<void> => {
+    try {
+      const subscription = dispatch(
+        elementsApi.endpoints.getElementsById.initiate(elementId)
+      );
+      const { data } = await subscription;
+      const element = Array.isArray(data) ? data[0] : data;
+
+      if (!element) {
+        console.warn(`Skipping deletion of element ${elementId} - not found`);
+        subscription.unsubscribe();
+        return;
+      }
+
+      if (Array.isArray(element.children) && element.children.length > 0) {
+        for (const childId of element.children) {
+          await deleteElementRecursively(childId);
+        }
+      }
+
+      await deleteElement(elementId).unwrap();
+      subscription.unsubscribe();
+    } catch (error) {
+      console.error(`Failed to delete element ${elementId}:`, error);
+    }
+  };
+
   const { confirmDelete } = useDeleteConfirmation({
     onConfirm: async (id?: string) => {
       if (!id) return; 
+
+      const pageToDelete = pages?.find((p) => p._id === id);
+      if (!pageToDelete) return;
+
+      if (pageToDelete.pageContent && Array.isArray(pageToDelete.pageContent)) {
+        for (const rootElementId of pageToDelete.pageContent) {
+          await deleteElementRecursively(rootElementId);
+        }
+      }
+
       await executeWithFeedback(() => deletePage(id).unwrap(), {
         successMessage: 'Page deleted successfully',
       });
+    },
+    canDelete: (id?: string) => {
+      const page = pages?.find((p) => p._id === id);
+      if (!page) return false;
+
+      if (page.pagePath === '/' || page.pagePath === '/page-not-found') {
+        return { canDelete: false, reason: 'This page cannot be deleted as it is required for the system.' };
+      }
+      return true;
     },
     title: "Delete this page?",
     body: "Are you sure you want to delete this page, and all of its associated data? This action cannot be undone.",
