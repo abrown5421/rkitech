@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import AdminFeatureManager from '../adminFeatureManager/AdminFeatureManager';
 import { useGetActiveThemeQuery } from '../../../theme/themeApi';
 import { useDeletePageMutation, useGetPagesQuery } from '../../../page/pageApi';
@@ -10,11 +11,15 @@ import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
 import { useCrudWithFeedback } from '../../hooks/useCrudWithFeedback';
 import { elementsApi, useDeleteElementsMutation } from '../../../elements/elementsApi';
 import { useAppDispatch } from '../../../../store/hooks';
+import { lightenHex } from '../../../../utils/colorUtils';
+import { useNavigation } from '../../../../hooks/useNavigate';
 
 const AdminPagesPage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigation();
   const { data: theme } = useGetActiveThemeQuery();
   const { data: pages, isLoading } = useGetPagesQuery();
+  const pageEditor = pages?.find((p) => p.pageName === 'AdminPageEditor')
   const nonAdminPages = pages?.filter(p => !p.pagePath.startsWith('/admin'));
   const [deletePage] = useDeletePageMutation();
   const [deleteElement] = useDeleteElementsMutation();
@@ -83,13 +88,19 @@ const AdminPagesPage: React.FC = () => {
     overrides?: Record<string, Partial<typeof DEFAULT_PERMISSIONS>>
   ): PageWithPermissions[] => {
     if (!pages) return [];
-    return pages.map(page => ({
-      ...page,
-      permissions: {
-        ...DEFAULT_PERMISSIONS,
-        ...(overrides?.[page.pagePath] || {}),
-      },
-    }));
+    
+    return pages.map(page => {
+      const isDynamic = page.pageRenderMethod === "dynamic";
+
+      return {
+        ...page,
+        permissions: {
+          ...DEFAULT_PERMISSIONS,
+          onSpecialAction: isDynamic,
+          ...(overrides?.[page.pagePath] || {}),
+        },
+      };
+    });
   };
 
   const pageOverrides = {
@@ -101,8 +112,16 @@ const AdminPagesPage: React.FC = () => {
 
   const handleRead = (p: PageWithPermissions) => {
     const url = window.location.origin + p.pagePath;
-    console.log(url)
     window.open(url, "_blank");
+  }
+
+  const onSpecialAction = (p: PageWithPermissions) => {
+    if (!pageEditor) return;
+    const updatedP = {
+      ...p,
+      pagePath: `/admin/page-editor?=${p._id}`, 
+    };
+    navigate(updatedP)
   }
 
   const handleUpdate = (p: PageWithPermissions) => {
@@ -115,11 +134,13 @@ const AdminPagesPage: React.FC = () => {
 
   const PageCard = ({
       pageItem,
+      onSpecialAction,
       onRead,
       onUpdate,
       onDelete,
     }: {
       pageItem: PageWithPermissions;
+      onSpecialAction?: (item: PageWithPermissions) => void;
       onRead?: (item: PageWithPermissions) => void;
       onUpdate?: (item: PageWithPermissions) => void;
       onDelete?: (item: PageWithPermissions) => void;
@@ -131,8 +152,7 @@ const AdminPagesPage: React.FC = () => {
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            width: 'calc(20% - 16px)',
-            minWidth: 150, 
+            width: '100%',
             height: 80,
             borderRadius: 2,
             overflow: 'hidden',
@@ -153,21 +173,58 @@ const AdminPagesPage: React.FC = () => {
             <AdminFeatureManagereCrudControls
               item={pageItem}
               permissions={permissions}
+              onSpecialAction={onSpecialAction}
+              specialAction={{
+                title: "Page Editor",
+                icon: <ConstructionIcon fontSize="small" />,
+                color: theme?.secondary.main
+              }}
               onRead={onRead}
               onUpdate={onUpdate}
               onDelete={onDelete}
             />
           </Box>
-          <Typography
-            variant="subtitle1"
+          <Box
             sx={{
-              color: theme?.neutral.content,
-              textTransform: 'capitalize',
-              fontFamily: "SecondaryFont"
+              isplay: 'flex',
+              flexDirection: 'column',
             }}
           >
-            {pageItem.pageName}
-          </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                color: theme?.neutral.content,
+                textTransform: 'capitalize',
+                fontFamily: "SecondaryFont",
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              {pageItem.pageName}
+              <Typography
+                variant="caption"
+                sx={{
+                  color: pageItem.pageActive ? theme?.success.main : theme?.error.main,
+                  textTransform: 'capitalize',
+                  fontFamily: "SecondaryFont",
+                  display: 'flex',
+                  ml: 1,
+                }}
+              >
+                {pageItem.pageActive ? '(Active)' : '(Inactive)'}
+              </Typography>
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                color: lightenHex(theme?.neutral.content!, 0.5),
+                textTransform: 'lowercase',
+                fontFamily: "SecondaryFont",
+              }}
+            >
+              {pageItem.pagePath}
+            </Typography>
+          </Box>
         </Box>
       );
   };
@@ -183,10 +240,12 @@ const AdminPagesPage: React.FC = () => {
         <AdminFeatureManager
           editorName="Page Editor"
           editorItems={enrichedPages}
+          orientation='column'
           renderItem={(pageItem) => (
             <PageCard
               pageItem={pageItem}
               onRead={(p) => handleRead(p)}
+              onSpecialAction={(p) => onSpecialAction(p)}
               onUpdate={(p) => handleUpdate(p)}
               onDelete={(p) => handleDelete(p)}
             />

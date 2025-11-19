@@ -4,6 +4,7 @@ import type { AdminFeatureManagerProps } from './adminFeatureManagerTypes';
 const AdminFeatureManager = <TItem,>({
   editorName,
   editorItems = [],
+  orientation = 'row',
   renderItem,
 }: AdminFeatureManagerProps<TItem>) => {
   return (
@@ -13,6 +14,7 @@ const AdminFeatureManager = <TItem,>({
       </Typography>
       <Box sx={{
           display: 'flex',
+          flexDirection: orientation,
           width: '100%',
           flexWrap: 'wrap',
           gap: 2,
