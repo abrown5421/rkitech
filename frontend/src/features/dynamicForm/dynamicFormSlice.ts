@@ -13,6 +13,7 @@ const defaultDynamicFormState: DynamicFormProps = {
   mode: 'create',
   editingItem: undefined
 };
+
 const initialState: DynamicFormProps = { ...defaultDynamicFormState };
 
 export const dynamicFormSlice = createSlice({
