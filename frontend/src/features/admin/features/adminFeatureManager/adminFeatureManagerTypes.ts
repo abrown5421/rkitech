@@ -1,4 +1,5 @@
 import type { FieldConfig } from "../../../dynamicForm/dynamicFormTypes";
+import type { FormMode } from "../../../dynamicForm/dynamicFormTypes";
 
 export interface AdminFeatureManagerProps<TItem = any> {
   editorName?: string;
@@ -14,7 +15,7 @@ export interface AdminFeatureManagerProps<TItem = any> {
   formConfig?: {
     fields: FieldConfig[];
     getInitialValues?: (item?: TItem) => Record<string, any>;
-    onSubmit?: (values: Record<string, any>, item?: TItem) => void | Promise<void>;
+    onSubmit?: (values: Record<string, any>, mode: FormMode, item?: TItem) => void | Promise<void>;
     validate?: (values: Record<string, any>) => Record<string, string> | null;
   };
 }

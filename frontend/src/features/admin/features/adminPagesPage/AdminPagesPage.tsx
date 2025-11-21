@@ -3,14 +3,16 @@ import { Box, CircularProgress } from '@mui/material';
 import AdminFeatureManager from '../adminFeatureManager/AdminFeatureManager';
 import { useGetActiveThemeQuery } from '../../../theme/themeApi';
 import { 
+  useCreatePageMutation,
   useDeletePageMutation, 
   useGetPagesQuery,
+  useUpdatePageMutation,
 } from '../../../page/pageApi';
 import { DEFAULT_PERMISSIONS, type PageWithPermissions } from './adminPagesPageTypes';
 import type { IPage } from '../../../page/pageTypes';
 import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
 import { useCrudWithFeedback } from '../../hooks/useCrudWithFeedback';
-import { elementsApi, useDeleteElementsMutation } from '../../../elements/elementsApi';
+import { elementsApi, useCreateElementsMutation, useDeleteElementsMutation } from '../../../elements/elementsApi';
 import { useAppDispatch } from '../../../../store/hooks';
 import { useNavigation } from '../../../../hooks/useNavigate';
 import { getPageFormConfig } from './adminPagesFormConfig';
@@ -25,6 +27,9 @@ const AdminPagesPage: React.FC = () => {
   const nonAdminPages = pages?.filter(p => !p.pagePath.startsWith('/admin'));
   const [deletePage] = useDeletePageMutation();
   const [deleteElement] = useDeleteElementsMutation();
+  const [createPage] = useCreatePageMutation();
+  const [updatePage] = useUpdatePageMutation();
+  const [createElements] = useCreateElementsMutation();
   const { executeWithFeedback } = useCrudWithFeedback();
   
   const deleteElementRecursively = async (elementId: string): Promise<void> => {
@@ -141,7 +146,7 @@ const AdminPagesPage: React.FC = () => {
           editorName="Page Editor"
           editorItems={enrichedPages}
           orientation='column'
-          formConfig={getPageFormConfig(theme)}
+          formConfig={getPageFormConfig(theme, { createPage, createElements, updatePage })}
           renderItem={(pageItem, index, openForm) => (
             <PageMapItem
               key={index}

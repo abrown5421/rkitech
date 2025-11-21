@@ -9,9 +9,10 @@ const defaultDynamicFormState: DynamicFormProps = {
   backgroundColor: "",
   isClosing: false,
   title: "",
-  formFields: []
+  formFields: [],
+  mode: 'create',
+  editingItem: undefined
 };
-
 const initialState: DynamicFormProps = { ...defaultDynamicFormState };
 
 export const dynamicFormSlice = createSlice({

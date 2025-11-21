@@ -64,7 +64,7 @@ const DynamicForm: React.FC = () => {
     const handleSubmit = () => {
         if (!dynamicForm.formID) return;
 
-        const { validate, onSubmit } = getFormCallbacks(dynamicForm.formID);
+        const { validate, onSubmit, mode, item } = getFormCallbacks(dynamicForm.formID);
 
         let hasError = false;
 
@@ -72,27 +72,30 @@ const DynamicForm: React.FC = () => {
             const errors = validate(formValues) || {};
             setFormErrors(errors);
             hasError = Object.keys(errors).length > 0;
+            
+            if (hasError) {
             dispatch(
                 openAlert({
-                    body: 'There was a problem submitting your form',
-                    closeable: true,
-                    severity: 'error',
-                    orientation: 'bottom-right'
+                body: 'There was a problem submitting your form',
+                closeable: true,
+                severity: 'error',
+                orientation: 'bottom-right'
                 })
             );
+            }
         }
 
         if (hasError) return;
 
         if (onSubmit) {
-            onSubmit(formValues);
+            onSubmit(formValues, mode || 'create', item); 
             dispatch(
-                openAlert({
-                    body: `${dynamicForm.title} form submitted successfully!`,
-                    closeable: true,
-                    severity: 'success',
-                    orientation: 'bottom-right'
-                })
+            openAlert({
+                body: `${dynamicForm.title} ${mode === 'update' ? 'updated' : 'created'} successfully!`,
+                closeable: true,
+                severity: 'success',
+                orientation: 'bottom-right'
+            })
             );
         }
 
@@ -273,8 +276,8 @@ const DynamicForm: React.FC = () => {
         >
             <AnimBox
                 animationObject={{
-                    entranceAnimation: dynamicForm.entrance || 'animate__slideInUp',
-                    exitAnimation: dynamicForm.exit || 'animate__slideOutUp',
+                    entranceAnimation: dynamicForm.entrance || 'animate__fadeInUpBig',
+                    exitAnimation: dynamicForm.exit || 'animate__fadeOutDownBig',
                     isEntering: dynamicForm.open && !isClosing,
                 }}
                 sx={{
