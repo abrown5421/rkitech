@@ -11,6 +11,8 @@ export interface DynamicFormProps {
     isClosing?: boolean; 
     formFields: FieldConfig[];
     formID?: string;
+    mode?: 'create' | 'update';
+    editingItem?: any;
 }
 
 export type FieldType =
@@ -36,6 +38,8 @@ export interface FieldOption {
   value: string | number;
 }
 
+export type FormMode = 'create' | 'update';
+
 export interface FieldConfig {
   name: string;
   label: string;
@@ -51,10 +55,17 @@ export interface FieldConfig {
   gap?: number | string;
 }
 
-export type SubmitCallback = (values: Record<string, any>) => void | Promise<void>;
+export type SubmitCallback = (
+  values: Record<string, any>, 
+  mode: FormMode,
+  item?: any
+) => void | Promise<void>;
+
 export type ValidateCallback = (values: Record<string, any>) => Record<string, string> | null;
 
 export interface FormRegistryEntry {
   onSubmit?: SubmitCallback;
   validate?: ValidateCallback;
+  mode?: FormMode;
+  item?: any;
 }

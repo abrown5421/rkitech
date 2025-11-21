@@ -1,5 +1,7 @@
-import type { FieldConfig } from '../../../dynamicForm/dynamicFormTypes';
+import type { FieldConfig } from "../../../dynamicForm/dynamicFormTypes";
+import type { FormMode } from "../../../dynamicForm/dynamicFormTypes";
 import type { IPage } from '../../../page/pageTypes';
+import type { PageCreateInput } from './adminPagesPageTypes';
 
 export const pageFormFields: FieldConfig[] = [
   {
@@ -62,11 +64,12 @@ export const pageFormFields: FieldConfig[] = [
   }
 ];
 
-export const getPageFormConfig = (theme?: any) => ({
+export const getPageFormConfig = (theme?: any, mutations?: any) => ({
   fields: pageFormFields.map(f => {
     if (f.name === 'pageColor') return { ...f, defaultValue: theme?.neutral.main || '#ffffff' };
     return f;
   }),
+
   getInitialValues: (item?: IPage) => {
     if (!item) {
       return {
@@ -81,6 +84,7 @@ export const getPageFormConfig = (theme?: any) => ({
     }
 
     return {
+      _id: item._id,
       pageName: item.pageName,
       pagePath: item.pagePath,
       pageActive: item.pageActive,
@@ -94,15 +98,101 @@ export const getPageFormConfig = (theme?: any) => ({
       }
     };
   },
+
   validate: (values: any) => {
     const errors: Record<string, string> = {};
-    
-    if (!values.pageName?.trim()) errors.pageName = 'Page Name is required';
-    if (!values.pagePath?.trim()) errors.pagePath = 'Page Path is required';
-    else if (!values.pagePath.startsWith('/')) errors.pagePath = 'Page Path must start with /';
-    if (!values.pageColor?.trim()) errors.pageColor = 'Page Background Color is required';
-    if (!values.pageRenderMethod) errors.pageRenderMethod = 'Render Method is required';
+
+    if (!values.pageName?.trim()) {
+      errors.pageName = 'Page Name is required';
+    } else if (!/^[A-Z][a-zA-Z0-9]*$/.test(values.pageName)) {
+      errors.pageName = 'Page Name must be CamelCase (start with uppercase, no spaces)';
+    }
+
+    if (!values.pagePath?.trim()) {
+      errors.pagePath = 'Page Path is required';
+    } else if (!values.pagePath.startsWith('/')) {
+      errors.pagePath = 'Page Path must start with /';
+    }
+
+    if (!values.pageColor?.trim()) {
+      errors.pageColor = 'Page Background Color is required';
+    }
+
+    if (!values.pageFontColor?.trim()) {
+      errors.pageFontColor = 'Page Font Color is required';
+    }
+
+    if (!values.pageRenderMethod) {
+      errors.pageRenderMethod = 'Render Method is required';
+    }
 
     return Object.keys(errors).length ? errors : null;
+  },
+
+  onSubmit: async (values: any, mode: FormMode, item?: IPage) => {
+    const { createPage, createElements, updatePage } = mutations || {};
+
+    if (!createPage || !createElements || !updatePage) {
+      console.error("Mutations not provided to formConfig");
+      return;
+    }
+
+    const pageData: PageCreateInput = {
+      pageName: values.pageName,
+      pagePath: values.pagePath,
+      pageActive: values.pageActive,
+      pageRenderMethod: values.pageRenderMethod,
+      pageColor: values.pageColor,
+      pageContent: item?.pageContent || [],
+      pageFontFamily: values.pageFontFamily,
+      pageFontColor: values.pageFontColor,
+      pageEntranceAnimation: values.pageAnimations?.entrance,
+      pageExitAnimation: values.pageAnimations?.exit,
+    };
+
+    if (mode === 'create') {
+      if (values.pageRenderMethod === 'dynamic') {
+        const pageNameElement = {
+          type: "typography",
+          data: {
+            variant: "body1",
+            text: values.pageName,
+          },
+          name: `${values.pageName} body text`,
+          parent: null,
+        };
+
+        const createdPageNameElement = await createElements(pageNameElement).unwrap();
+
+        const rootElement = {
+          type: "box",
+          sx: {
+            boxSizing: "border-box",
+            display: "flex",
+            flexDirection: "row",
+            minHeight: "calc(100vh - 50px)",
+            backgroundColor: "$theme.neutral.main",
+            m: 3,
+          },
+          children: [createdPageNameElement.data._id], 
+          order: 0,
+          name: `${values.pageName || "Page"} root`,
+        };
+
+        const createdRoot = await createElements(rootElement).unwrap();
+        pageData.pageContent = [createdRoot.data._id];
+      }
+      
+      return await createPage(pageData).unwrap();
+    } else {
+      console.log({
+        id: item?._id || values._id, 
+        ...pageData
+      })
+      return await updatePage({ 
+        id: item?._id || values._id, 
+        data: pageData  
+      }).unwrap();
+    }
   }
 });

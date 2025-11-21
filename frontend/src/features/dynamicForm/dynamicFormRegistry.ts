@@ -13,3 +13,7 @@ export const getFormCallbacks = (formID?: string) => {
   if (!formID) return {};
   return registry[formID] || {};
 };
+
+export const unregisterForm = (formID: string) => {
+  delete registry[formID];
+};

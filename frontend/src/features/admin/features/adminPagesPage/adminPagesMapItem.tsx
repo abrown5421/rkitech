@@ -4,17 +4,18 @@ import ConstructionIcon from '@mui/icons-material/Construction';
 import AdminFeatureManagereCrudControls from '../adminFeatureManager/AdminFeatureManagereCrudControls';
 import type { PageMapItemProps } from './adminPagesPageTypes';
 import { lightenHex } from '../../../../utils/colorUtils';
+import { useGetActiveThemeQuery } from '../../../theme/themeApi';
 
 const PageMapItem: React.FC<PageMapItemProps> = ({
   pageItem,
-  theme,
   onSpecialAction,
   onRead,
   onUpdate,
   onDelete
 }) => {
+  const { data: theme } = useGetActiveThemeQuery();
   const permissions = pageItem.permissions || {};
-
+  
   return (
     <Box
       sx={{

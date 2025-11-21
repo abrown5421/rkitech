@@ -19,3 +19,5 @@ export interface PageMapItemProps {
   onUpdate?: (item: PageWithPermissions) => void;
   onDelete?: (item: PageWithPermissions) => void;
 }
+
+export type PageCreateInput = Omit<IPage, '_id' | 'pageIntensity'>;

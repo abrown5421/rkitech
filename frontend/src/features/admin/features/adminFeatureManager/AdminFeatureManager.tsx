@@ -29,9 +29,8 @@ const AdminFeatureManager = <TItem,>({
   const openFormWithConfig = (item?: TItem) => {
     if (!formConfig) return;
 
-    const formID = item 
-      ? `edit-${editorName}-${Date.now()}` 
-      : `new-${editorName}-${Date.now()}`;
+    const mode = item ? 'update' : 'create';
+    const formID = `${mode}-${editorName}-${Date.now()}`;
     
     const initialValues = formConfig.getInitialValues 
       ? formConfig.getInitialValues(item)
@@ -43,9 +42,11 @@ const AdminFeatureManager = <TItem,>({
 
     registerForm(formID, {
       validate: formConfig.validate,
-      onSubmit: (values) => {
+      mode,
+      item,
+      onSubmit: (values, submitMode, submitItem) => {
         if (formConfig.onSubmit) {
-          formConfig.onSubmit(values, item);
+          formConfig.onSubmit(values, submitMode, submitItem);
         }
       }
     });
@@ -53,7 +54,9 @@ const AdminFeatureManager = <TItem,>({
     dispatch(openDynamicForm({
       open: true,
       formID,
-      title: item ? `Edit ${editorName}` : `New ${editorName}`,
+      mode,
+      editingItem: item,
+      title: mode === 'update' ? `Edit ${editorName}` : `New ${editorName}`,
       screenPercentage: 60,
       backgroundColor: theme?.neutral.main || '#fff',
       formFields: populatedFields
