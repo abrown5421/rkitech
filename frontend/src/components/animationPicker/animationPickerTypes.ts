@@ -1,4 +1,4 @@
-import type { SxProps } from "@mui/material";
+import type { SxProps, TextFieldProps } from "@mui/material";
 import type { EntranceAnimation, ExitAnimation } from "../animBox/animBoxTypes";
 
 export const entranceOptions: EntranceAnimation[] = [
@@ -95,6 +95,6 @@ export interface AnimationPickerProps {
   exit: ExitAnimation
   onEntChange: (entrance: EntranceAnimation) => void;
   onExtChange: (exit: ExitAnimation) => void;
-  sx?: SxProps;
-  inputSx?: SxProps;
+  inputProps: TextFieldProps;
+  containerSx?: SxProps;
 }

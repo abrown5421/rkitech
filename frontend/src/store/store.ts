@@ -4,6 +4,7 @@ import activePageReducer from '../features/page/activePageSlice';
 import alertReducer from '../features/alert/alertSlice';
 import modalReducer from '../features/modal/modalSlice';
 import drawerReducer from '../features/drawer/drawerSlice';
+import dynamicFormReducer from '../features/dynamicForm/dynamicFormSlice'
 import adminUserReducer from '../features/admin/features/adminAuth/adminAuthSlice';
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     alert: alertReducer,
     modal: modalReducer,
     drawer: drawerReducer,
+    DynamicForm: dynamicFormReducer,
     adminUser: adminUserReducer
   },
   middleware: (getDefaultMiddleware) =>

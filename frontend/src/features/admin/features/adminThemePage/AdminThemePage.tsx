@@ -148,7 +148,7 @@ const AdminThemePage: React.FC = () => {
           >
             {themeItem.name}
           </Typography>
-
+          
           <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5 }}>
             {COLOR_KEYS.map((key) => {
               const color = (themeItem as any)[key];
@@ -189,8 +189,9 @@ const AdminThemePage: React.FC = () => {
         <AdminFeatureManager
           editorName="Theme Editor"
           editorItems={enrichedThemes}
-          renderItem={(themeItem) => (
+          renderItem={(themeItem, index) => (
             <ThemeCard
+              key={index}
               themeItem={themeItem}
               onRead={(t) => handleRead(t)}
               onUpdate={(t) => handleUpdate(t)}

@@ -6,7 +6,7 @@ import { useGetActiveThemeQuery } from "../../features/theme/themeApi";
 import type { ColorObject } from "../../features/theme/themeTypes";
 import { resolveThemeValue } from "../../hooks/useThemeValue";
 
-const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, inputProps, containerSx }) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({ label, color, onChange, inputProps, containerSx }) => {
   const { data: theme } = useGetActiveThemeQuery();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLInputElement | null>(null);
@@ -16,12 +16,13 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, inputProps, 
   const handleClick = () => setOpen((prev) => !prev);
   const handleClickAway = () => setOpen(false);
   const handleColorChange = (newColor: string) => onChange(newColor);
-
+  
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box sx={{ ...containerSx }}>
         <TextField
           fullWidth
+          label={label}
           {...inputProps}
           inputRef={anchorRef}
           value={resolvedColor}
