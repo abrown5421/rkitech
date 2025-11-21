@@ -19,11 +19,11 @@ export const AnimationPicker: React.FC<AnimationPickerProps> = ({
   exit,
   onEntChange,
   onExtChange,
-  sx,
-  inputSx,
+  inputProps,
+  containerSx
 }) => {
   return (
-    <Box sx={{display: 'flex', flexDirection: 'row', gap: 2, mb: 3, ...sx}}>
+    <Box sx={{display: 'flex', flexDirection: 'row', gap: 2, mb: 3, ...containerSx}}>
         <Box sx={{ flex: 1 }}>
             <FormControl fullWidth>
                 <InputLabel>Entrance</InputLabel>
@@ -32,7 +32,7 @@ export const AnimationPicker: React.FC<AnimationPickerProps> = ({
                 value={entrance}
                 onChange={(e: SelectChangeEvent) => onEntChange(e.target.value as EntranceAnimation)}
                 label="Entrance"
-                sx={inputSx}
+                sx={inputProps.sx}
                 >
                 {entranceOptions.map((anim) => (
                     <MenuItem key={anim} value={anim}>
@@ -51,7 +51,7 @@ export const AnimationPicker: React.FC<AnimationPickerProps> = ({
                 value={exit}
                 onChange={(e: SelectChangeEvent) => onExtChange(e.target.value as ExitAnimation)}
                 label="Exit"
-                sx={inputSx}
+                sx={inputProps.sx}
                 >
                 {exitOptions.map((anim) => (
                     <MenuItem key={anim} value={anim}>

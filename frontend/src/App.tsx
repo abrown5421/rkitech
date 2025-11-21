@@ -14,6 +14,7 @@ import Drawer from './features/drawer/Drawer';
 import AdminNavbar from './features/admin/features/adminNavbar/AdminNavbar';
 import { MuiStyleOverider } from './MuiStyleOverider';
 import { useAdminAuthFromCookie } from './features/admin/hooks/useAdminAuthFromCookie';
+import DynamicForm from './features/dynamicForm/DynamicForm';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -92,6 +93,7 @@ const App: React.FC = () => {
       <Alert />
       <Modal />
       <Drawer />
+      <DynamicForm />
       <MuiStyleOverider />
     </Box>
   );
