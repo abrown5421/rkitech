@@ -1,18 +1,21 @@
 import React from 'react';
-import { useChangeActiveThemeMutation, useDeleteThemeMutation, useGetActiveThemeQuery, useGetThemesQuery } from '../../../theme/themeApi';
-import { Box, CircularProgress, Typography } from '@mui/material';
-import { COLOR_KEYS, DEFAULT_PERMISSIONS, type ThemeWithPermissions } from './adminThemePageTypes';
+import { useChangeActiveThemeMutation, useCreateThemeMutation, useDeleteThemeMutation, useGetActiveThemeQuery, useGetThemesQuery, useUpdateThemeMutation } from '../../../theme/themeApi';
+import { Box, CircularProgress } from '@mui/material';
+import { DEFAULT_PERMISSIONS, type ThemeWithPermissions } from './adminThemePageTypes';
 import type { ITheme } from "../../../theme/themeTypes";
-import AdminFeatureManagereCrudControls from '../adminFeatureManager/AdminFeatureManagereCrudControls';
 import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
 import { useCrudWithFeedback } from '../../hooks/useCrudWithFeedback';
 import AdminFeatureManager from '../adminFeatureManager/AdminFeatureManager';
+import ThemeMapItem from './adminThemeMapItem';
+import { getThemeFormConfig } from './adminThemeFormConfig';
 
 const AdminThemePage: React.FC = () => {
   const { data: theme } = useGetActiveThemeQuery();
   const { data: themes, isLoading } = useGetThemesQuery();
   const [changeActiveTheme] = useChangeActiveThemeMutation();
   const [deleteTheme] = useDeleteThemeMutation();
+  const [createTheme] = useCreateThemeMutation();
+  const [updateTheme] = useUpdateThemeMutation();
   
   const { executeWithFeedback } = useCrudWithFeedback();
 
@@ -60,6 +63,7 @@ const AdminThemePage: React.FC = () => {
 
   const themeOverrides = {
     'Rkitech': { delete: false },
+    [theme?.name ?? '']: { delete: false }
   };
 
   const enrichedThemes = addPermissionsToThemes(themes, themeOverrides);
@@ -68,116 +72,10 @@ const AdminThemePage: React.FC = () => {
     handleThemeActivate(t)
   }
 
-  const handleUpdate = (t: ThemeWithPermissions) => {
-    console.log('Update', t)
-  }
-
   const handleDelete = (t: ThemeWithPermissions) => {
     confirmDelete(t._id)
   }
   
-  const ThemeCard = ({
-    themeItem,
-    onRead,
-    onUpdate,
-    onDelete,
-  }: {
-    themeItem: ThemeWithPermissions;
-    onRead?: (item: ThemeWithPermissions) => void;
-    onUpdate?: (item: ThemeWithPermissions) => void;
-    onDelete?: (item: ThemeWithPermissions) => void;
-  }) => {
-    const permissions = themeItem.permissions || {};
-
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: 'calc(20% - 16px)',
-          minWidth: 150, 
-          height: 80,
-          borderRadius: 2,
-          overflow: 'hidden',
-          boxShadow: 1,
-          position: 'relative',
-          border: themeItem.active
-            ? `2px solid ${themeItem.accent.main}`
-            : '1px solid rgba(0,0,0,0.1)',
-        }}
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 4,
-            right: 4,
-            zIndex: 2,
-          }}
-        >
-          <AdminFeatureManagereCrudControls
-            item={themeItem}
-            permissions={permissions}
-            onRead={onRead}
-            onUpdate={onUpdate}
-            onDelete={onDelete}
-          />
-        </Box>
-
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '25%' }}>
-          <Box sx={{ flex: 1, backgroundColor: themeItem.neutral2.main }} />
-          <Box sx={{ flex: 1, backgroundColor: themeItem.neutral3.main }} />
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
-            backgroundColor: themeItem.neutral.main,
-            p: 1.2,
-            justifyContent: 'space-between',
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{
-              color: themeItem.neutral.content,
-              fontWeight: 600,
-              textTransform: 'capitalize',
-            }}
-          >
-            {themeItem.name}
-          </Typography>
-          
-          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5 }}>
-            {COLOR_KEYS.map((key) => {
-              const color = (themeItem as any)[key];
-              return (
-                <Box
-                  key={key}
-                  sx={{
-                    width: '16%',
-                    height: 24,
-                    borderRadius: '4px',
-                    backgroundColor: color.main,
-                    color: color.content,
-                    fontWeight: 'bold',
-                    fontSize: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  A
-                </Box>
-              );
-            })}
-          </Box>
-        </Box>
-      </Box>
-    );
-  };
-
   return (
     <>
       {isLoading ? (
@@ -189,13 +87,14 @@ const AdminThemePage: React.FC = () => {
         <AdminFeatureManager
           editorName="Theme Editor"
           editorItems={enrichedThemes}
-          renderItem={(themeItem, index) => (
-            <ThemeCard
+          formConfig={getThemeFormConfig({ createTheme, updateTheme })}
+          renderItem={(themeItem, index, openForm) => (
+            <ThemeMapItem
               key={index}
               themeItem={themeItem}
-              onRead={(t) => handleRead(t)}
-              onUpdate={(t) => handleUpdate(t)}
-              onDelete={(t) => handleDelete(t)}
+              onRead={handleRead}
+              onUpdate={() => openForm?.(themeItem)}
+              onDelete={handleDelete}
             />
           )}
         />

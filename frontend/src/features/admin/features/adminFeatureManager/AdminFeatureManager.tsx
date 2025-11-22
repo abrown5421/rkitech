@@ -63,14 +63,17 @@ const AdminFeatureManager = <TItem,>({
     }));
   };
 
-  const populateFieldDefaults = (
-    field: any, 
-    values: Record<string, any>
-  ): any => {
+  const getNestedValue = (obj: Record<string, any>, path: string): any => {
+    if (!path.includes('.')) return obj[path];
+    console.log(path.split('.').reduce((acc, key) => acc?.[key], obj))
+    return path.split('.').reduce((acc, key) => acc?.[key], obj);
+  };
+
+  const populateFieldDefaults = (field: any, values: Record<string, any>): any => {
     if (field.children) {
       return {
         ...field,
-        children: field.children.map((child: any) => 
+        children: field.children.map((child: any) =>
           populateFieldDefaults(child, values)
         )
       };
@@ -78,7 +81,7 @@ const AdminFeatureManager = <TItem,>({
 
     return {
       ...field,
-      defaultValue: values[field.name] ?? field.defaultValue
+      defaultValue: getNestedValue(values, field.name) ?? field.defaultValue
     };
   };
 
