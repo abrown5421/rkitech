@@ -12,3 +12,10 @@ export const DEFAULT_PERMISSIONS = {
 export type ThemeWithPermissions = ITheme & {
   permissions?: Partial<typeof DEFAULT_PERMISSIONS>;
 };
+
+export interface ThemeCardProps {
+  themeItem: ThemeWithPermissions;
+  onRead?: (item: ThemeWithPermissions) => void;
+  onUpdate?: (item: ThemeWithPermissions) => void;
+  onDelete?: (item: ThemeWithPermissions) => void;
+}

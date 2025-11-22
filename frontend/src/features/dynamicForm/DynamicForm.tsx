@@ -36,13 +36,45 @@ const DynamicForm: React.FC = () => {
 
     const [formValues, setFormValues] = useState<Record<string, any>>({});
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+    
+    const setNestedValue = (obj: Record<string, any>, path: string, value: any) => {
+        const keys = path.split('.');
+        let current = obj;
+        keys.forEach((key, index) => {
+            if (index === keys.length - 1) {
+                current[key] = value;
+            } else {
+                current[key] = current[key] || {};
+                current = current[key];
+            }
+        });
+    };
+
+    const getAllLeafFields = (fields: FieldConfig[]): FieldConfig[] => {
+        const leafFields: FieldConfig[] = [];
+        
+        const traverse = (field: FieldConfig) => {
+            if (field.children && field.children.length > 0) {
+            field.children.forEach(traverse);
+            } else {
+                leafFields.push(field);
+            }
+        };
+        
+        fields.forEach(traverse);
+        return leafFields;
+        };
 
     useEffect(() => {
         if (dynamicForm.open) {
             const initialValues: Record<string, any> = {};
-            dynamicForm.formFields.forEach((field) => {
-                initialValues[field.name] = field.defaultValue ?? '';
+            const leafFields = getAllLeafFields(dynamicForm.formFields);
+            
+            leafFields.forEach((field) => {
+                setNestedValue(initialValues, field.name, field.defaultValue ?? '');
             });
+            
+            console.log("Initialized Form Values:", initialValues);
             setFormValues(initialValues);
         }
     }, [dynamicForm.open, dynamicForm.formFields]);
@@ -58,7 +90,27 @@ const DynamicForm: React.FC = () => {
     };
 
     const handleChange = (name: string, value: any) => {
-        setFormValues((prev) => ({ ...prev, [name]: value }));
+        setFormValues((prev) => {
+            if (name.includes('.')) {
+                const keys = name.split('.');
+                const newValues = { ...prev };
+                
+                let current: any = newValues;
+                for (let i = 0; i < keys.length - 1; i++) {
+                    const key = keys[i];
+                    if (!current[key] || typeof current[key] !== 'object') {
+                        current[key] = {};
+                    }
+                    current[key] = { ...current[key] };
+                    current = current[key];
+                }
+                
+                current[keys[keys.length - 1]] = value;
+                return newValues;
+            }
+            
+            return { ...prev, [name]: value };
+        });
     };
 
     const handleSubmit = () => {
@@ -102,8 +154,27 @@ const DynamicForm: React.FC = () => {
         handleClose();
     };
 
+    const getNestedValue = (obj: Record<string, any>, path: string): any => {
+        if (!path.includes('.')) {
+            return obj[path];
+        }
+        
+        const keys = path.split('.');
+        let current = obj;
+        
+        for (const key of keys) {
+            if (current === undefined || current === null) {
+                return undefined;
+            }
+            current = current[key];
+        }
+        
+        return current;
+    };
+
     const renderField = (field: FieldConfig) => {
         const errorText = formErrors[field.name];
+        const fieldValue = getNestedValue(formValues, field.name);
         const commonProps = {
             fullWidth: true,
             margin: 'normal' as const,
@@ -218,7 +289,7 @@ const DynamicForm: React.FC = () => {
                     <ColorPicker
                         key={field.name}
                         label={field.label}
-                        color={formValues[field.name] ?? ''}
+                        color={fieldValue ?? ''}
                         onChange={(val) => handleChange(field.name, val)}
                         inputProps={{...commonProps}}
                         containerSx={field.containerSx}
@@ -271,6 +342,7 @@ const DynamicForm: React.FC = () => {
                 bgcolor: 'rgba(7, 7, 8, 0.6)',
                 position: 'absolute',
                 top: 0,
+                overflow: 'auto'
             }}
             onClick={handleClose}
         >
@@ -293,7 +365,7 @@ const DynamicForm: React.FC = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         width: '100%',
-                        height: '100%',
+                        maxHeight: '95vh',
                         position: 'relative',
                         boxSizing: 'border-box',
                         p: 2,
