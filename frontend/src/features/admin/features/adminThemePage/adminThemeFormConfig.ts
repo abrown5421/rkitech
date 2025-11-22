@@ -98,7 +98,7 @@ export const getThemeFormConfig = (mutations?: any) => {
         console.error("Mutations not provided to formConfig");
         return;
       }
-
+      console.log(values.namee)
       const themeData: Partial<ITheme> = {
         name: values.name,
         active: values.active,
