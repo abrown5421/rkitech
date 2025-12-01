@@ -5,7 +5,7 @@ import ColorPicker from '../colorPicker/ColorPicker';
 import BorderPicker from '../borderPicker/BorderPicker';
 import SpacingPicker from '../spacingPicker/SpacingPicker';
 import LayoutPicker from '../layoutPicker/LayoutPicker';
-import { updateElementProps } from '../../renderer/rendererSlice';
+import { updateElementProps } from '../../frontend/renderer/rendererSlice';
 
 const BoxEditor: React.FC<{ elementId: string }> = ({ elementId }) => {
   const element = useAppSelector((state) => {

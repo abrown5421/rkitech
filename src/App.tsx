@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { useAppSelector } from './store/hooks';
 import BoxEditor from './features/admin/boxEditor/BoxEditor';
-import Renderer from './features/renderer/Renderer';
+import Renderer from './features/frontend/renderer/Renderer';
 
 const App: React.FC = () => {
   const rootElement = useAppSelector((state) => state.renderer.root);
