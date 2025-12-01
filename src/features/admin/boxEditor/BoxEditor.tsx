@@ -1,18 +1,32 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { updateBoxProps } from './boxEditorSlice';
 import ColorPicker from '../colorPicker/ColorPicker';
 import BorderPicker from '../borderPicker/BorderPicker';
 import SpacingPicker from '../spacingPicker/SpacingPicker';
 import LayoutPicker from '../layoutPicker/LayoutPicker';
+import { updateElementProps } from '../../renderer/rendererSlice';
 
-const BoxEditor: React.FC = () => {
-  const boxProps = useAppSelector((state) => state.boxEditor);
+const BoxEditor: React.FC<{ elementId: string }> = ({ elementId }) => {
+  const element = useAppSelector((state) => {
+    const findById = (el: any): any => {
+      if (el._id === elementId) return el;
+      for (const child of el.children || []) {
+        const found = findById(child);
+        if (found) return found;
+      }
+    };
+    return findById(state.renderer.root);
+  });
+
   const dispatch = useAppDispatch();
 
-  const handleChange = (key: keyof typeof boxProps, value: any) => {
-    dispatch(updateBoxProps({ [key]: value }));
+  if (!element) return <Typography>Element not found</Typography>;
+
+  const boxProps = element.props;
+
+  const handleChange = (key: string, value: any) => {
+    dispatch(updateElementProps({ _id: elementId, props: { [key]: value } }));
   };
 
   return (
@@ -23,7 +37,7 @@ const BoxEditor: React.FC = () => {
         justifyContent={boxProps.justifyContent}
         alignItems={boxProps.alignItems}
         gap={boxProps.gap}
-        onChange={(val) => dispatch(updateBoxProps(val))}
+        onChange={(val) => dispatch(updateElementProps({ _id: elementId, props: val }))}
       />
 
       <Typography variant="h6">Colors:</Typography>
@@ -41,26 +55,26 @@ const BoxEditor: React.FC = () => {
       </Box>
 
       <Typography variant="h6">Border:</Typography>
-        <BorderPicker
-          value={{
-            width: parseInt(boxProps.border?.split(' ')[0] || '1', 10),
-            style: boxProps.border?.split(' ')[1] || 'solid',
-            color: boxProps.border?.split(' ')[2] || '#000000',
-          }}
-          onChange={(val) =>
-            handleChange('border', `${val.width}px ${val.style} ${val.color}`)
-          }
-        />
-        
+      <BorderPicker
+        value={{
+          width: parseInt(boxProps.border?.split(' ')[0] || '1', 10),
+          style: boxProps.border?.split(' ')[1] || 'solid',
+          color: boxProps.border?.split(' ')[2] || '#000000',
+        }}
+        onChange={(val) =>
+          handleChange('border', `${val.width}px ${val.style} ${val.color}`)
+        }
+      />
+
       <Typography variant="h6">Spacing:</Typography>
-        <SpacingPicker
-          margin={boxProps.m ?? "0px"}
-          padding={boxProps.p ?? "0px"}
-          onChange={(val) => {
-            handleChange("m", val.margin);
-            handleChange("p", val.padding);
-          }}
-        />
+      <SpacingPicker
+        margin={boxProps.m ?? "0px"}
+        padding={boxProps.p ?? "0px"}
+        onChange={(val) => {
+          handleChange("m", val.margin);
+          handleChange("p", val.padding);
+        }}
+      />
     </Box>
   );
 };

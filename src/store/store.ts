@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import boxEditorReducer from '../features/admin/boxEditor/boxEditorSlice';
+import rendererReducer from '../features/renderer/rendererSlice';
 
 export const store = configureStore({
   reducer: {
-    boxEditor: boxEditorReducer,
+    renderer: rendererReducer,
   }
 });
 
