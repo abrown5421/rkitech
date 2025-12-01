@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useAppSelector } from './store/hooks';
 import BoxEditor from './features/admin/boxEditor/BoxEditor';
 
@@ -13,7 +13,8 @@ const App: React.FC = () => {
       </Box>
       <Box sx={{ flex: 9, bgcolor: 'neutral.main', color: 'neutral.content' }}>
         <Box {...boxProps}>
-          Live Box Preview
+          <Typography>A</Typography>
+          <Typography>B</Typography>
         </Box>
       </Box>
     </Box>
