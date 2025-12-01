@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { BoxEditorState } from './boxEditorTypes';
 
 const initialState: BoxEditorState = {
-  display: 'block',
+  display: 'flex',
   m: '0px',
   p: '0px',
   width: '100%',

@@ -1,5 +1,5 @@
 export interface BoxEditorState {
-  display?: 'block' | 'flex' | 'grid' | 'inline-block';
+  display?: 'flex';
   flexDirection?: 'row' | 'column';
   justifyContent?: string;
   alignItems?: string;

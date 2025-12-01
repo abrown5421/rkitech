@@ -5,6 +5,7 @@ import { updateBoxProps } from './boxEditorSlice';
 import ColorPicker from '../colorPicker/ColorPicker';
 import BorderPicker from '../borderPicker/BorderPicker';
 import SpacingPicker from '../spacingPicker/SpacingPicker';
+import LayoutPicker from '../layoutPicker/LayoutPicker';
 
 const BoxEditor: React.FC = () => {
   const boxProps = useAppSelector((state) => state.boxEditor);
@@ -16,8 +17,17 @@ const BoxEditor: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" gap="1rem">
+      <Typography variant="h6">Layout:</Typography>
+      <LayoutPicker
+        flexDirection={boxProps.flexDirection}
+        justifyContent={boxProps.justifyContent}
+        alignItems={boxProps.alignItems}
+        gap={boxProps.gap}
+        onChange={(val) => dispatch(updateBoxProps(val))}
+      />
+
       <Typography variant="h6">Colors:</Typography>
-      <Box display="flex" flexDirection="row" gap="1rem">
+      <Box display="flex" flexDirection="row" gap={1}>
         <ColorPicker
           label="Background Color"
           value={boxProps.bgcolor ?? '#ffffff'}
