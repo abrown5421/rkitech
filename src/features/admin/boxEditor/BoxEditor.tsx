@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { updateBoxProps } from './boxEditorSlice';
 import ColorPicker from '../colorPicker/ColorPicker';
 import BorderPicker from '../borderPicker/BorderPicker';
+import SpacingPicker from '../spacingPicker/SpacingPicker';
 
 const BoxEditor: React.FC = () => {
   const boxProps = useAppSelector((state) => state.boxEditor);
@@ -39,6 +40,16 @@ const BoxEditor: React.FC = () => {
           onChange={(val) =>
             handleChange('border', `${val.width}px ${val.style} ${val.color}`)
           }
+        />
+        
+      <Typography variant="h6">Spacing:</Typography>
+        <SpacingPicker
+          margin={boxProps.m ?? "0px"}
+          padding={boxProps.p ?? "0px"}
+          onChange={(val) => {
+            handleChange("m", val.margin);
+            handleChange("p", val.padding);
+          }}
         />
     </Box>
   );
