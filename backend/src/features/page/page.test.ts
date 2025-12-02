@@ -6,6 +6,7 @@ describe('Pages API', () => {
     resourceName: 'page',
     endpoint: '/api/pages',
     createPayload: {
+      pageUniqueId: 'page_id_test_page',
       pageName: 'Test Page',
       pagePath: '/test-page',
       pageRenderMethod: 'static',

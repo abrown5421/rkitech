@@ -4,6 +4,7 @@ import { IPage } from './page.types';
 
 const defaultPages = [
   {
+    pageUniqueId: 'page_id_home',
     pageName: "Home",
     pagePath: "/",
     pageRenderMethod: "static" as const,
@@ -13,7 +14,8 @@ const defaultPages = [
     pageExitAnimation: "animate__fadeOut",
   },
   {
-    pageName: "PageNotFound",
+    pageUniqueId: 'page_id_page_not_found',
+    pageName: "Page Not Found",
     pagePath: "/page-not-found",
     pageRenderMethod: "dynamic" as const,
     pageActive: true,
@@ -22,8 +24,19 @@ const defaultPages = [
     pageExitAnimation: "animate__fadeOut",
   },
   {
-    pageName: "PrivacyPolicy",
+    pageUniqueId: 'page_id_home_privacy_policy',
+    pageName: "Privacy Policy",
     pagePath: "/privacy-policy",
+    pageRenderMethod: "static" as const,
+    pageActive: true,
+    pageColor: "neutral.main",
+    pageEntranceAnimation: "animate__fadeIn",
+    pageExitAnimation: "animate__fadeOut",
+  },
+  {
+    pageUniqueId: 'page_id_admin_dash',
+    pageName: "Admin Dashboard",
+    pagePath: "/admin/dashboard",
     pageRenderMethod: "static" as const,
     pageActive: true,
     pageColor: "neutral.main",

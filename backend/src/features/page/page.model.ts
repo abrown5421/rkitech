@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { IPage } from './page.types';
 
 const PageSchema: Schema = new Schema<IPage>({
+  pageUniqueId: { type: String, required: true },
   pageName: { type: String, required: true },
   pagePath: { type: String, required: true },
   pageRenderMethod: { type: String, enum: ['static', 'dynamic'], default: 'static' },
