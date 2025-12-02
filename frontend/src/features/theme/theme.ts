@@ -60,6 +60,40 @@ const theme = createTheme({
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        outlined: ({ ownerState, theme }) => {
+          type CustomPaletteKeys =
+            | 'primary'
+            | 'secondary'
+            | 'accent'
+            | 'success'
+            | 'warning'
+            | 'error'
+            | 'info'
+            | 'neutral'
+            | 'neutral2'
+            | 'neutral3';
+
+          const color = (ownerState.color || 'primary') as CustomPaletteKeys;
+          const palette = theme.palette[color];
+
+          return {
+            color: palette.main,
+            borderColor: palette.main,
+            backgroundColor: theme.palette.neutral.main,
+
+            "&:hover": {
+              color: palette.content,
+              backgroundColor: palette.main,
+              borderColor: palette.main,
+            }
+          };
+        }
+      }
+    }
+  }
 });
 
 export default theme;
