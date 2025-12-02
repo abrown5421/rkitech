@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ActivePageProps, IPage } from './pageTypes';
 
 const initialState: ActivePageProps = {
-  activePageName: 'Home',
+  activePageUid: 'page_id_home',
   activePageAnimateIn: true,
   activePageObj: undefined,
 };
@@ -13,12 +13,12 @@ const activePageSlice = createSlice({
   initialState,
   reducers: {
     setActivePage: (state, action: PayloadAction<ActivePageProps>) => {
-      state.activePageName = action.payload.activePageName;
+      state.activePageUid = action.payload.activePageUid;
       state.activePageAnimateIn = action.payload.activePageAnimateIn;
       state.activePageObj = action.payload.activePageObj;
     },
     setActivePageName: (state, action: PayloadAction<string>) => {
-      state.activePageName = action.payload;
+      state.activePageUid = action.payload;
     },
     setActivePageAnimateIn: (state, action: PayloadAction<boolean>) => {
       state.activePageAnimateIn = action.payload;
