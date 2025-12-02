@@ -1,5 +1,5 @@
 export interface IElement {
-  _id?: string;
+  _id: string;
   name?: string;
   component: string;
   props: Record<string, any>;
@@ -8,6 +8,6 @@ export interface IElement {
   sx?: Record<string, any>;
   className?: string;
   children?: IElement[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
