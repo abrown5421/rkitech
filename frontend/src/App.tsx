@@ -1,14 +1,43 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useCheckHealth } from './hooks/useCheckHealth';
 import Healthy from './features/frontend/health/Healthy';
 import Unhealthy from './features/frontend/health/Unhealthy';
 import theme from './features/theme/theme';
 import Page from './features/frontend/page/Page';
+import { useAppDispatch } from './store/hooks';
+import { setActivePage } from './features/frontend/page/pageSlice';
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const location = useLocation();
   const { loading, error, progress, pages } = useCheckHealth();
+  const pageNotFound = pages.find((p) => p.pageUniqueId === 'page_id_page_not_found');
+  
+  useEffect(()=>{
+    if (!pages || pages.length === 0) return;
+
+    const page = pages.find((p) => p.pagePath === location.pathname)
+
+    if (page) {
+      dispatch(setActivePage({
+        activePageUid: page.pageUniqueId,
+        activePageAnimateIn: true,
+        activePageObj: page
+      }))
+    } else if (pageNotFound) {
+      dispatch(
+        setActivePage({
+          activePageUid: pageNotFound.pageUniqueId,
+          activePageAnimateIn: true,
+          activePageObj: pageNotFound, 
+        })
+      );
+    }
+  }, [pages, location])
+
+  if (!pages || pages.length === 0 || !pageNotFound) return;
   
   if (loading) {
     return <Healthy progress={progress} />;
@@ -34,7 +63,7 @@ const App: React.FC = () => {
             element={<Page page={p} />}
           />
         ))}
-        <Route path="*" element={<Page page={{...pages.find(p => p.pageName === 'PageNotFound')!}} />} />
+        <Route path="*" element={<Page page={pageNotFound} />} />
       </Routes>
     </Box>
   );

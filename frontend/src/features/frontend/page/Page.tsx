@@ -7,6 +7,7 @@ import type { EntranceAnimation, ExitAnimation } from '../animation/animationTyp
 import Home from '../home/Home';
 import Renderer from '../renderer/Renderer';
 import { useGetElementsByIdQuery } from '../element/elementApi';
+import Dashboard from '../../admin/dashboard/Dashboard';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
@@ -33,6 +34,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
                 {page.pageRenderMethod === 'static' ? (
                 <>
                     {activePage.activePageUid === 'page_id_home' && <Home />}
+                    {activePage.activePageUid === 'page_id_admin_dash' && <Dashboard />}
                 </>
             ) : (
                 rootElement && <Renderer element={rootElement} />
