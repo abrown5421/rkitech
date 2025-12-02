@@ -1,5 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 import type { CustomPalette } from './themeTypes';
+import PrimaryFont from '../../../public/fonts/Primary.ttf';
+import SecondaryFont from '../../../public/fonts/secondary.ttf';
 
 declare module '@mui/material/styles' {
   interface Palette extends CustomPalette {}
@@ -58,9 +60,21 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
+    fontFamily: 'Roboto, Arial, Primary, Secondary',
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Primary';
+          src: url(${PrimaryFont}) format('truetype');
+        }
+        @font-face {
+          font-family: 'Secondary';
+          src: url(${SecondaryFont}) format('truetype');
+        }
+      `,
+    },
     MuiButton: {
       styleOverrides: {
         outlined: ({ ownerState, theme }) => {

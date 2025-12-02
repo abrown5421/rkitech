@@ -8,6 +8,7 @@ import theme from './features/theme/theme';
 import Page from './features/frontend/page/Page';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/frontend/page/pageSlice';
+import Navbar from './features/admin/navbar/Navbar';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,6 +56,15 @@ const App: React.FC = () => {
       height='100vh'
       bgcolor={theme.palette.neutral.content}
     >
+      {(() => {
+        const path = location.pathname.toLowerCase();
+
+        if (path === "/admin/auth") {
+          return null;
+        } else if (path.startsWith("/admin")) {
+          return <Navbar />;
+        }
+      })()}
       <Routes>
         {pages.map((p) => (
           <Route
