@@ -4,6 +4,7 @@ import { useAppSelector } from '../../../store/hooks';
 import { Box } from '@mui/material';
 import Animation from '../animation/Animation';
 import type { EntranceAnimation, ExitAnimation } from '../animation/animationTypes';
+import Home from '../home/Home';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
@@ -26,7 +27,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
                 bgcolor={page.pageColor}
                 boxSizing='border-box'
             >
-                pages will go here
+                {activePage.activePageName === 'Home' && <Home />}
             </Animation>
         </Box>
     );
