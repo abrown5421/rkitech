@@ -5,13 +5,10 @@ import { Box } from '@mui/material';
 import Animation from '../animation/Animation';
 import type { EntranceAnimation, ExitAnimation } from '../animation/animationTypes';
 import Home from '../home/Home';
-import Renderer from '../renderer/Renderer';
-import { useGetElementsByIdQuery } from '../element/elementApi';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
     const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
-    const { data: rootElement} = useGetElementsByIdQuery(page.rootElement ?? "")
 
     return (
         <Box sx={{ height: 'calc(100vh - 64px)', position: 'relative', overflow: 'scroll', display: "flex", flexDirection: isAdminRoute ? "row" : "column" }}>
@@ -30,13 +27,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
                 bgcolor={page.pageColor}
                 boxSizing='border-box'
             >
-                {page.pageRenderMethod === 'static' ? (
-                    <>
-                        {activePage.activePageName === 'Home' && <Home />}
-                    </>
-                ) : (
-                    rootElement && <Renderer element={rootElement} />
-                )}
+                {activePage.activePageUid === 'page_id_home' && <Home />}
             </Animation>
         </Box>
     );

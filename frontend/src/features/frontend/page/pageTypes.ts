@@ -1,5 +1,6 @@
 export interface IPage {
   _id: string;
+  pageUniqueId: string;
   pageName: string;
   pagePath: string;
   pageRenderMethod: 'static' | 'dynamic';
@@ -17,7 +18,7 @@ export interface PageProps {
 }
 
 export interface ActivePageProps {
-  activePageName: string,
+  activePageUid: string,
   activePageAnimateIn: boolean,
   activePageObj?: IPage
 }
