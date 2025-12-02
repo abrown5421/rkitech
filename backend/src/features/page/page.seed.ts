@@ -42,6 +42,26 @@ const defaultPages = [
     pageColor: "neutral.main",
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
+  },
+  {
+    pageUniqueId: 'page_id_admin_auth',
+    pageName: "Admin Auth",
+    pagePath: "/admin/auth",
+    pageRenderMethod: "static" as const,
+    pageActive: true,
+    pageColor: "neutral.content",
+    pageEntranceAnimation: "animate__fadeInUpBig",
+    pageExitAnimation: "animate__fadeOutDownBig",
+  },
+  {
+    pageUniqueId: 'page_id_admin_page_editor',
+    pageName: "Admin Page Editor",
+    pagePath: "/admin/page-editor",
+    pageRenderMethod: "static" as const,
+    pageActive: true,
+    pageColor: "neutral.main",
+    pageEntranceAnimation: "animate__fadeIn",
+    pageExitAnimation: "animate__fadeOut",
   }
 ];
 
