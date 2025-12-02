@@ -3,7 +3,7 @@ import type { IElement } from "./elementTypes";
 
 export const elementsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getElementss: build.query<IElement[], void>({
+    getElements: build.query<IElement[], void>({
       query: () => '/elements',
       providesTags: ['Elements'],
       transformResponse: (response: any) => response.data,
@@ -44,7 +44,7 @@ export const elementsApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetElementssQuery,
+  useGetElementsQuery,
   useGetElementsByIdQuery,
   useCreateElementsMutation,
   useUpdateElementsMutation,
