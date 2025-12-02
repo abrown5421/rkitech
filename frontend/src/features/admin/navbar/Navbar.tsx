@@ -1,7 +1,7 @@
 import { Box, Toolbar, Typography, IconButton, useTheme } from '@mui/material';
 import React from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import logo from '../../../../public/images/Logo.png';
+import logo from '/images/Logo.png';
 
 const Navbar: React.FC = () => {
     const theme = useTheme();

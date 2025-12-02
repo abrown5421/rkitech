@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 import type { CustomPalette } from './themeTypes';
-import PrimaryFont from '../../../public/fonts/Primary.ttf';
-import SecondaryFont from '../../../public/fonts/secondary.ttf';
+import PrimaryFont from '/fonts/Primary.ttf';
+import SecondaryFont from '/fonts/secondary.ttf';
 
 declare module '@mui/material/styles' {
   interface Palette extends CustomPalette {}
