@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const rootElement = useAppSelector((state) => state.renderer.root);
   const { loading, error, progress } = useCheckHealth();
   
-  if (loading) {
+  if (loading && progress !== 100) {
     return <Healthy progress={progress} />;
   }
 

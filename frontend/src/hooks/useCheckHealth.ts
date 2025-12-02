@@ -8,43 +8,37 @@ export const useCheckHealth = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (healthLoading) return;
-
-    if (healthError || !health?.success) {
-      setError('Server health check failed');
-      setLoading(false);
-      return;
-    }
-
-    let progressInterval: ReturnType<typeof setInterval>;
+    let interval: ReturnType<typeof setInterval>;
     let completed = false;
 
-    const preload = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        completed = true;
-        setProgress(100);
-
-        setTimeout(() => setLoading(false), 300);
-      } catch (err) {
-        console.error('Preload error:', err);
-        setError('Failed to preload data');
-        setLoading(false);
-      }
-    };
-
-    progressInterval = setInterval(() => {
+    interval = setInterval(() => {
       setProgress((prev) => {
         if (completed) return prev;
-        if (prev >= 99) return 99;
+        if (prev >= 99) return 99; 
         return prev + 1;
       });
     }, 15);
 
-    preload();
+    return () => clearInterval(interval);
+  }, []);
 
-    return () => clearInterval(progressInterval);
+  useEffect(() => {
+    if (healthLoading) return;
+
+    if (healthError || !health?.success) {
+      setError('Server health check failed, is the backend running?');
+      setLoading(false);
+      setProgress(0);
+      return;
+    }
+
+    const finishProgress = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500)); 
+      setProgress(100);
+      setLoading(false); 
+    };
+
+    finishProgress();
   }, [health, healthError, healthLoading]);
 
   return { loading, error, progress };
