@@ -8,6 +8,7 @@ import Home from '../home/Home';
 import Renderer from '../renderer/Renderer';
 import { useGetElementsByIdQuery } from '../element/elementApi';
 import Dashboard from '../../admin/dashboard/Dashboard';
+import Sidebar from '../../admin/sidebar/Sidebar';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
@@ -16,6 +17,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
 
     return (
         <Box sx={{ height: 'calc(100vh - 64px)', position: 'relative', overflow: 'scroll', display: "flex", flexDirection: isAdminRoute ? "row" : "column" }}>
+            {isAdminRoute && location.pathname !== '/admin/auth' && <Sidebar />}
             <Animation
                 animationObject={{
                     entranceAnimation: page.pageEntranceAnimation as EntranceAnimation,
