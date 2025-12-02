@@ -17,7 +17,7 @@ const activePageSlice = createSlice({
       state.activePageAnimateIn = action.payload.activePageAnimateIn;
       state.activePageObj = action.payload.activePageObj;
     },
-    setActivePageName: (state, action: PayloadAction<string>) => {
+    setActivePageUid: (state, action: PayloadAction<string>) => {
       state.activePageUid = action.payload;
     },
     setActivePageAnimateIn: (state, action: PayloadAction<boolean>) => {
@@ -31,7 +31,7 @@ const activePageSlice = createSlice({
 
 export const {
   setActivePage,
-  setActivePageName,
+  setActivePageUid,
   setActivePageAnimateIn,
   setActivePageObj,
 } = activePageSlice.actions;
