@@ -23,20 +23,19 @@ const Healthy: React.FC<HealthyProps> = ({ progress }) => {
           <LinearProgress
             variant="determinate"
             value={progress}
+            color="primary"
             sx={{
               height: 10,
               borderRadius: 5,
-              "& .MuiLinearProgress-bar": {
-                backgroundColor: theme.palette.primary.main,
-              },
-              backgroundColor: theme.palette.neutral.main,
             }}
           />
         </Box>
 
         <Typography
           variant="body2"
-          sx={{ mt: 2, fontWeight: 500, color: theme.palette.primary.main }}
+          color='primary'
+          fontWeight={700}
+          mt={2}
         >
           {progress}%
         </Typography>

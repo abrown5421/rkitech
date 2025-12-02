@@ -13,7 +13,7 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
       justifyContent="center"
       width="100vw"
       height="100vh"
-      bgcolor={theme.palette.error.main ?? '#FF6266'}
+      bgcolor={theme.palette.error.main}
     >
       <Paper
         elevation={6}
@@ -22,7 +22,7 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
           maxWidth: 400,
           textAlign: 'center',
           borderRadius: 4,
-          backgroundColor: theme.palette.neutral.main ?? 'F9FAFB',
+          backgroundColor: theme.palette.neutral.main,
         }}
       >
         <Box
@@ -30,17 +30,18 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
           justifyContent="center"
           alignItems="center"
           mb={2}
+          color='error.main' 
         >
-          <ErrorOutline sx={{ fontSize: 60, color: theme.palette.error.main ?? '#FF6266' }} />
+          <ErrorOutline />
         </Box>
 
-        <Typography variant="h5" fontWeight="bold" color={theme.palette.error.main ?? '#FF6266'} mb={1}>
+        <Typography variant="h5" fontWeight="bold" color="error.main" mb={1}>
           Yikes! Something went wrong.
         </Typography>
 
         <Typography
           variant="body1"
-          color={theme.palette.neutral.content}
+          color="neutral.content"
           mb={3}
         >
           {error || 'An unexpected error occurred while loading the application.'}
@@ -49,14 +50,7 @@ const Unhealthy: React.FC<UnhealthyProps> = ({ error }) => {
         <Button
           variant="outlined"
           onClick={() => window.location.reload()}
-          sx={{
-            borderColor: theme.palette.error.main ?? '#FF6266',
-            color: theme.palette.error.main ?? '#FF6266',
-            "&:hover": {
-              backgroundColor: theme.palette.error.main ?? '#FF6266',
-              color: theme.palette.error.content ?? '#000000', 
-            },
-          }}
+          color="error"
         >
           Retry
         </Button>
