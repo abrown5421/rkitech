@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
-import { useCheckHealth } from './hooks/useCheckHealth';
 import Healthy from './features/frontend/health/Healthy';
 import Unhealthy from './features/frontend/health/Unhealthy';
 import theme from './features/theme/theme';
@@ -9,6 +8,7 @@ import Page from './features/frontend/page/Page';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/frontend/page/pageSlice';
 import Navbar from './features/admin/navbar/Navbar';
+import { useCheckHealth } from './features/frontend/health/useCheckHealth';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
