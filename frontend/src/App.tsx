@@ -3,7 +3,6 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Healthy from './features/frontend/health/Healthy';
 import Unhealthy from './features/frontend/health/Unhealthy';
-import theme from './features/theme/theme';
 import Page from './features/frontend/page/Page';
 import { useAppDispatch } from './store/hooks';
 import { setActivePage } from './features/frontend/page/pageSlice';
@@ -13,7 +12,7 @@ import { useCheckHealth } from './features/frontend/health/useCheckHealth';
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const { loading, error, progress, pages } = useCheckHealth();
+  const { loading, error, progress, pages, theme } = useCheckHealth();
   const pageNotFound = pages.find((p) => p.pageUniqueId === 'page_id_page_not_found');
   
   useEffect(()=>{
