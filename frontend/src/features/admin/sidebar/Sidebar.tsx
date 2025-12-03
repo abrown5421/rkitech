@@ -16,7 +16,7 @@ const Sidebar: React.FC = () => {
     if (!pages) return;
     const page = pages.find((p: any) => p.pageUniqueId === pageUid);
     if (page) {
-      navigate(page, true);
+      navigate(page);
     }
   };
 
