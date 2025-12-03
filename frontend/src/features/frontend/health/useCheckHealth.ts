@@ -2,6 +2,9 @@ import { useEffect, useState, useRef } from 'react';
 import { useGetHealthQuery } from './healthApi';
 import { useGetPagesQuery } from '../page/pageApi';
 import type { IPage } from '../page/pageTypes';
+import type { Theme } from '@mui/material';
+import { useGetActiveThemeQuery } from '../../theme/themeApi';
+import { buildThemeFromData, defaultTheme } from '../../theme/themeBuilder';
 
 interface HealthCheck {
   name: string;
@@ -11,13 +14,20 @@ interface HealthCheck {
 export const useCheckHealth = () => {
   const { data: health, error: healthError, isLoading: healthLoading } = useGetHealthQuery();
   const [shouldFetchPages, setShouldFetchPages] = useState(false);
+  const [shouldFetchTheme, setShouldFetchTheme] = useState(false);
+  
   const { data: pagesData, error: pagesError, isLoading: pagesLoading } = useGetPagesQuery(undefined, {
     skip: !shouldFetchPages,
+  });
+
+  const { data: themeData, error: themeError, isLoading: themeLoading } = useGetActiveThemeQuery(undefined, {
+    skip: !shouldFetchTheme,
   });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pages, setPages] = useState<IPage[]>([]);
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   
@@ -25,12 +35,21 @@ export const useCheckHealth = () => {
   const pagesDataRef = useRef(pagesData);
   const pagesErrorRef = useRef(pagesError);
   const pagesLoadingRef = useRef(pagesLoading);
+  const themeDataRef = useRef(themeData);
+  const themeErrorRef = useRef(themeError);
+  const themeLoadingRef = useRef(themeLoading);
 
   useEffect(() => {
     pagesDataRef.current = pagesData;
     pagesErrorRef.current = pagesError;
     pagesLoadingRef.current = pagesLoading;
   }, [pagesData, pagesError, pagesLoading]);
+
+  useEffect(() => {
+    themeDataRef.current = themeData;
+    themeErrorRef.current = themeError;
+    themeLoadingRef.current = themeLoading;
+  }, [themeData, themeError, themeLoading]);
 
   useEffect(() => {
     if (checksCompletedRef.current) return;
@@ -49,6 +68,34 @@ export const useCheckHealth = () => {
                 success: false,
                 error: 'Failed to connect to server. Please ensure the server is running.',
               };
+            }
+
+            return { success: true };
+          },
+        },
+        {
+          name: 'Fetch Active Theme',
+          check: async () => {
+            setShouldFetchTheme(true);
+
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            let attempts = 0;
+            const maxAttempts = 100;
+            
+            while (attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 100));
+              
+              if (!themeLoadingRef.current) break;
+              attempts++;
+            }
+
+            if (themeDataRef.current) {
+              const builtTheme = buildThemeFromData(themeDataRef.current);
+              setTheme(builtTheme);
+            } else if (themeErrorRef.current) {
+              console.warn('Failed to fetch theme, using default:', themeErrorRef.current);
+              setTheme(defaultTheme);
             }
 
             return { success: true };
@@ -130,5 +177,5 @@ export const useCheckHealth = () => {
     runHealthChecks();
   }, [health, healthError, healthLoading]);
 
-  return { loading, error, pages, progress, currentStep };
+  return { loading, error, pages, theme, progress, currentStep };
 };
