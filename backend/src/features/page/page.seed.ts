@@ -17,6 +17,7 @@ const defaultPages = [
     pageUniqueId: 'page_id_page_not_found',
     pageName: "Page Not Found",
     pagePath: "/page-not-found",
+    rootElement: "",
     pageRenderMethod: "dynamic" as const,
     pageActive: true,
     pageColor: "neutral.main",
