@@ -14,7 +14,7 @@ export const useNavigation = () => {
       navigate(page.pagePath);
       return;
     }
-
+    dispatch(setActivePageAnimateIn(false));
     setTimeout(() => {
       dispatch(setActivePageUid(page.pageName));
       dispatch(setActivePageObj(page)); 
