@@ -29,7 +29,7 @@ const PageEditor: React.FC = () => {
         justifyContent="center"
         alignItems="center"
         width="100%"
-        p={4}
+        p={2}
       >
         <Alert severity="error">We couldn't find a page matching the given ID</Alert>
       </Box>

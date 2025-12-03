@@ -45,8 +45,8 @@ const Sidebar: React.FC = () => {
       color={theme.palette.neutral3.content}
       boxShadow="0 5px 10px rgba(0,0,0,0.15)"
       zIndex={3}
-      flex={2}
-      p={4}
+      flex={3}
+      p={2}
     >
       <Stack spacing={2}>
         <Button

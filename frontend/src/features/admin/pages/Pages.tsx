@@ -38,7 +38,7 @@ const Pages: React.FC = () => {
       display="flex"
       flexDirection="row"
       width="100%"
-      p={4}
+      p={2}
     >
       <Stack spacing={2} width="100%">
         {editablePages.map((page) => (
@@ -56,7 +56,7 @@ const Pages: React.FC = () => {
             p={2}
           >
             {page.pageRenderMethod === 'dynamic' && (
-              <Box position="absolute" top={4} right={4} zIndex={2} color={theme.palette.success.main}>
+              <Box position="absolute" top={2} right={4} zIndex={2} color={theme.palette.success.main}>
                 <Tooltip title="Edit Page">
                   <IconButton
                     size="small"
