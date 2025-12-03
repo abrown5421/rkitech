@@ -11,6 +11,7 @@ import Dashboard from '../../admin/dashboard/Dashboard';
 import Sidebar from '../../admin/sidebar/Sidebar';
 import Pages from '../../admin/pages/Pages';
 import PageEditor from '../../admin/pageEditor/PageEditor';
+import PESidebar from '../../admin/pageEditor/PESidebar';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
@@ -19,7 +20,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
 
     return (
         <Box sx={{ height: 'calc(100vh - 64px)', position: 'relative', overflow: 'scroll', display: "flex", flexDirection: isAdminRoute ? "row" : "column" }}>
-            {isAdminRoute && location.pathname !== '/admin/auth' && <Sidebar />}
+            {isAdminRoute && location.pathname !== '/admin/auth' && (location.pathname.startsWith('/admin/page-editor') ? <PESidebar /> : <Sidebar />)}
             <Animation
                 animationObject={{
                     entranceAnimation: page.pageEntranceAnimation as EntranceAnimation,

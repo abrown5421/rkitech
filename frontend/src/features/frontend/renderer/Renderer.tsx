@@ -3,22 +3,31 @@ import { componentMap } from "./componentMap";
 import type { ElementDoc, RendererProps } from "./rendererTypes";
 import type { Theme } from "@mui/material";
 import { setSelectedElement } from "./rendererSlice";
-import { useAppDispatch } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
-  const Component = componentMap[element.component];
+
+  const selected = useAppSelector((state) => state.renderer.originalElement);
+  const draft = useAppSelector((state) => state.renderer.draftElement);
+
+  const elementToRender =
+    editMode && selected && draft && selected._id === element._id
+      ? draft
+      : element;
+
+  const Component = componentMap[elementToRender.component];
 
   if (!Component) {
-    return <div>Unknown component: {element.component}</div>;
+    return <div>Unknown component: {elementToRender.component}</div>;
   }
 
-  const children = element.children?.map((child: ElementDoc) => (
+  const children = elementToRender.children?.map((child: ElementDoc) => (
     <Renderer key={child._id} element={child} editMode={editMode} />
   ));
 
   const combinedSx = (theme: Theme) => ({
-    ...(element.props?.sx || {}),
+    ...(elementToRender.props?.sx || {}),
     ...(editMode
       ? {
           position: "relative",
@@ -34,7 +43,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   });
 
   const combinedProps = {
-    ...element.props,
+    ...elementToRender.props,
     sx: combinedSx,
   };
 
@@ -48,7 +57,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   return (
     <div onClick={handleClick} style={{ display: "contents" }}>
       <Component {...combinedProps}>
-        {element.childText}
+        {elementToRender.childText}
         {children}
       </Component>
     </div>

@@ -8,7 +8,7 @@ const Dashboard: React.FC = () => {
         display='flex'
         flexDirection='row'
         width='100%'
-        p={4}
+        p={2}
     >
       Dashboard
     </Box>
