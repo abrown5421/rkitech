@@ -5,3 +5,8 @@ export interface UnhealthyProps {
 export interface HealthyProps {
     progress: number
 }
+
+export interface HealthCheck {
+  name: string;
+  check: () => Promise<{ success: boolean; error?: string }>;
+}

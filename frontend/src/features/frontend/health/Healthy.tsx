@@ -1,46 +1,44 @@
-import React from 'react';
-import { Box, LinearProgress, Typography, useTheme } from '@mui/material';
-import type { HealthyProps } from './HealthTypes';
+import React from "react";
+import type { HealthyProps } from "./HealthTypes";
+import { useGetActiveThemeQuery } from "../../theme/themeApi";
 
 const Healthy: React.FC<HealthyProps> = ({ progress }) => {
-  const theme = useTheme();
+  const { data: theme } = useGetActiveThemeQuery();
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      width="100vw"
-      height="100vh"
-      bgcolor={theme.palette.neutral3.main}
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: theme?.neutral.main ?? "#F9FAFB",
+        flexDirection: "column",
+        fontFamily: "sans-serif",
+      }}
     >
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
+      <div
+        style={{
+          width: "200px",
+          height: "10px",
+          backgroundColor: theme?.neutral3.main ?? "#EEEEEE",
+          borderRadius: 5,
+          overflow: "hidden",
+          marginBottom: "10px",
+        }}
       >
-        <Box sx={{ width: '14rem' }}>
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            color="primary"
-            sx={{
-              height: 10,
-              borderRadius: 5,
-            }}
-          />
-        </Box>
-
-        <Typography
-          variant="body2"
-          color='primary'
-          fontWeight={700}
-          mt={2}
-        >
-          {progress}%
-        </Typography>
-      </Box>
-    </Box>
+        <div
+          style={{
+            width: `${progress}%`,
+            height: "100%",
+            backgroundColor: theme?.primary.main ?? "#FE9A00",
+            transition: "width 0.2s",
+          }}
+        />
+      </div>
+      <div style={{ fontWeight: "bold", color: theme?.primary.main ?? "#FE9A00" }}>{progress}%</div>
+    </div>
   );
 };
 

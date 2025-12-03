@@ -5,13 +5,9 @@ import type { IPage } from '../page/pageTypes';
 import type { Theme } from '@mui/material';
 import { useGetActiveThemeQuery } from '../../theme/themeApi';
 import { buildThemeFromData, defaultTheme } from '../../theme/themeBuilder';
+import type { HealthCheck } from './HealthTypes';
 
-interface HealthCheck {
-  name: string;
-  check: () => Promise<{ success: boolean; error?: string }>;
-}
-
-export const useCheckHealth = () => {
+export const useCheckHealth = (loadBundle: () => Promise<any>) => {
   const { data: health, error: healthError, isLoading: healthLoading } = useGetHealthQuery();
   const [shouldFetchPages, setShouldFetchPages] = useState(false);
   const [shouldFetchTheme, setShouldFetchTheme] = useState(false);
@@ -38,6 +34,30 @@ export const useCheckHealth = () => {
   const themeDataRef = useRef(themeData);
   const themeErrorRef = useRef(themeError);
   const themeLoadingRef = useRef(themeLoading);
+
+  const animateProgress = async (from: number, to: number, isStillLoading: () => boolean) => {
+    return new Promise<void>(async resolve => {
+      const duration = 800; 
+      const start = performance.now();
+
+      const tick = () => {
+        const elapsed = performance.now() - start;
+        const t = Math.min(elapsed / duration, 1);
+        const value = Math.round(from + (to - from) * t);
+
+        setProgress(value);
+
+        if (t < 1 && isStillLoading()) {
+          requestAnimationFrame(tick);
+        } else {
+          setProgress(to);
+          resolve();
+        }
+      };
+
+      tick();
+    });
+  };
 
   useEffect(() => {
     pagesDataRef.current = pagesData;
@@ -136,17 +156,32 @@ export const useCheckHealth = () => {
             };
           },
         },
+        {
+          name: "Load App Bundle",
+          check: async () => {
+            await loadBundle();
+            return { success: true };
+          },
+        },
         // Add more checks here in the future
       ];
 
       const totalSteps = healthChecks.length;
-      const progressPerStep = 100 / totalSteps;
 
-      for (let i = 0; i < healthChecks.length; i++) {
+      for (let i = 0; i < totalSteps; i++) {
         const check = healthChecks[i];
         setCurrentStep(i + 1);
 
+        const sliceStart = (i / totalSteps) * 100;
+        const sliceEnd = ((i + 1) / totalSteps) * 100;
+
         try {
+          const animPromise = animateProgress(
+            sliceStart,
+            sliceEnd,
+            () => loading 
+          );
+
           const result = await check.check();
 
           if (!result.success) {
@@ -157,11 +192,10 @@ export const useCheckHealth = () => {
             return;
           }
 
-          const newProgress = Math.round((i + 1) * progressPerStep);
-          setProgress(newProgress);
+          await animPromise;
 
         } catch (err) {
-          setError(`${check.name} encountered an error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+          setError(`${check.name} encountered an error`);
           setLoading(false);
           setProgress(0);
           checksCompletedRef.current = true;
