@@ -10,7 +10,7 @@ const PageEditor: React.FC = () => {
         width='100%'
         p={4}
     >
-      PageEditor
+      Page editor will go here
     </Box>
   );
 };

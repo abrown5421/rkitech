@@ -8,6 +8,20 @@ export const pagesApi = baseApi.injectEndpoints({
       providesTags: ['Page'],
       transformResponse: (response: any) => response.data, 
     }),
+
+    getNonAdminPages: build.query<IPage[], void>({
+      query: () => '/pages', 
+      transformResponse: (response: any) => {
+        return response.data.filter((page: IPage) => !page.pageUniqueId.startsWith('page_id_admin_'));
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'Page' as const, id: _id })),
+              { type: 'Page', id: 'NON_ADMIN' },
+            ]
+          : [{ type: 'Page', id: 'NON_ADMIN' }],
+    }),
     
     getPageById: build.query<IPage, string>({
       query: (id) => `/pages?_id=${id}`,
@@ -43,6 +57,7 @@ export const pagesApi = baseApi.injectEndpoints({
 
 export const {
   useGetPagesQuery,
+  useGetNonAdminPagesQuery,
   useGetPageByIdQuery,
   useCreatePageMutation,
   useUpdatePageMutation,

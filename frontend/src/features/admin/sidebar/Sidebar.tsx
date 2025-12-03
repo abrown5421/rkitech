@@ -58,10 +58,10 @@ const Sidebar: React.FC = () => {
         </Button>
         <Button
           startIcon={<AutoStories />}
-          onClick={() => goToPage("page_id_admin_page_editor")}
-          sx={buttonStyles('page_id_admin_page_editor')}
+          onClick={() => goToPage("page_id_admin_pages")}
+          sx={buttonStyles('page_id_admin_pages')}
         >
-          Editor
+          Pages
         </Button>
       </Stack>
     </Box>
