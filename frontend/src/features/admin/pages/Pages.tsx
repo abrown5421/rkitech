@@ -55,17 +55,19 @@ const Pages: React.FC = () => {
             boxSizing="border-box"
             p={2}
           >
-            <Box position="absolute" top={4} right={4} zIndex={2} color={theme.palette.success.main}>
-              <Tooltip title="Edit Page">
-                <IconButton
-                  size="small"
-                  color='secondary'
-                  onClick={() => handleHandymanClick(page._id)}
-                >
-                  <HandymanIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
+            {page.pageRenderMethod === 'dynamic' && (
+              <Box position="absolute" top={4} right={4} zIndex={2} color={theme.palette.success.main}>
+                <Tooltip title="Edit Page">
+                  <IconButton
+                    size="small"
+                    color='secondary'
+                    onClick={() => handleHandymanClick(page._id)}
+                  >
+                    <HandymanIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
 
             <Box display="flex" flexDirection="column">
               <Typography
