@@ -9,6 +9,7 @@ import Renderer from '../renderer/Renderer';
 import { useGetElementsByIdQuery } from '../element/elementApi';
 import Dashboard from '../../admin/dashboard/Dashboard';
 import Sidebar from '../../admin/sidebar/Sidebar';
+import PageEditor from '../../admin/pageEditor/PageEditor';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
@@ -37,6 +38,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
                 <>
                     {activePage.activePageUid === 'page_id_home' && <Home />}
                     {activePage.activePageUid === 'page_id_admin_dash' && <Dashboard />}
+                    {activePage.activePageUid === 'page_id_admin_page_editor' && <PageEditor />}
                 </>
             ) : (
                 rootElement && <Renderer element={rootElement} />
