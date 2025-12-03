@@ -62,6 +62,16 @@ const defaultPages = [
     pageColor: "neutral.main",
     pageEntranceAnimation: "animate__fadeIn",
     pageExitAnimation: "animate__fadeOut",
+  },
+  {
+    pageUniqueId: 'page_id_admin_pages',
+    pageName: "Admin Pages",
+    pagePath: "/admin/pages",
+    pageRenderMethod: "static" as const,
+    pageActive: true,
+    pageColor: "neutral.main",
+    pageEntranceAnimation: "animate__fadeIn",
+    pageExitAnimation: "animate__fadeOut",
   }
 ];
 
