@@ -2,8 +2,11 @@ import React from "react";
 import { componentMap } from "./componentMap";
 import type { ElementDoc, RendererProps } from "./rendererTypes";
 import type { Theme } from "@mui/material";
+import { setSelectedElement } from "./rendererSlice";
+import { useAppDispatch } from "../../../store/hooks";
 
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
+  const dispatch = useAppDispatch();
   const Component = componentMap[element.component];
 
   if (!Component) {
@@ -35,11 +38,20 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     sx: combinedSx,
   };
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (editMode) {
+      e.stopPropagation();
+      dispatch(setSelectedElement(element));
+    }
+  };
+
   return (
-    <Component {...combinedProps}>
-      {element.childText}
-      {children}
-    </Component>
+    <div onClick={handleClick} style={{ display: "contents" }}>
+      <Component {...combinedProps}>
+        {element.childText}
+        {children}
+      </Component>
+    </div>
   );
 };
 

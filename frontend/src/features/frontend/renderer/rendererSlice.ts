@@ -1,54 +1,44 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { ElementDoc } from "./rendererTypes";
+import type { EditorState, ElementDoc } from "../renderer/rendererTypes";
 
-const initialElement: ElementDoc = {
-  _id: "root",
-  component: "box",
-  props: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-    p: "16px",
-    bgcolor: "#f0f0f0",
-  },
-  children: [
-    {
-      _id: "t1",
-      component: "typography",
-      props: { variant: "h4" },
-      childText: "Hello world!",
-    },
-    {
-      _id: "t2",
-      component: "typography",
-      props: { color: "primary.main" },
-      childText: "Second piece of text",
-    },
-  ],
+const initialState: EditorState = {
+  originalElement: null,
+  draftElement: null,
+  isDirty: false,
 };
 
-export const rendererSlice = createSlice({
+export const editorSlice = createSlice({
   name: "renderer",
-  initialState: { root: initialElement },
+  initialState,
   reducers: {
-    updateElementProps: (
-      state,
-      action: PayloadAction<{ _id: string; props: Record<string, any>; childText?: string }>
-    ) => {
-      const { _id, props, childText } = action.payload;
+    setSelectedElement(state, action: PayloadAction<ElementDoc>) {
+      state.originalElement = action.payload;
+      state.draftElement = JSON.parse(JSON.stringify(action.payload)); 
+      state.isDirty = false;
+    },
 
-      const updateRecursive = (element: ElementDoc) => {
-        if (element._id === _id) {
-          element.props = { ...element.props, ...props };
-          if (childText !== undefined) element.childText = childText;
-        }
-        element.children?.forEach(updateRecursive);
+    updateDraft(state, action: PayloadAction<Partial<ElementDoc>>) {
+      if (!state.draftElement) return;
+
+      state.draftElement = {
+        ...state.draftElement,
+        ...action.payload,
       };
 
-      updateRecursive(state.root);
+      state.isDirty =
+        JSON.stringify(state.draftElement) !==
+        JSON.stringify(state.originalElement);
+    },
+
+    resetDraft(state) {
+      if (!state.originalElement) return;
+      state.draftElement = JSON.parse(JSON.stringify(state.originalElement));
+      state.isDirty = false;
     },
   },
 });
 
-export const { updateElementProps } = rendererSlice.actions;
-export default rendererSlice.reducer;
+export const { setSelectedElement, updateDraft, resetDraft } =
+  editorSlice.actions;
+
+export default editorSlice.reducer;

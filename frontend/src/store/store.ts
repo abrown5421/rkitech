@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import rendererReducer from '../features/frontend/renderer/rendererSlice';
 import { baseApi } from './api/baseApi';
 import activePageReducer from '../features/frontend/page/pageSlice';
+import rendererReducer from '../features/frontend/renderer/rendererSlice';
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
-    renderer: rendererReducer,
     activePage: activePageReducer,
+    renderer: rendererReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

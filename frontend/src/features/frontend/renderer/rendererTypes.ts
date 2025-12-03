@@ -10,3 +10,9 @@ export interface RendererProps {
   element: ElementDoc;
   editMode?: boolean;
 }
+
+export interface EditorState {
+  originalElement: ElementDoc | null;
+  draftElement: ElementDoc | null;
+  isDirty: boolean;
+}
