@@ -46,7 +46,11 @@ const TypographyEditor: React.FC = () => {
       <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
         <FormControl size="small" sx={{ flex: '1' }}>
           <InputLabel>Size</InputLabel>
-          <Select value={typographyProps.variant} label="Style">
+          <Select
+            value={typographyProps.variant ?? ""}
+            label="Style"
+            onChange={(e) => updateProp("variant", e.target.value)}
+          >
             {fontSizes.map((style) => (
               <MenuItem key={style} value={style}>
                 <Typography>{style}</Typography>
