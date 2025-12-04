@@ -43,6 +43,10 @@ const PageEditor: React.FC = () => {
     dispatch(toggleHover())
   }
 
+  const handleSave = () => {
+    console.log('saved')
+  }
+
   return (
     <Box
       bgcolor={theme.palette.neutral3.content}
@@ -91,7 +95,19 @@ const PageEditor: React.FC = () => {
           </Button>
         </Box>
 
-        <Box width="80px" />
+        <Button 
+          variant={renderer.isDirty ? "outlined" : "contained"} 
+          color="success" 
+          sx={{ 
+            bgcolor: "transparent", 
+            cursor: renderer.isDirty ? 'pointer' : 'not-allowed',
+            opacity: renderer.isDirty ? 1 : 0.5 
+          }} 
+          onClick={handleSave} 
+        > 
+          Save changes
+        </Button>
+        
       </Box>
 
       <Box flex={1} overflow="auto" m='auto' width={renderer.desktop ? '100%' : renderer.tablet ? '70%' : '400px'}>
