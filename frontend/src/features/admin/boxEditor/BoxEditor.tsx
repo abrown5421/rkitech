@@ -1,18 +1,37 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { useAppSelector } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import ColorPicker from '../colorPicker/ColorPicker';
 import BorderPicker from '../borderPicker/BorderPicker';
-import SpacingPicker from '../spacingPicker/SpacingPicker';
 import LayoutPicker from '../layoutPicker/LayoutPicker';
+import { updateDraft } from '../../frontend/renderer/rendererSlice';
+import SpacingPicker from '../spacingPicker/SpacingPicker';
 
 const BoxEditor: React.FC = () => {
-  const element = useAppSelector((state) => state.renderer.originalElement)
+  const dispatch = useAppDispatch();
+  const draft = useAppSelector((state) => state.renderer.draftElement);
 
-  if (!element) return <Typography>Element not found</Typography>;
+  if (!draft) return <Typography>Element not found</Typography>;
 
-  const boxProps = element.props;
-  
+  const boxProps = draft.props ?? {};
+
+  const updateProp = (key: string, value: any) => {
+    dispatch(
+      updateDraft({
+        props: {
+          ...boxProps,
+          [key]: value,
+        },
+      })
+    );
+  };
+
+  const spacingToPx = (val: any) => {
+    if (!val) return "0px";
+    if (typeof val === "number") return `${val * 8}px`; 
+    return val; 
+  };
+
   return (
     <Box display="flex" flexDirection="column" gap="1rem">
       <Typography variant="h6">Layout:</Typography>
@@ -21,7 +40,16 @@ const BoxEditor: React.FC = () => {
         justifyContent={boxProps.justifyContent}
         alignItems={boxProps.alignItems}
         gap={boxProps.gap}
-        onChange={(val) => console.log(val)}
+        onChange={(val) =>
+          dispatch(
+            updateDraft({
+              props: {
+                ...boxProps,
+                ...val,
+              },
+            })
+          )
+        }
       />
 
       <Typography variant="h6">Colors:</Typography>
@@ -29,12 +57,12 @@ const BoxEditor: React.FC = () => {
         <ColorPicker
           label="Background Color"
           value={boxProps.bgcolor ?? '#ffffff'}
-          onChange={(val) => console.log('bgcolor', val)}
+          onChange={(val) => updateProp('bgcolor', val)}
         />
         <ColorPicker
           label="Text Color"
           value={boxProps.color ?? '#000000'}
-          onChange={(val) => console.log('color', val)}
+          onChange={(val) => updateProp('color', val)}
         />
       </Box>
 
@@ -46,19 +74,29 @@ const BoxEditor: React.FC = () => {
           color: boxProps.border?.split(' ')[2] || '#000000',
         }}
         onChange={(val) =>
-          console.log('border', `${val.width}px ${val.style} ${val.color}`)
+          updateProp('border', `${val.width}px ${val.style} ${val.color}`)
         }
       />
 
-      {/* <Typography variant="h6">Spacing:</Typography>
+      <Typography variant="h6">Spacing:</Typography>
       <SpacingPicker
-        margin={boxProps.m ?? "0px"}
-        padding={boxProps.p ?? "0px"}
-        onChange={(val) => {
-          console.log("m", val.margin);
-          console.log("p", val.padding);
-        }}
-      /> */}
+        margin={spacingToPx(boxProps.m ?? boxProps.margin)}
+        padding={spacingToPx(boxProps.p ?? boxProps.padding)}
+        onChange={(val) =>
+          dispatch(
+            updateDraft({
+              props: {
+                ...boxProps,
+                margin: val.margin,
+                padding: val.padding,
+                m: undefined, // optional: remove shorthand after editing
+                p: undefined,
+              },
+            })
+          )
+        }
+      />
+
     </Box>
   );
 };
