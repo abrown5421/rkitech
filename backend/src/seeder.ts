@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { spawn } from "child_process";
 import chalk from "chalk";
+import { disconnectDatabase } from "./features/base/base.seed";
 
 const FEATURES_DIR = path.resolve(__dirname, "features");
 
@@ -15,7 +15,7 @@ function findSeedFiles(dir: string): string[] {
   });
 }
 
-const seedFiles = findSeedFiles(FEATURES_DIR);
+const seedFiles = findSeedFiles(FEATURES_DIR).sort();
 
 if (seedFiles.length === 0) {
   console.log(chalk.yellow(" No seed files found."));
@@ -27,18 +27,19 @@ if (seedFiles.length === 0) {
 
   for (const file of seedFiles) {
     console.log(chalk.cyan(` Running seed: ${path.basename(file)}`));
-
-    const tsNodePath = path.join("node_modules", ".bin", process.platform === "win32" ? "ts-node.cmd" : "ts-node");
-
-    await new Promise<void>((resolve, reject) => {
-        const proc = spawn(tsNodePath, [`"${file}"`], { stdio: "inherit", shell: true });
-
-        proc.on("close", (code) => {
-            if (code !== 0) reject(new Error(`Seed failed: ${file}`));
-            else resolve();
-        });
-    });
+    
+    try {
+      const seedModule = await import(file);
+      if (typeof seedModule.default === 'function') {
+        await seedModule.default();
+      }
+    } catch (error) {
+      console.error(chalk.red(`Error running seed ${path.basename(file)}:`), error);
+      process.exit(1);
+    }
   }
 
-  console.log(chalk.greenBright("\n All seed files executed successfully!"));
+  await disconnectDatabase();
+  
+  console.log(chalk.greenBright("\n✓ All seed files executed successfully!"));
 })();

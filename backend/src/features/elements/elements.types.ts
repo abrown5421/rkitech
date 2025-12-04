@@ -8,5 +8,5 @@ export interface IElements extends Document {
   styles?: Record<string, any>;
   sx?: Record<string, any>;
   className?: string;
-  children?: IElements[];
+  children?: String[];
 }
