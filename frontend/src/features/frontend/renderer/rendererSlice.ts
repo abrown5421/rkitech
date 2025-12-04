@@ -6,6 +6,9 @@ const initialState: EditorState = {
   draftElement: null,
   isDirty: false,
   hover: false,
+  mobile: false,
+  tablet: false,
+  desktop: true,
 };
 
 export const editorSlice = createSlice({
@@ -36,10 +39,20 @@ export const editorSlice = createSlice({
       state.draftElement = JSON.parse(JSON.stringify(state.originalElement));
       state.isDirty = false;
     },
+
+    toggleHover(state) {
+      state.hover = !state.hover;
+    },
+    
+    setDeviceMode(state, action: PayloadAction<"mobile" | "tablet" | "desktop">) {
+      state.mobile = action.payload === "mobile";
+      state.tablet = action.payload === "tablet";
+      state.desktop = action.payload === "desktop";
+    }
   },
 });
 
-export const { setSelectedElement, updateDraft, resetDraft } =
+export const { setSelectedElement, updateDraft, resetDraft, toggleHover, setDeviceMode } =
   editorSlice.actions;
 
 export default editorSlice.reducer;

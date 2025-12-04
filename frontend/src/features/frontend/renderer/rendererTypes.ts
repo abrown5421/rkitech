@@ -23,4 +23,7 @@ export interface EditorState {
   draftElement: ElementDoc | null;
   isDirty: boolean;
   hover: boolean;
+  mobile: boolean;
+  tablet: boolean;
+  desktop: boolean;
 }

@@ -21,7 +21,7 @@ const defaultElements = [
     _seedKey: '404-root',
     name: '404-root',
     component: "box",
-    props: { display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" },
+    props: { display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", bgcolor: "#F9FAFB", height: '100%' },
     _relationFields: {
       children: ['404-heading', '404-text'] 
     }
