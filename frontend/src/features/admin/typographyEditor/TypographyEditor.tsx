@@ -41,9 +41,38 @@ const TypographyEditor: React.FC = () => {
     'overline'
   ];
 
+  const fonts = [
+    "Primary",
+    "Secondary",
+    "Roboto",
+    "Arial",
+    "Verdana",
+    "Tahoma",
+    "Trebuchet MS",
+    "Times New Roman",
+    "Georgia",
+    "Garamond",
+    "Courier New",
+    "Brush Script MT",
+  ];
+
   return (
     <Box display="flex" flexDirection="column" gap={2}>
       <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+         <FormControl size="small" sx={{ flex: '1' }}>
+          <InputLabel>Font</InputLabel>
+          <Select
+            value={typographyProps.fontFamily ?? ""}
+            label="Font"
+            onChange={(e) => updateProp("fontFamily", e.target.value)}
+          >
+            {fonts.map((font) => (
+              <MenuItem key={font} value={font}>
+                <Typography sx={{ fontFamily: font }}>{font}</Typography>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <FormControl size="small" sx={{ flex: '1' }}>
           <InputLabel>Size</InputLabel>
           <Select
