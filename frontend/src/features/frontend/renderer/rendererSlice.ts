@@ -5,6 +5,7 @@ const initialState: EditorState = {
   originalElement: null,
   draftElement: null,
   isDirty: false,
+  hover: false,
 };
 
 export const editorSlice = createSlice({

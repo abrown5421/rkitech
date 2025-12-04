@@ -28,18 +28,23 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const combinedSx = (theme: Theme) => ({
     ...(elementToRender.props?.sx || {}),
-    ...(editMode
-      ? {
-          position: "relative",
-          cursor: "pointer",
-          outline: "1px dashed transparent",
-          transition: "all 0.2s ease",
-          "&:hover": {
-            outline: `1px dashed ${theme.palette.primary.main}`,
-            outlineOffset: 4,
-          },
-        }
-      : {}),
+
+    ...(editMode ? {
+      position: "relative",
+      cursor: "pointer",
+      outline: "1px dashed transparent",
+      transition: "all 0.2s ease",
+      "&:hover": {
+        outline: `1px dashed ${theme.palette.primary.main}`,
+        outlineOffset: 4,
+        ...(elementToRender.props?.states?.hover || {})
+      }
+    } : {
+      "&:hover": elementToRender.props?.states?.hover || {}
+    }),
+
+    "&:active": elementToRender.props?.states?.active || {},
+    "&:focus": elementToRender.props?.states?.focus || {},
   });
 
   const combinedProps = {

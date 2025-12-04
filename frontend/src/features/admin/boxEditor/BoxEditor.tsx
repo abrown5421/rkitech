@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useAppSelector } from '../../../store/hooks';
 import ColorPicker from '../colorPicker/ColorPicker';
@@ -12,7 +12,7 @@ const BoxEditor: React.FC = () => {
   if (!element) return <Typography>Element not found</Typography>;
 
   const boxProps = element.props;
-
+  
   return (
     <Box display="flex" flexDirection="column" gap="1rem">
       <Typography variant="h6">Layout:</Typography>
@@ -50,7 +50,7 @@ const BoxEditor: React.FC = () => {
         }
       />
 
-      <Typography variant="h6">Spacing:</Typography>
+      {/* <Typography variant="h6">Spacing:</Typography>
       <SpacingPicker
         margin={boxProps.m ?? "0px"}
         padding={boxProps.p ?? "0px"}
@@ -58,7 +58,7 @@ const BoxEditor: React.FC = () => {
           console.log("m", val.margin);
           console.log("p", val.padding);
         }}
-      />
+      /> */}
     </Box>
   );
 };
