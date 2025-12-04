@@ -9,7 +9,7 @@ const ElementsSchema: Schema = new Schema<IElements>({
   styles: { type: Schema.Types.Mixed, required: false },
   sx: { type: Schema.Types.Mixed, required: false },
   className: { type: String, required: false },
-  children: [{ type: Schema.Types.Mixed, required: false }],
+  children: [{ type: Schema.Types.Mixed, ref: "Elements", required: false }],
 }, { timestamps: true });
 
 ElementsSchema.index({ name: 1 });

@@ -200,10 +200,12 @@ const defaultThemes: Partial<ITheme>[] = [
   },
 ];
 
-seedDatabase<ITheme>({
-  modelName: 'theme',
-  model: Theme,
-  data: defaultThemes,
-  uniqueField: 'name',
-  displayField: 'name',
-});
+export default async () => {
+  await seedDatabase<ITheme>({
+    modelName: 'theme',
+    model: Theme,
+    data: defaultThemes,
+    uniqueField: 'name',
+    displayField: 'name',
+  });
+};

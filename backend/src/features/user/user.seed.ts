@@ -29,10 +29,12 @@ const defaultUsers: Partial<IUser>[] = [
   },
 ];
 
-seedDatabase<IUser>({
-  modelName: 'user',
-  model: User,
-  data: defaultUsers,
-  uniqueField: 'userEmail',
-  displayField: 'userFirstName',
-});
+export default async () => {
+  await seedDatabase<IUser>({
+    modelName: 'user',
+    model: User,
+    data: defaultUsers,
+    uniqueField: 'userEmail',
+    displayField: 'userFirstName',
+  });
+};
