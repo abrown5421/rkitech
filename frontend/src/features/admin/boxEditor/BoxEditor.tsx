@@ -1,122 +1,84 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { Box, Typography, Alert } from '@mui/material';
 import ColorPicker from '../colorPicker/ColorPicker';
 import BorderPicker from '../borderPicker/BorderPicker';
-import LayoutPicker from '../layoutPicker/LayoutPicker';
-import { updateDraft } from '../../frontend/renderer/rendererSlice';
 import SpacingPicker from '../spacingPicker/SpacingPicker';
 import DimensionPicker from '../dimensionPicker/DimensionPicker';
+import LayoutPicker from '../layoutPicker/LayoutPicker';
+import { usePropEditor } from '../../../hooks/admin/usePropEditor';
 
 const BoxEditor: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const draft = useAppSelector((state) => state.renderer.draftElement);
+  const { draft, isHoverMode, activeProps, updateProp, updateNestedProp } = usePropEditor();
 
   if (!draft) return <Typography>Element not found</Typography>;
 
-  const boxProps = draft.props ?? {};
-
-  const updateProp = (key: string, value: any) => {
-    dispatch(
-      updateDraft({
-        props: {
-          ...boxProps,
-          [key]: value,
-        },
-      })
-    );
-  };
-
-  const spacingToPx = (val: any) => {
-    if (!val) return "0px";
-    if (typeof val === "number") return `${val * 8}px`; 
-    return val; 
-  };
-
   return (
-    <Box display="flex" flexDirection="column" gap="1rem">
-      <Typography variant="h6">Dimensions:</Typography>
-      <DimensionPicker
-        value={{
-          width: boxProps.width ?? 'auto',
-          height: boxProps.height ?? 'auto',
-        }}
-        onChange={(val) =>
-          dispatch(
-            updateDraft({
-              props: {
-                ...boxProps,
-                width: val.width,
-                height: val.height,
-              },
-            })
-          )
-        }
-      />
+    <Box display="flex" flexDirection="column" gap={2}>
+      {isHoverMode && (
+        <Alert severity="info" sx={{ mb: 1 }}>
+          Editing Hover Styles
+        </Alert>
+      )}
 
-      <Typography variant="h6">Layout:</Typography>
-      <LayoutPicker
-        flexDirection={boxProps.flexDirection}
-        justifyContent={boxProps.justifyContent}
-        alignItems={boxProps.alignItems}
-        gap={boxProps.gap}
-        onChange={(val) =>
-          dispatch(
-            updateDraft({
-              props: {
-                ...boxProps,
-                ...val,
-              },
-            })
-          )
-        }
-      />
+      {!isHoverMode && (
+        <>
+          <Typography variant="h6">Layout:</Typography>
+          <LayoutPicker
+            flexDirection={activeProps.flexDirection ?? "row"}
+            justifyContent={activeProps.justifyContent ?? "flex-start"}
+            alignItems={activeProps.alignItems ?? "stretch"}
+            gap={activeProps.gap ?? "0px"}
+            onChange={(changes) => {
+              Object.entries(changes).forEach(([key, value]) => {
+                updateProp(key, value);
+              });
+            }}
+          />
+
+          <Typography variant="h6">Dimensions:</Typography>
+          <DimensionPicker
+            value={{
+              width: activeProps.width ?? "100px",
+              height: activeProps.height ?? "100px"
+            }}
+            onChange={(val) => {
+              updateProp("width", val.width);
+              updateProp("height", val.height);
+            }}
+          />
+        </>
+      )}
 
       <Typography variant="h6">Colors:</Typography>
       <Box display="flex" flexDirection="row" gap={1}>
         <ColorPicker
-          label="Background Color"
-          value={boxProps.bgcolor ?? '#ffffff'}
-          onChange={(val) => updateProp('bgcolor', val)}
-        />
-        <ColorPicker
-          label="Text Color"
-          value={boxProps.color ?? '#000000'}
-          onChange={(val) => updateProp('color', val)}
+          label="Background"
+          value={activeProps.bgcolor ?? '#ffffff'}
+          onChange={(val) => updateProp("bgcolor", val)}
         />
       </Box>
 
       <Typography variant="h6">Border:</Typography>
       <BorderPicker
         value={{
-          width: parseInt(boxProps.border?.split(' ')[0] || '1', 10),
-          style: boxProps.border?.split(' ')[1] || 'solid',
-          color: boxProps.border?.split(' ')[2] || '#000000',
+          width: parseInt(activeProps.border?.split(' ')[0] || '1', 10),
+          style: activeProps.border?.split(' ')[1] || 'solid',
+          color: activeProps.border?.split(' ')[2] || '#000000',
         }}
         onChange={(val) =>
-          updateProp('border', `${val.width}px ${val.style} ${val.color}`)
+          updateProp("border", `${val.width}px ${val.style} ${val.color}`)
         }
       />
 
       <Typography variant="h6">Spacing:</Typography>
       <SpacingPicker
-        margin={spacingToPx(boxProps.m ?? boxProps.margin)}
-        padding={spacingToPx(boxProps.p ?? boxProps.padding)}
-        onChange={(val) =>
-          dispatch(
-            updateDraft({
-              props: {
-                ...boxProps,
-                margin: val.margin,
-                padding: val.padding,
-                m: undefined, // optional: remove shorthand after editing
-                p: undefined,
-              },
-            })
-          )
-        }
+        margin={activeProps.sx?.m ?? activeProps.m ?? "0px"}
+        padding={activeProps.p ?? "0px"}
+        onChange={(val) => {
+          updateProp("p", val.padding);
+          updateNestedProp(['sx', 'm'], val.margin);
+        }}
       />
-
     </Box>
   );
 };
