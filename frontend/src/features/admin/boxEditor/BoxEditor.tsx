@@ -6,6 +6,7 @@ import BorderPicker from '../borderPicker/BorderPicker';
 import LayoutPicker from '../layoutPicker/LayoutPicker';
 import { updateDraft } from '../../frontend/renderer/rendererSlice';
 import SpacingPicker from '../spacingPicker/SpacingPicker';
+import DimensionPicker from '../dimensionPicker/DimensionPicker';
 
 const BoxEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +35,25 @@ const BoxEditor: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" gap="1rem">
+      <Typography variant="h6">Dimensions:</Typography>
+      <DimensionPicker
+        value={{
+          width: boxProps.width ?? 'auto',
+          height: boxProps.height ?? 'auto',
+        }}
+        onChange={(val) =>
+          dispatch(
+            updateDraft({
+              props: {
+                ...boxProps,
+                width: val.width,
+                height: val.height,
+              },
+            })
+          )
+        }
+      />
+
       <Typography variant="h6">Layout:</Typography>
       <LayoutPicker
         flexDirection={boxProps.flexDirection}
