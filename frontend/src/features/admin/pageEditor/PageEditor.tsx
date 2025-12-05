@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import TabletAndroidIcon from '@mui/icons-material/TabletAndroid';
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
+import { openAlert } from '../../frontend/alert/alertSlice';
 
 const PageEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -44,7 +45,16 @@ const PageEditor: React.FC = () => {
   }
 
   const handleSave = () => {
-    console.log('saved')
+    dispatch(
+      openAlert({
+        severity: "success",
+        body: "Changes saved successfully!",
+        closeable: true,
+        orientation: "bottom-right",
+        entrance: "animate__fadeInRight",
+        exit: "animate__fadeOutRight",
+      })
+    );
   }
 
   return (
