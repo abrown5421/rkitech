@@ -7,6 +7,7 @@ import type { IPage } from "./features/frontend/page/pageTypes";
 import type { Theme } from "@mui/material";
 import { useAppDispatch } from "./store/hooks";
 import { setActivePage } from "./features/frontend/page/pageSlice";
+import Alert from "./features/frontend/alert/Alert";
 
 interface AppInnerProps {
   pages: IPage[];
@@ -55,6 +56,7 @@ const AppInner: React.FC<AppInnerProps> = ({ pages, theme }) => {
         ))}
         <Route path="*" element={<Page page={pageNotFound!} />} />
       </Routes>
+      <Alert />
     </Box>
   );
 };
