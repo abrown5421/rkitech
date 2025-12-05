@@ -7,7 +7,12 @@ export interface ElementDoc {
       hover?: Record<string, any>;
       active?: Record<string, any>;
       focus?: Record<string, any>;
-    }
+    };
+    responsive?: {
+      mobile?: Record<string, any>;
+      tablet?: Record<string, any>;
+      desktop?: Record<string, any>;
+    };
   };
   childText?: string;
   children?: ElementDoc[];
