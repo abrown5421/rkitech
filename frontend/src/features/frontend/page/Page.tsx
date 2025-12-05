@@ -7,6 +7,7 @@ import type { EntranceAnimation, ExitAnimation } from '../animation/animationTyp
 import Home from '../home/Home';
 import Renderer from '../renderer/Renderer';
 import { useGetElementsByIdQuery } from '../element/elementApi';
+import { skipToken } from '@reduxjs/toolkit/query';
 import Dashboard from '../../admin/dashboard/Dashboard';
 import Sidebar from '../../admin/sidebar/Sidebar';
 import Pages from '../../admin/pages/Pages';
@@ -16,8 +17,10 @@ import PESidebar from '../../admin/pageEditor/PESidebar';
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
     const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
-    const { data: rootElement } = useGetElementsByIdQuery(page._id)
-
+    const { data: rootElement } = useGetElementsByIdQuery(
+        page.rootElement ?? skipToken
+    );
+    
     return (
         <Box sx={{ height: 'calc(100vh - 64px)', position: 'relative', overflow: 'scroll', display: "flex", flexDirection: isAdminRoute ? "row" : "column" }}>
             {isAdminRoute && location.pathname !== '/admin/auth' && (location.pathname.startsWith('/admin/page-editor') ? <PESidebar /> : <Sidebar />)}
@@ -44,7 +47,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
                     {activePage.activePageUid === 'page_id_admin_page_editor' && <PageEditor />}
                 </>
             ) : (
-                rootElement && <Renderer element={rootElement} />
+                rootElement && <Renderer element={rootElement[0]} /> 
             )}
             </Animation>
         </Box>
