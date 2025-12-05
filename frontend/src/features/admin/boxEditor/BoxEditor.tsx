@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Alert } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import ColorPicker from '../colorPicker/ColorPicker';
 import BorderPicker from '../borderPicker/BorderPicker';
 import SpacingPicker from '../spacingPicker/SpacingPicker';
@@ -14,12 +14,6 @@ const BoxEditor: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      {isHoverMode && (
-        <Alert severity="info" sx={{ mb: 1 }}>
-          Editing Hover Styles
-        </Alert>
-      )}
-
       {!isHoverMode && (
         <>
           <Typography variant="h6">Layout:</Typography>

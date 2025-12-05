@@ -21,6 +21,7 @@ export interface RendererProps {
 export interface EditorState {
   originalElement: ElementDoc | null;
   draftElement: ElementDoc | null;
+  pendingChanges: Record<string, ElementDoc>;
   isDirty: boolean;
   hover: boolean;
   mobile: boolean;

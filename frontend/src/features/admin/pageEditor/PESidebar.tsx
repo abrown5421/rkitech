@@ -21,10 +21,13 @@ const Sidebar: React.FC = () => {
     >
       {renderer.originalElement ? (
         <>
-            <Typography variant="caption">Editing Element {renderer.originalElement._id}</Typography>
-            <Divider sx={{my: 2}} />
-            {renderer.originalElement.component === 'box' && <BoxEditor />}
-            {renderer.originalElement.component === 'typography' && <TypographyEditor />}
+          <Box display='flex'  flexDirection='row' justifyContent='space-between'>
+            <Typography variant="caption">Element #{renderer.originalElement._id}</Typography>    
+            {renderer.hover && <Typography variant="caption" color="success">(Hover Mode)</Typography>}
+          </Box>
+          <Divider sx={{my: 2}} />
+          {renderer.originalElement.component === 'box' && <BoxEditor />}
+          {renderer.originalElement.component === 'typography' && <TypographyEditor />}
         </>
       ) : (
         <Typography>No Element</Typography>
