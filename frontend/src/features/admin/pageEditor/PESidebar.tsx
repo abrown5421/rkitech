@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Divider, Typography, useTheme } from "@mui/material";
 import { useAppSelector } from "../../../store/hooks";
 import BoxEditor from "../boxEditor/BoxEditor";
@@ -8,6 +8,8 @@ const Sidebar: React.FC = () => {
   const theme = useTheme();
   const renderer = useAppSelector((state) => state.renderer)
 
+  useEffect(()=>{console.log(renderer)}, [renderer])
+  
   return (
     <Box
       display="flex"
@@ -23,7 +25,12 @@ const Sidebar: React.FC = () => {
         <>
           <Box display='flex'  flexDirection='row' justifyContent='space-between'>
             <Typography variant="caption">Element #{renderer.originalElement._id}</Typography>    
-            {renderer.hover && <Typography variant="caption" color="success">(Hover Mode)</Typography>}
+            <Box display="flex" gap={1}>
+              {renderer.hover && <Typography variant="caption" color="success">(Hover)</Typography>}
+              {renderer.mobile && <Typography variant="caption" color="info">(Mobile)</Typography>}
+              {renderer.tablet && <Typography variant="caption" color="info">(Tablet)</Typography>}
+              {renderer.desktop && <Typography variant="caption" color="info">(Desktop)</Typography>}
+            </Box>
           </Box>
           <Divider sx={{my: 2}} />
           {renderer.originalElement.component === 'box' && <BoxEditor />}

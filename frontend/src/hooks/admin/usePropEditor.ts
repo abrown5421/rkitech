@@ -5,44 +5,80 @@ export const usePropEditor = () => {
   const dispatch = useAppDispatch();
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const isHoverMode = useAppSelector((state) => state.renderer.hover);
+  const deviceMode = useAppSelector((state) => {
+    if (state.renderer.mobile) return 'mobile';
+    if (state.renderer.tablet) return 'tablet';
+    return 'desktop';
+  });
 
   if (!draft) {
     return {
       draft: null,
       isHoverMode: false,
+      deviceMode: 'desktop',
       activeProps: {},
       updateProp: () => {},
       updateNestedProp: () => {},
     };
   }
 
-  const typographyProps = draft.props ?? {};
+  const baseProps = draft.props ?? {};
   
-  const activeProps = isHoverMode 
-    ? (typographyProps.states?.hover ?? {})
-    : typographyProps;
+  let activeProps = baseProps;
+  
+  if (deviceMode !== 'desktop' && baseProps.responsive?.[deviceMode]) {
+    activeProps = {
+      ...activeProps,
+      ...baseProps.responsive[deviceMode]
+    };
+  }
+  
+  if (isHoverMode) {
+    activeProps = {
+      ...activeProps,
+      ...(baseProps.states?.hover ?? {})
+    };
+  }
 
   const updateProp = (key: string, value: any) => {
     if (isHoverMode) {
       dispatch(
         updateDraft({
           props: {
-            ...typographyProps,
+            ...baseProps,
             states: {
-              ...(typographyProps.states ?? {}),
+              ...(baseProps.states ?? {}),
               hover: {
-                ...(typographyProps.states?.hover ?? {}),
+                ...(baseProps.states?.hover ?? {}),
                 [key]: value,
               },
             },
           },
         })
       );
-    } else {
+    } 
+    else if (deviceMode !== 'desktop') {
       dispatch(
         updateDraft({
           props: {
-            ...typographyProps,
+            ...baseProps,
+            responsive: {
+              ...(baseProps.responsive ?? {}),
+              [deviceMode]: {
+                ...(baseProps.responsive?.[deviceMode] ?? {}),
+                [key]: value,
+              },
+            },
+          },
+        })
+      );
+    } 
+    
+    else {
+      dispatch(
+        updateDraft({
+          props: {
+            ...baseProps,
             [key]: value,
           },
         })
@@ -64,23 +100,40 @@ export const usePropEditor = () => {
 
     if (isHoverMode) {
       const updatedHover = setNestedValue(
-        typographyProps.states?.hover ?? {},
+        baseProps.states?.hover ?? {},
         path,
         value
       );
       dispatch(
         updateDraft({
           props: {
-            ...typographyProps,
+            ...baseProps,
             states: {
-              ...(typographyProps.states ?? {}),
+              ...(baseProps.states ?? {}),
               hover: updatedHover,
             },
           },
         })
       );
+    } else if (deviceMode !== 'desktop') {
+      const updatedResponsive = setNestedValue(
+        baseProps.responsive?.[deviceMode] ?? {},
+        path,
+        value
+      );
+      dispatch(
+        updateDraft({
+          props: {
+            ...baseProps,
+            responsive: {
+              ...(baseProps.responsive ?? {}),
+              [deviceMode]: updatedResponsive,
+            },
+          },
+        })
+      );
     } else {
-      const updatedProps = setNestedValue(typographyProps, path, value);
+      const updatedProps = setNestedValue(baseProps, path, value);
       dispatch(
         updateDraft({
           props: updatedProps,
@@ -92,6 +145,7 @@ export const usePropEditor = () => {
   return {
     draft,
     isHoverMode,
+    deviceMode,
     activeProps,
     updateProp,
     updateNestedProp,
