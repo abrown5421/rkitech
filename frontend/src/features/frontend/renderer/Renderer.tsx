@@ -11,10 +11,13 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
+  const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
 
   const elementToRender =
     editMode && selected && draft && selected._id === element._id
-      ? draft
+      ? draft 
+      : editMode && pendingChanges[element._id]
+      ? pendingChanges[element._id] 
       : element;
 
   const Component = componentMap[elementToRender.component];

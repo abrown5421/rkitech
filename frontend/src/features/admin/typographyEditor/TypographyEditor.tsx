@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, TextField, Typography, Select, MenuItem, FormControl, InputLabel, Alert } from '@mui/material';
+import { Box, TextField, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useAppDispatch } from '../../../store/hooks';
 import { updateDraft } from '../../frontend/renderer/rendererSlice';
 import ColorPicker from '../colorPicker/ColorPicker';
@@ -27,12 +27,6 @@ const TypographyEditor: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      {isHoverMode && (
-        <Alert severity="info" sx={{ mb: 1 }}>
-          Editing Hover Styles
-        </Alert>
-      )}
-
       {!isHoverMode && (
         <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
           <FormControl size="small" sx={{ flex: '1' }}>

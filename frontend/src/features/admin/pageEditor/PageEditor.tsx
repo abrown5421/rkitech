@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useGetPageByIdQuery } from '../../frontend/page/pageApi';
 import Renderer from '../../frontend/renderer/Renderer';
 import { Alert, Box, Button, useTheme } from '@mui/material';
-import { useGetElementsByIdQuery } from '../../frontend/element/elementApi';
+import { useGetElementsByIdQuery, useUpdateElementsMutation } from '../../frontend/element/elementApi';
 import type { IElement } from '../../frontend/element/elementTypes';
 import { setDeviceMode, toggleHover } from '../../frontend/renderer/rendererSlice';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -11,6 +11,7 @@ import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import TabletAndroidIcon from '@mui/icons-material/TabletAndroid';
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
 import { openAlert } from '../../frontend/alert/alertSlice';
+import type { ElementDoc } from '../../frontend/renderer/rendererTypes';
 
 const PageEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,7 +19,9 @@ const PageEditor: React.FC = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const renderer = useAppSelector((state) => state.renderer)
-
+  const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
+  const [updateElements] = useUpdateElementsMutation();
+  
   const { data: rootPage } = useGetPageByIdQuery(id!);
 
   const { data: rootElement } = useGetElementsByIdQuery(
@@ -44,7 +47,28 @@ const PageEditor: React.FC = () => {
     dispatch(toggleHover())
   }
 
-  const handleSave = () => {
+  const elementDocToIElement = (doc: ElementDoc): IElement => {
+    return {
+      _id: doc._id,
+      component: doc.component,
+      props: doc.props,
+      childText: doc.childText,
+      children: doc.children?.map(elementDocToIElement),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  };
+
+  const handleSave = async () => {
+    await Promise.all(
+      Object.entries(pendingChanges).map(([id, doc]) =>
+        updateElements({
+          id,
+          data: elementDocToIElement(doc),
+        })
+      )
+    );
+
     dispatch(
       openAlert({
         severity: "success",
@@ -55,7 +79,7 @@ const PageEditor: React.FC = () => {
         exit: "animate__fadeOutRight",
       })
     );
-  }
+  };
 
   return (
     <Box
