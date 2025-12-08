@@ -3,6 +3,7 @@ import { Box, Divider, Typography, useTheme } from "@mui/material";
 import { useAppSelector } from "../../../store/hooks";
 import BoxEditor from "../boxEditor/BoxEditor";
 import TypographyEditor from "../typographyEditor/TypographyEditor";
+import ButtonEditor from "../buttonEditor/ButtonEditor";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
@@ -35,6 +36,7 @@ const Sidebar: React.FC = () => {
           <Divider sx={{my: 2}} />
           {renderer.originalElement.component === 'box' && <BoxEditor />}
           {renderer.originalElement.component === 'typography' && <TypographyEditor />}
+          {renderer.originalElement.component === 'button' && <ButtonEditor />}
         </>
       ) : (
         <Typography>No Element</Typography>

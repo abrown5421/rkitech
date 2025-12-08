@@ -4,4 +4,5 @@ export interface ColorPickerProps {
   onChange: (hex: string) => void;
   containerSx?: object;
   inputProps?: object;
+  themeOnly?: boolean
 }
