@@ -27,13 +27,19 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       : element;
 
   const Component = componentMap[elementToRender.component];
+  
+  const childIds = (elementToRender.children as string[] | undefined) || [];
+  const childQueries = childIds.map((childId) => 
+    useGetElementsByIdQuery(childId)
+  );
+
   if (!Component) {
     return <div>Unknown component: {elementToRender.component}</div>;
   }
 
-  const childrenElements = (elementToRender.children as string[] | undefined)?.map((childId) => {
-    const { data: childArray } = useGetElementsByIdQuery(childId);
-    const child = (childArray as IElement[] | undefined)?.[0];
+  const childrenElements = childQueries.map((query, index) => {
+    const childId = childIds[index];
+    const child = (query.data as IElement[] | undefined)?.[0];
 
     if (!child) return <div key={childId}>Child not found</div>;
 

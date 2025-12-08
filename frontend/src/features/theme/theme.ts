@@ -104,7 +104,7 @@ const theme = createTheme({
               borderColor: palette.main,
             }
           };
-        }
+        },
       }
     }
   }

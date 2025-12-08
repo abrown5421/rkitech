@@ -4,7 +4,7 @@ import { HexColorPicker } from "react-colorful";
 import { useTheme } from "@mui/material/styles";
 import type { ColorPickerProps } from "./colorPickerTypes";
 
-const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange, containerSx, inputProps }) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange, containerSx, inputProps, themeOnly = false }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLInputElement | null>(null);
@@ -12,10 +12,13 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange, conta
 
   const themeColors = Object.entries(theme.palette)
     .filter(([_, val]) => typeof val === "object" && "main" in val)
-    .flatMap(([name, val]: [string, any]) => [
-        { name: `${name} (main)`, color: val.main },
-        val.content ? { name: `${name} (content)`, color: val.content } : null,
-    ].filter(Boolean) as { name: string; color: string }[]);
+    .flatMap(([name, val]: [string, any]) => {
+      const colors = [{ name: `${name} (main)`, color: val.main }];
+      if (!themeOnly && val.content) {
+        colors.push({ name: `${name} (content)`, color: val.content });
+      }
+      return colors;
+    });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,7 +92,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange, conta
             {themeColors.map(({ name, color }, idx) => (
                 <Tooltip key={idx} title={name} placement="bottom">
                     <IconButton
-                        onClick={() => handleSwatchClick(color)}
+                        onClick={() => handleSwatchClick(themeOnly ? name.replace(" (main)", "") : color)}
                         sx={{
                             width: 32,
                             height: 32,
@@ -103,15 +106,19 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange, conta
                 </Tooltip>
             ))}
           </Box>
-
-          <Typography variant="caption" sx={{ opacity: 0.7, mt: 2, display: "block" }}>
-            Custom Color:
-          </Typography>
-          <HexColorPicker
-            color={value || '#ffffff'}
-            onChange={handleHexChange}
-            style={{ width: "100%", marginTop: "0.5rem" }}
-          />
+          
+          {!themeOnly && (
+            <>
+              <Typography variant="caption" sx={{ opacity: 0.7, mt: 2, display: "block" }}>
+                Custom Color:
+              </Typography>
+              <HexColorPicker
+                color={value || '#ffffff'}
+                onChange={handleHexChange}
+                style={{ width: "100%", marginTop: "0.5rem" }}
+              />
+            </>
+          )}
         </Paper>
       </Popper>
     </Box>
