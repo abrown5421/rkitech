@@ -3,6 +3,7 @@ import cors from 'cors';
 import pageRoutes from './features/page/page.routes';
 import userRoutes from './features/user/user.routes';
 import themeRoutes from './features/theme/theme.routes';
+import mediaRoutes from './features/media/media.routes';
 import elementsRoutes from './features/elements/elements.routes';
 import { BaseError } from './middleware/error.middleware';
 import mongoose from 'mongoose';
@@ -50,6 +51,8 @@ app.use('/api/themes', themeRoutes);
 app.use('/api/pages', pageRoutes);
 app.use('/api/users', userRoutes);
 // [CLI_ROUTES]
+
+app.use('/api/media', mediaRoutes);
 
 // error middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
