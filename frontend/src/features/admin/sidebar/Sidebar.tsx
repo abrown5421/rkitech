@@ -3,6 +3,7 @@ import { useNavigation } from "../../../hooks/useNavigate";
 import { Box, Button, Stack, useTheme } from "@mui/material";
 import SpeedIcon from "@mui/icons-material/Speed";
 import { AutoStories } from "@mui/icons-material";
+import PermMediaIcon from '@mui/icons-material/PermMedia';
 import { useGetPagesQuery } from "../../frontend/page/pageApi";
 import { useAppSelector } from "../../../store/hooks";
 
@@ -62,6 +63,13 @@ const Sidebar: React.FC = () => {
           sx={buttonStyles('page_id_admin_pages')}
         >
           Pages
+        </Button>
+        <Button
+          startIcon={<PermMediaIcon />}
+          onClick={() => goToPage("page_id_admin_media")}
+          sx={buttonStyles('page_id_admin_media')}
+        >
+          Media
         </Button>
       </Stack>
     </Box>
