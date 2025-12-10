@@ -6,7 +6,7 @@ export class MediaService {
   private publicPath: string;
 
   constructor() {
-    this.publicPath = path.join(__dirname, '../../../frontend/public');
+    this.publicPath = path.join(__dirname, '../../../../frontend/public');
   }
 
   private readDirectoryRecursive(dirPath: string) {
