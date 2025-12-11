@@ -15,6 +15,39 @@ export const mediaApi = baseApi.injectEndpoints({
       transformResponse: (response: any) => transformMediaTree(response.data),
     }),
 
+    getPublicImages: build.query<string[], void>({
+      query: () => "/media/public-images",
+      transformResponse: (response: any) => response.images || [],
+      providesTags: ["Media"],
+    }),
+
+    getImages: build.query<{ name: string; path: string }[],void>({
+      query: () => "/media/tree",
+      providesTags: ["Media"],
+      transformResponse: (response: any) => {
+        const tree = transformMediaTree(response.data);
+
+        const extractImages = (node: any, out: any[]) => {
+          if (node.type === "file") {
+            const ext = node.name.split(".").pop().toLowerCase();
+            if (["png", "jpg", "jpeg", "gif", "svg", "webp"].includes(ext)) {
+              out.push({
+                name: node.name,
+                path: "/" + node.path, 
+              });
+            }
+          }
+          if (node.children) {
+            node.children.forEach((child: any) => extractImages(child, out));
+          }
+        };
+
+        const images: { name: string; path: string }[] = [];
+        extractImages(tree, images);
+        return images;
+      },
+    }),
+
     uploadMedia: build.mutation<MediaUploadResponse, FormData>({
       query: (formData) => ({
         url: "/media/upload",
@@ -60,6 +93,7 @@ export const mediaApi = baseApi.injectEndpoints({
 
 export const {
   useGetMediaTreeQuery,
+  useGetImagesQuery,
   useUploadMediaMutation,
   useRenameMediaMutation,
   useReplaceMediaMutation,

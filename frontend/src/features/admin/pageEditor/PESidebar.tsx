@@ -4,6 +4,7 @@ import { useAppSelector } from "../../../store/hooks";
 import BoxEditor from "../boxEditor/BoxEditor";
 import TypographyEditor from "../typographyEditor/TypographyEditor";
 import ButtonEditor from "../buttonEditor/ButtonEditor";
+import ImageEditor from "../imageEditor/ImageEditor";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
@@ -37,6 +38,7 @@ const Sidebar: React.FC = () => {
           {renderer.originalElement.component === 'box' && <BoxEditor />}
           {renderer.originalElement.component === 'typography' && <TypographyEditor />}
           {renderer.originalElement.component === 'button' && <ButtonEditor />}
+          {renderer.originalElement.component === 'image' && <ImageEditor />}
         </>
       ) : (
         <Typography>No Element</Typography>
