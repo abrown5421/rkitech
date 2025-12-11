@@ -1,0 +1,132 @@
+[{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab73c"
+  },
+  "name": "404-heading",
+  "component": "typography",
+  "props": {
+    "variant": "h1",
+    "color": "#FE9A00",
+    "fontFamily": "Primary",
+    "responsive": {
+      "mobile": {
+        "variant": "h1",
+        "color": "#FE9A00"
+      }
+    }
+  },
+  "childText": "404",
+  "children": [],
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.221Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T22:28:55.170Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab740"
+  },
+  "name": "404-text",
+  "component": "typography",
+  "props": {
+    "variant": "h6",
+    "color": "#183164",
+    "fontFamily": "Secondary",
+    "sx": {
+      "m": "15px 0px 15px 0px"
+    }
+  },
+  "childText": "Not all who wander are lost but you sure are.",
+  "children": [],
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.229Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T22:28:55.184Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab743"
+  },
+  "name": "404-root",
+  "component": "animation",
+  "props": {
+    "display": "flex",
+    "flexDirection": "column",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "bgcolor": "#F9FAFB",
+    "height": "100%",
+    "animationObject": {
+      "entranceAnimation": "animate__fadeIn",
+      "exitAnimation": "animate__fadeOut",
+      "isEntering": true
+    }
+  },
+  "children": [
+    "6931bd0e7f2259ab9b5ab73c",
+    "69374c568d88ff94363e7b26",
+    "6931bd0e7f2259ab9b5ab740",
+    "693356b2ae978cb7a43591a5"
+  ],
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.237Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T22:09:33.916Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "693356b2ae978cb7a43591a5"
+  },
+  "name": "404-button",
+  "component": "button",
+  "props": {
+    "variant": "outlined",
+    "color": "primary",
+    "responsive": {
+      "mobile": {
+        "fullWidth": true
+      }
+    }
+  },
+  "childText": "Go home",
+  "children": [],
+  "createdAt": {
+    "$date": "2025-12-05T22:03:30.499Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-05T22:03:30.499Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69374c568d88ff94363e7b26"
+  },
+  "name": "404-image",
+  "component": "image",
+  "props": {
+    "src": "/images/404.png",
+    "alt": "Page not found",
+    "sx": {
+      "width": 400,
+      "height": "auto"
+    }
+  },
+  "children": [],
+  "createdAt": {
+    "$date": "2025-12-08T22:08:22.164Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T22:08:22.164Z"
+  },
+  "__v": 0
+}]

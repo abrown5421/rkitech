@@ -1,0 +1,141 @@
+[{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab747"
+  },
+  "pageUniqueId": "page_id_home",
+  "pageName": "Home",
+  "pagePath": "/",
+  "pageRenderMethod": "static",
+  "pageActive": true,
+  "pageColor": "neutral.main",
+  "pageEntranceAnimation": "animate__fadeIn",
+  "pageExitAnimation": "animate__fadeOut",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.939Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:42.939Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab74a"
+  },
+  "pageUniqueId": "page_id_page_not_found",
+  "pageName": "Page Not Found",
+  "pagePath": "/page-not-found",
+  "pageRenderMethod": "dynamic",
+  "pageActive": true,
+  "pageColor": "neutral.main",
+  "pageEntranceAnimation": "animate__fadeIn",
+  "pageExitAnimation": "animate__fadeOut",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.967Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:42.989Z"
+  },
+  "__v": 0,
+  "rootElement": "6931bd0e7f2259ab9b5ab743"
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab74d"
+  },
+  "pageUniqueId": "page_id_home_privacy_policy",
+  "pageName": "Privacy Policy",
+  "pagePath": "/privacy-policy",
+  "pageRenderMethod": "static",
+  "pageActive": true,
+  "pageColor": "neutral.main",
+  "pageEntranceAnimation": "animate__fadeIn",
+  "pageExitAnimation": "animate__fadeOut",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.970Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:42.970Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab750"
+  },
+  "pageUniqueId": "page_id_admin_dash",
+  "pageName": "Admin Dashboard",
+  "pagePath": "/admin/dashboard",
+  "pageRenderMethod": "static",
+  "pageActive": true,
+  "pageColor": "neutral.main",
+  "pageEntranceAnimation": "animate__fadeIn",
+  "pageExitAnimation": "animate__fadeOut",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.975Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:42.975Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab753"
+  },
+  "pageUniqueId": "page_id_admin_auth",
+  "pageName": "Admin Auth",
+  "pagePath": "/admin/auth",
+  "pageRenderMethod": "static",
+  "pageActive": true,
+  "pageColor": "neutral.content",
+  "pageEntranceAnimation": "animate__fadeInUpBig",
+  "pageExitAnimation": "animate__fadeOutDownBig",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.980Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:42.980Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab756"
+  },
+  "pageUniqueId": "page_id_admin_page_editor",
+  "pageName": "Admin Page Editor",
+  "pagePath": "/admin/page-editor",
+  "pageRenderMethod": "static",
+  "pageActive": true,
+  "pageColor": "neutral.main",
+  "pageEntranceAnimation": "animate__fadeIn",
+  "pageExitAnimation": "animate__fadeOut",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.984Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:42.984Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd0e7f2259ab9b5ab759"
+  },
+  "pageUniqueId": "page_id_admin_pages",
+  "pageName": "Admin Pages",
+  "pagePath": "/admin/pages",
+  "pageRenderMethod": "static",
+  "pageActive": true,
+  "pageColor": "neutral.main",
+  "pageEntranceAnimation": "animate__fadeIn",
+  "pageExitAnimation": "animate__fadeOut",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:42.987Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:42.987Z"
+  },
+  "__v": 0
+}]
