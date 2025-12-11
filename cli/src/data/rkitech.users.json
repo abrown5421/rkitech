@@ -1,0 +1,43 @@
+[{
+  "_id": {
+    "$oid": "6931bd107f2259ab9b5ab811"
+  },
+  "userFirstName": "Rkitech",
+  "userLastName": "Superuser",
+  "userEmail": "Rkitech.superuser@rkitech.com",
+  "userPassword": "string",
+  "userCreated": "1764867344442",
+  "userProfileImage": "",
+  "userType": "employee",
+  "employeeObject": {
+    "employeeRole": "admin",
+    "employeeTitle": "Developer",
+    "employeeBio": ""
+  },
+  "createdAt": {
+    "$date": "2025-12-04T16:55:44.444Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:44.444Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6931bd107f2259ab9b5ab815"
+  },
+  "userFirstName": "John",
+  "userLastName": "Doe",
+  "userEmail": "john.doe@rkitech.com",
+  "userPassword": "string",
+  "userCreated": "1764867344442",
+  "userProfileImage": "",
+  "userType": "user",
+  "createdAt": {
+    "$date": "2025-12-04T16:55:44.468Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-04T16:55:44.468Z"
+  },
+  "__v": 0
+}]
