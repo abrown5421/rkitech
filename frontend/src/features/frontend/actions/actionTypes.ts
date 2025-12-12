@@ -30,12 +30,12 @@ export interface ActionExecutionRequest<P = any> {
   params: P;
 }
 
-export interface NavigateParams {
+export interface InternalNavigateParams {
   pageLinkId: string;
   animate?: boolean;
 }
 
-export interface OpenUrlParams {
+export interface ExternalNavigateParams {
   url: string;
   newTab?: boolean;
 }
