@@ -8,6 +8,7 @@ import type { Theme } from "@mui/material";
 import { useAppDispatch } from "./store/hooks";
 import { setActivePage } from "./features/frontend/page/pageSlice";
 import Alert from "./features/frontend/alert/Alert";
+import "./features/frontend/actions/actions"
 
 interface AppInnerProps {
   pages: IPage[];

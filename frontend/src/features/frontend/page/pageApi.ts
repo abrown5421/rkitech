@@ -29,6 +29,12 @@ export const pagesApi = baseApi.injectEndpoints({
       transformResponse: (response: any) => response.data[0], 
     }),
 
+    getPageByUniqueId: build.query<IPage, string>({
+      query: (pageUniqueId) => `/pages?pageUniqueId=${pageUniqueId}`,
+      providesTags: (_result, _error, id) => [{ type: 'Page', id }],
+      transformResponse: (response: any) => response.data[0], 
+    }),
+
     createPage: build.mutation<IPage, Partial<IPage>>({
       query: (body) => ({
         url: '/pages',
@@ -59,7 +65,9 @@ export const {
   useGetPagesQuery,
   useGetNonAdminPagesQuery,
   useGetPageByIdQuery,
+  useGetPageByUniqueIdQuery,
   useCreatePageMutation,
   useUpdatePageMutation,
   useDeletePageMutation,
 } = pagesApi;
+
