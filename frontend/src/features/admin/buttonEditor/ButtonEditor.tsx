@@ -4,6 +4,7 @@ import ColorPicker from '../colorPicker/ColorPicker';
 import { usePropEditor } from '../../../hooks/admin/usePropEditor';
 import { useAppDispatch } from '../../../store/hooks';
 import { updateDraft } from '../../frontend/renderer/rendererSlice';
+import { ActionPicker } from '../actionPicker/ActionPicker';
 
 const ButtonEditor: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -61,6 +62,11 @@ const ButtonEditor: React.FC = () => {
                     containerSx={{width: '100%'}}
                 />
             </Box>
+            <Typography variant="h6">Action:</Typography>
+            <ActionPicker
+              value={activeProps.action}
+              onChange={(newAction) => updateProp("action", newAction)}
+            />
         </Box>
     );
 };
