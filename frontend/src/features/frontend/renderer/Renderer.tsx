@@ -134,6 +134,22 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
 
   const { action, ...safeProps } = activeProps;
+  if (elementToRender.component === "listItem") {
+    return (
+      <Component {...safeProps} sx={combinedSx} onClick={handleClick}>
+        {elementToRender.childText}
+        {childrenElements}
+      </Component>
+    );
+  }
+
+  if (elementToRender.component === "list") {
+    return (
+      <Component {...safeProps} sx={combinedSx} onClick={handleClick}>
+        {childrenElements}
+      </Component>
+    );
+  }
 
   return (
     <Component {...safeProps} sx={combinedSx} onClick={handleClick}>
@@ -142,5 +158,4 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     </Component>
   );
 };
-
 export default Renderer;

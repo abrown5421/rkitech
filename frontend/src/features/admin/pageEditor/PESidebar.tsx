@@ -6,7 +6,7 @@ import TypographyEditor from "../typographyEditor/TypographyEditor";
 import ButtonEditor from "../buttonEditor/ButtonEditor";
 import ImageEditor from "../imageEditor/ImageEditor";
 
-const Sidebar: React.FC = () => {
+const PESidebar: React.FC = () => {
   const theme = useTheme();
   const renderer = useAppSelector((state) => state.renderer)
 
@@ -47,4 +47,4 @@ const Sidebar: React.FC = () => {
   );
 };
 
-export default Sidebar;
+export default PESidebar;
