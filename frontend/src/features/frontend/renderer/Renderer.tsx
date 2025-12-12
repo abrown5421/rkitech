@@ -6,9 +6,12 @@ import { setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
 import type { IElement } from "../element/elementTypes";
+import { useActionExecutor } from "../actions/useActionExecutor";
 
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
+  const executeAction = useActionExecutor();
+
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
@@ -41,7 +44,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const combinedSx = (theme: Theme) => {
     const baseProps = elementToRender.props || {};
     const responsiveProps = baseProps.responsive || {};
-
     let mergedSx = { ...(baseProps.sx || {}) };
 
     if (editMode) {
@@ -93,7 +95,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     } else if (viewportSize === "tablet" && responsiveProps.tablet) {
       return { ...baseProps, ...responsiveProps.tablet };
     }
-
     return baseProps;
   };
 
@@ -103,6 +104,16 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     if (editMode) {
       e.stopPropagation();
       dispatch(setSelectedElement(element));
+      return;
+    }
+
+    const { action } = activeProps;
+    if (action) {
+      e.stopPropagation();
+      executeAction({
+        type: action.type,
+        params: action,
+      });
     }
   };
 
@@ -115,22 +126,17 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   });
 
   if (elementToRender.component === "image") {
-    return (
-      <Box
-        component="img"
-        src={activeProps.src}
-        alt={activeProps.alt ?? ""}
-        sx={combinedSx}
-        onClick={handleClick}
-      />
-    );
+    const { src, alt } = activeProps;
+    return <Box component="img" src={src} alt={alt ?? ""} sx={combinedSx} onClick={handleClick} />;
   }
 
   const Component = componentMap[elementToRender.component];
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
 
+  const { action, ...safeProps } = activeProps;
+
   return (
-    <Component {...activeProps} sx={combinedSx} onClick={handleClick}>
+    <Component {...safeProps} sx={combinedSx} onClick={handleClick}>
       {elementToRender.childText}
       {childrenElements}
     </Component>
