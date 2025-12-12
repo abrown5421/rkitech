@@ -6,8 +6,9 @@ import SpacingPicker from '../spacingPicker/SpacingPicker';
 import DimensionPicker from '../dimensionPicker/DimensionPicker';
 import LayoutPicker from '../layoutPicker/LayoutPicker';
 import { usePropEditor } from '../../../hooks/admin/usePropEditor';
+import type { BoxEditorState } from './boxEditorTypes';
 
-const BoxEditor: React.FC = () => {
+const BoxEditor: React.FC<BoxEditorState> = ({ enabledAnimation = false }) => {
   const { draft, isHoverMode, activeProps, updateProp, updateNestedProp } = usePropEditor();
 
   if (!draft) return <Typography>Element not found</Typography>;
@@ -16,6 +17,9 @@ const BoxEditor: React.FC = () => {
     <Box display="flex" flexDirection="column" gap={2}>
       {!isHoverMode && (
         <>
+          {enabledAnimation && (
+            <Typography variant="h6">Animation:</Typography>
+          )}
           <Typography variant="h6">Layout:</Typography>
           <LayoutPicker
             flexDirection={activeProps.flexDirection ?? "row"}
