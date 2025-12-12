@@ -1,7 +1,7 @@
 import { registerAction } from "./actionRegistry";
-import type { ActionHandler, NavigateParams, OpenUrlParams } from "./actionTypes";
+import type { ActionHandler, InternalNavigateParams, ExternalNavigateParams } from "./actionTypes";
 
-export const navigateAction: ActionHandler<NavigateParams> = {
+export const internalNavigateAction: ActionHandler<InternalNavigateParams> = {
   config: {
     type: "navigate",
     label: "Navigate to Page",
@@ -17,7 +17,7 @@ export const navigateAction: ActionHandler<NavigateParams> = {
   }
 };
 
-export const openUrlAction: ActionHandler<OpenUrlParams> = {
+export const externalNavigateAction: ActionHandler<ExternalNavigateParams> = {
   config: {
     type: "handleOpenUrl",
     label: "Open URL",
@@ -37,5 +37,5 @@ export const openUrlAction: ActionHandler<OpenUrlParams> = {
   }
 };
 
-registerAction(navigateAction);
-registerAction(openUrlAction);
+registerAction(internalNavigateAction);
+registerAction(externalNavigateAction);
