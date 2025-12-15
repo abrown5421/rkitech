@@ -3,11 +3,13 @@ import { baseApi } from './api/baseApi';
 import activePageReducer from '../features/frontend/page/pageSlice';
 import rendererReducer from '../features/frontend/renderer/rendererSlice';
 import alertReducer from '../features/frontend/alert/alertSlice';
+import activeUserReducer from '../features/admin/auth/authSlice';
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     activePage: activePageReducer,
+    activeUser: activeUserReducer,
     renderer: rendererReducer,
     alert: alertReducer
   },

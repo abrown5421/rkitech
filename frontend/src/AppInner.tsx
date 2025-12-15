@@ -23,7 +23,7 @@ const AppInner: React.FC<AppInnerProps> = ({ pages, theme }) => {
   useEffect(()=>{
     if (!pages || pages.length === 0) return;
 
-    const page = pages.find((p) => p.pagePath === location.pathname)
+    const page = pages.find((p) => p.pagePath === location.pathname.toLowerCase())
 
     if (page) {
       dispatch(setActivePage({
@@ -50,7 +50,7 @@ const AppInner: React.FC<AppInnerProps> = ({ pages, theme }) => {
       height="100vh"
       bgcolor={theme.palette.neutral.content}
     >
-      {location.pathname.startsWith("/admin") && <Navbar />}
+      {location.pathname.toLowerCase().startsWith("/admin") && location.pathname !== '/admin/auth' && <Navbar />}
       <Routes>
         {pages.map((p) => (
           <Route key={p._id} path={p.pagePath} element={<Page page={p} />} />

@@ -14,6 +14,7 @@ import Pages from '../../admin/pages/Pages';
 import PageEditor from '../../admin/pageEditor/PageEditor';
 import PESidebar from '../../admin/pageEditor/PESidebar';
 import Media from '../../admin/media/Media';
+import Auth from '../../admin/auth/Auth';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
@@ -44,6 +45,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
                 <>
                     {activePage.activePageUid === 'page_id_home' && <Home />}
                     {activePage.activePageUid === 'page_id_admin_dash' && <Dashboard />}
+                    {activePage.activePageUid === 'page_id_admin_auth' && <Auth />}
                     {activePage.activePageUid === 'page_id_admin_pages' && <Pages />}
                     {activePage.activePageUid === 'page_id_admin_page_editor' && <PageEditor />}
                     {activePage.activePageUid === 'page_id_admin_media' && <Media />}
