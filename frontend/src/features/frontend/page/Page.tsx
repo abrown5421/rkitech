@@ -15,6 +15,7 @@ import PageEditor from '../../admin/pageEditor/PageEditor';
 import PESidebar from '../../admin/pageEditor/PESidebar';
 import Media from '../../admin/media/Media';
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+import { createElementTemplate } from '../../admin/elementBank/elementTemplates';
 
 const Page: React.FC<PageProps> = ({ page }) => {
     const activePage = useAppSelector((state) => state.activePage);
@@ -26,9 +27,13 @@ const Page: React.FC<PageProps> = ({ page }) => {
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
-        if (!over) return;
+        if (!over || !active) return;
 
-        console.log("Dragged element:", active.id);
+        const componentType = String(active.id);
+
+        const element = createElementTemplate(componentType);
+
+        console.log("Dragged element:", element);
         console.log("Dropped on:", over.id);
     };
 
