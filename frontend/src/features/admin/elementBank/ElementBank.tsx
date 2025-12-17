@@ -18,7 +18,7 @@ const ElementBank: React.FC = () => {
   };
   
   return (
-    <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2}>
+    <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2} position='relative'>
       {Object.entries(componentMap).map(([key]) => {
         const Icon = iconMap[key];
 
@@ -42,7 +42,7 @@ const ElementBank: React.FC = () => {
                 transition: "all 0.3s ease",
                 "&:hover": {
                     color: theme.palette.primary.main,
-                    border: `2px solid ${theme.palette.primary.main}`
+                    border: `1px solid ${theme.palette.primary.main}`
                 },
             }}
         >

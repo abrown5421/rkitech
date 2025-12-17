@@ -76,11 +76,29 @@ export const editorSlice = createSlice({
       state.mobile = action.payload === "mobile";
       state.tablet = action.payload === "tablet";
       state.desktop = action.payload === "desktop";
+    },
+
+    deselectElement(state) {
+      state.originalElement = null;
+      state.draftElement = null;
+      state.isDirty = Object.keys(state.pendingChanges).length > 0;
+    },
+
+    resetRenderer() {
+      return initialState;
     }
   },
 });
 
-export const { setSelectedElement, updateDraft, resetDraft, toggleHover, setDeviceMode } =
-  editorSlice.actions;
+
+export const { 
+  setSelectedElement, 
+  updateDraft, 
+  resetDraft, 
+  toggleHover, 
+  setDeviceMode, 
+  resetRenderer,
+  deselectElement
+} = editorSlice.actions;
 
 export default editorSlice.reducer;
