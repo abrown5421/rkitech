@@ -20,7 +20,6 @@ const ElementBank: React.FC = () => {
   };
 
   return (
-    
       <Box
         display="flex"
         flexDirection="row"

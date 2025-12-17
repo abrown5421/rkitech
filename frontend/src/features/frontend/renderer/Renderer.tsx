@@ -6,9 +6,11 @@ import { setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
 import type { IElement } from "../element/elementTypes";
+import { useDroppable } from "@dnd-kit/core";
 
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
@@ -27,7 +29,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       : element;
 
   const useViewportSize = () => {
-    const theme = useTheme();
     const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -69,10 +70,10 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
         ? {
             position: "relative",
             cursor: "pointer",
-            outline: "1px dashed transparent",
+            outline: "2px dashed transparent",
             transition: "all 0.2s ease",
             "&:hover": {
-              boxShadow: `0 0 0 2px ${theme.palette.primary.main} inset`,
+              outline: `2px dashed ${theme.palette.primary.main}`,
               ...(baseProps.states?.hover || {}),
             },
           }
@@ -114,7 +115,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     return <Renderer key={child._id} element={child} editMode={editMode} />;
   });
 
-  const tooltipTitle = `Edit ${element.component} element`;
+  const tooltipTitle = `Open ${element.component} element?`;
   
   if (elementToRender.component === "image") {
     return (
@@ -141,6 +142,10 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const Component = componentMap[elementToRender.component];
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
 
+  const { setNodeRef, isOver } = useDroppable({
+    id: elementToRender._id,
+  });
+
   return (
     <Tooltip
       title={editMode ? tooltipTitle : ""}
@@ -151,7 +156,12 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       disableFocusListener={!editMode}
       disableTouchListener={!editMode}
     >
-      <Component {...activeProps} sx={combinedSx} onClick={handleClick}>
+      <Component 
+        ref={setNodeRef} 
+        {...activeProps} 
+        sx={combinedSx} 
+        onClick={handleClick}
+      >
         {elementToRender.childText}
         {childrenElements}
       </Component>
