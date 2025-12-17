@@ -13,6 +13,7 @@ describe('Elements API', () => {
       styles: { color: 'red' },
       sx: { m: 2 },
       className: 'test-class',
+      droppable: true,
       children: [],
     },
     updatePayload: {
@@ -22,6 +23,7 @@ describe('Elements API', () => {
     },
     createExpectations: [
       { field: 'component', value: 'Box' },
+      { field: 'droppable', value: true },
     ],
     updateExpectations: {
       field: 'component',
