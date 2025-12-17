@@ -36,6 +36,7 @@ const Sidebar: React.FC = () => {
           </Box>
           <Divider sx={{my: 2}} />
           {renderer.originalElement.component === 'box' && <BoxEditor />}
+          {renderer.originalElement.component === 'animation' && <BoxEditor animation={true} />}
           {renderer.originalElement.component === 'typography' && <TypographyEditor />}
           {renderer.originalElement.component === 'button' && <ButtonEditor />}
           {renderer.originalElement.component === 'image' && <ImageEditor />}

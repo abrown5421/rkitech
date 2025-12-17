@@ -6,8 +6,10 @@ import SpacingPicker from '../spacingPicker/SpacingPicker';
 import DimensionPicker from '../dimensionPicker/DimensionPicker';
 import LayoutPicker from '../layoutPicker/LayoutPicker';
 import { usePropEditor } from '../../../hooks/admin/usePropEditor';
+import type { BoxEditorState } from './boxEditorTypes';
+import { AnimationPicker } from '../animationPicker/animationPicker';
 
-const BoxEditor: React.FC = () => {
+const BoxEditor: React.FC<BoxEditorState> = ({ animation = false }) => {
   const { draft, isHoverMode, activeProps, updateProp, updateNestedProp } = usePropEditor();
 
   if (!draft) return <Typography>Element not found</Typography>;
@@ -16,6 +18,38 @@ const BoxEditor: React.FC = () => {
     <Box display="flex" flexDirection="column" gap={2}>
       {!isHoverMode && (
         <>
+          {animation && (
+            <AnimationPicker
+              entranceAnimation={activeProps.animationObject?.entranceAnimation}
+              exitAnimation={activeProps.animationObject?.exitAnimation}
+              onChange={(changes) => {
+                const newAnimationObject = {
+                  ...activeProps.animationObject,
+                  ...changes,
+                };
+                updateProp("animationObject", newAnimationObject);
+
+                if (changes.exitAnimation) {
+                  const exitAnimationValue = changes.exitAnimation;
+                  const entranceAnimationValue = newAnimationObject.entranceAnimation;
+
+                  updateProp("animationObject", {
+                    entranceAnimation: entranceAnimationValue,
+                    exitAnimation: exitAnimationValue,
+                    isEntering: false,
+                  });
+
+                  setTimeout(() => {
+                    updateProp("animationObject", {
+                      entranceAnimation: entranceAnimationValue,
+                      exitAnimation: exitAnimationValue,
+                      isEntering: true,
+                    });
+                  }, 1000);
+                }
+              }}
+            />
+          )}
           <Typography variant="h6">Layout:</Typography>
           <LayoutPicker
             flexDirection={activeProps.flexDirection ?? "row"}
