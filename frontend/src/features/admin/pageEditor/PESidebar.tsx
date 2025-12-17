@@ -5,6 +5,7 @@ import BoxEditor from "../boxEditor/BoxEditor";
 import TypographyEditor from "../typographyEditor/TypographyEditor";
 import ButtonEditor from "../buttonEditor/ButtonEditor";
 import ImageEditor from "../imageEditor/ImageEditor";
+import ElementBank from "../elementBank/ElementBank";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
@@ -42,7 +43,7 @@ const Sidebar: React.FC = () => {
           {renderer.originalElement.component === 'image' && <ImageEditor />}
         </>
       ) : (
-        <Typography>No Element</Typography>
+        <ElementBank />
       )}
     </Box>
   );
