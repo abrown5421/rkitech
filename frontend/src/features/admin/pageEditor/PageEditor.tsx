@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useGetPageByIdQuery } from '../../frontend/page/pageApi';
 import Renderer from '../../frontend/renderer/Renderer';
 import { Alert, Box, Button, useTheme } from '@mui/material';
-import { useGetElementsByIdQuery, useUpdateElementsMutation } from '../../frontend/element/elementApi';
+import { useGetElementsByIdQuery, useUpdateElementsMutation, useCreateElementsMutation } from '../../frontend/element/elementApi';
 import type { IElement } from '../../frontend/element/elementTypes';
-import { setDeviceMode, toggleHover } from '../../frontend/renderer/rendererSlice';
+import { setDeviceMode, toggleHover, clearPendingChanges } from '../../frontend/renderer/rendererSlice';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import TabletAndroidIcon from '@mui/icons-material/TabletAndroid';
@@ -18,15 +18,22 @@ const PageEditor: React.FC = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  const renderer = useAppSelector((state) => state.renderer)
+  const renderer = useAppSelector((state) => state.renderer);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
+  const pendingCreates = useAppSelector((state) => state.renderer.pendingCreates);
+  
   const [updateElements] = useUpdateElementsMutation();
+  const [createElements] = useCreateElementsMutation();
   
   const { data: rootPage } = useGetPageByIdQuery(id!);
 
   const { data: rootElement } = useGetElementsByIdQuery(
     rootPage?.rootElement ?? ''
   ) as { data?: IElement[] };
+
+  useEffect(() => {
+    console.log(renderer);
+  }, [renderer]);
 
   if (!rootPage || !rootElement)
     return (
@@ -44,8 +51,8 @@ const PageEditor: React.FC = () => {
     );
 
   const handleHoverToggle = () => {
-    dispatch(toggleHover())
-  }
+    dispatch(toggleHover());
+  };
 
   const elementDocToIElement = (doc: ElementDoc): IElement => {
     return {
@@ -53,32 +60,63 @@ const PageEditor: React.FC = () => {
       component: doc.component,
       props: doc.props,
       childText: doc.childText,
-      children: doc.children?.map(elementDocToIElement),
+      children: doc.children?.map(child => 
+        elementDocToIElement(typeof child === 'string' ? {
+          _id: child,
+          component: 'Unknown', 
+          props: {},
+          droppable: false
+        } : child)
+      ),
+      droppable: doc.droppable,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
   };
 
   const handleSave = async () => {
-    await Promise.all(
-      Object.entries(pendingChanges).map(([id, doc]) =>
+    try {
+      const createPromises = Object.entries(pendingCreates).map(([_id, doc]) =>
+        createElements(elementDocToIElement(doc))
+
+      );
+
+      await Promise.all(createPromises);
+
+      const updatePromises = Object.entries(pendingChanges).map(([id, doc]) =>
         updateElements({
           id,
           data: elementDocToIElement(doc),
         })
-      )
-    );
+      );
 
-    dispatch(
-      openAlert({
-        severity: "success",
-        body: "Changes saved successfully!",
-        closeable: true,
-        orientation: "bottom-right",
-        entrance: "animate__fadeInRight",
-        exit: "animate__fadeOutRight",
-      })
-    );
+      await Promise.all(updatePromises);
+
+      dispatch(clearPendingChanges());
+
+      dispatch(
+        openAlert({
+          severity: "success",
+          body: "Changes saved successfully!",
+          closeable: true,
+          orientation: "bottom-right",
+          entrance: "animate__fadeInRight",
+          exit: "animate__fadeOutRight",
+        })
+      );
+    } catch (error) {
+      console.error('Error saving changes:', error);
+      dispatch(
+        openAlert({
+          severity: "error",
+          body: "Failed to save changes. Please try again.",
+          closeable: true,
+          orientation: "bottom-right",
+          entrance: "animate__fadeInRight",
+          exit: "animate__fadeOutRight",
+        })
+      );
+    }
   };
   
   return (
@@ -137,7 +175,8 @@ const PageEditor: React.FC = () => {
             cursor: renderer.isDirty ? 'pointer' : 'not-allowed',
             opacity: renderer.isDirty ? 1 : 0.5 
           }} 
-          onClick={handleSave} 
+          onClick={handleSave}
+          disabled={!renderer.isDirty}
         > 
           Save changes
         </Button>

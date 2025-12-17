@@ -5,5 +5,6 @@ export const componentMap: Record<string, React.ElementType> = {
   box: Box,
   typography: Typography,
   button: Button,
+  image: Box,
   animation: Animation,
 };

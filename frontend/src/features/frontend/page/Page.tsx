@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PageProps } from './pageTypes';
-import { useAppSelector } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { Box } from '@mui/material';
 import Animation from '../animation/Animation';
 import type { EntranceAnimation, ExitAnimation } from '../animation/animationTypes';
@@ -16,8 +16,11 @@ import PESidebar from '../../admin/pageEditor/PESidebar';
 import Media from '../../admin/media/Media';
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
 import { createElementTemplate } from '../../admin/elementBank/elementTemplates';
+import { addPendingElement, addChildToParent } from '../renderer/rendererSlice';
+import type { ElementDoc } from '../renderer/rendererTypes';
 
 const Page: React.FC<PageProps> = ({ page }) => {
+    const dispatch = useAppDispatch();
     const activePage = useAppSelector((state) => state.activePage);
     const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
     const { data: rootElement } = useGetElementsByIdQuery(
@@ -30,11 +33,27 @@ const Page: React.FC<PageProps> = ({ page }) => {
         if (!over || !active) return;
 
         const componentType = String(active.id);
+        const parentElement = over.data.current;
 
-        const element = createElementTemplate(componentType);
+        if (!parentElement) return;
 
-        console.log("Dragged element:", element);
-        console.log("Dropped on:", over.id);
+        const newElement = createElementTemplate(componentType);
+
+        console.log("Dragged element:", newElement);
+        console.log("Dropped on parent:", parentElement);
+
+        dispatch(addPendingElement({ 
+            element: newElement, 
+            parentId: parentElement._id 
+        }));
+        const parentElementTyped = parentElement as ElementDoc;
+
+        dispatch(addChildToParent({
+            parentId: parentElementTyped._id,
+            childId: newElement._id,
+            parentElement: parentElementTyped
+        }));
+
     };
 
     return (

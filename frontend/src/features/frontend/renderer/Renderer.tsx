@@ -1,12 +1,13 @@
-import React from "react";
+import React, { type JSX } from "react";
 import { componentMap } from "./componentMap";
 import type { RendererProps } from "./rendererTypes";
-import { Box, Tooltip, useMediaQuery, useTheme, type Theme } from "@mui/material";
+import { Box, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import { setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
 import type { IElement } from "../element/elementTypes";
 import { useDroppable } from "@dnd-kit/core";
+import type { ElementDoc } from "./rendererTypes";
 
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
@@ -14,6 +15,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
+  const pendingCreates = useAppSelector((state) => state.renderer.pendingCreates);
 
   const deviceMode = useAppSelector((state) => {
     if (state.renderer.mobile) return "mobile";
@@ -39,7 +41,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const viewportSize = editMode ? deviceMode : useViewportSize();
 
-  const combinedSx = (theme: Theme) => {
+  const combinedSx = () => {
     const baseProps = elementToRender.props || {};
     const responsiveProps = baseProps.responsive || {};
 
@@ -107,13 +109,51 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     }
   };
 
-  const childIds = (elementToRender.children as string[] | undefined) || [];
-  const childrenElements = childIds.map((childId) => {
-    const query = useGetElementsByIdQuery(childId);
-    const child = (query.data as IElement[] | undefined)?.[0];
-    if (!child) return <div key={childId}>Child not found</div>;
-    return <Renderer key={child._id} element={child} editMode={editMode} />;
-  });
+  const getChildren = () => {
+    const children = elementToRender.children || [];
+    const childElements: JSX.Element[] = [];
+
+    children.forEach((child) => {
+      if (typeof child === 'object' && child._id) {
+        const childDoc = child as ElementDoc;
+        if (pendingCreates[childDoc._id]) {
+          childElements.push(
+            <Renderer key={childDoc._id} element={pendingCreates[childDoc._id]} editMode={editMode} />
+          );
+        } else {
+          childElements.push(
+            <Renderer key={childDoc._id} element={childDoc} editMode={editMode} />
+          );
+        }
+      }
+      else if (typeof child === 'string') {
+        const childId = child;
+        
+        if (pendingCreates[childId]) {
+          childElements.push(
+            <Renderer key={childId} element={pendingCreates[childId]} editMode={editMode} />
+          );
+        } else {
+          const { data: childData } = useGetElementsByIdQuery(childId);
+          const childElement = (childData as IElement[] | undefined)?.[0];
+          
+          if (childElement) {
+            childElements.push(
+              <Renderer key={childId} element={childElement} editMode={editMode} />
+            );
+          } else {
+            childElements.push(
+              <div key={childId}>Child not found</div>
+            );
+          }
+        }
+      }
+    });
+
+    return childElements;
+  };
+
+  const childrenElements = getChildren();
 
   const tooltipTitle = `Open ${element.component} element?`;
   
@@ -142,8 +182,15 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const Component = componentMap[elementToRender.component];
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
 
-  const { setNodeRef, isOver } = useDroppable({
+  const isDroppable = editMode && elementToRender.droppable;
+
+  const { 
+    setNodeRef, 
+    //isOver
+  } = useDroppable({
     id: elementToRender._id,
+    data: elementToRender,
+    disabled: !isDroppable,
   });
 
   return (

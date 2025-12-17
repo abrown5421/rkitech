@@ -2,11 +2,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { Box } from "@mui/material";
 import React from "react";
-
-interface DraggableElementProps {
-  id: string;
-  children: React.ReactNode;
-}
+import type { DraggableElementProps } from "./elementBankTypes";
 
 const DraggableElement: React.FC<DraggableElementProps> = ({ id, children }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
