@@ -1,18 +1,25 @@
 import React, { useEffect } from "react";
-import { Box, Divider, Typography, useTheme } from "@mui/material";
-import { useAppSelector } from "../../../store/hooks";
+import { Box, Divider, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import BoxEditor from "../boxEditor/BoxEditor";
 import TypographyEditor from "../typographyEditor/TypographyEditor";
 import ButtonEditor from "../buttonEditor/ButtonEditor";
 import ImageEditor from "../imageEditor/ImageEditor";
 import ElementBank from "../elementBank/ElementBank";
+import { Deselect } from "@mui/icons-material";
+import { deselectElement } from "../../frontend/renderer/rendererSlice";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
   const renderer = useAppSelector((state) => state.renderer)
 
   useEffect(()=>{console.log(renderer)}, [renderer])
   
+  const handleDeselect = () => {
+    dispatch(deselectElement())
+  }
+
   return (
     <Box
       display="flex"
@@ -26,7 +33,23 @@ const Sidebar: React.FC = () => {
     >
       {renderer.originalElement ? (
         <>
-          <Box display='flex'  flexDirection='row' justifyContent='space-between'>
+          <Box display='flex'  flexDirection='row' alignItems='center' justifyContent='space-between'>
+            <Tooltip title="Deselect Element">
+              <IconButton
+                onClick={handleDeselect}
+                sx={{
+                  p: 0,
+                  m: 0,
+                  color: 'inherit', 
+                  '&:hover': {
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.action.hover, 
+                  },
+                }}
+              >
+                <Deselect />
+              </IconButton>
+            </Tooltip>
             <Typography variant="caption">Element #{renderer.originalElement._id}</Typography>    
             <Box display="flex" gap={1}>
               {renderer.hover && <Typography variant="caption" color="success">(Hover)</Typography>}

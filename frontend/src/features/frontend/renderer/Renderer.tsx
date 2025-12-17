@@ -1,7 +1,7 @@
 import React from "react";
 import { componentMap } from "./componentMap";
 import type { RendererProps } from "./rendererTypes";
-import { Box, useMediaQuery, useTheme, type Theme } from "@mui/material";
+import { Box, Tooltip, useMediaQuery, useTheme, type Theme } from "@mui/material";
 import { setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
@@ -114,15 +114,27 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     return <Renderer key={child._id} element={child} editMode={editMode} />;
   });
 
+  const tooltipTitle = `Edit ${element.component} element`;
+  
   if (elementToRender.component === "image") {
     return (
-      <Box
-        component="img"
-        src={activeProps.src}
-        alt={activeProps.alt ?? ""}
-        sx={combinedSx}
-        onClick={handleClick}
-      />
+      <Tooltip
+        title={editMode ? tooltipTitle : ""}
+        placement="bottom"
+        arrow
+        followCursor
+        disableHoverListener={!editMode}
+        disableFocusListener={!editMode}
+        disableTouchListener={!editMode}
+      >
+        <Box
+          component="img"
+          src={activeProps.src}
+          alt={activeProps.alt ?? ""}
+          sx={combinedSx}
+          onClick={handleClick}
+        />
+      </Tooltip>
     );
   }
 
@@ -130,10 +142,20 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
 
   return (
-    <Component {...activeProps} sx={combinedSx} onClick={handleClick}>
-      {elementToRender.childText}
-      {childrenElements}
-    </Component>
+    <Tooltip
+      title={editMode ? tooltipTitle : ""}
+      placement="bottom"
+      arrow
+      followCursor
+      disableHoverListener={!editMode}
+      disableFocusListener={!editMode}
+      disableTouchListener={!editMode}
+    >
+      <Component {...activeProps} sx={combinedSx} onClick={handleClick}>
+        {elementToRender.childText}
+        {childrenElements}
+      </Component>
+    </Tooltip>
   );
 };
 
