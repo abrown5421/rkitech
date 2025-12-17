@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Divider, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import BoxEditor from "../boxEditor/BoxEditor";
@@ -13,8 +13,6 @@ const Sidebar: React.FC = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const renderer = useAppSelector((state) => state.renderer)
-
-  useEffect(()=>{console.log(renderer)}, [renderer])
   
   const handleDeselect = () => {
     dispatch(deselectElement())
@@ -32,8 +30,8 @@ const Sidebar: React.FC = () => {
       p={2}
     >
       {renderer.originalElement ? (
-        <>
-          <Box display='flex'  flexDirection='row' alignItems='center' justifyContent='space-between'>
+        <Box display='flex' flexDirection='column' overflow='auto'>
+          <Box display='flex' flexDirection='row' alignItems='center' justifyContent='space-between'>
             <Tooltip title="Deselect Element">
               <IconButton
                 onClick={handleDeselect}
@@ -64,7 +62,7 @@ const Sidebar: React.FC = () => {
           {renderer.originalElement.component === 'typography' && <TypographyEditor />}
           {renderer.originalElement.component === 'button' && <ButtonEditor />}
           {renderer.originalElement.component === 'image' && <ImageEditor />}
-        </>
+        </Box>
       ) : (
         <ElementBank />
       )}

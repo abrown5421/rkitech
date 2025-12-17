@@ -12,6 +12,7 @@ import TabletAndroidIcon from '@mui/icons-material/TabletAndroid';
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
 import { openAlert } from '../../frontend/alert/alertSlice';
 import type { ElementDoc } from '../../frontend/renderer/rendererTypes';
+import { useDroppable } from '@dnd-kit/core';
 
 const PageEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -81,6 +82,10 @@ const PageEditor: React.FC = () => {
     );
   };
 
+  const { setNodeRef, isOver } = useDroppable({
+    id: "renderer-root",
+  });
+
   return (
     <Box
       bgcolor={theme.palette.neutral3.content}
@@ -144,7 +149,17 @@ const PageEditor: React.FC = () => {
         
       </Box>
 
-      <Box flex={1} overflow="auto" m='auto' width={renderer.desktop ? '100%' : renderer.tablet ? '70%' : '400px'}>
+      <Box 
+        flex={1} 
+        m='auto' 
+        width={renderer.desktop ? '100%' : renderer.tablet ? '70%' : '400px'}
+        ref={setNodeRef}
+        sx={{
+          minHeight: "100%",
+          outline: isOver ? `2px dashed ${theme.palette.primary.main}` : "2px dashed transparent",
+          transition: "outline 0.2s ease",
+        }}  
+      >
         <Renderer element={rootElement[0]} editMode={true} />
       </Box>
     </Box>
