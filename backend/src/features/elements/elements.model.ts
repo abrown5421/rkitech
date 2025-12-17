@@ -9,6 +9,7 @@ const ElementsSchema: Schema = new Schema<IElements>({
   styles: { type: Schema.Types.Mixed, required: false },
   sx: { type: Schema.Types.Mixed, required: false },
   className: { type: String, required: false },
+  droppable: { type: Boolean, required: true, default: false },
   children: [{ type: Schema.Types.Mixed, ref: "Elements", required: false }],
 }, { timestamps: true });
 
