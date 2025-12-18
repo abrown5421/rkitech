@@ -1,13 +1,13 @@
-import React, { type JSX } from "react";
+import React, { useState } from "react";
 import { componentMap } from "./componentMap";
 import type { RendererProps } from "./rendererTypes";
-import { Box, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import { Box, IconButton, Tooltip, useMediaQuery, useTheme, type Theme } from "@mui/material";
 import { setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
 import type { IElement } from "../element/elementTypes";
 import { useDroppable } from "@dnd-kit/core";
-import type { ElementDoc } from "./rendererTypes";
+import { Delete, Edit, OpenWith } from "@mui/icons-material";
 
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
@@ -15,7 +15,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
-  const pendingCreates = useAppSelector((state) => state.renderer.pendingCreates);
 
   const deviceMode = useAppSelector((state) => {
     if (state.renderer.mobile) return "mobile";
@@ -33,7 +32,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const useViewportSize = () => {
     const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
     if (isMobile) return "mobile";
     if (isTablet) return "tablet";
     return "desktop";
@@ -41,7 +39,10 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const viewportSize = editMode ? deviceMode : useViewportSize();
 
-  const combinedSx = () => {
+  const [hoveredElementId, setHoveredElementId] = useState<string | null>(null);
+  const [isChildHovered, setIsChildHovered] = useState(false);
+
+  const combinedSx = (theme: Theme) => {
     const baseProps = elementToRender.props || {};
     const responsiveProps = baseProps.responsive || {};
 
@@ -66,22 +67,24 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       }
     }
 
+    if (editMode) {
+      const shouldShowHover = 
+        hoveredElementId === elementToRender._id && !isChildHovered;
+      
+      mergedSx = {
+        ...mergedSx,
+        cursor: "pointer",
+        position: "relative",
+        outlineOffset: 2,
+        outline: shouldShowHover
+          ? `2px dashed ${theme.palette.primary.main}`
+          : "2px dashed transparent",
+        transition: "all 0.2s ease-in-out",
+      };
+    }
+
     return {
       ...mergedSx,
-      ...(editMode
-        ? {
-            position: "relative",
-            cursor: "pointer",
-            outline: "2px dashed transparent",
-            transition: "all 0.2s ease",
-            "&:hover": {
-              outline: `2px dashed ${theme.palette.primary.main}`,
-              ...(baseProps.states?.hover || {}),
-            },
-          }
-        : {
-            "&:hover": baseProps.states?.hover || {},
-          }),
       "&:active": baseProps.states?.active || {},
       "&:focus": baseProps.states?.focus || {},
     };
@@ -102,117 +105,176 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const activeProps = getActiveProps();
 
-  const handleClick = (e: React.MouseEvent) => {
+  const editElement = (e: React.MouseEvent) => {
     if (editMode) {
       e.stopPropagation();
       dispatch(setSelectedElement(element));
     }
   };
 
-  const getChildren = () => {
-    const children = elementToRender.children || [];
-    const childElements: JSX.Element[] = [];
-
-    children.forEach((child) => {
-      if (typeof child === 'object' && child._id) {
-        const childDoc = child as ElementDoc;
-        if (pendingCreates[childDoc._id]) {
-          childElements.push(
-            <Renderer key={childDoc._id} element={pendingCreates[childDoc._id]} editMode={editMode} />
-          );
-        } else {
-          childElements.push(
-            <Renderer key={childDoc._id} element={childDoc} editMode={editMode} />
-          );
-        }
-      }
-      else if (typeof child === 'string') {
-        const childId = child;
-        
-        if (pendingCreates[childId]) {
-          childElements.push(
-            <Renderer key={childId} element={pendingCreates[childId]} editMode={editMode} />
-          );
-        } else {
-          const { data: childData } = useGetElementsByIdQuery(childId);
-          const childElement = (childData as IElement[] | undefined)?.[0];
-          
-          if (childElement) {
-            childElements.push(
-              <Renderer key={childId} element={childElement} editMode={editMode} />
-            );
-          } else {
-            childElements.push(
-              <div key={childId}>Child not found</div>
-            );
-          }
-        }
-      }
-    });
-
-    return childElements;
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setHoveredElementId(elementToRender._id);
+    if (e.currentTarget.parentElement) {
+      const parentMouseEnter = new CustomEvent('childHovered', { 
+        bubbles: true,
+        detail: { childId: elementToRender._id }
+      });
+      e.currentTarget.dispatchEvent(parentMouseEnter);
+    }
   };
 
-  const childrenElements = getChildren();
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setHoveredElementId((current) =>
+      current === elementToRender._id ? null : current
+    );
+    setIsChildHovered(false);
+    if (e.currentTarget.parentElement) {
+      const parentMouseLeave = new CustomEvent('childUnhovered', { 
+        bubbles: true,
+        detail: { childId: elementToRender._id }
+      });
+      e.currentTarget.dispatchEvent(parentMouseLeave);
+    }
+  };
 
-  const tooltipTitle = `Open ${element.component} element?`;
-  
+  const handleChildHovered = (e: Event) => {
+    const customEvent = e as CustomEvent;
+    if (customEvent.detail.childId !== elementToRender._id) {
+      setIsChildHovered(true);
+    }
+  };
+
+  const handleChildUnhovered = () => {
+    setIsChildHovered(false);
+  };
+
+  React.useEffect(() => {
+    const element = document.querySelector(`[data-element-id="${elementToRender._id}"]`);
+    if (element) {
+      element.addEventListener('childHovered', handleChildHovered as EventListener);
+      element.addEventListener('childUnhovered', handleChildUnhovered);
+      return () => {
+        element.removeEventListener('childHovered', handleChildHovered as EventListener);
+        element.removeEventListener('childUnhovered', handleChildUnhovered);
+      };
+    }
+  }, [elementToRender._id]);
+
+  const renderHoverButtons = () => {
+    const isHovered = hoveredElementId === elementToRender._id && !isChildHovered;
+    if (!editMode || !isHovered) return null;
+
+    const buttonSize = 24;
+
+    const placeholderAction = (actionName: string) => () => {
+      console.log(`${actionName} clicked for element ${elementToRender._id}`);
+    };
+
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: -4,
+          right: -4,
+          padding: '2px',
+          display: "flex",
+          gap: 1,
+          zIndex: 10,
+          bgcolor: 'rgba(0, 0, 0, 0.8)',
+          borderRadius: 1,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Tooltip title="Move element">
+          <IconButton
+            size="small"
+            color="primary"
+            onClick={placeholderAction("Move")}
+            sx={{ width: buttonSize, height: buttonSize }}
+          >
+            <OpenWith fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Edit element">
+          <IconButton
+            size="small"
+            color="primary"
+            onClick={editElement}
+            sx={{ width: buttonSize, height: buttonSize }}
+          >
+            <Edit fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete element">
+          <IconButton
+            size="small"
+            color="primary"
+            onClick={placeholderAction("Delete")}
+            sx={{ width: buttonSize, height: buttonSize }}
+          >
+            <Delete fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    );
+  };
+
+  const childIds = (elementToRender.children as string[] | undefined) || [];
+  const childrenElements = childIds.map((childId) => {
+    const query = useGetElementsByIdQuery(childId);
+    const child = (query.data as IElement[] | undefined)?.[0];
+    if (!child) return <div key={childId}>Child not found</div>;
+    return <Renderer key={child._id} element={child} editMode={editMode} />;
+  });
+
+  const { setNodeRef } = useDroppable({ id: elementToRender._id });
+
   if (elementToRender.component === "image") {
     return (
-      <Tooltip
-        title={editMode ? tooltipTitle : ""}
-        placement="bottom"
-        arrow
-        followCursor
-        disableHoverListener={!editMode}
-        disableFocusListener={!editMode}
-        disableTouchListener={!editMode}
+      <Box
+        ref={setNodeRef}
+        sx={{ 
+          position: 'relative', 
+          display: 'inline-block',
+          ...combinedSx(theme)
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        data-element-id={elementToRender._id}
       >
         <Box
           component="img"
           src={activeProps.src}
           alt={activeProps.alt ?? ""}
-          sx={combinedSx}
-          onClick={handleClick}
+          sx={{ 
+            display: 'block',
+            maxWidth: '100%',
+            pointerEvents: 'none'
+          }}
         />
-      </Tooltip>
+        {renderHoverButtons()}
+      </Box>
     );
   }
 
   const Component = componentMap[elementToRender.component];
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
 
-  const isDroppable = editMode && elementToRender.droppable;
-
-  const { 
-    setNodeRef, 
-    //isOver
-  } = useDroppable({
-    id: elementToRender._id,
-    data: elementToRender,
-    disabled: !isDroppable,
-  });
-
   return (
-    <Tooltip
-      title={editMode ? tooltipTitle : ""}
-      placement="bottom"
-      arrow
-      followCursor
-      disableHoverListener={!editMode}
-      disableFocusListener={!editMode}
-      disableTouchListener={!editMode}
+    <Component
+      ref={setNodeRef}
+      {...activeProps}
+      sx={combinedSx}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      data-element-id={elementToRender._id}
     >
-      <Component 
-        ref={setNodeRef} 
-        {...activeProps} 
-        sx={combinedSx} 
-        onClick={handleClick}
-      >
-        {elementToRender.childText}
-        {childrenElements}
-      </Component>
-    </Tooltip>
+      {elementToRender.childText}
+      {childrenElements}
+      {renderHoverButtons()}
+    </Component>
   );
 };
 

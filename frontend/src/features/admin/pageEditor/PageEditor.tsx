@@ -126,6 +126,7 @@ const PageEditor: React.FC = () => {
       height="100%"
       display="flex"
       flexDirection="column"
+      zIndex={1}
     >
       <Box display="flex" flexDirection="row" alignItems="center" mb={2}>
         <Button

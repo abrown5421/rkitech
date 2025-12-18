@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, type Theme } from '@mui/material';
 import type { AnimationProps } from './animationTypes';
 
 const Animation: React.FC<AnimationProps> = ({
@@ -20,11 +20,12 @@ const Animation: React.FC<AnimationProps> = ({
 
   return (
     <Box
-      className={`component-root ${className} ${animationClasses}`}
-      sx={{
-        animationDelay: `${animationObject?.delay ?? 0}s`,
-        cursor: onClick ? 'pointer' : 'default',
-        ...sx, 
+      className={`${className} ${animationClasses}`}
+      sx={(theme: Theme) => {
+        const base = { animationDelay: `${animationObject?.delay ?? 0}s` };
+        if (!sx) return base;
+        if (typeof sx === 'function') return { ...base, ...sx(theme) };
+        return { ...base, ...sx };
       }}
       onClick={onClick}
       {...rest}
