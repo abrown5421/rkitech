@@ -19,6 +19,7 @@ export const createElementTemplate = (
         p: 2,
         gap: 2,
       },
+      droppable: true,
       children: [],
     },
     animation: {
@@ -35,6 +36,7 @@ export const createElementTemplate = (
           isEntering: true,
         },
       },
+      droppable: true,
       children: [],
     },
     typography: {
@@ -45,6 +47,7 @@ export const createElementTemplate = (
         color: "#000000",
       },
       childText: "New Text",
+      droppable: false,
       children: [],
     },
     button: {
@@ -55,6 +58,7 @@ export const createElementTemplate = (
         color: "primary",
       },
       childText: "Click Me",
+      droppable: false,
       children: [],
     },
     image: {
@@ -68,6 +72,7 @@ export const createElementTemplate = (
           height: "auto",
         },
       },
+      droppable: false,
       children: [],
     },
   };

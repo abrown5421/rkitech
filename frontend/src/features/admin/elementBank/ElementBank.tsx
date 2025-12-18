@@ -6,6 +6,7 @@ import {
   CropSquare,
   TextFields,
   SmartButton,
+  Image,
   Movie,
 } from "@mui/icons-material";
 
@@ -16,6 +17,7 @@ const ElementBank: React.FC = () => {
     box: CropSquare,
     typography: TextFields,
     button: SmartButton,
+    image: Image,
     animation: Movie,
   };
 
@@ -57,7 +59,7 @@ const ElementBank: React.FC = () => {
                 {Icon && (
                   <Icon
                     fontSize="large"
-                    sx={{ color: "currentColor" }}
+                    sx={{ color: theme.palette.neutral.content }}
                   />
                 )}
 

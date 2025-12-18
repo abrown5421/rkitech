@@ -16,6 +16,7 @@ export interface ElementDoc {
   };
   childText?: string;
   children?: ElementDoc[];
+  droppable: boolean;
 }
 
 export interface RendererProps {
@@ -27,6 +28,8 @@ export interface EditorState {
   originalElement: ElementDoc | null;
   draftElement: ElementDoc | null;
   pendingChanges: Record<string, ElementDoc>;
+  pendingCreates: Record<string, ElementDoc>;
+  pendingDeletes: Record<string, true>;
   isDirty: boolean;
   hover: boolean;
   mobile: boolean;
