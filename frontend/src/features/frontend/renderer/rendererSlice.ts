@@ -6,7 +6,7 @@ const initialState: EditorState = {
   draftElement: null,
   pendingChanges: {},
   pendingCreates: {},
-  pendingDeletes: {},
+  pendingDeletes: [],
   isDirty: false,
   hover: false,
   mobile: false,
@@ -68,7 +68,7 @@ export const editorSlice = createSlice({
     clearPendingChanges(state) {
       state.pendingChanges = {};
       state.pendingCreates = {};
-      state.pendingDeletes = {};
+      state.pendingDeletes = [];
       state.isDirty = false;
     },
 
@@ -88,122 +88,77 @@ export const editorSlice = createSlice({
       state.isDirty = Object.keys(state.pendingChanges).length > 0;
     },
 
-    addPendingElement(state, action: PayloadAction<{ element: ElementDoc; parentId: string }>) {
-      const { element: newElement, parentId } = action.payload;
-      state.pendingCreates[newElement._id] = newElement;
-
-      if (state.pendingChanges[parentId]) {
-        const parent = state.pendingChanges[parentId];
-        parent.children = [...(parent.children || []), newElement];
-      } 
-      else if (state.pendingCreates[parentId]) {
-        const parent = state.pendingCreates[parentId];
-        parent.children = [...(parent.children || []), newElement];
-      }
-
-      state.originalElement = null;
-      state.draftElement = newElement;
-      state.isDirty = true;
-    },
-
-    addChildToParent(state, action: PayloadAction<{ parentId: string; childId: string; parentElement: ElementDoc }>) {
-      const { parentId, childId, parentElement } = action.payload;
-      
-      if (state.pendingChanges[parentId]) {
-        const parent = state.pendingChanges[parentId];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        if (!parent.children.some(c => (typeof c === 'string' ? c : c._id) === childId)) {
-          parent.children.push({ _id: childId } as ElementDoc);
-        }
-      } else {
-        const updatedParent = JSON.parse(JSON.stringify(parentElement));
-        if (!updatedParent.children) {
-          updatedParent.children = [];
-        }
-        if (!updatedParent.children.some((c: ElementDoc | string) => (typeof c === 'string' ? c : c._id) === childId)) {
-          updatedParent.children.push({ _id: childId } as ElementDoc);
-        }
-        state.pendingChanges[parentId] = updatedParent;
-      }
-      
-      state.isDirty = true;
-    },
-
-    removePendingElement(state, action: PayloadAction<string>) {
-      const id = action.payload;
-      if (state.pendingCreates[id]) {
-        delete state.pendingCreates[id];
-      }
-
-      if (state.draftElement?._id === id) {
-        state.draftElement = null;
-        state.originalElement = null;
-      }
-
-      state.isDirty =
-        Object.keys(state.pendingChanges).length > 0 ||
-        Object.keys(state.pendingCreates).length > 0 ||
-        Object.keys(state.pendingDeletes).length > 0;
-    },
-
     addPendingDelete(state, action: PayloadAction<string>) {
-      const id = action.payload;
-
-      if (state.pendingChanges[id]) {
-        delete state.pendingChanges[id];
+      const elementIdToDelete = action.payload;
+      
+      if (!state.pendingDeletes.includes(elementIdToDelete)) {
+        state.pendingDeletes.push(elementIdToDelete);
+        
+        const removeChildFromElement = (element: ElementDoc, childId: string) => {
+          if (!element.children) return false;
+          
+          const originalLength = element.children.length;
+          element.children = element.children.filter(child => {
+            const id = typeof child === 'string' ? child : child._id;
+            return id !== childId;
+          });
+          
+          return element.children.length !== originalLength;
+        };
+        
+        Object.entries(state.pendingChanges).forEach(([parentId, parent]) => {
+          if (removeChildFromElement(parent, elementIdToDelete)) {
+            state.pendingChanges[parentId] = parent;
+          }
+        });
+        
+        if (state.draftElement) {
+          if (removeChildFromElement(state.draftElement, elementIdToDelete)) {
+            state.pendingChanges[state.draftElement._id] = state.draftElement;
+          }
+        }
+        
+        state.isDirty = true;
       }
-
-      if (state.pendingCreates[id]) {
-        delete state.pendingCreates[id];
-      } else {
-        state.pendingDeletes[id] = true;
-      }
-
-      if (state.draftElement?._id === id) {
-        state.draftElement = null;
-        state.originalElement = null;
-      }
-
-      state.isDirty =
-        Object.keys(state.pendingChanges).length > 0 ||
-        Object.keys(state.pendingCreates).length > 0 ||
-        Object.keys(state.pendingDeletes).length > 0;
     },
 
     removePendingDelete(state, action: PayloadAction<string>) {
-      const id = action.payload;
-      if (state.pendingDeletes[id]) {
-        delete state.pendingDeletes[id];
-      }
+      state.pendingDeletes = state.pendingDeletes.filter(
+        id => id !== action.payload
+      );
 
       state.isDirty =
         Object.keys(state.pendingChanges).length > 0 ||
         Object.keys(state.pendingCreates).length > 0 ||
-        Object.keys(state.pendingDeletes).length > 0;
+        state.pendingDeletes.length > 0;
+    },
+
+    resetPendingDeletes(state) {
+      state.pendingDeletes = [];
+
+      state.isDirty =
+        Object.keys(state.pendingChanges).length > 0 ||
+        Object.keys(state.pendingCreates).length > 0;
     },
 
     resetRenderer() {
       return initialState;
-    }
+    },
   },
 });
 
-export const { 
-  setSelectedElement, 
-  updateDraft, 
-  resetDraft, 
-  toggleHover, 
-  setDeviceMode, 
+export const {
+  setSelectedElement,
+  updateDraft,
+  resetDraft,
+  toggleHover,
+  setDeviceMode,
   resetRenderer,
   deselectElement,
-  addPendingElement,
-  addChildToParent,
-  removePendingElement,
+  clearPendingChanges,
   addPendingDelete,
   removePendingDelete,
-  clearPendingChanges
+  resetPendingDeletes,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

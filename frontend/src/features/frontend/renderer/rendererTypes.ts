@@ -22,6 +22,7 @@ export interface ElementDoc {
 export interface RendererProps {
   element: ElementDoc;
   editMode?: boolean;
+  parentId?: string;
 }
 
 export interface EditorState {
@@ -29,7 +30,7 @@ export interface EditorState {
   draftElement: ElementDoc | null;
   pendingChanges: Record<string, ElementDoc>;
   pendingCreates: Record<string, ElementDoc>;
-  pendingDeletes: Record<string, true>;
+  pendingDeletes: string[];
   isDirty: boolean;
   hover: boolean;
   mobile: boolean;

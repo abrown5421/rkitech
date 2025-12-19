@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { componentMap } from "./componentMap";
 import type { RendererProps } from "./rendererTypes";
 import { Box, IconButton, Tooltip, useMediaQuery, useTheme, type Theme } from "@mui/material";
-import { setSelectedElement } from "./rendererSlice";
+import { addPendingDelete, setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
 import type { IElement } from "../element/elementTypes";
@@ -15,6 +15,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
+  const deletions = useAppSelector((state) => state.renderer.pendingDeletes);
 
   const deviceMode = useAppSelector((state) => {
     if (state.renderer.mobile) return "mobile";
@@ -29,6 +30,8 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       ? pendingChanges[element._id]
       : element;
 
+  const isDeleted = editMode && deletions.includes(elementToRender._id);
+  
   const useViewportSize = () => {
     const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -105,6 +108,12 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const activeProps = getActiveProps();
 
+  const deleteElement = (id: string) => {
+    if (editMode) {
+      dispatch(addPendingDelete(id))
+    } 
+  };
+
   const editElement = (e: React.MouseEvent) => {
     if (editMode) {
       e.stopPropagation();
@@ -162,7 +171,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     }
   }, [elementToRender._id]);
 
-  const renderHoverButtons = () => {
+  const renderHoverButtons = (id: string) => {
     const isHovered = hoveredElementId === elementToRender._id && !isChildHovered;
     if (!editMode || !isHovered) return null;
 
@@ -211,7 +220,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
           <IconButton
             size="small"
             color="primary"
-            onClick={placeholderAction("Delete")}
+            onClick={() => deleteElement(id)}
             sx={{ width: buttonSize, height: buttonSize }}
           >
             <Delete fontSize="small" />
@@ -222,16 +231,28 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   };
 
   const childIds = (elementToRender.children as string[] | undefined) || [];
-  const childrenElements = childIds.map((childId) => {
-    const query = useGetElementsByIdQuery(childId);
-    const child = (query.data as IElement[] | undefined)?.[0];
-    if (!child) return <div key={childId}>Child not found</div>;
-    return <Renderer key={child._id} element={child} editMode={editMode} />;
-  });
+
+  const childQueries = childIds.map((childId) => 
+    useGetElementsByIdQuery(childId)
+  );
+
+  const childrenElements = childIds
+    .map((childId, index) => {
+      if (deletions.includes(childId)) return null;
+      
+      const query = childQueries[index];
+      const child = (query.data as IElement[] | undefined)?.[0];
+      if (!child) return null;
+      
+      return <Renderer key={child._id} element={child} editMode={editMode} />;
+    })
+    .filter(Boolean);
 
   const { setNodeRef } = useDroppable({ id: elementToRender._id });
 
   if (elementToRender.component === "image") {
+    if (isDeleted) return null;
+
     return (
       <Box
         ref={setNodeRef}
@@ -254,14 +275,14 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
             pointerEvents: 'none'
           }}
         />
-        {renderHoverButtons()}
+        {renderHoverButtons(elementToRender._id)}
       </Box>
     );
   }
 
   const Component = componentMap[elementToRender.component];
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
-
+  if (isDeleted) return null;
   return (
     <Component
       ref={setNodeRef}
@@ -273,7 +294,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     >
       {elementToRender.childText}
       {childrenElements}
-      {renderHoverButtons()}
+      {renderHoverButtons(elementToRender._id)}
     </Component>
   );
 };
