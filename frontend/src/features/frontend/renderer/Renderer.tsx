@@ -15,6 +15,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
+  const pendingCreates = useAppSelector((state) => state.renderer.pendingCreates);
   const deletions = useAppSelector((state) => state.renderer.pendingDeletes);
 
   const deviceMode = useAppSelector((state) => {
@@ -232,34 +233,87 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const childIds = (elementToRender.children as string[] | undefined) || [];
 
-  const childQueries = childIds.map((childId) => 
-    useGetElementsByIdQuery(childId)
-  );
+  const DbChildRenderer: React.FC<{
+    childId: string;
+    editMode?: boolean;
+    parentId?: string;
+  }> = ({ childId, editMode, parentId }) => {
+    const { data } = useGetElementsByIdQuery(childId);
+    const child = (data as IElement[] | undefined)?.[0];
 
-  const childrenElements = childIds
-    .map((childId, index) => {
-      if (deletions.includes(childId)) return null;
-      
-      const query = childQueries[index];
-      const child = (query.data as IElement[] | undefined)?.[0];
-      if (!child) return null;
-      
-      return <Renderer key={child._id} element={child} editMode={editMode} />;
-    })
-    .filter(Boolean);
+    if (!child) return null;
 
-  const { setNodeRef } = useDroppable({ id: elementToRender._id });
+    return (
+      <Renderer
+        element={child}
+        editMode={editMode}
+        parentId={parentId}
+      />
+    );
+  };
+
+  const childrenElements = childIds.map((childId) => {
+    if (editMode && deletions.includes(childId)) return null;
+
+    if (pendingCreates[childId]) {
+      return (
+        <Renderer
+          key={childId}
+          element={pendingCreates[childId]}
+          editMode={editMode}
+          parentId={elementToRender._id}
+        />
+      );
+    }
+
+    if (pendingChanges[childId]) {
+      return (
+        <Renderer
+          key={childId}
+          element={pendingChanges[childId]}
+          editMode={editMode}
+          parentId={elementToRender._id}
+        />
+      );
+    }
+
+    return (
+      <DbChildRenderer
+        key={childId}
+        childId={childId}
+        editMode={editMode}
+        parentId={elementToRender._id}
+      />
+    );
+  });
+
+  const isDroppable = elementToRender.droppable;
+
+  const droppable = useDroppable({
+    id: elementToRender._id,
+    disabled: !isDroppable,
+    data: elementToRender, 
+  });
+
+  const ref = isDroppable ? droppable.setNodeRef : undefined;
+
+  const isOver = droppable.isOver && isDroppable;
+
+  const dropSx = isOver
+    ? { outline: `2px solid ${theme.palette.success.main}` }
+    : {};
 
   if (elementToRender.component === "image") {
     if (isDeleted) return null;
 
     return (
       <Box
-        ref={setNodeRef}
+        ref={ref}
         sx={{ 
           position: 'relative', 
           display: 'inline-block',
-          ...combinedSx(theme)
+          ...combinedSx(theme),
+          ...dropSx,
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -283,11 +337,15 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const Component = componentMap[elementToRender.component];
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
   if (isDeleted) return null;
+  
   return (
     <Component
-      ref={setNodeRef}
+      ref={ref}
       {...activeProps}
-      sx={combinedSx}
+      sx={{ 
+        ...combinedSx(theme),
+        ...dropSx,
+      }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       data-element-id={elementToRender._id}
