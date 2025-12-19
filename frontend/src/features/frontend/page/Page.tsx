@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PageProps } from './pageTypes';
-import { useAppSelector } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { Box } from '@mui/material';
 import Animation from '../animation/Animation';
 import type { EntranceAnimation, ExitAnimation } from '../animation/animationTypes';
@@ -16,8 +16,11 @@ import PESidebar from '../../admin/pageEditor/PESidebar';
 import Media from '../../admin/media/Media';
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
 import { createElementTemplate } from '../../admin/elementBank/elementTemplates';
+import { addPendingCreate } from '../renderer/rendererSlice';
+import type { ElementDoc } from '../renderer/rendererTypes';
 
 const Page: React.FC<PageProps> = ({ page }) => {
+    const dispatch = useAppDispatch();
     const activePage = useAppSelector((state) => state.activePage);
     const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
     const { data: rootElement } = useGetElementsByIdQuery(
@@ -27,18 +30,29 @@ const Page: React.FC<PageProps> = ({ page }) => {
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
-        if (!over || !active) return;
+        if (!over || !active) {
+            console.log("No valid drop target");
+            return;
+        }
 
         const componentType = String(active.id);
-        const parentElement = over.data.current;
+        
+        const parentData = over.data.current as ElementDoc | undefined;
 
-        if (!parentElement) return;
+        if (!parentData || !parentData.droppable) {
+            console.log("Parent is not droppable");
+            return;
+        }
 
         const newElement = createElementTemplate(componentType);
 
-        console.log("Dragged element:", newElement);
-        console.log("Dropped on parent:", parentElement);
-
+        console.log("Creating new element:", newElement);
+        console.log("Adding to parent:", parentData._id);
+        
+        dispatch(addPendingCreate({ 
+            element: newElement, 
+            parentElement: parentData
+        }));
     };
 
     return (
@@ -69,7 +83,7 @@ const Page: React.FC<PageProps> = ({ page }) => {
                         {activePage.activePageUid === 'page_id_admin_media' && <Media />}
                     </>
                 ) : (
-                    rootElement && <Renderer element={rootElement[0]} /> 
+                    rootElement && <Renderer element={rootElement[0]} editMode={isAdminRoute} /> 
                 )}
                 </Animation>
             </DndContext>

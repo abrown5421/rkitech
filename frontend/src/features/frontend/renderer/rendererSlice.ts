@@ -141,6 +141,51 @@ export const editorSlice = createSlice({
         Object.keys(state.pendingCreates).length > 0;
     },
 
+    addPendingCreate(state, action: PayloadAction<{ element: ElementDoc; parentElement: ElementDoc }>) {
+      const { element, parentElement } = action.payload;
+
+      state.pendingCreates[element._id] = element;
+
+      let updatedParent = state.pendingChanges[parentElement._id];
+      
+      if (!updatedParent) {
+        updatedParent = JSON.parse(JSON.stringify(parentElement));
+      }
+
+      if (!updatedParent.children) {
+        updatedParent.children = [];
+      }
+      
+      const childIds = updatedParent.children.map(c => 
+        typeof c === 'string' ? c : c._id
+      );
+      
+      if (!childIds.includes(element._id)) {
+        updatedParent.children.push(element._id);
+      }
+
+      state.pendingChanges[parentElement._id] = updatedParent;
+
+      state.isDirty = true;
+    },
+
+    removePendingCreate(state, action: PayloadAction<string>) {
+      delete state.pendingCreates[action.payload];
+
+      state.isDirty =
+        Object.keys(state.pendingChanges).length > 0 ||
+        Object.keys(state.pendingCreates).length > 0 ||
+        state.pendingDeletes.length > 0;
+    },
+
+    resetPendingCreates(state) {
+      state.pendingCreates = {};
+
+      state.isDirty =
+        Object.keys(state.pendingChanges).length > 0 ||
+        state.pendingDeletes.length > 0;
+    },
+
     resetRenderer() {
       return initialState;
     },
@@ -159,6 +204,9 @@ export const {
   addPendingDelete,
   removePendingDelete,
   resetPendingDeletes,
+  addPendingCreate,
+  removePendingCreate,
+  resetPendingCreates,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

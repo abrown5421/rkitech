@@ -6,7 +6,13 @@ import type { DraggableElementProps } from "./elementBankTypes";
 
 const DraggableElement: React.FC<DraggableElementProps> = ({ id, children }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({ id });
+    useDraggable({
+      id, 
+      data: {
+        source: 'element-bank',
+        component: id,
+      },
+    });
 
   const style = {
     transform: CSS.Translate.toString(transform),
