@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useGetPageByIdQuery } from '../../frontend/page/pageApi';
 import Renderer from '../../frontend/renderer/Renderer';
 import { Alert, Box, Button, useTheme } from '@mui/material';
-import { useGetElementsByIdQuery, useUpdateElementsMutation, useCreateElementsMutation } from '../../frontend/element/elementApi';
+import { useGetElementsByIdQuery, useUpdateElementsMutation, useDeleteElementsMutation } from '../../frontend/element/elementApi';
 import type { IElement } from '../../frontend/element/elementTypes';
 import { setDeviceMode, toggleHover, clearPendingChanges } from '../../frontend/renderer/rendererSlice';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -20,10 +20,10 @@ const PageEditor: React.FC = () => {
   const id = searchParams.get("id");
   const renderer = useAppSelector((state) => state.renderer);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
-  const pendingCreates = useAppSelector((state) => state.renderer.pendingCreates);
-  
+  const pendingDeletes = useAppSelector((state) => state.renderer.pendingDeletes);
+
   const [updateElements] = useUpdateElementsMutation();
-  const [createElements] = useCreateElementsMutation();
+  const [deleteElement] = useDeleteElementsMutation();
   
   const { data: rootPage } = useGetPageByIdQuery(id!);
 
@@ -76,21 +76,24 @@ const PageEditor: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      const createPromises = Object.entries(pendingCreates).map(([_id, doc]) =>
-        createElements(elementDocToIElement(doc))
 
-      );
-
-      await Promise.all(createPromises);
-
+      // UPDATE
       const updatePromises = Object.entries(pendingChanges).map(([id, doc]) =>
         updateElements({
           id,
           data: elementDocToIElement(doc),
-        })
+        }).unwrap()
       );
 
-      await Promise.all(updatePromises);
+      // DELETE
+      const deletePromises = pendingDeletes.map((id) =>
+        deleteElement(id).unwrap()
+      );
+
+      await Promise.all([
+        ...updatePromises,
+        ...deletePromises,
+      ]);
 
       dispatch(clearPendingChanges());
 
@@ -105,7 +108,7 @@ const PageEditor: React.FC = () => {
         })
       );
     } catch (error) {
-      console.error('Error saving changes:', error);
+      console.error("Error saving changes:", error);
       dispatch(
         openAlert({
           severity: "error",
