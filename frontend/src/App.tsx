@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { useCheckHealth } from "./features/frontend/health/useCheckHealth";
 import Healthy from "./features/frontend/health/Healthy";
 import Unhealthy from "./features/frontend/health/Unhealthy";
+import { ViewportProvider } from "./features/frontend/viewportProvider/ViewportProvider";
 
 const loadAppInner = () => import("./AppInner");
 const LazyAppInner = React.lazy(loadAppInner); 
@@ -14,7 +15,9 @@ const App: React.FC = () => {
 
   return (
     <Suspense fallback={<Healthy progress={progress} />}>
-      <LazyAppInner pages={pages} theme={theme} />
+      <ViewportProvider>
+        <LazyAppInner pages={pages} theme={theme} />
+      </ViewportProvider>
     </Suspense>
   );
 };
