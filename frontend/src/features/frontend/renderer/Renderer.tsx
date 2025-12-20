@@ -9,6 +9,20 @@ import type { IElement } from "../element/elementTypes";
 import { useDroppable } from "@dnd-kit/core";
 import { Delete, Edit, OpenWith } from "@mui/icons-material";
 
+// Separate component for DB-fetched children
+// This ensures each child manages its own hooks independently
+const DbChildWrapper: React.FC<{
+  childId: string;
+  editMode?: boolean;
+}> = ({ childId, editMode }) => {
+  const { data } = useGetElementsByIdQuery(childId);
+  const child = (data as IElement[] | undefined)?.[0];
+
+  if (!child) return null;
+
+  return <Renderer element={child} editMode={editMode} />;
+};
+
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
@@ -233,60 +247,43 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const childIds = (elementToRender.children as string[] | undefined) || [];
 
-  const DbChildRenderer: React.FC<{
-    childId: string;
-    editMode?: boolean;
-    parentId?: string;
-  }> = ({ childId, editMode, parentId }) => {
-    const { data } = useGetElementsByIdQuery(childId);
-    const child = (data as IElement[] | undefined)?.[0];
-
-    if (!child) return null;
-
-    return (
-      <Renderer
-        element={child}
-        editMode={editMode}
-        parentId={parentId}
-      />
-    );
-  };
-
+  // Render children without calling hooks in a loop
   const childrenElements = childIds.map((childId) => {
     if (editMode && deletions.includes(childId)) return null;
 
+    // Check if it's a pending create (new element not yet in DB)
     if (pendingCreates[childId]) {
       return (
         <Renderer
           key={childId}
           element={pendingCreates[childId]}
           editMode={editMode}
-          parentId={elementToRender._id}
         />
       );
     }
 
+    // Check if it's a pending change (existing element with modifications)
     if (pendingChanges[childId]) {
       return (
         <Renderer
           key={childId}
           element={pendingChanges[childId]}
           editMode={editMode}
-          parentId={elementToRender._id}
         />
       );
     }
 
+    // Otherwise it's a DB element - use wrapper component
     return (
-      <DbChildRenderer
+      <DbChildWrapper
         key={childId}
         childId={childId}
         editMode={editMode}
-        parentId={elementToRender._id}
       />
     );
-  });
+  }).filter(Boolean);
 
+  // Setup droppable functionality
   const isDroppable = elementToRender.droppable;
 
   const droppable = useDroppable({
@@ -296,7 +293,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   });
 
   const ref = isDroppable ? droppable.setNodeRef : undefined;
-
   const isOver = droppable.isOver && isDroppable;
 
   const dropSx = isOver
