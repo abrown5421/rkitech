@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { componentMap } from "./componentMap";
 import type { RendererProps } from "./rendererTypes";
-import { Box, IconButton, Tooltip, useMediaQuery, useTheme, type Theme } from "@mui/material";
+import { Box, IconButton, Tooltip, useTheme, type Theme } from "@mui/material";
 import { addPendingDelete, setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
 import type { IElement } from "../element/elementTypes";
 import { useDroppable } from "@dnd-kit/core";
 import { Delete, Edit, OpenWith } from "@mui/icons-material";
+import { useViewport } from "../viewportProvider/ViewportProvider";
 
-// Separate component for DB-fetched children
-// This ensures each child manages its own hooks independently
 const DbChildWrapper: React.FC<{
   childId: string;
   editMode?: boolean;
@@ -26,17 +25,12 @@ const DbChildWrapper: React.FC<{
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const { viewport, forced } = useViewport();
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
   const pendingCreates = useAppSelector((state) => state.renderer.pendingCreates);
   const deletions = useAppSelector((state) => state.renderer.pendingDeletes);
-
-  const deviceMode = useAppSelector((state) => {
-    if (state.renderer.mobile) return "mobile";
-    if (state.renderer.tablet) return "tablet";
-    return "desktop";
-  });
 
   const elementToRender =
     editMode && selected && draft && selected._id === element._id
@@ -46,16 +40,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       : element;
 
   const isDeleted = editMode && deletions.includes(elementToRender._id);
-  
-  const useViewportSize = () => {
-    const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    if (isMobile) return "mobile";
-    if (isTablet) return "tablet";
-    return "desktop";
-  };
-
-  const viewportSize = editMode ? deviceMode : useViewportSize();
 
   const [hoveredElementId, setHoveredElementId] = useState<string | null>(null);
   const [isChildHovered, setIsChildHovered] = useState(false);
@@ -66,15 +50,18 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
     let mergedSx = { ...(baseProps.sx || {}) };
 
-    if (editMode) {
-      if (deviceMode === "mobile" && responsiveProps.mobile) {
+    // In edit mode with forced viewport, apply responsive overrides directly
+    if (editMode && forced) {
+      if (viewport === "mobile" && responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
         mergedSx = { ...mergedSx, ...mobileSx };
-      } else if (deviceMode === "tablet" && responsiveProps.tablet) {
+      } else if (viewport === "tablet" && responsiveProps.tablet) {
         const { variant, ...tabletSx } = responsiveProps.tablet;
         mergedSx = { ...mergedSx, ...tabletSx };
       }
-    } else {
+    } 
+    // In preview mode (or edit mode without forced viewport), use media queries
+    else {
       if (responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
         mergedSx = { ...mergedSx, [theme.breakpoints.down("sm")]: mobileSx };
@@ -112,9 +99,9 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     const baseProps = { ...elementToRender.props };
     const responsiveProps = baseProps.responsive || {};
 
-    if (viewportSize === "mobile" && responsiveProps.mobile) {
+    if (viewport === "mobile" && responsiveProps.mobile) {
       return { ...baseProps, ...responsiveProps.mobile };
-    } else if (viewportSize === "tablet" && responsiveProps.tablet) {
+    } else if (viewport === "tablet" && responsiveProps.tablet) {
       return { ...baseProps, ...responsiveProps.tablet };
     }
 
@@ -247,11 +234,9 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const childIds = (elementToRender.children as string[] | undefined) || [];
 
-  // Render children without calling hooks in a loop
   const childrenElements = childIds.map((childId) => {
     if (editMode && deletions.includes(childId)) return null;
 
-    // Check if it's a pending create (new element not yet in DB)
     if (pendingCreates[childId]) {
       return (
         <Renderer
@@ -262,7 +247,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       );
     }
 
-    // Check if it's a pending change (existing element with modifications)
     if (pendingChanges[childId]) {
       return (
         <Renderer
@@ -273,7 +257,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
       );
     }
 
-    // Otherwise it's a DB element - use wrapper component
     return (
       <DbChildWrapper
         key={childId}

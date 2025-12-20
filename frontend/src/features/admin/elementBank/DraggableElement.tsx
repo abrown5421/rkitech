@@ -4,24 +4,32 @@ import { Box } from "@mui/material";
 import React from "react";
 import type { DraggableElementProps } from "./elementBankTypes";
 
-const DraggableElement: React.FC<DraggableElementProps> = ({ id, children }) => {
+const DraggableElement: React.FC<DraggableElementProps> = ({
+  id,
+  children,
+  sx,
+}) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
-      id, 
+      id,
       data: {
-        source: 'element-bank',
+        source: "element-bank",
         component: id,
       },
     });
 
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.5 : 1,
-    cursor: "grab",
-  };
-
   return (
-    <Box ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <Box
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      sx={{
+        cursor: "grab",
+        opacity: isDragging ? 0.5 : 1,
+        transform: CSS.Translate.toString(transform),
+        ...sx,
+      }}
+    >
       {children}
     </Box>
   );

@@ -9,9 +9,11 @@ import {
   Image,
   Movie,
 } from "@mui/icons-material";
+import { useViewport } from "../../frontend/viewportProvider/ViewportProvider";
 
 const ElementBank: React.FC = () => {
   const theme = useTheme();
+  const { isMobile, isTablet } = useViewport();
 
   const iconMap: Record<string, React.ElementType> = {
     box: CropSquare,
@@ -21,57 +23,53 @@ const ElementBank: React.FC = () => {
     animation: Movie,
   };
 
+  const itemFlexBasis = isMobile || isTablet ? "100%" : "calc(50% - 8px)";
+
   return (
-      <Box
-        display="flex"
-        flexDirection="row"
-        flexWrap="wrap"
-        gap={2}
-        position="relative"
-      >
-        {Object.entries(componentMap).map(([key]) => {
-          const Icon = iconMap[key];
+    <Box
+      display="flex"
+      flexDirection="row"
+      flexWrap="wrap"
+      gap={2}
+      position="relative"
+    >
+      {Object.entries(componentMap).map(([key]) => {
+        const Icon = iconMap[key];
 
-          return (
-            <DraggableElement key={key} id={key}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                flex={1}
-                borderRadius="10px"
-                border={`1px solid ${theme.palette.neutral.content}`}
-                py={4}
-                px={2}
-                minWidth={200}
-                gap={1}
-                color={theme.palette.neutral.content}
-                sx={{
-                  boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    color: theme.palette.primary.main,
-                    border: `1px solid ${theme.palette.primary.main}`,
-                  },
-                }}
-              >
-                {Icon && (
-                  <Icon
-                    fontSize="large"
-                    sx={{ color: theme.palette.neutral.content }}
-                  />
-                )}
+        return (
+          <DraggableElement
+            key={key}
+            id={key}
+            sx={{
+              flex: `0 0 ${itemFlexBasis}`,
+            }}
+          >
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              borderRadius="10px"
+              border={`1px solid ${theme.palette.neutral.content}`}
+              py={4}
+              px={2}
+              gap={1}
+            >
+              {Icon && (
+                <Icon
+                  fontSize="large"
+                  sx={{ color: theme.palette.neutral.content }}
+                />
+              )}
 
-                <Typography variant="caption">
-                  {key.toUpperCase()}
-                </Typography>
-              </Box>
-            </DraggableElement>
-          );
-        })}
-      </Box>
-    
+              <Typography variant="caption">
+                {key.toUpperCase()}
+              </Typography>
+            </Box>
+          </DraggableElement>
+        );
+      })}
+    </Box>
   );
 };
 
