@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { componentMap } from "./componentMap";
 import type { RendererProps } from "./rendererTypes";
-import { Box, IconButton, Tooltip, useTheme, type Theme } from "@mui/material";
+import { Box, IconButton, Tooltip, type Theme } from "@mui/material";
 import { addPendingDelete, setSelectedElement } from "./rendererSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useGetElementsByIdQuery } from "../element/elementApi";
@@ -9,15 +9,16 @@ import type { IElement } from "../element/elementTypes";
 import { useDroppable } from "@dnd-kit/core";
 import { Delete, Edit, OpenWith } from "@mui/icons-material";
 import { useViewport } from "../viewportProvider/ViewportProvider";
+import { useTheme } from "@mui/material";
 
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const { viewport } = useViewport();
+  const { viewport, forced } = useViewport();
+  
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
-  const pendingCreates = useAppSelector((state) => state.renderer.pendingCreates);
   const deletions = useAppSelector((state) => state.renderer.pendingDeletes);
 
   const elementToRender =
@@ -29,6 +30,9 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const isDeleted = editMode && deletions.includes(elementToRender._id);
 
+  // Use viewport from context - this is our single source of truth
+  const viewportSize = viewport;
+
   const [hoveredElementId, setHoveredElementId] = useState<string | null>(null);
   const [isChildHovered, setIsChildHovered] = useState(false);
 
@@ -38,15 +42,17 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
     let mergedSx = { ...(baseProps.sx || {}) };
 
-    if (editMode) {
-      if (viewport === "mobile" && responsiveProps.mobile) {
+    // When viewport is forced (editMode with device selector), apply responsive styles directly
+    if (forced) {
+      if (viewportSize === "mobile" && responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
         mergedSx = { ...mergedSx, ...mobileSx };
-      } else if (viewport === "tablet" && responsiveProps.tablet) {
+      } else if (viewportSize === "tablet" && responsiveProps.tablet) {
         const { variant, ...tabletSx } = responsiveProps.tablet;
         mergedSx = { ...mergedSx, ...tabletSx };
       }
     } else {
+      // When viewport is natural (based on actual screen size), use media queries
       if (responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
         mergedSx = { ...mergedSx, [theme.breakpoints.down("sm")]: mobileSx };
@@ -84,9 +90,9 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     const baseProps = { ...elementToRender.props };
     const responsiveProps = baseProps.responsive || {};
 
-    if (viewport === "mobile" && responsiveProps.mobile) {
+    if (viewportSize === "mobile" && responsiveProps.mobile) {
       return { ...baseProps, ...responsiveProps.mobile };
-    } else if (viewport === "tablet" && responsiveProps.tablet) {
+    } else if (viewportSize === "tablet" && responsiveProps.tablet) {
       return { ...baseProps, ...responsiveProps.tablet };
     }
 
@@ -219,87 +225,34 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const childIds = (elementToRender.children as string[] | undefined) || [];
 
-  const DbChildRenderer: React.FC<{
-    childId: string;
-    editMode?: boolean;
-    parentId?: string;
-  }> = ({ childId, editMode, parentId }) => {
-    const { data } = useGetElementsByIdQuery(childId);
-    const child = (data as IElement[] | undefined)?.[0];
+  const childQueries = childIds.map((childId) => 
+    useGetElementsByIdQuery(childId)
+  );
 
-    if (!child) return null;
+  const childrenElements = childIds
+    .map((childId, index) => {
+      if (deletions.includes(childId)) return null;
+      
+      const query = childQueries[index];
+      const child = (query.data as IElement[] | undefined)?.[0];
+      if (!child) return null;
+      
+      return <Renderer key={child._id} element={child} editMode={editMode} />;
+    })
+    .filter(Boolean);
 
-    return (
-      <Renderer
-        element={child}
-        editMode={editMode}
-        parentId={parentId}
-      />
-    );
-  };
-
-  const childrenElements = childIds.map((childId) => {
-    if (editMode && deletions.includes(childId)) return null;
-
-    if (pendingCreates[childId]) {
-      return (
-        <Renderer
-          key={childId}
-          element={pendingCreates[childId]}
-          editMode={editMode}
-          parentId={elementToRender._id}
-        />
-      );
-    }
-
-    if (pendingChanges[childId]) {
-      return (
-        <Renderer
-          key={childId}
-          element={pendingChanges[childId]}
-          editMode={editMode}
-          parentId={elementToRender._id}
-        />
-      );
-    }
-
-    return (
-      <DbChildRenderer
-        key={childId}
-        childId={childId}
-        editMode={editMode}
-        parentId={elementToRender._id}
-      />
-    );
-  });
-
-  const isDroppable = elementToRender.droppable;
-
-  const droppable = useDroppable({
-    id: elementToRender._id,
-    disabled: !isDroppable,
-    data: elementToRender, 
-  });
-
-  const ref = isDroppable ? droppable.setNodeRef : undefined;
-
-  const isOver = droppable.isOver && isDroppable;
-
-  const dropSx = isOver
-    ? { outline: `2px solid ${theme.palette.success.main}` }
-    : {};
+  const { setNodeRef } = useDroppable({ id: elementToRender._id });
 
   if (elementToRender.component === "image") {
     if (isDeleted) return null;
 
     return (
       <Box
-        ref={ref}
+        ref={setNodeRef}
         sx={{ 
           position: 'relative', 
           display: 'inline-block',
-          ...combinedSx(theme),
-          ...dropSx,
+          ...combinedSx(theme)
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -323,15 +276,11 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const Component = componentMap[elementToRender.component];
   if (!Component) return <div>Unknown component: {elementToRender.component}</div>;
   if (isDeleted) return null;
-  
   return (
     <Component
-      ref={ref}
+      ref={setNodeRef}
       {...activeProps}
-      sx={{ 
-        ...combinedSx(theme),
-        ...dropSx,
-      }}
+      sx={combinedSx}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       data-element-id={elementToRender._id}
