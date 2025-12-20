@@ -10,4 +10,5 @@ export interface IElements extends Document {
   className?: string;
   droppable: boolean;
   children?: String[];
+  parentId?: string | null;
 }

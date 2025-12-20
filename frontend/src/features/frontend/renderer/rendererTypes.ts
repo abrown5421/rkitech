@@ -16,6 +16,7 @@ export interface ElementDoc {
   };
   childText?: string;
   children?: (string | ElementDoc)[]; 
+  parentId?: string | null;
   droppable: boolean;
 }
 
