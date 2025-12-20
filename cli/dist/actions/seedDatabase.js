@@ -18,18 +18,34 @@ function convertIds(doc) {
     else if (doc && typeof doc === "object") {
         const newDoc = {};
         for (const key in doc) {
-            if (key === "_id" && doc[key]?.$oid) {
-                newDoc[key] = new Types.ObjectId(doc[key].$oid);
+            const value = doc[key];
+            if (key === "_id" && value?.$oid) {
+                newDoc[key] = new Types.ObjectId(value.$oid);
+            }
+            else if (key === "children" && Array.isArray(value)) {
+                newDoc[key] = value.map((c) => {
+                    if (c?.$oid)
+                        return new Types.ObjectId(c.$oid);
+                    if (typeof c === "string" && /^[a-f0-9]{24}$/.test(c))
+                        return new Types.ObjectId(c);
+                    return c;
+                });
+            }
+            else if (key === "parentId" && value) {
+                if (value?.$oid)
+                    newDoc[key] = new Types.ObjectId(value.$oid);
+                else if (typeof value === "string" && /^[a-f0-9]{24}$/.test(value))
+                    newDoc[key] = new Types.ObjectId(value);
+                else
+                    newDoc[key] = null;
             }
             else {
-                newDoc[key] = convertIds(doc[key]);
+                newDoc[key] = convertIds(value);
             }
         }
         return newDoc;
     }
-    else {
-        return doc;
-    }
+    return doc;
 }
 export default async function seedDatabase() {
     console.log("Seeding database...");
@@ -41,14 +57,33 @@ export default async function seedDatabase() {
             const rawData = fs.readFileSync(filePath, "utf-8");
             let documents = JSON.parse(rawData);
             if (!Array.isArray(documents)) {
-                console.warn(`Skipping ${fileName}, not an array of documents.`);
+                console.warn(`Skipping ${fileName}, not an array.`);
                 continue;
             }
             documents = convertIds(documents);
             const collection = db.collection(collectionName);
             await collection.deleteMany({});
             await collection.insertMany(documents);
-            console.log(`✅ Inserted ${documents.length} documents into '${collectionName}'`);
+            console.log(`✅ Inserted ${documents.length} into '${collectionName}'`);
+        }
+        const elementsCollection = db.collection("elements");
+        const allElements = await elementsCollection.find({}).toArray();
+        const updates = [];
+        for (const parent of allElements) {
+            if (!Array.isArray(parent.children))
+                continue;
+            for (const childId of parent.children) {
+                updates.push({
+                    updateOne: {
+                        filter: { _id: childId },
+                        update: { $set: { parentId: parent._id } },
+                    },
+                });
+            }
+        }
+        if (updates.length > 0) {
+            await elementsCollection.bulkWrite(updates);
+            console.log(`🔗 Linked ${updates.length} child → parent relationships`);
         }
         console.log("🎉 Database seeded successfully!");
     }

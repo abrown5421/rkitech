@@ -8,6 +8,7 @@ export interface IElement {
   sx?: Record<string, any>;
   className?: string;
   children?: IElement[];
+  parentId?: string | null;
   droppable: boolean;
   createdAt: Date;
   updatedAt: Date;

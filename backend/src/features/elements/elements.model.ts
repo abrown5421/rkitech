@@ -11,6 +11,7 @@ const ElementsSchema: Schema = new Schema<IElements>({
   className: { type: String, required: false },
   droppable: { type: Boolean, required: true, default: false },
   children: [{ type: Schema.Types.Mixed, ref: "Elements", required: false }],
+  parentId: { type: Schema.Types.ObjectId, ref: "Elements", required: false, default: null }
 }, { timestamps: true });
 
 ElementsSchema.index({ name: 1 });
