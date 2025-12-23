@@ -278,7 +278,10 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const isOver = droppable.isOver && isDroppable;
 
   const dropSx = isOver
-    ? { outline: `2px solid ${theme.palette.success.main}` }
+    ? { 
+      outlineOffset: 2,
+      outline: `2px dashed ${theme.palette.success.main}`
+    }
     : {};
 
   if (elementToRender.component === "image") {
