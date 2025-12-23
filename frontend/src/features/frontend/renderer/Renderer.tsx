@@ -10,10 +10,22 @@ import { useDroppable } from "@dnd-kit/core";
 import { Delete, Edit, OpenWith } from "@mui/icons-material";
 import { useViewport } from "../viewportProvider/ViewportProvider";
 
+const DbChildWrapper: React.FC<{
+  childId: string;
+  editMode?: boolean;
+}> = ({ childId, editMode }) => {
+  const { data } = useGetElementsByIdQuery(childId);
+  const child = (data as IElement[] | undefined)?.[0];
+
+  if (!child) return null;
+
+  return <Renderer element={child} editMode={editMode} />;
+};
+
 const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const { viewport } = useViewport();
+  const { viewport, forced } = useViewport();
   const selected = useAppSelector((state) => state.renderer.originalElement);
   const draft = useAppSelector((state) => state.renderer.draftElement);
   const pendingChanges = useAppSelector((state) => state.renderer.pendingChanges);
@@ -38,7 +50,8 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
     let mergedSx = { ...(baseProps.sx || {}) };
 
-    if (editMode) {
+    // In edit mode with forced viewport, apply responsive overrides directly
+    if (editMode && forced) {
       if (viewport === "mobile" && responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
         mergedSx = { ...mergedSx, ...mobileSx };
@@ -46,7 +59,9 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
         const { variant, ...tabletSx } = responsiveProps.tablet;
         mergedSx = { ...mergedSx, ...tabletSx };
       }
-    } else {
+    } 
+    // In preview mode (or edit mode without forced viewport), use media queries
+    else {
       if (responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
         mergedSx = { ...mergedSx, [theme.breakpoints.down("sm")]: mobileSx };
@@ -219,25 +234,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
   const childIds = (elementToRender.children as string[] | undefined) || [];
 
-  const DbChildRenderer: React.FC<{
-    childId: string;
-    editMode?: boolean;
-    parentId?: string;
-  }> = ({ childId, editMode, parentId }) => {
-    const { data } = useGetElementsByIdQuery(childId);
-    const child = (data as IElement[] | undefined)?.[0];
-
-    if (!child) return null;
-
-    return (
-      <Renderer
-        element={child}
-        editMode={editMode}
-        parentId={parentId}
-      />
-    );
-  };
-
   const childrenElements = childIds.map((childId) => {
     if (editMode && deletions.includes(childId)) return null;
 
@@ -247,7 +243,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
           key={childId}
           element={pendingCreates[childId]}
           editMode={editMode}
-          parentId={elementToRender._id}
         />
       );
     }
@@ -258,21 +253,20 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
           key={childId}
           element={pendingChanges[childId]}
           editMode={editMode}
-          parentId={elementToRender._id}
         />
       );
     }
 
     return (
-      <DbChildRenderer
+      <DbChildWrapper
         key={childId}
         childId={childId}
         editMode={editMode}
-        parentId={elementToRender._id}
       />
     );
-  });
+  }).filter(Boolean);
 
+  // Setup droppable functionality
   const isDroppable = elementToRender.droppable;
 
   const droppable = useDroppable({
@@ -282,7 +276,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
   });
 
   const ref = isDroppable ? droppable.setNodeRef : undefined;
-
   const isOver = droppable.isOver && isDroppable;
 
   const dropSx = isOver
