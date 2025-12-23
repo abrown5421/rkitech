@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { componentMap } from "./componentMap";
 import type { RendererProps } from "./rendererTypes";
 import { Box, IconButton, Tooltip, useTheme, type Theme } from "@mui/material";
@@ -9,6 +9,7 @@ import type { IElement } from "../element/elementTypes";
 import { useDroppable } from "@dnd-kit/core";
 import { Delete, Edit, OpenWith } from "@mui/icons-material";
 import { useViewport } from "../viewportProvider/ViewportProvider";
+import { darkenHex } from "../../../utils/colorUtils";
 
 const DbChildWrapper: React.FC<{
   childId: string;
@@ -50,7 +51,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
 
     let mergedSx = { ...(baseProps.sx || {}) };
 
-    // In edit mode with forced viewport, apply responsive overrides directly
     if (editMode && forced) {
       if (viewport === "mobile" && responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
@@ -59,9 +59,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
         const { variant, ...tabletSx } = responsiveProps.tablet;
         mergedSx = { ...mergedSx, ...tabletSx };
       }
-    } 
-    // In preview mode (or edit mode without forced viewport), use media queries
-    else {
+    } else {
       if (responsiveProps.mobile) {
         const { variant, ...mobileSx } = responsiveProps.mobile;
         mergedSx = { ...mergedSx, [theme.breakpoints.down("sm")]: mobileSx };
@@ -80,10 +78,12 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
         ...mergedSx,
         cursor: "pointer",
         position: "relative",
-        outlineOffset: 2,
+        outlineOffset: shouldShowHover
+          ? 2
+          : -2,
         outline: shouldShowHover
           ? `2px dashed ${theme.palette.primary.main}`
-          : "2px dashed transparent",
+          : `2px dashed ${darkenHex(theme.palette.neutral3.main, 0.075)}`,
         transition: "all 0.2s ease-in-out",
       };
     }
@@ -161,7 +161,7 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     setIsChildHovered(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const element = document.querySelector(`[data-element-id="${elementToRender._id}"]`);
     if (element) {
       element.addEventListener('childHovered', handleChildHovered as EventListener);
@@ -266,7 +266,6 @@ const Renderer: React.FC<RendererProps> = ({ element, editMode }) => {
     );
   }).filter(Boolean);
 
-  // Setup droppable functionality
   const isDroppable = elementToRender.droppable;
 
   const droppable = useDroppable({
